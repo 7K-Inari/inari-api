@@ -1,0 +1,57 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+
+      - name: buf lint
+        run: buf lint
+
+      - name: buf breaking (against main)
+        if: github.event_name == 'pull_request'
+        run: buf breaking --against ".git#branch=main"
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install codegen tools
+        run: |
+          go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.4.1
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+          npm ci --include=dev
+
+      - name: OpenAPI lint
+        run: npx redocly lint openapi/openapi.yaml
+
+      - name: Codegen drift check
+        run: |
+          make generate
+          git diff --exit-code
+
+      - name: Go build / vet / test
+        run: |
+          go build ./...
+          go vet ./...
+          go test ./...
+
+      - name: TS client compiles
+        run: npx tsc --noEmit
