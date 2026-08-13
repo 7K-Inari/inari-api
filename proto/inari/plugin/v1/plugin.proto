@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package inari.plugin.v1;
+
+// HandshakeConfig mirrors the hashicorp go-plugin handshake model
+// (platform plan §5.8): a magic cookie and protocol version guard plugin
+// startup before any RPC traffic flows.
+message HandshakeConfig {
+  string protocol_version = 1;
+  string magic_cookie_key = 2;
+  string magic_cookie_value = 3;
+}
+
+// PluginInfo describes a plugin's identity and the contract version it serves.
+message PluginInfo {
+  string name = 1;
+  string version = 2;
+  // Contract version implemented by the plugin, e.g. "inari.plugin.v1".
+  string api_version = 3;
+}
+
+message GetInfoRequest {}
+
+message GetInfoResponse {
+  PluginInfo info = 1;
+}
+
+// PluginContractService is the minimal versioned gRPC surface every plugin
+// serves (platform plan §5.8). Placeholder; capability negotiation lands later.
+service PluginContractService {
+  rpc GetInfo(GetInfoRequest) returns (GetInfoResponse);
+}
