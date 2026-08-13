@@ -12,7 +12,7 @@ lint:
 	npx redocly lint openapi/openapi.yaml
 
 breaking:
-	buf breaking --against ".git#branch=main"
+	buf breaking --against ".git#branch=origin/main"
 
 build:
 	go build ./...

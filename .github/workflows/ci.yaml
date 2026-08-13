@@ -22,7 +22,12 @@ jobs:
 
       - name: buf breaking (against main)
         if: github.event_name == 'pull_request'
-        run: buf breaking --against ".git#branch=main"
+        run: |
+          if ! git ls-tree --name-only origin/main | grep -qx proto; then
+            echo "no proto baseline on main yet; skipping breaking check"
+          else
+            buf breaking --against ".git#branch=origin/main"
+          fi
 
       - uses: actions/setup-go@v5
         with:
