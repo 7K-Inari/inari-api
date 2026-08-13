@@ -8,9 +8,6 @@ export default defineConfig({
       client: "fetch",
       mode: "single",
       prettier: false,
-      override: {
-        mutator: undefined,
-      },
     },
   },
 });
