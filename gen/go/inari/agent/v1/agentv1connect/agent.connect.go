@@ -2,13 +2,13 @@
 //
 // Source: inari/agent/v1/agent.proto
 
-package _goconnect
+package agentv1connect
 
 import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	_go "github.com/7K-Inari/inari-api/gen/go"
+	v1 "github.com/7K-Inari/inari-api/gen/go/inari/agent/v1"
 	http "net/http"
 	strings "strings"
 )
@@ -40,7 +40,7 @@ const (
 
 // EventStreamServiceClient is a client for the inari.agent.v1.EventStreamService service.
 type EventStreamServiceClient interface {
-	Connect(context.Context) *connect.BidiStreamForClient[_go.ConnectRequest, _go.ConnectResponse]
+	Connect(context.Context) *connect.BidiStreamForClient[v1.ConnectRequest, v1.ConnectResponse]
 }
 
 // NewEventStreamServiceClient constructs a client for the inari.agent.v1.EventStreamService
@@ -52,9 +52,9 @@ type EventStreamServiceClient interface {
 // http://api.acme.com or https://acme.com/grpc).
 func NewEventStreamServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) EventStreamServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
-	eventStreamServiceMethods := _go.File_inari_agent_v1_agent_proto.Services().ByName("EventStreamService").Methods()
+	eventStreamServiceMethods := v1.File_inari_agent_v1_agent_proto.Services().ByName("EventStreamService").Methods()
 	return &eventStreamServiceClient{
-		connect: connect.NewClient[_go.ConnectRequest, _go.ConnectResponse](
+		connect: connect.NewClient[v1.ConnectRequest, v1.ConnectResponse](
 			httpClient,
 			baseURL+EventStreamServiceConnectProcedure,
 			connect.WithSchema(eventStreamServiceMethods.ByName("Connect")),
@@ -65,17 +65,17 @@ func NewEventStreamServiceClient(httpClient connect.HTTPClient, baseURL string, 
 
 // eventStreamServiceClient implements EventStreamServiceClient.
 type eventStreamServiceClient struct {
-	connect *connect.Client[_go.ConnectRequest, _go.ConnectResponse]
+	connect *connect.Client[v1.ConnectRequest, v1.ConnectResponse]
 }
 
 // Connect calls inari.agent.v1.EventStreamService.Connect.
-func (c *eventStreamServiceClient) Connect(ctx context.Context) *connect.BidiStreamForClient[_go.ConnectRequest, _go.ConnectResponse] {
+func (c *eventStreamServiceClient) Connect(ctx context.Context) *connect.BidiStreamForClient[v1.ConnectRequest, v1.ConnectResponse] {
 	return c.connect.CallBidiStream(ctx)
 }
 
 // EventStreamServiceHandler is an implementation of the inari.agent.v1.EventStreamService service.
 type EventStreamServiceHandler interface {
-	Connect(context.Context, *connect.BidiStream[_go.ConnectRequest, _go.ConnectResponse]) error
+	Connect(context.Context, *connect.BidiStream[v1.ConnectRequest, v1.ConnectResponse]) error
 }
 
 // NewEventStreamServiceHandler builds an HTTP handler from the service implementation. It returns
@@ -84,7 +84,7 @@ type EventStreamServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewEventStreamServiceHandler(svc EventStreamServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
-	eventStreamServiceMethods := _go.File_inari_agent_v1_agent_proto.Services().ByName("EventStreamService").Methods()
+	eventStreamServiceMethods := v1.File_inari_agent_v1_agent_proto.Services().ByName("EventStreamService").Methods()
 	eventStreamServiceConnectHandler := connect.NewBidiStreamHandler(
 		EventStreamServiceConnectProcedure,
 		svc.Connect,
@@ -104,6 +104,6 @@ func NewEventStreamServiceHandler(svc EventStreamServiceHandler, opts ...connect
 // UnimplementedEventStreamServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedEventStreamServiceHandler struct{}
 
-func (UnimplementedEventStreamServiceHandler) Connect(context.Context, *connect.BidiStream[_go.ConnectRequest, _go.ConnectResponse]) error {
+func (UnimplementedEventStreamServiceHandler) Connect(context.Context, *connect.BidiStream[v1.ConnectRequest, v1.ConnectResponse]) error {
 	return connect.NewError(connect.CodeUnimplemented, errors.New("inari.agent.v1.EventStreamService.Connect is not implemented"))
 }

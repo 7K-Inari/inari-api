@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package inari.plugin.v1;
 
+option go_package = "github.com/7K-Inari/inari-api/gen/go/inari/plugin/v1;pluginv1";
+
 // HandshakeConfig mirrors the hashicorp go-plugin handshake model
 // (platform plan §5.8): a magic cookie and protocol version guard plugin
 // startup before any RPC traffic flows.

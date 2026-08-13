@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package inari.agent.v1;
 
+option go_package = "github.com/7K-Inari/inari-api/gen/go/inari/agent/v1;agentv1";
+
 import "google/protobuf/any.proto";
 import "google/protobuf/timestamp.proto";
 

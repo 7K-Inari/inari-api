@@ -2,13 +2,13 @@
 //
 // Source: inari/plugin/v1/plugin.proto
 
-package _goconnect
+package pluginv1connect
 
 import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	_go "github.com/7K-Inari/inari-api/gen/go"
+	v1 "github.com/7K-Inari/inari-api/gen/go/inari/plugin/v1"
 	http "net/http"
 	strings "strings"
 )
@@ -40,7 +40,7 @@ const (
 
 // PluginContractServiceClient is a client for the inari.plugin.v1.PluginContractService service.
 type PluginContractServiceClient interface {
-	GetInfo(context.Context, *connect.Request[_go.GetInfoRequest]) (*connect.Response[_go.GetInfoResponse], error)
+	GetInfo(context.Context, *connect.Request[v1.GetInfoRequest]) (*connect.Response[v1.GetInfoResponse], error)
 }
 
 // NewPluginContractServiceClient constructs a client for the inari.plugin.v1.PluginContractService
@@ -52,9 +52,9 @@ type PluginContractServiceClient interface {
 // http://api.acme.com or https://acme.com/grpc).
 func NewPluginContractServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) PluginContractServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
-	pluginContractServiceMethods := _go.File_inari_plugin_v1_plugin_proto.Services().ByName("PluginContractService").Methods()
+	pluginContractServiceMethods := v1.File_inari_plugin_v1_plugin_proto.Services().ByName("PluginContractService").Methods()
 	return &pluginContractServiceClient{
-		getInfo: connect.NewClient[_go.GetInfoRequest, _go.GetInfoResponse](
+		getInfo: connect.NewClient[v1.GetInfoRequest, v1.GetInfoResponse](
 			httpClient,
 			baseURL+PluginContractServiceGetInfoProcedure,
 			connect.WithSchema(pluginContractServiceMethods.ByName("GetInfo")),
@@ -65,18 +65,18 @@ func NewPluginContractServiceClient(httpClient connect.HTTPClient, baseURL strin
 
 // pluginContractServiceClient implements PluginContractServiceClient.
 type pluginContractServiceClient struct {
-	getInfo *connect.Client[_go.GetInfoRequest, _go.GetInfoResponse]
+	getInfo *connect.Client[v1.GetInfoRequest, v1.GetInfoResponse]
 }
 
 // GetInfo calls inari.plugin.v1.PluginContractService.GetInfo.
-func (c *pluginContractServiceClient) GetInfo(ctx context.Context, req *connect.Request[_go.GetInfoRequest]) (*connect.Response[_go.GetInfoResponse], error) {
+func (c *pluginContractServiceClient) GetInfo(ctx context.Context, req *connect.Request[v1.GetInfoRequest]) (*connect.Response[v1.GetInfoResponse], error) {
 	return c.getInfo.CallUnary(ctx, req)
 }
 
 // PluginContractServiceHandler is an implementation of the inari.plugin.v1.PluginContractService
 // service.
 type PluginContractServiceHandler interface {
-	GetInfo(context.Context, *connect.Request[_go.GetInfoRequest]) (*connect.Response[_go.GetInfoResponse], error)
+	GetInfo(context.Context, *connect.Request[v1.GetInfoRequest]) (*connect.Response[v1.GetInfoResponse], error)
 }
 
 // NewPluginContractServiceHandler builds an HTTP handler from the service implementation. It
@@ -85,7 +85,7 @@ type PluginContractServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewPluginContractServiceHandler(svc PluginContractServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
-	pluginContractServiceMethods := _go.File_inari_plugin_v1_plugin_proto.Services().ByName("PluginContractService").Methods()
+	pluginContractServiceMethods := v1.File_inari_plugin_v1_plugin_proto.Services().ByName("PluginContractService").Methods()
 	pluginContractServiceGetInfoHandler := connect.NewUnaryHandler(
 		PluginContractServiceGetInfoProcedure,
 		svc.GetInfo,
@@ -105,6 +105,6 @@ func NewPluginContractServiceHandler(svc PluginContractServiceHandler, opts ...c
 // UnimplementedPluginContractServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedPluginContractServiceHandler struct{}
 
-func (UnimplementedPluginContractServiceHandler) GetInfo(context.Context, *connect.Request[_go.GetInfoRequest]) (*connect.Response[_go.GetInfoResponse], error) {
+func (UnimplementedPluginContractServiceHandler) GetInfo(context.Context, *connect.Request[v1.GetInfoRequest]) (*connect.Response[v1.GetInfoResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("inari.plugin.v1.PluginContractService.GetInfo is not implemented"))
 }
