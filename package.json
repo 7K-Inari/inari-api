@@ -1,0 +1,25 @@
+{
+  "name": "@7k-inari/api-client",
+  "version": "0.1.0",
+  "description": "Generated TypeScript client for the Inari control plane contract (inari-api).",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./gen/ts/rest/client.ts",
+  "types": "./gen/ts/rest/client.ts",
+  "files": [
+    "gen/ts"
+  ],
+  "scripts": {
+    "generate:rest": "orval --config orval.config.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@bufbuild/protobuf": "^1.10.0",
+    "@connectrpc/connect": "^1.6.1"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^1.25.0",
+    "orval": "^7.5.0",
+    "typescript": "^5.6.0"
+  }
+}
