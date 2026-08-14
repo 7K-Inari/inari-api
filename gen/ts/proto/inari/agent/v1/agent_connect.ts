@@ -8,8 +8,8 @@ import { MethodKind } from "@bufbuild/protobuf";
 
 /**
  * EventStreamService is the bidirectional gRPC stream between an in-cluster
- * agent and the Agent Gateway (platform plan §5.2). Placeholder; full
- * protocol lands in M1.
+ * agent and the Agent Gateway (plan §5.2). Delivery is at-least-once;
+ * command handlers must be idempotent (command_id is the idempotency key).
  *
  * @generated from service inari.agent.v1.EventStreamService
  */
