@@ -96,8 +96,13 @@ job keys off release-please's `chore(main): release` commit subject.
 
 - Repository secret `NPM_TOKEN` (npm publish). Go consumers need nothing — the git tag is
   the Go module release.
-- `main` branch protection: require the `ci` workflow check; release-please PRs are normal
-  PRs and are gated the same way.
+- PRs created with the default `GITHUB_TOKEN` do **not** trigger `pull_request` workflows
+  (GitHub restriction), so `ci.yaml` will not run on the Release PR and a required `ci`
+  check would block the merge. Fix: pass a PAT via `with: token: ${{ secrets.RELEASE_PLEASE_TOKEN }}`
+  in `release-please.yml` (a fine-grained PAT with contents + pull-requests on this repo),
+  which makes the Release PR a normal PR gated by CI like any other.
+- `main` branch protection: require the `ci` workflow check; with the PAT above,
+  release-please PRs are normal PRs and are gated the same way.
 - Seed `CHANGELOG.md` with the current version section before the first run (release-please
   prepends into it).
 
