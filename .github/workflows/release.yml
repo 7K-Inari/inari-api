@@ -1,0 +1,156 @@
+name: release
+
+# Fires on push to main. Only proceeds when the push is a release-please
+# Release PR merge (head commit "chore(main): release ..." and/or
+# .release-please-manifest.json changed). Creates the tag + GitHub Release
+# and runs publish jobs inline — tags pushed with GITHUB_TOKEN do not fire
+# tag-push triggers, so publish MUST live here (see docs/release.md).
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      released: ${{ steps.check.outputs.released }}
+      version: ${{ steps.check.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect release merge
+        id: check
+        run: |
+          SUBJECT="$(git log -1 --pretty=%s)"
+          echo "head commit: $SUBJECT"
+          CHANGED="$(git diff --name-only "${{ github.event.before }}..HEAD" || true)"
+          if echo "$SUBJECT" | grep -Eq '^chore(\(main\))?: release' \
+             || echo "$CHANGED" | grep -qx '.release-please-manifest.json'; then
+            VERSION="$(jq -r '.["."]' .release-please-manifest.json)"
+            echo "released=true" >> "$GITHUB_OUTPUT"
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+            echo "release merge detected, version $VERSION"
+          else
+            echo "released=false" >> "$GITHUB_OUTPUT"
+            echo "not a release merge; skipping"
+          fi
+
+  verify:
+    needs: detect
+    if: needs.detect.outputs.released == 'true'
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.detect.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Enforce semver version
+        run: |
+          echo "$VERSION" | grep -Eq '^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?$' \
+            || { echo "version $VERSION is not semver (X.Y.Z)"; exit 1; }
+
+      - name: Go module path consistent with major version
+        run: |
+          MAJOR="${VERSION%%.*}"
+          MODULE=$(go mod edit -json | grep -oP '"Path":\s*"\K[^"]+')
+          if [ "$MAJOR" -ge 2 ]; then
+            case "$MODULE" in */v"$MAJOR") ;; *) echo "go.mod module $MODULE missing /v$MAJOR suffix"; exit 1;; esac
+          fi
+
+      - uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install codegen tools
+        run: |
+          go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.4.1
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+          npm ci --include=dev
+
+      - name: Full CI gate
+        run: make ci
+
+      - name: Version matches package.json
+        run: |
+          test "$(npm pkg get version | tr -d '"')" = "$VERSION"
+
+  tag-release:
+    needs: [detect, verify]
+    if: needs.detect.outputs.released == 'true'
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.detect.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract changelog section
+        run: |
+          awk -v ver="$VERSION" '
+            $0 ~ "^## \\[" ver "\\]" { found=1; next }
+            found && /^## \[/ { exit }
+            found { print }
+          ' CHANGELOG.md > release-notes.md
+          test -s release-notes.md || echo "Release $VERSION" > release-notes.md
+          cat release-notes.md
+
+      - name: Create and push tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "v$VERSION"
+          git push origin "v$VERSION"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "v$VERSION" \
+            --title "v$VERSION" \
+            --notes-file release-notes.md
+
+  publish-npm:
+    needs: [detect, tag-release]
+    if: needs.detect.outputs.released == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: https://registry.npmjs.org
+      - run: npm ci --include=dev
+      - name: Publish npm package
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        # Requires the NPM_TOKEN repository secret; configure it before the first release.
+
+  notify-go:
+    needs: [detect, tag-release]
+    if: needs.detect.outputs.released == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Go module published by tag
+        run: |
+          echo "Go consumers resolve this release directly from the git tag:"
+          echo "  go get github.com/7K-Inari/inari-api@v${{ needs.detect.outputs.version }}"
