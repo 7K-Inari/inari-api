@@ -239,6 +239,18 @@ func TestEventTypeStringParity(t *testing.T) {
 			t.Fatalf("EventTypeFromString(%q) = %v, want %v", typeString, got, enumVal)
 		}
 	}
+	// Enumerate the enum descriptor so a new EventType without a reverse-DNS
+	// string entry fails here, not silently in production.
+	vals := agentv1.EventType_EVENT_TYPE_UNSPECIFIED.Descriptor().Values()
+	for i := 1; i < vals.Len(); i++ {
+		num := agentv1.EventType(vals.Get(i).Number())
+		if got := agentv1.EventTypeString(num); got == "" {
+			t.Errorf("EventType %s has no reverse-DNS string mapping", vals.Get(i).Name())
+		}
+	}
+	if len(want) != vals.Len()-1 {
+		t.Errorf("parity map covers %d types, enum defines %d (excluding UNSPECIFIED)", len(want), vals.Len()-1)
+	}
 	if got := agentv1.EventTypeFromString("inari.agent.does-not-exist.v1"); got != agentv1.EventType_EVENT_TYPE_UNSPECIFIED {
 		t.Fatalf("unknown type string = %v, want UNSPECIFIED", got)
 	}
