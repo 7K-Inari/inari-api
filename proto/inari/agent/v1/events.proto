@@ -1,0 +1,155 @@
+syntax = "proto3";
+
+package inari.agent.v1;
+
+option go_package = "github.com/7K-Inari/inari-api/gen/go/inari/agent/v1;agentv1";
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+// Agent→server event payloads carried in Event.payload (plan §4.3, §5.3).
+// See agent.proto for the package compatibility contract.
+
+// ResourceRef identifies a Kubernetes object the agent reports on or is
+// asked to act upon.
+message ResourceRef {
+  string kind = 1;
+  string name = 2;
+  string namespace = 3;
+  string uid = 4;
+
+  reserved 100 to 199;
+}
+
+// CapabilityKind classifies a discovered cluster capability (plan §5.3
+// discovery watches).
+enum CapabilityKind {
+  CAPABILITY_KIND_UNSPECIFIED = 0;
+  CAPABILITY_KIND_CRD = 1;
+  CAPABILITY_KIND_OLM_CSV = 2;
+  CAPABILITY_KIND_CROSSPLANE_XRD = 3;
+  CAPABILITY_KIND_CROSSPLANE_PROVIDER = 4;
+  CAPABILITY_KIND_KRO_RGD = 5;
+  CAPABILITY_KIND_HELM_RELEASE = 6;
+  CAPABILITY_KIND_CLUSTER_ADDON = 7;
+  CAPABILITY_KIND_CLUSTER_METADATA = 8;
+}
+
+// ManagementMode is the brownfield adoption classification for pre-existing
+// resources (plan §5.3): nothing is mutated on first connect.
+enum ManagementMode {
+  MANAGEMENT_MODE_UNSPECIFIED = 0;
+  // Bring under Inari management (explicit, audited, per-resource).
+  MANAGEMENT_MODE_ADOPT = 1;
+  // Inventory without mutation (the default).
+  MANAGEMENT_MODE_OBSERVE_ONLY = 2;
+  // Excluded from inventory entirely.
+  MANAGEMENT_MODE_IGNORE = 3;
+}
+
+// CapabilityAction distinguishes upserts from removals in incremental
+// capability updates.
+enum CapabilityAction {
+  CAPABILITY_ACTION_UNSPECIFIED = 0;
+  CAPABILITY_ACTION_UPSERT = 1;
+  CAPABILITY_ACTION_DELETE = 2;
+}
+
+// Capability is one discovered capability: a CRD, OLM CSV, Crossplane
+// XRD/provider, KRO RGD, Helm release, addon, or cluster metadata item.
+message Capability {
+  CapabilityKind kind = 1;
+  string name = 2;
+  string group = 3;
+  string version = 4;
+  // OpenAPI v3 schema (for CRD/XRD/RGD kinds), used to render catalog forms
+  // (plan §5.5).
+  google.protobuf.Struct schema = 5;
+  // UI hints from OLM specDescriptors / x-descriptors (plan §5.5).
+  google.protobuf.Struct ui_hints = 6;
+  ManagementMode management_mode = 7;
+  CapabilityAction action = 8;
+
+  reserved 100 to 199;
+}
+
+// CapabilityUpdate streams discovered capabilities upstream (plan §5.3 step
+// "Discover"). Sent incrementally on watch events, or as a full snapshot on
+// connect/resync (full_sync = true).
+message CapabilityUpdate {
+  bool full_sync = 1;
+  repeated Capability capabilities = 2;
+  // Checksum over the agent's full capability state; the gateway compares it
+  // after reconnect to decide on resync (plan §5.2).
+  string state_checksum = 3;
+
+  reserved 100 to 199;
+}
+
+// HealthStatus mirrors ArgoCD-style health for reported resources.
+enum HealthStatus {
+  HEALTH_STATUS_UNSPECIFIED = 0;
+  HEALTH_STATUS_UNKNOWN = 1;
+  HEALTH_STATUS_HEALTHY = 2;
+  HEALTH_STATUS_PROGRESSING = 3;
+  HEALTH_STATUS_DEGRADED = 4;
+  HEALTH_STATUS_SUSPENDED = 5;
+  HEALTH_STATUS_MISSING = 6;
+}
+
+// SyncState mirrors ArgoCD-style sync state for reported resources.
+enum SyncState {
+  SYNC_STATE_UNSPECIFIED = 0;
+  SYNC_STATE_SYNCED = 1;
+  SYNC_STATE_OUT_OF_SYNC = 2;
+  SYNC_STATE_ERROR = 3;
+}
+
+// StatusUpdate streams resource health/sync upstream (plan §5.3 step
+// "Report") — near-real-time inventory without the control plane polling
+// tenant APIs.
+message StatusUpdate {
+  ResourceRef resource = 1;
+  HealthStatus health = 2;
+  SyncState sync = 3;
+  string message = 4;
+  google.protobuf.Timestamp observed_at = 5;
+  // Checksum over the agent's reported-state view (resync input).
+  string state_checksum = 6;
+
+  reserved 100 to 199;
+}
+
+// Ping is the server→agent stream keepalive (plan §5.3).
+message Ping {
+  google.protobuf.Timestamp time = 1;
+  int64 sequence = 2;
+
+  reserved 100 to 199;
+}
+
+// Pong is the agent→server keepalive reply, echoing the ping.
+message Pong {
+  google.protobuf.Timestamp time = 1;
+  int64 sequence = 2;
+
+  reserved 100 to 199;
+}
+
+// ResyncRequest is sent by the gateway when the agent's reported checksum or
+// event sequence no longer matches (plan §5.2); the agent must re-send full
+// state (CapabilityUpdate with full_sync = true, plus current status).
+message ResyncRequest {
+  string reason = 1;
+
+  reserved 100 to 199;
+}
+
+// ResyncResponse marks resync completion from the agent.
+message ResyncResponse {
+  string state_checksum = 1;
+  // Last gateway-acknowledged sequence the agent has applied state through.
+  int64 applied_through_sequence = 2;
+
+  reserved 100 to 199;
+}
