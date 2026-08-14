@@ -7,41 +7,117 @@ option go_package = "github.com/7K-Inari/inari-api/gen/go/inari/agent/v1;agentv1
 import "google/protobuf/any.proto";
 import "google/protobuf/timestamp.proto";
 
+// Package inari.agent.v1 is the compatibility contract between the Agent
+// Gateway (inari-server, plan §5.2) and in-cluster agents (plan §5.3).
+//
+// Compatibility contract (plan §5.11): the control plane supports agent
+// versions N and N−1. To keep that promise, this package evolves under
+// strict rules:
+//   - Fields are only ever added; existing field numbers are never
+//     renumbered, repurposed, or reused (retired fields go to `reserved`).
+//   - Every enum starts with an explicit *_UNSPECIFIED = 0 value; consumers
+//     must tolerate unknown enum values without failing.
+//   - Unknown Event.payload (Any) types must be dropped-and-logged, never
+//     fatal — an N−1 agent will see event types it does not know.
+//   - Event.type reverse-DNS strings are mirrored by the EventType enum;
+//     both are kept in parity (enforced by tests).
+// Breaking changes require a new package version (inari.agent.v2), never
+// in-place edits.
+
+// EventType enumerates every well-known event/command type carried on the
+// EventStream. Event.type holds the reverse-DNS string form (e.g.
+// "inari.agent.apply-bundle.v1"); this enum is its typed mirror for
+// exhaustive consumer-side handling.
+enum EventType {
+  EVENT_TYPE_UNSPECIFIED = 0;
+  // agent→server: discovered capability changes (plan §5.3).
+  EVENT_TYPE_CAPABILITY_UPDATE = 1;
+  // agent→server: resource health/sync reporting (plan §5.3).
+  EVENT_TYPE_STATUS_UPDATE = 2;
+  // server→agent: stream keepalive.
+  EVENT_TYPE_PING = 3;
+  // agent→server: keepalive reply.
+  EVENT_TYPE_PONG = 4;
+  // server→agent: checksum mismatch, re-send full state (plan §5.2).
+  EVENT_TYPE_RESYNC_REQUEST = 5;
+  // agent→server: resync complete marker.
+  EVENT_TYPE_RESYNC_RESPONSE = 6;
+  // server→agent: apply a rendered bundle to tenant Git (plan §5.3).
+  EVENT_TYPE_APPLY_BUNDLE = 7;
+  // server→agent: register a tenant-local ArgoCD Application.
+  EVENT_TYPE_REGISTER_ARGOCD_APP = 8;
+  // server→agent: imperative out-of-band action (ArgoCD actions etc.).
+  EVENT_TYPE_INVOKE_ACTION = 9;
+  // server→agent: render a KRO ResourceGraphDefinition instance.
+  EVENT_TYPE_RENDER_RGD_INSTANCE = 10;
+  // agent→server: command outcome (success).
+  EVENT_TYPE_COMMAND_ACK = 11;
+  // agent→server: command outcome (failure).
+  EVENT_TYPE_COMMAND_NACK = 12;
+}
+
 // Event is the CloudEvents-style envelope exchanged on the agent EventStream
-// (platform plan §4.3). Concrete payloads land in M1.
+// (plan §4.3). Concrete payloads are typed messages packed into `payload`
+// (google.protobuf.Any); see events.proto and commands.proto.
 message Event {
   string event_id = 1;
   string resource_id = 2;
-  // Reverse-DNS event type, e.g. inari.agent.heartbeat.v1.
+  // Reverse-DNS event type, e.g. inari.agent.ping.v1.
   string type = 3;
   google.protobuf.Any payload = 4;
   google.protobuf.Timestamp time = 5;
+  // Per-agent monotonic sequence number; the gateway uses gaps to trigger
+  // checksum-based resync after reconnects (plan §5.2).
+  int64 sequence = 6;
+
+  // Reserved for future first-party extensions (compatibility contract).
+  reserved 100 to 199;
 }
 
 // HandshakeRequest opens a session; the agent always dials out to the control
-// plane (pull, never push).
+// plane (pull, never push). Authentication is the per-cluster OIDC JWT with a
+// hardcoded cluster_id claim (plan §5.3) — the handshake only negotiates
+// contract versions and resync state.
 message HandshakeRequest {
   string agent_version = 1;
   string tenant_id = 2;
+  // Contract package this agent implements, e.g. "inari.agent.v1".
+  string contract_version = 3;
+  // Checksum of the agent state the gateway last acknowledged; a mismatch on
+  // the server side triggers a resync (plan §5.2).
+  string last_seen_state_checksum = 4;
+
+  reserved 100 to 199;
 }
 
 message HandshakeResponse {
   string session_id = 1;
+  // Contract versions the gateway supports (N/N−1, plan §5.11),
+  // comma-separated, e.g. "inari.agent.v1".
+  string server_contract_versions = 2;
+  // True when the agent must re-send full state (checksum mismatch or gap).
+  bool resync_required = 3;
+
+  reserved 100 to 199;
 }
 
 // ConnectRequest carries one Event from agent to gateway on the stream.
 message ConnectRequest {
   Event event = 1;
+
+  reserved 100 to 199;
 }
 
 // ConnectResponse carries one Event from gateway to agent on the stream.
 message ConnectResponse {
   Event event = 1;
+
+  reserved 100 to 199;
 }
 
 // EventStreamService is the bidirectional gRPC stream between an in-cluster
-// agent and the Agent Gateway (platform plan §5.2). Placeholder; full
-// protocol lands in M1.
+// agent and the Agent Gateway (plan §5.2). Delivery is at-least-once;
+// command handlers must be idempotent (command_id is the idempotency key).
 service EventStreamService {
   rpc Connect(stream ConnectRequest) returns (stream ConnectResponse);
 }

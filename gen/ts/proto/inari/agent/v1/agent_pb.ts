@@ -4,11 +4,127 @@
 // @ts-nocheck
 
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
-import { Any, Message, proto3, Timestamp } from "@bufbuild/protobuf";
+import { Any, Message, proto3, protoInt64, Timestamp } from "@bufbuild/protobuf";
+
+/**
+ * EventType enumerates every well-known event/command type carried on the
+ * EventStream. Event.type holds the reverse-DNS string form (e.g.
+ * "inari.agent.apply-bundle.v1"); this enum is its typed mirror for
+ * exhaustive consumer-side handling.
+ *
+ * @generated from enum inari.agent.v1.EventType
+ */
+export enum EventType {
+  /**
+   * @generated from enum value: EVENT_TYPE_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * agent→server: discovered capability changes (plan §5.3).
+   *
+   * @generated from enum value: EVENT_TYPE_CAPABILITY_UPDATE = 1;
+   */
+  CAPABILITY_UPDATE = 1,
+
+  /**
+   * agent→server: resource health/sync reporting (plan §5.3).
+   *
+   * @generated from enum value: EVENT_TYPE_STATUS_UPDATE = 2;
+   */
+  STATUS_UPDATE = 2,
+
+  /**
+   * server→agent: stream keepalive.
+   *
+   * @generated from enum value: EVENT_TYPE_PING = 3;
+   */
+  PING = 3,
+
+  /**
+   * agent→server: keepalive reply.
+   *
+   * @generated from enum value: EVENT_TYPE_PONG = 4;
+   */
+  PONG = 4,
+
+  /**
+   * server→agent: checksum mismatch, re-send full state (plan §5.2).
+   *
+   * @generated from enum value: EVENT_TYPE_RESYNC_REQUEST = 5;
+   */
+  RESYNC_REQUEST = 5,
+
+  /**
+   * agent→server: resync complete marker.
+   *
+   * @generated from enum value: EVENT_TYPE_RESYNC_RESPONSE = 6;
+   */
+  RESYNC_RESPONSE = 6,
+
+  /**
+   * server→agent: apply a rendered bundle to tenant Git (plan §5.3).
+   *
+   * @generated from enum value: EVENT_TYPE_APPLY_BUNDLE = 7;
+   */
+  APPLY_BUNDLE = 7,
+
+  /**
+   * server→agent: register a tenant-local ArgoCD Application.
+   *
+   * @generated from enum value: EVENT_TYPE_REGISTER_ARGOCD_APP = 8;
+   */
+  REGISTER_ARGOCD_APP = 8,
+
+  /**
+   * server→agent: imperative out-of-band action (ArgoCD actions etc.).
+   *
+   * @generated from enum value: EVENT_TYPE_INVOKE_ACTION = 9;
+   */
+  INVOKE_ACTION = 9,
+
+  /**
+   * server→agent: render a KRO ResourceGraphDefinition instance.
+   *
+   * @generated from enum value: EVENT_TYPE_RENDER_RGD_INSTANCE = 10;
+   */
+  RENDER_RGD_INSTANCE = 10,
+
+  /**
+   * agent→server: command outcome (success).
+   *
+   * @generated from enum value: EVENT_TYPE_COMMAND_ACK = 11;
+   */
+  COMMAND_ACK = 11,
+
+  /**
+   * agent→server: command outcome (failure).
+   *
+   * @generated from enum value: EVENT_TYPE_COMMAND_NACK = 12;
+   */
+  COMMAND_NACK = 12,
+}
+// Retrieve enum metadata with: proto3.getEnumType(EventType)
+proto3.util.setEnumType(EventType, "inari.agent.v1.EventType", [
+  { no: 0, name: "EVENT_TYPE_UNSPECIFIED" },
+  { no: 1, name: "EVENT_TYPE_CAPABILITY_UPDATE" },
+  { no: 2, name: "EVENT_TYPE_STATUS_UPDATE" },
+  { no: 3, name: "EVENT_TYPE_PING" },
+  { no: 4, name: "EVENT_TYPE_PONG" },
+  { no: 5, name: "EVENT_TYPE_RESYNC_REQUEST" },
+  { no: 6, name: "EVENT_TYPE_RESYNC_RESPONSE" },
+  { no: 7, name: "EVENT_TYPE_APPLY_BUNDLE" },
+  { no: 8, name: "EVENT_TYPE_REGISTER_ARGOCD_APP" },
+  { no: 9, name: "EVENT_TYPE_INVOKE_ACTION" },
+  { no: 10, name: "EVENT_TYPE_RENDER_RGD_INSTANCE" },
+  { no: 11, name: "EVENT_TYPE_COMMAND_ACK" },
+  { no: 12, name: "EVENT_TYPE_COMMAND_NACK" },
+]);
 
 /**
  * Event is the CloudEvents-style envelope exchanged on the agent EventStream
- * (platform plan §4.3). Concrete payloads land in M1.
+ * (plan §4.3). Concrete payloads are typed messages packed into `payload`
+ * (google.protobuf.Any); see events.proto and commands.proto.
  *
  * @generated from message inari.agent.v1.Event
  */
@@ -24,7 +140,7 @@ export class Event extends Message<Event> {
   resourceId = "";
 
   /**
-   * Reverse-DNS event type, e.g. inari.agent.heartbeat.v1.
+   * Reverse-DNS event type, e.g. inari.agent.ping.v1.
    *
    * @generated from field: string type = 3;
    */
@@ -40,6 +156,14 @@ export class Event extends Message<Event> {
    */
   time?: Timestamp;
 
+  /**
+   * Per-agent monotonic sequence number; the gateway uses gaps to trigger
+   * checksum-based resync after reconnects (plan §5.2).
+   *
+   * @generated from field: int64 sequence = 6;
+   */
+  sequence = protoInt64.zero;
+
   constructor(data?: PartialMessage<Event>) {
     super();
     proto3.util.initPartial(data, this);
@@ -53,6 +177,7 @@ export class Event extends Message<Event> {
     { no: 3, name: "type", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 4, name: "payload", kind: "message", T: Any },
     { no: 5, name: "time", kind: "message", T: Timestamp },
+    { no: 6, name: "sequence", kind: "scalar", T: 3 /* ScalarType.INT64 */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Event {
@@ -74,7 +199,9 @@ export class Event extends Message<Event> {
 
 /**
  * HandshakeRequest opens a session; the agent always dials out to the control
- * plane (pull, never push).
+ * plane (pull, never push). Authentication is the per-cluster OIDC JWT with a
+ * hardcoded cluster_id claim (plan §5.3) — the handshake only negotiates
+ * contract versions and resync state.
  *
  * @generated from message inari.agent.v1.HandshakeRequest
  */
@@ -89,6 +216,21 @@ export class HandshakeRequest extends Message<HandshakeRequest> {
    */
   tenantId = "";
 
+  /**
+   * Contract package this agent implements, e.g. "inari.agent.v1".
+   *
+   * @generated from field: string contract_version = 3;
+   */
+  contractVersion = "";
+
+  /**
+   * Checksum of the agent state the gateway last acknowledged; a mismatch on
+   * the server side triggers a resync (plan §5.2).
+   *
+   * @generated from field: string last_seen_state_checksum = 4;
+   */
+  lastSeenStateChecksum = "";
+
   constructor(data?: PartialMessage<HandshakeRequest>) {
     super();
     proto3.util.initPartial(data, this);
@@ -99,6 +241,8 @@ export class HandshakeRequest extends Message<HandshakeRequest> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "agent_version", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "tenant_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "contract_version", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "last_seen_state_checksum", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): HandshakeRequest {
@@ -127,6 +271,21 @@ export class HandshakeResponse extends Message<HandshakeResponse> {
    */
   sessionId = "";
 
+  /**
+   * Contract versions the gateway supports (N/N−1, plan §5.11),
+   * comma-separated, e.g. "inari.agent.v1".
+   *
+   * @generated from field: string server_contract_versions = 2;
+   */
+  serverContractVersions = "";
+
+  /**
+   * True when the agent must re-send full state (checksum mismatch or gap).
+   *
+   * @generated from field: bool resync_required = 3;
+   */
+  resyncRequired = false;
+
   constructor(data?: PartialMessage<HandshakeResponse>) {
     super();
     proto3.util.initPartial(data, this);
@@ -136,6 +295,8 @@ export class HandshakeResponse extends Message<HandshakeResponse> {
   static readonly typeName = "inari.agent.v1.HandshakeResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "session_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "server_contract_versions", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "resync_required", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): HandshakeResponse {

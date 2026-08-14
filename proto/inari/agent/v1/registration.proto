@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package inari.agent.v1;
+
+option go_package = "github.com/7K-Inari/inari-api/gen/go/inari/agent/v1;agentv1";
+
+import "google/protobuf/timestamp.proto";
+
+// Cluster registration (plan §5.3 lifecycle step 1). See agent.proto for the
+// package compatibility contract.
+
+// RegisterClusterRequest exchanges a one-time, TTL'd registration token for
+// per-cluster identity. The token is forgotten after use; replay is rejected
+// server-side.
+message RegisterClusterRequest {
+  string registration_token = 1;
+  string agent_version = 2;
+  // Contract package this agent implements, e.g. "inari.agent.v1".
+  string contract_version = 3;
+  // Cluster labels reported at registration (env, region, ...); feeds
+  // ClusterSet targeting (plan §5.11).
+  map<string, string> cluster_labels = 4;
+  string kubernetes_version = 5;
+
+  reserved 100 to 199;
+}
+
+// SecretDeliveryReference points at the in-cluster location where the OIDC
+// client secret is delivered via External Secrets Operator. The secret VALUE
+// is never present in this API and never committed to git (plan §5.3, §5.10)
+// — this message is only a pointer.
+message SecretDeliveryReference {
+  string eso_secret_store = 1;
+  string secret_name = 2;
+  string secret_namespace = 3;
+  string secret_key = 4;
+
+  reserved 100 to 199;
+}
+
+// RegisterClusterResponse returns the per-cluster Keycloak OIDC client
+// credentials: client_id plus the ESO delivery reference for the secret
+// (plan §5.3). Revocation = disabling the client in Keycloak.
+message RegisterClusterResponse {
+  string cluster_id = 1;
+  // Keycloak issuer URL, e.g. https://keycloak.example/realms/inari.
+  string oidc_issuer_url = 2;
+  // Per-cluster OIDC client_id, conventionally "cluster-<cluster_id>".
+  string client_id = 3;
+  SecretDeliveryReference client_secret_delivery = 4;
+  // Hint for when issued credentials expire; tokens are short-lived JWTs.
+  google.protobuf.Timestamp credentials_expire_hint = 5;
+
+  reserved 100 to 199;
+}
+
+// RegistrationService is the one-time bootstrap RPC an agent calls before it
+// can open the EventStream (plan §5.3). It is unauthenticated except for the
+// registration token itself.
+service RegistrationService {
+  rpc RegisterCluster(RegisterClusterRequest) returns (RegisterClusterResponse);
+}
