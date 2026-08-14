@@ -161,11 +161,11 @@ func TestCommandPayloadsRoundTrip(t *testing.T) {
 		payload   proto.Message
 	}{
 		{"inari.agent.apply-bundle.v1", &agentv1.ApplyBundle{
-			CommandId:  "cmd-1",
-			Source:     &agentv1.ApplyBundle_OciRef{OciRef: "oci://registry/bundle:v1"},
-			Target:     &agentv1.GitTarget{Repo: "acme-inari-state", Path: "bundles/web"},
-			Policy:     agentv1.CommitPolicy_COMMIT_POLICY_PULL_REQUEST,
-			Checksum:   "sha256:aaa",
+			CommandId: "cmd-1",
+			Source:    &agentv1.ApplyBundle_OciRef{OciRef: "oci://registry/bundle:v1"},
+			Target:    &agentv1.GitTarget{Repo: "acme-inari-state", Path: "bundles/web"},
+			Policy:    agentv1.CommitPolicy_COMMIT_POLICY_PULL_REQUEST,
+			Checksum:  "sha256:aaa",
 		}},
 		{"inari.agent.register-argocd-app.v1", &agentv1.RegisterArgoCDApp{
 			CommandId: "cmd-2",
@@ -218,18 +218,18 @@ func TestCommandPayloadsRoundTrip(t *testing.T) {
 
 func TestEventTypeStringParity(t *testing.T) {
 	want := map[agentv1.EventType]string{
-		agentv1.EventType_EVENT_TYPE_CAPABILITY_UPDATE:     "inari.agent.capability-update.v1",
-		agentv1.EventType_EVENT_TYPE_STATUS_UPDATE:         "inari.agent.status-update.v1",
-		agentv1.EventType_EVENT_TYPE_PING:                  "inari.agent.ping.v1",
-		agentv1.EventType_EVENT_TYPE_PONG:                  "inari.agent.pong.v1",
-		agentv1.EventType_EVENT_TYPE_RESYNC_REQUEST:        "inari.agent.resync-request.v1",
-		agentv1.EventType_EVENT_TYPE_RESYNC_RESPONSE:       "inari.agent.resync-response.v1",
-		agentv1.EventType_EVENT_TYPE_APPLY_BUNDLE:          "inari.agent.apply-bundle.v1",
-		agentv1.EventType_EVENT_TYPE_REGISTER_ARGOCD_APP:   "inari.agent.register-argocd-app.v1",
-		agentv1.EventType_EVENT_TYPE_INVOKE_ACTION:         "inari.agent.invoke-action.v1",
-		agentv1.EventType_EVENT_TYPE_RENDER_RGD_INSTANCE:   "inari.agent.render-rgd-instance.v1",
-		agentv1.EventType_EVENT_TYPE_COMMAND_ACK:           "inari.agent.command-ack.v1",
-		agentv1.EventType_EVENT_TYPE_COMMAND_NACK:          "inari.agent.command-nack.v1",
+		agentv1.EventType_EVENT_TYPE_CAPABILITY_UPDATE:   "inari.agent.capability-update.v1",
+		agentv1.EventType_EVENT_TYPE_STATUS_UPDATE:       "inari.agent.status-update.v1",
+		agentv1.EventType_EVENT_TYPE_PING:                "inari.agent.ping.v1",
+		agentv1.EventType_EVENT_TYPE_PONG:                "inari.agent.pong.v1",
+		agentv1.EventType_EVENT_TYPE_RESYNC_REQUEST:      "inari.agent.resync-request.v1",
+		agentv1.EventType_EVENT_TYPE_RESYNC_RESPONSE:     "inari.agent.resync-response.v1",
+		agentv1.EventType_EVENT_TYPE_APPLY_BUNDLE:        "inari.agent.apply-bundle.v1",
+		agentv1.EventType_EVENT_TYPE_REGISTER_ARGOCD_APP: "inari.agent.register-argocd-app.v1",
+		agentv1.EventType_EVENT_TYPE_INVOKE_ACTION:       "inari.agent.invoke-action.v1",
+		agentv1.EventType_EVENT_TYPE_RENDER_RGD_INSTANCE: "inari.agent.render-rgd-instance.v1",
+		agentv1.EventType_EVENT_TYPE_COMMAND_ACK:         "inari.agent.command-ack.v1",
+		agentv1.EventType_EVENT_TYPE_COMMAND_NACK:        "inari.agent.command-nack.v1",
 	}
 	for enumVal, typeString := range want {
 		if got := agentv1.EventTypeString(enumVal); got != typeString {
@@ -300,15 +300,15 @@ func TestRegistrationMessages(t *testing.T) {
 
 func TestHandshakeVersionNegotiation(t *testing.T) {
 	req := &agentv1.HandshakeRequest{
-		AgentVersion:           "0.2.0",
-		TenantId:               "t-1",
-		ContractVersion:        "inari.agent.v1",
-		LastSeenStateChecksum:  "sha256:old",
+		AgentVersion:          "0.2.0",
+		TenantId:              "t-1",
+		ContractVersion:       "inari.agent.v1",
+		LastSeenStateChecksum: "sha256:old",
 	}
 	resp := &agentv1.HandshakeResponse{
-		SessionId:               "s-1",
-		ServerContractVersions:  "inari.agent.v1",
-		ResyncRequired:          true,
+		SessionId:              "s-1",
+		ServerContractVersions: "inari.agent.v1",
+		ResyncRequired:         true,
 	}
 	if req.GetContractVersion() != "inari.agent.v1" || !resp.GetResyncRequired() {
 		t.Fatalf("handshake negotiation fields missing: %v %v", req, resp)

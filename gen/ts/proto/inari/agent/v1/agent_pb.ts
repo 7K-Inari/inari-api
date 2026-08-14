@@ -140,7 +140,7 @@ export class Event extends Message<Event> {
   resourceId = "";
 
   /**
-   * Reverse-DNS event type, e.g. inari.agent.heartbeat.v1.
+   * Reverse-DNS event type, e.g. inari.agent.ping.v1.
    *
    * @generated from field: string type = 3;
    */

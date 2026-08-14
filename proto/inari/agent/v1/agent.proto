@@ -62,7 +62,7 @@ enum EventType {
 message Event {
   string event_id = 1;
   string resource_id = 2;
-  // Reverse-DNS event type, e.g. inari.agent.heartbeat.v1.
+  // Reverse-DNS event type, e.g. inari.agent.ping.v1.
   string type = 3;
   google.protobuf.Any payload = 4;
   google.protobuf.Timestamp time = 5;

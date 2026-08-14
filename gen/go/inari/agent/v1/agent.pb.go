@@ -125,7 +125,7 @@ type Event struct {
 	state      protoimpl.MessageState `protogen:"open.v1"`
 	EventId    string                 `protobuf:"bytes,1,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
 	ResourceId string                 `protobuf:"bytes,2,opt,name=resource_id,json=resourceId,proto3" json:"resource_id,omitempty"`
-	// Reverse-DNS event type, e.g. inari.agent.heartbeat.v1.
+	// Reverse-DNS event type, e.g. inari.agent.ping.v1.
 	Type    string                 `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`
 	Payload *anypb.Any             `protobuf:"bytes,4,opt,name=payload,proto3" json:"payload,omitempty"`
 	Time    *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=time,proto3" json:"time,omitempty"`
