@@ -7,6 +7,65 @@ import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialM
 import { Message, proto3 } from "@bufbuild/protobuf";
 
 /**
+ * ErrorCode classifies plugin errors so hosts and clients can react
+ * programmatically. Values mirror common gRPC/HTTP semantics.
+ *
+ * @generated from enum inari.plugin.v1.ErrorCode
+ */
+export enum ErrorCode {
+  /**
+   * @generated from enum value: ERROR_CODE_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: ERROR_CODE_INVALID_ARGUMENT = 1;
+   */
+  INVALID_ARGUMENT = 1,
+
+  /**
+   * @generated from enum value: ERROR_CODE_UNAUTHENTICATED = 2;
+   */
+  UNAUTHENTICATED = 2,
+
+  /**
+   * @generated from enum value: ERROR_CODE_PERMISSION_DENIED = 3;
+   */
+  PERMISSION_DENIED = 3,
+
+  /**
+   * @generated from enum value: ERROR_CODE_NOT_FOUND = 4;
+   */
+  NOT_FOUND = 4,
+
+  /**
+   * @generated from enum value: ERROR_CODE_FAILED_PRECONDITION = 5;
+   */
+  FAILED_PRECONDITION = 5,
+
+  /**
+   * @generated from enum value: ERROR_CODE_INTERNAL = 6;
+   */
+  INTERNAL = 6,
+
+  /**
+   * @generated from enum value: ERROR_CODE_UNAVAILABLE = 7;
+   */
+  UNAVAILABLE = 7,
+}
+// Retrieve enum metadata with: proto3.getEnumType(ErrorCode)
+proto3.util.setEnumType(ErrorCode, "inari.plugin.v1.ErrorCode", [
+  { no: 0, name: "ERROR_CODE_UNSPECIFIED" },
+  { no: 1, name: "ERROR_CODE_INVALID_ARGUMENT" },
+  { no: 2, name: "ERROR_CODE_UNAUTHENTICATED" },
+  { no: 3, name: "ERROR_CODE_PERMISSION_DENIED" },
+  { no: 4, name: "ERROR_CODE_NOT_FOUND" },
+  { no: 5, name: "ERROR_CODE_FAILED_PRECONDITION" },
+  { no: 6, name: "ERROR_CODE_INTERNAL" },
+  { no: 7, name: "ERROR_CODE_UNAVAILABLE" },
+]);
+
+/**
  * HandshakeConfig mirrors the hashicorp go-plugin handshake model
  * (platform plan §5.8): a magic cookie and protocol version guard plugin
  * startup before any RPC traffic flows.
@@ -179,4 +238,477 @@ export class GetInfoResponse extends Message<GetInfoResponse> {
     return proto3.util.equals(GetInfoResponse, a, b);
   }
 }
+
+/**
+ * AuthContext carries the authenticated principal and tenant identity from the
+ * control plane to the plugin (platform plan §5.8): the control plane
+ * authenticates at /api/extensions/<name>/*, enforces RBAC, strips sensitive
+ * headers, and forwards this identity. Plugins never see raw credentials.
+ *
+ * @generated from message inari.plugin.v1.AuthContext
+ */
+export class AuthContext extends Message<AuthContext> {
+  /**
+   * Stable authenticated principal identifier (subject claim).
+   *
+   * @generated from field: string principal_id = 1;
+   */
+  principalId = "";
+
+  /**
+   * Tenant the call is scoped to (Keycloak Organization id, "org:<id>").
+   *
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId = "";
+
+  /**
+   * Human-readable principal name for display/audit.
+   *
+   * @generated from field: string display_name = 3;
+   */
+  displayName = "";
+
+  /**
+   * Group memberships (e.g. "tenant-acme/platform-team").
+   *
+   * @generated from field: repeated string groups = 4;
+   */
+  groups: string[] = [];
+
+  /**
+   * Additional verified claims the control plane chooses to forward.
+   *
+   * @generated from field: map<string, string> claims = 5;
+   */
+  claims: { [key: string]: string } = {};
+
+  constructor(data?: PartialMessage<AuthContext>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "inari.plugin.v1.AuthContext";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "principal_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "tenant_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "display_name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "groups", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
+    { no: 5, name: "claims", kind: "map", K: 9 /* ScalarType.STRING */, V: {kind: "scalar", T: 9 /* ScalarType.STRING */} },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AuthContext {
+    return new AuthContext().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): AuthContext {
+    return new AuthContext().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): AuthContext {
+    return new AuthContext().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: AuthContext | PlainMessage<AuthContext> | undefined, b: AuthContext | PlainMessage<AuthContext> | undefined): boolean {
+    return proto3.util.equals(AuthContext, a, b);
+  }
+}
+
+/**
+ * Action describes a single invocable capability of a plugin.
+ *
+ * @generated from message inari.plugin.v1.Action
+ */
+export class Action extends Message<Action> {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name = "";
+
+  /**
+   * @generated from field: string description = 2;
+   */
+  description = "";
+
+  /**
+   * Optional JSON Schema (OpenAPI v3 subset) documents for the payload and
+   * result, serialized as JSON bytes. Used by the control plane to validate
+   * and render forms before dispatching.
+   *
+   * @generated from field: bytes input_schema = 3;
+   */
+  inputSchema = new Uint8Array(0);
+
+  /**
+   * @generated from field: bytes output_schema = 4;
+   */
+  outputSchema = new Uint8Array(0);
+
+  constructor(data?: PartialMessage<Action>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "inari.plugin.v1.Action";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "description", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "input_schema", kind: "scalar", T: 12 /* ScalarType.BYTES */ },
+    { no: 4, name: "output_schema", kind: "scalar", T: 12 /* ScalarType.BYTES */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Action {
+    return new Action().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Action {
+    return new Action().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Action {
+    return new Action().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: Action | PlainMessage<Action> | undefined, b: Action | PlainMessage<Action> | undefined): boolean {
+    return proto3.util.equals(Action, a, b);
+  }
+}
+
+/**
+ * @generated from message inari.plugin.v1.GetCapabilitiesRequest
+ */
+export class GetCapabilitiesRequest extends Message<GetCapabilitiesRequest> {
+  constructor(data?: PartialMessage<GetCapabilitiesRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "inari.plugin.v1.GetCapabilitiesRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetCapabilitiesRequest {
+    return new GetCapabilitiesRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetCapabilitiesRequest {
+    return new GetCapabilitiesRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetCapabilitiesRequest {
+    return new GetCapabilitiesRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetCapabilitiesRequest | PlainMessage<GetCapabilitiesRequest> | undefined, b: GetCapabilitiesRequest | PlainMessage<GetCapabilitiesRequest> | undefined): boolean {
+    return proto3.util.equals(GetCapabilitiesRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message inari.plugin.v1.GetCapabilitiesResponse
+ */
+export class GetCapabilitiesResponse extends Message<GetCapabilitiesResponse> {
+  /**
+   * @generated from field: repeated inari.plugin.v1.Action actions = 1;
+   */
+  actions: Action[] = [];
+
+  constructor(data?: PartialMessage<GetCapabilitiesResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "inari.plugin.v1.GetCapabilitiesResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "actions", kind: "message", T: Action, repeated: true },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetCapabilitiesResponse {
+    return new GetCapabilitiesResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GetCapabilitiesResponse {
+    return new GetCapabilitiesResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GetCapabilitiesResponse {
+    return new GetCapabilitiesResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GetCapabilitiesResponse | PlainMessage<GetCapabilitiesResponse> | undefined, b: GetCapabilitiesResponse | PlainMessage<GetCapabilitiesResponse> | undefined): boolean {
+    return proto3.util.equals(GetCapabilitiesResponse, a, b);
+  }
+}
+
+/**
+ * PluginError is the structured error carried in an InvokeResponse. Handlers
+ * return domain errors; the SDK maps them to a PluginError on the wire.
+ *
+ * @generated from message inari.plugin.v1.PluginError
+ */
+export class PluginError extends Message<PluginError> {
+  /**
+   * @generated from field: inari.plugin.v1.ErrorCode code = 1;
+   */
+  code = ErrorCode.UNSPECIFIED;
+
+  /**
+   * @generated from field: string message = 2;
+   */
+  message = "";
+
+  /**
+   * Optional machine-readable details (e.g. field violations).
+   *
+   * @generated from field: map<string, string> details = 3;
+   */
+  details: { [key: string]: string } = {};
+
+  constructor(data?: PartialMessage<PluginError>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "inari.plugin.v1.PluginError";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "code", kind: "enum", T: proto3.getEnumType(ErrorCode) },
+    { no: 2, name: "message", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "details", kind: "map", K: 9 /* ScalarType.STRING */, V: {kind: "scalar", T: 9 /* ScalarType.STRING */} },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): PluginError {
+    return new PluginError().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): PluginError {
+    return new PluginError().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): PluginError {
+    return new PluginError().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: PluginError | PlainMessage<PluginError> | undefined, b: PluginError | PlainMessage<PluginError> | undefined): boolean {
+    return proto3.util.equals(PluginError, a, b);
+  }
+}
+
+/**
+ * InvokeRequest is the request envelope for a single action call.
+ *
+ * @generated from message inari.plugin.v1.InvokeRequest
+ */
+export class InvokeRequest extends Message<InvokeRequest> {
+  /**
+   * Name of the action to invoke (from GetCapabilities).
+   *
+   * @generated from field: string action = 1;
+   */
+  action = "";
+
+  /**
+   * Authenticated identity forwarded by the control plane.
+   *
+   * @generated from field: inari.plugin.v1.AuthContext auth_context = 2;
+   */
+  authContext?: AuthContext;
+
+  /**
+   * Action payload, JSON-encoded per the action's input schema.
+   *
+   * @generated from field: bytes payload = 3;
+   */
+  payload = new Uint8Array(0);
+
+  /**
+   * Host-assigned idempotency/correlation id; echoed in logs and audit.
+   *
+   * @generated from field: string request_id = 4;
+   */
+  requestId = "";
+
+  constructor(data?: PartialMessage<InvokeRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "inari.plugin.v1.InvokeRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "action", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "auth_context", kind: "message", T: AuthContext },
+    { no: 3, name: "payload", kind: "scalar", T: 12 /* ScalarType.BYTES */ },
+    { no: 4, name: "request_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): InvokeRequest {
+    return new InvokeRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): InvokeRequest {
+    return new InvokeRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): InvokeRequest {
+    return new InvokeRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: InvokeRequest | PlainMessage<InvokeRequest> | undefined, b: InvokeRequest | PlainMessage<InvokeRequest> | undefined): boolean {
+    return proto3.util.equals(InvokeRequest, a, b);
+  }
+}
+
+/**
+ * InvokeResponse is the response envelope: exactly one of result or error.
+ *
+ * @generated from message inari.plugin.v1.InvokeResponse
+ */
+export class InvokeResponse extends Message<InvokeResponse> {
+  /**
+   * Action result, JSON-encoded per the action's output schema.
+   *
+   * @generated from field: bytes result = 1;
+   */
+  result = new Uint8Array(0);
+
+  /**
+   * @generated from field: inari.plugin.v1.PluginError error = 2;
+   */
+  error?: PluginError;
+
+  constructor(data?: PartialMessage<InvokeResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "inari.plugin.v1.InvokeResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "result", kind: "scalar", T: 12 /* ScalarType.BYTES */ },
+    { no: 2, name: "error", kind: "message", T: PluginError },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): InvokeResponse {
+    return new InvokeResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): InvokeResponse {
+    return new InvokeResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): InvokeResponse {
+    return new InvokeResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: InvokeResponse | PlainMessage<InvokeResponse> | undefined, b: InvokeResponse | PlainMessage<InvokeResponse> | undefined): boolean {
+    return proto3.util.equals(InvokeResponse, a, b);
+  }
+}
+
+/**
+ * @generated from message inari.plugin.v1.HealthCheckRequest
+ */
+export class HealthCheckRequest extends Message<HealthCheckRequest> {
+  constructor(data?: PartialMessage<HealthCheckRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "inari.plugin.v1.HealthCheckRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): HealthCheckRequest {
+    return new HealthCheckRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): HealthCheckRequest {
+    return new HealthCheckRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): HealthCheckRequest {
+    return new HealthCheckRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: HealthCheckRequest | PlainMessage<HealthCheckRequest> | undefined, b: HealthCheckRequest | PlainMessage<HealthCheckRequest> | undefined): boolean {
+    return proto3.util.equals(HealthCheckRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message inari.plugin.v1.HealthCheckResponse
+ */
+export class HealthCheckResponse extends Message<HealthCheckResponse> {
+  /**
+   * @generated from field: inari.plugin.v1.HealthCheckResponse.ServingStatus status = 1;
+   */
+  status = HealthCheckResponse_ServingStatus.UNSPECIFIED;
+
+  /**
+   * Optional human-readable detail (e.g. degraded dependency).
+   *
+   * @generated from field: string message = 2;
+   */
+  message = "";
+
+  constructor(data?: PartialMessage<HealthCheckResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "inari.plugin.v1.HealthCheckResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "status", kind: "enum", T: proto3.getEnumType(HealthCheckResponse_ServingStatus) },
+    { no: 2, name: "message", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): HealthCheckResponse {
+    return new HealthCheckResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): HealthCheckResponse {
+    return new HealthCheckResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): HealthCheckResponse {
+    return new HealthCheckResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: HealthCheckResponse | PlainMessage<HealthCheckResponse> | undefined, b: HealthCheckResponse | PlainMessage<HealthCheckResponse> | undefined): boolean {
+    return proto3.util.equals(HealthCheckResponse, a, b);
+  }
+}
+
+/**
+ * @generated from enum inari.plugin.v1.HealthCheckResponse.ServingStatus
+ */
+export enum HealthCheckResponse_ServingStatus {
+  /**
+   * @generated from enum value: SERVING_STATUS_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: SERVING_STATUS_SERVING = 1;
+   */
+  SERVING = 1,
+
+  /**
+   * @generated from enum value: SERVING_STATUS_NOT_SERVING = 2;
+   */
+  NOT_SERVING = 2,
+}
+// Retrieve enum metadata with: proto3.getEnumType(HealthCheckResponse_ServingStatus)
+proto3.util.setEnumType(HealthCheckResponse_ServingStatus, "inari.plugin.v1.HealthCheckResponse.ServingStatus", [
+  { no: 0, name: "SERVING_STATUS_UNSPECIFIED" },
+  { no: 1, name: "SERVING_STATUS_SERVING" },
+  { no: 2, name: "SERVING_STATUS_NOT_SERVING" },
+]);
 

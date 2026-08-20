@@ -36,11 +36,23 @@ const (
 	// PluginContractServiceGetInfoProcedure is the fully-qualified name of the PluginContractService's
 	// GetInfo RPC.
 	PluginContractServiceGetInfoProcedure = "/inari.plugin.v1.PluginContractService/GetInfo"
+	// PluginContractServiceGetCapabilitiesProcedure is the fully-qualified name of the
+	// PluginContractService's GetCapabilities RPC.
+	PluginContractServiceGetCapabilitiesProcedure = "/inari.plugin.v1.PluginContractService/GetCapabilities"
+	// PluginContractServiceInvokeProcedure is the fully-qualified name of the PluginContractService's
+	// Invoke RPC.
+	PluginContractServiceInvokeProcedure = "/inari.plugin.v1.PluginContractService/Invoke"
+	// PluginContractServiceHealthCheckProcedure is the fully-qualified name of the
+	// PluginContractService's HealthCheck RPC.
+	PluginContractServiceHealthCheckProcedure = "/inari.plugin.v1.PluginContractService/HealthCheck"
 )
 
 // PluginContractServiceClient is a client for the inari.plugin.v1.PluginContractService service.
 type PluginContractServiceClient interface {
 	GetInfo(context.Context, *connect.Request[v1.GetInfoRequest]) (*connect.Response[v1.GetInfoResponse], error)
+	GetCapabilities(context.Context, *connect.Request[v1.GetCapabilitiesRequest]) (*connect.Response[v1.GetCapabilitiesResponse], error)
+	Invoke(context.Context, *connect.Request[v1.InvokeRequest]) (*connect.Response[v1.InvokeResponse], error)
+	HealthCheck(context.Context, *connect.Request[v1.HealthCheckRequest]) (*connect.Response[v1.HealthCheckResponse], error)
 }
 
 // NewPluginContractServiceClient constructs a client for the inari.plugin.v1.PluginContractService
@@ -60,12 +72,33 @@ func NewPluginContractServiceClient(httpClient connect.HTTPClient, baseURL strin
 			connect.WithSchema(pluginContractServiceMethods.ByName("GetInfo")),
 			connect.WithClientOptions(opts...),
 		),
+		getCapabilities: connect.NewClient[v1.GetCapabilitiesRequest, v1.GetCapabilitiesResponse](
+			httpClient,
+			baseURL+PluginContractServiceGetCapabilitiesProcedure,
+			connect.WithSchema(pluginContractServiceMethods.ByName("GetCapabilities")),
+			connect.WithClientOptions(opts...),
+		),
+		invoke: connect.NewClient[v1.InvokeRequest, v1.InvokeResponse](
+			httpClient,
+			baseURL+PluginContractServiceInvokeProcedure,
+			connect.WithSchema(pluginContractServiceMethods.ByName("Invoke")),
+			connect.WithClientOptions(opts...),
+		),
+		healthCheck: connect.NewClient[v1.HealthCheckRequest, v1.HealthCheckResponse](
+			httpClient,
+			baseURL+PluginContractServiceHealthCheckProcedure,
+			connect.WithSchema(pluginContractServiceMethods.ByName("HealthCheck")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // pluginContractServiceClient implements PluginContractServiceClient.
 type pluginContractServiceClient struct {
-	getInfo *connect.Client[v1.GetInfoRequest, v1.GetInfoResponse]
+	getInfo         *connect.Client[v1.GetInfoRequest, v1.GetInfoResponse]
+	getCapabilities *connect.Client[v1.GetCapabilitiesRequest, v1.GetCapabilitiesResponse]
+	invoke          *connect.Client[v1.InvokeRequest, v1.InvokeResponse]
+	healthCheck     *connect.Client[v1.HealthCheckRequest, v1.HealthCheckResponse]
 }
 
 // GetInfo calls inari.plugin.v1.PluginContractService.GetInfo.
@@ -73,10 +106,28 @@ func (c *pluginContractServiceClient) GetInfo(ctx context.Context, req *connect.
 	return c.getInfo.CallUnary(ctx, req)
 }
 
+// GetCapabilities calls inari.plugin.v1.PluginContractService.GetCapabilities.
+func (c *pluginContractServiceClient) GetCapabilities(ctx context.Context, req *connect.Request[v1.GetCapabilitiesRequest]) (*connect.Response[v1.GetCapabilitiesResponse], error) {
+	return c.getCapabilities.CallUnary(ctx, req)
+}
+
+// Invoke calls inari.plugin.v1.PluginContractService.Invoke.
+func (c *pluginContractServiceClient) Invoke(ctx context.Context, req *connect.Request[v1.InvokeRequest]) (*connect.Response[v1.InvokeResponse], error) {
+	return c.invoke.CallUnary(ctx, req)
+}
+
+// HealthCheck calls inari.plugin.v1.PluginContractService.HealthCheck.
+func (c *pluginContractServiceClient) HealthCheck(ctx context.Context, req *connect.Request[v1.HealthCheckRequest]) (*connect.Response[v1.HealthCheckResponse], error) {
+	return c.healthCheck.CallUnary(ctx, req)
+}
+
 // PluginContractServiceHandler is an implementation of the inari.plugin.v1.PluginContractService
 // service.
 type PluginContractServiceHandler interface {
 	GetInfo(context.Context, *connect.Request[v1.GetInfoRequest]) (*connect.Response[v1.GetInfoResponse], error)
+	GetCapabilities(context.Context, *connect.Request[v1.GetCapabilitiesRequest]) (*connect.Response[v1.GetCapabilitiesResponse], error)
+	Invoke(context.Context, *connect.Request[v1.InvokeRequest]) (*connect.Response[v1.InvokeResponse], error)
+	HealthCheck(context.Context, *connect.Request[v1.HealthCheckRequest]) (*connect.Response[v1.HealthCheckResponse], error)
 }
 
 // NewPluginContractServiceHandler builds an HTTP handler from the service implementation. It
@@ -92,10 +143,34 @@ func NewPluginContractServiceHandler(svc PluginContractServiceHandler, opts ...c
 		connect.WithSchema(pluginContractServiceMethods.ByName("GetInfo")),
 		connect.WithHandlerOptions(opts...),
 	)
+	pluginContractServiceGetCapabilitiesHandler := connect.NewUnaryHandler(
+		PluginContractServiceGetCapabilitiesProcedure,
+		svc.GetCapabilities,
+		connect.WithSchema(pluginContractServiceMethods.ByName("GetCapabilities")),
+		connect.WithHandlerOptions(opts...),
+	)
+	pluginContractServiceInvokeHandler := connect.NewUnaryHandler(
+		PluginContractServiceInvokeProcedure,
+		svc.Invoke,
+		connect.WithSchema(pluginContractServiceMethods.ByName("Invoke")),
+		connect.WithHandlerOptions(opts...),
+	)
+	pluginContractServiceHealthCheckHandler := connect.NewUnaryHandler(
+		PluginContractServiceHealthCheckProcedure,
+		svc.HealthCheck,
+		connect.WithSchema(pluginContractServiceMethods.ByName("HealthCheck")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/inari.plugin.v1.PluginContractService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case PluginContractServiceGetInfoProcedure:
 			pluginContractServiceGetInfoHandler.ServeHTTP(w, r)
+		case PluginContractServiceGetCapabilitiesProcedure:
+			pluginContractServiceGetCapabilitiesHandler.ServeHTTP(w, r)
+		case PluginContractServiceInvokeProcedure:
+			pluginContractServiceInvokeHandler.ServeHTTP(w, r)
+		case PluginContractServiceHealthCheckProcedure:
+			pluginContractServiceHealthCheckHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -107,4 +182,16 @@ type UnimplementedPluginContractServiceHandler struct{}
 
 func (UnimplementedPluginContractServiceHandler) GetInfo(context.Context, *connect.Request[v1.GetInfoRequest]) (*connect.Response[v1.GetInfoResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("inari.plugin.v1.PluginContractService.GetInfo is not implemented"))
+}
+
+func (UnimplementedPluginContractServiceHandler) GetCapabilities(context.Context, *connect.Request[v1.GetCapabilitiesRequest]) (*connect.Response[v1.GetCapabilitiesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("inari.plugin.v1.PluginContractService.GetCapabilities is not implemented"))
+}
+
+func (UnimplementedPluginContractServiceHandler) Invoke(context.Context, *connect.Request[v1.InvokeRequest]) (*connect.Response[v1.InvokeResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("inari.plugin.v1.PluginContractService.Invoke is not implemented"))
+}
+
+func (UnimplementedPluginContractServiceHandler) HealthCheck(context.Context, *connect.Request[v1.HealthCheckRequest]) (*connect.Response[v1.HealthCheckResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("inari.plugin.v1.PluginContractService.HealthCheck is not implemented"))
 }
