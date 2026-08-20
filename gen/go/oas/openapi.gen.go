@@ -8,21 +8,477 @@ package oas
 import (
 	"bytes"
 	"compress/gzip"
+	"context"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"path"
 	"strings"
+	"time"
 
 	"github.com/getkin/kin-openapi/openapi3"
-	openapi_types "github.com/oapi-codegen/runtime/types"
+	"github.com/oapi-codegen/runtime"
+)
+
+const (
+	BearerScopes = "bearer.Scopes"
+)
+
+// Defines values for GitConfigInputBodyCommitPolicy.
+const (
+	Direct      GitConfigInputBodyCommitPolicy = "direct"
+	PullRequest GitConfigInputBodyCommitPolicy = "pull_request"
 )
 
 // Defines values for HealthStatusStatus.
 const (
 	Ok HealthStatusStatus = "ok"
 )
+
+// AccountOutputBody defines model for AccountOutputBody.
+type AccountOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema  *string      `json:"$schema,omitempty"`
+	Account CloudAccount `json:"account"`
+}
+
+// AddMemberInputBody defines model for AddMemberInputBody.
+type AddMemberInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string `json:"$schema,omitempty"`
+
+	// Subject Keycloak user id
+	Subject string `json:"subject"`
+}
+
+// ApprovalOutputBody defines model for ApprovalOutputBody.
+type ApprovalOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema   *string         `json:"$schema,omitempty"`
+	Approval ApprovalRequest `json:"approval"`
+}
+
+// ApprovalRequest defines model for ApprovalRequest.
+type ApprovalRequest struct {
+	Action      *string     `json:"action,omitempty"`
+	Approver    *string     `json:"approver,omitempty"`
+	CancelledBy *string     `json:"cancelledBy,omitempty"`
+	Channel     *string     `json:"channel,omitempty"`
+	ClusterId   string      `json:"clusterId"`
+	CreatedAt   time.Time   `json:"createdAt"`
+	DecidedAt   *time.Time  `json:"decidedAt,omitempty"`
+	ExpiresAt   *time.Time  `json:"expiresAt,omitempty"`
+	Id          string      `json:"id"`
+	InstanceId  *string     `json:"instanceId,omitempty"`
+	ItemId      string      `json:"itemId"`
+	Name        *string     `json:"name,omitempty"`
+	Namespace   *string     `json:"namespace,omitempty"`
+	OrgId       string      `json:"orgId"`
+	OwnerTeam   *string     `json:"ownerTeam,omitempty"`
+	Reason      *string     `json:"reason,omitempty"`
+	Requester   string      `json:"requester"`
+	Spec        interface{} `json:"spec"`
+	State       string      `json:"state"`
+	Version     string      `json:"version"`
+}
+
+// AssignPackInputBody defines model for AssignPackInputBody.
+type AssignPackInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema   *string `json:"$schema,omitempty"`
+	TargetId string  `json:"targetId"`
+
+	// TargetType clusterset | tenant | cluster
+	TargetType string `json:"targetType"`
+}
+
+// AssignPackOutputBody defines model for AssignPackOutputBody.
+type AssignPackOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema     *string          `json:"$schema,omitempty"`
+	Assignment PolicyAssignment `json:"assignment"`
+}
+
+// Capability defines model for Capability.
+type Capability struct {
+	ClusterId      string       `json:"clusterId"`
+	DeletedAt      *time.Time   `json:"deletedAt,omitempty"`
+	FirstSeenAt    time.Time    `json:"firstSeenAt"`
+	Group          *string      `json:"group,omitempty"`
+	Id             string       `json:"id"`
+	Kind           string       `json:"kind"`
+	LastSeenAt     time.Time    `json:"lastSeenAt"`
+	ManagementMode string       `json:"managementMode"`
+	Name           string       `json:"name"`
+	Schema         *interface{} `json:"schema,omitempty"`
+	UiHints        *interface{} `json:"uiHints,omitempty"`
+	Version        *string      `json:"version,omitempty"`
+}
+
+// CapabilityRef defines model for CapabilityRef.
+type CapabilityRef struct {
+	Group *string `json:"group,omitempty"`
+	Kind  string  `json:"kind"`
+	Name  string  `json:"name"`
+}
+
+// CatalogItemVersion defines model for CatalogItemVersion.
+type CatalogItemVersion struct {
+	Channel string       `json:"channel"`
+	Id      string       `json:"id"`
+	ItemId  string       `json:"itemId"`
+	Payload *interface{} `json:"payload,omitempty"`
+	Schema  *interface{} `json:"schema,omitempty"`
+	UiHints *interface{} `json:"uiHints,omitempty"`
+	Version string       `json:"version"`
+}
+
+// CloudAccount defines model for CloudAccount.
+type CloudAccount struct {
+	AccountId       string     `json:"accountId"`
+	CreatedAt       time.Time  `json:"createdAt"`
+	CreatedBy       *string    `json:"createdBy,omitempty"`
+	ExternalId      *string    `json:"externalId,omitempty"`
+	Id              string     `json:"id"`
+	IssuerUrl       *string    `json:"issuerUrl,omitempty"`
+	OrgId           string     `json:"orgId"`
+	Provider        string     `json:"provider"`
+	RoleArn         string     `json:"roleArn"`
+	RunContext      string     `json:"runContext"`
+	State           string     `json:"state"`
+	ValidatedAt     *time.Time `json:"validatedAt,omitempty"`
+	ValidationError *string    `json:"validationError,omitempty"`
+}
+
+// Cluster defines model for Cluster.
+type Cluster struct {
+	CapabilityChecksum *string            `json:"capabilityChecksum,omitempty"`
+	ConnectedAt        *time.Time         `json:"connectedAt,omitempty"`
+	CreatedAt          time.Time          `json:"createdAt"`
+	Distribution       *string            `json:"distribution,omitempty"`
+	Id                 string             `json:"id"`
+	KeycloakClientId   *string            `json:"keycloakClientId,omitempty"`
+	KubernetesVersion  *string            `json:"kubernetesVersion,omitempty"`
+	Labels             *map[string]string `json:"labels,omitempty"`
+	LastSeenAt         *time.Time         `json:"lastSeenAt,omitempty"`
+	Name               string             `json:"name"`
+	OidcIssuerUrl      *string            `json:"oidcIssuerUrl,omitempty"`
+	OrgId              string             `json:"orgId"`
+	State              string             `json:"state"`
+}
+
+// ClusterOutputBody defines model for ClusterOutputBody.
+type ClusterOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema  *string `json:"$schema,omitempty"`
+	Cluster Cluster `json:"cluster"`
+}
+
+// ClusterSet defines model for ClusterSet.
+type ClusterSet struct {
+	CreatedAt     time.Time         `json:"createdAt"`
+	Id            string            `json:"id"`
+	LabelSelector map[string]string `json:"labelSelector"`
+	Name          string            `json:"name"`
+	OrgId         string            `json:"orgId"`
+}
+
+// ClusterSetOutputBody defines model for ClusterSetOutputBody.
+type ClusterSetOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema     *string    `json:"$schema,omitempty"`
+	ClusterSet ClusterSet `json:"clusterSet"`
+}
+
+// CreateClusterInputBody defines model for CreateClusterInputBody.
+type CreateClusterInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string            `json:"$schema,omitempty"`
+	Labels *map[string]string `json:"labels,omitempty"`
+	Name   string             `json:"name"`
+}
+
+// CreateClusterSetInputBody defines model for CreateClusterSetInputBody.
+type CreateClusterSetInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema        *string           `json:"$schema,omitempty"`
+	LabelSelector map[string]string `json:"labelSelector"`
+	Name          string            `json:"name"`
+}
+
+// CreateInputBody defines model for CreateInputBody.
+type CreateInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema  *string `json:"$schema,omitempty"`
+	Enabled *bool   `json:"enabled,omitempty"`
+
+	// Events Empty = all events
+	Events *[]string `json:"events"`
+
+	// Kind slack | webhook
+	Kind   string  `json:"kind"`
+	Name   string  `json:"name"`
+	Secret *string `json:"secret,omitempty"`
+	Url    string  `json:"url"`
+}
+
+// CreatePackInputBody defines model for CreatePackInputBody.
+type CreatePackInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string `json:"$schema,omitempty"`
+
+	// Engine kyverno | cel-vap
+	Engine     string       `json:"engine"`
+	Manifests  interface{}  `json:"manifests"`
+	Name       string       `json:"name"`
+	OciRef     *string      `json:"ociRef,omitempty"`
+	Parameters *interface{} `json:"parameters,omitempty"`
+	Version    string       `json:"version"`
+}
+
+// CreatePolicyInputBody defines model for CreatePolicyInputBody.
+type CreatePolicyInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string `json:"$schema,omitempty"`
+
+	// Engine rego
+	Engine string `json:"engine"`
+	Name   string `json:"name"`
+
+	// Source Rego source (package inari.policy)
+	Source string `json:"source"`
+
+	// Target request | render
+	Target string `json:"target"`
+}
+
+// CreateTenantInputBody defines model for CreateTenantInputBody.
+type CreateTenantInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema      *string `json:"$schema,omitempty"`
+	DisplayName string  `json:"displayName"`
+
+	// Slug URL-safe tenant slug
+	Slug string `json:"slug"`
+}
+
+// DecideExemptionInputBody defines model for DecideExemptionInputBody.
+type DecideExemptionInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema  *string `json:"$schema,omitempty"`
+	Approve bool    `json:"approve"`
+}
+
+// DecideInputBody defines model for DecideInputBody.
+type DecideInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema  *string `json:"$schema,omitempty"`
+	Approve bool    `json:"approve"`
+	Reason  *string `json:"reason,omitempty"`
+}
+
+// DecideOutputBody defines model for DecideOutputBody.
+type DecideOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema   *string         `json:"$schema,omitempty"`
+	Approval ApprovalRequest `json:"approval"`
+}
+
+// DecommissionInputBody defines model for DecommissionInputBody.
+type DecommissionInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string `json:"$schema,omitempty"`
+
+	// Force Drain even when non-Inari-managed resources exist (§10 override)
+	Force *bool `json:"force,omitempty"`
+}
+
+// DecommissionOutputBody defines model for DecommissionOutputBody.
+type DecommissionOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema             *string   `json:"$schema,omitempty"`
+	Cluster            Cluster   `json:"cluster"`
+	DrainedInstanceIds *[]string `json:"drainedInstanceIds"`
+}
+
+// DecommissionOutputBody1 defines model for DecommissionOutputBody1.
+type DecommissionOutputBody1 struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema     *string `json:"$schema,omitempty"`
+	ApprovalId *string `json:"approvalId,omitempty"`
+}
+
+// DeployInputBody defines model for DeployInputBody.
+type DeployInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema    *string `json:"$schema,omitempty"`
+	Channel   *string `json:"channel,omitempty"`
+	ClusterId string  `json:"clusterId"`
+	ItemId    string  `json:"itemId"`
+
+	// Name Instance name (DNS-1123 label); becomes the instance ID and repo path segment
+	Name      *string     `json:"name,omitempty"`
+	Namespace *string     `json:"namespace,omitempty"`
+	OwnerTeam *string     `json:"ownerTeam,omitempty"`
+	Spec      interface{} `json:"spec"`
+	Version   *string     `json:"version,omitempty"`
+}
+
+// DeployOutputBody defines model for DeployOutputBody.
+type DeployOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string      `json:"$schema,omitempty"`
+	Deploy DeployResult `json:"deploy"`
+}
+
+// DeployResult defines model for DeployResult.
+type DeployResult struct {
+	ApprovalID string `json:"ApprovalID"`
+	CommitSHA  string `json:"CommitSHA"`
+	InstanceID string `json:"InstanceID"`
+	PRURL      string `json:"PRURL"`
+	Status     string `json:"Status"`
+	Version    string `json:"Version"`
+}
+
+// DiffOutputBody defines model for DiffOutputBody.
+type DiffOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string     `json:"$schema,omitempty"`
+	Diff   DiffPreview `json:"diff"`
+}
+
+// DiffPreview defines model for DiffPreview.
+type DiffPreview struct {
+	CurrentManifest string       `json:"currentManifest"`
+	CurrentSchema   *interface{} `json:"currentSchema,omitempty"`
+	CurrentVersion  string       `json:"currentVersion"`
+	InstanceId      string       `json:"instanceId"`
+	ItemId          string       `json:"itemId"`
+	TargetManifest  string       `json:"targetManifest"`
+	TargetSchema    *interface{} `json:"targetSchema,omitempty"`
+	TargetVersion   string       `json:"targetVersion"`
+}
+
+// EndpointOutputBody defines model for EndpointOutputBody.
+type EndpointOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema   *string              `json:"$schema,omitempty"`
+	Endpoint NotificationEndpoint `json:"endpoint"`
+}
+
+// ErrorDetail defines model for ErrorDetail.
+type ErrorDetail struct {
+	// Location Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id'
+	Location *string `json:"location,omitempty"`
+
+	// Message Error message text
+	Message *string `json:"message,omitempty"`
+
+	// Value The value at the given location
+	Value *interface{} `json:"value,omitempty"`
+}
+
+// ErrorModel defines model for ErrorModel.
+type ErrorModel struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string `json:"$schema,omitempty"`
+
+	// Detail A human-readable explanation specific to this occurrence of the problem.
+	Detail *string `json:"detail,omitempty"`
+
+	// Errors Optional list of individual error details
+	Errors *[]ErrorDetail `json:"errors"`
+
+	// Instance A URI reference that identifies the specific occurrence of the problem.
+	Instance *string `json:"instance,omitempty"`
+
+	// Status HTTP status code
+	Status *int64 `json:"status,omitempty"`
+
+	// Title A short, human-readable summary of the problem type. This value should not change between occurrences of the error.
+	Title *string `json:"title,omitempty"`
+
+	// Type A URI reference to human-readable documentation for the error.
+	Type *string `json:"type,omitempty"`
+}
+
+// EvaluateInputBody defines model for EvaluateInputBody.
+type EvaluateInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema    *string     `json:"$schema,omitempty"`
+	ClusterId string      `json:"clusterId"`
+	ItemId    string      `json:"itemId"`
+	Spec      interface{} `json:"spec"`
+	Version   string      `json:"version"`
+}
+
+// EvaluateOutputBody defines model for EvaluateOutputBody.
+type EvaluateOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema   *string        `json:"$schema,omitempty"`
+	Decision PolicyDecision `json:"decision"`
+}
+
+// Exemption defines model for Exemption.
+type Exemption struct {
+	ApprovedBy *string     `json:"approvedBy,omitempty"`
+	CreatedAt  time.Time   `json:"createdAt"`
+	CreatedBy  *string     `json:"createdBy,omitempty"`
+	ExpiresAt  time.Time   `json:"expiresAt"`
+	Id         string      `json:"id"`
+	OrgId      string      `json:"orgId"`
+	PolicyId   string      `json:"policyId"`
+	Reason     string      `json:"reason"`
+	Scope      interface{} `json:"scope"`
+	State      string      `json:"state"`
+}
+
+// ExemptionOutputBody defines model for ExemptionOutputBody.
+type ExemptionOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema    *string   `json:"$schema,omitempty"`
+	Exemption Exemption `json:"exemption"`
+}
+
+// GetOutputBody defines model for GetOutputBody.
+type GetOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema   *string      `json:"$schema,omitempty"`
+	Instance InstanceView `json:"instance"`
+}
+
+// GetZoneOutputBody defines model for GetZoneOutputBody.
+type GetZoneOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string                   `json:"$schema,omitempty"`
+	Steps  map[string]TenantZoneStep `json:"steps"`
+	Zone   TenantZone                `json:"zone"`
+}
+
+// GitConfigInputBody defines model for GitConfigInputBody.
+type GitConfigInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema       *string                        `json:"$schema,omitempty"`
+	BaseBranch   *string                        `json:"baseBranch,omitempty"`
+	CommitPolicy GitConfigInputBodyCommitPolicy `json:"commitPolicy"`
+
+	// Repo owner/name or https URL of the <tenant>-inari-state repo
+	Repo string `json:"repo"`
+}
+
+// GitConfigInputBodyCommitPolicy defines model for GitConfigInputBody.CommitPolicy.
+type GitConfigInputBodyCommitPolicy string
+
+// GitConfigOutputBody defines model for GitConfigOutputBody.
+type GitConfigOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string         `json:"$schema,omitempty"`
+	Config TenantGitConfig `json:"config"`
+}
 
 // HealthStatus defines model for HealthStatus.
 type HealthStatus struct {
@@ -33,11 +489,10508 @@ type HealthStatus struct {
 // HealthStatusStatus defines model for HealthStatus.Status.
 type HealthStatusStatus string
 
-// TenantId defines model for TenantId.
-type TenantId = openapi_types.UUID
+// InstanceView defines model for InstanceView.
+type InstanceView struct {
+	CatalogItemId       string      `json:"catalogItemId"`
+	ClusterId           string      `json:"clusterId"`
+	CommitSha           *string     `json:"commitSha,omitempty"`
+	CreatedAt           time.Time   `json:"createdAt"`
+	Generation          int64       `json:"generation"`
+	Health              string      `json:"health"`
+	Id                  string      `json:"id"`
+	LatestVersion       *string     `json:"latestVersion,omitempty"`
+	ManagementMode      string      `json:"managementMode"`
+	NewVersionAvailable bool        `json:"newVersionAvailable"`
+	OrgId               string      `json:"orgId"`
+	OwnerTeam           string      `json:"ownerTeam"`
+	PrUrl               *string     `json:"prUrl,omitempty"`
+	ResourceRef         ResourceRef `json:"resourceRef"`
+	Spec                interface{} `json:"spec"`
+	State               string      `json:"state"`
+	StatusMessage       *string     `json:"statusMessage,omitempty"`
+	SyncState           *string     `json:"syncState,omitempty"`
+	UpdatedAt           time.Time   `json:"updatedAt"`
+	Version             string      `json:"version"`
+}
+
+// Item defines model for Item.
+type Item struct {
+	ClusterId *string `json:"clusterId,omitempty"`
+	OrgId     string  `json:"orgId"`
+}
+
+// ItemOutputBody defines model for ItemOutputBody.
+type ItemOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string  `json:"$schema,omitempty"`
+	Item   ItemView `json:"item"`
+}
+
+// ItemView defines model for ItemView.
+type ItemView struct {
+	ApprovalPolicy string                `json:"approvalPolicy"`
+	CapabilityRef  *CapabilityRef        `json:"capabilityRef,omitempty"`
+	CreatedAt      time.Time             `json:"createdAt"`
+	Description    string                `json:"description"`
+	DisplayName    string                `json:"displayName"`
+	Id             string                `json:"id"`
+	Name           string                `json:"name"`
+	OciRef         *string               `json:"ociRef,omitempty"`
+	PinnedVersion  *string               `json:"pinnedVersion,omitempty"`
+	Source         string                `json:"source"`
+	Versions       *[]CatalogItemVersion `json:"versions"`
+}
+
+// ListAccountsOutputBody defines model for ListAccountsOutputBody.
+type ListAccountsOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema   *string         `json:"$schema,omitempty"`
+	Accounts *[]CloudAccount `json:"accounts"`
+}
+
+// ListCapabilitiesOutputBody defines model for ListCapabilitiesOutputBody.
+type ListCapabilitiesOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema       *string       `json:"$schema,omitempty"`
+	Capabilities *[]Capability `json:"capabilities"`
+}
+
+// ListCatalogOutputBody defines model for ListCatalogOutputBody.
+type ListCatalogOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string     `json:"$schema,omitempty"`
+	Items  *[]ItemView `json:"items"`
+}
+
+// ListClusterSetsOutputBody defines model for ListClusterSetsOutputBody.
+type ListClusterSetsOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema      *string       `json:"$schema,omitempty"`
+	ClusterSets *[]ClusterSet `json:"clusterSets"`
+}
+
+// ListClustersOutputBody defines model for ListClustersOutputBody.
+type ListClustersOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema   *string    `json:"$schema,omitempty"`
+	Clusters *[]Cluster `json:"clusters"`
+}
+
+// ListExemptionsOutputBody defines model for ListExemptionsOutputBody.
+type ListExemptionsOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema     *string      `json:"$schema,omitempty"`
+	Exemptions *[]Exemption `json:"exemptions"`
+}
+
+// ListMembersOutputBody defines model for ListMembersOutputBody.
+type ListMembersOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema  *string       `json:"$schema,omitempty"`
+	Members *[]MemberView `json:"members"`
+}
+
+// ListOutputBody defines model for ListOutputBody.
+type ListOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema    *string            `json:"$schema,omitempty"`
+	Approvals *[]ApprovalRequest `json:"approvals"`
+}
+
+// ListOutputBody1 defines model for ListOutputBody1.
+type ListOutputBody1 struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema    *string         `json:"$schema,omitempty"`
+	Instances *[]InstanceView `json:"instances"`
+}
+
+// ListOutputBody2 defines model for ListOutputBody2.
+type ListOutputBody2 struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema    *string                 `json:"$schema,omitempty"`
+	Endpoints *[]NotificationEndpoint `json:"endpoints"`
+}
+
+// ListPacksOutputBody defines model for ListPacksOutputBody.
+type ListPacksOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string       `json:"$schema,omitempty"`
+	Packs  *[]PolicyPack `json:"packs"`
+}
+
+// ListPoliciesOutputBody defines model for ListPoliciesOutputBody.
+type ListPoliciesOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema   *string   `json:"$schema,omitempty"`
+	Policies *[]Policy `json:"policies"`
+}
+
+// ListTeamsOutputBody defines model for ListTeamsOutputBody.
+type ListTeamsOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string `json:"$schema,omitempty"`
+	Teams  *[]Team `json:"teams"`
+}
+
+// ListTenantsOutputBody defines model for ListTenantsOutputBody.
+type ListTenantsOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema  *string         `json:"$schema,omitempty"`
+	Tenants *[]Organization `json:"tenants"`
+}
+
+// ListZonesOutputBody defines model for ListZonesOutputBody.
+type ListZonesOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string       `json:"$schema,omitempty"`
+	Zones  *[]TenantZone `json:"zones"`
+}
+
+// MemberView defines model for MemberView.
+type MemberView struct {
+	DisplayName string `json:"displayName"`
+	Email       string `json:"email"`
+	Role        string `json:"role"`
+	UserId      string `json:"userId"`
+}
+
+// NotificationDelivery defines model for NotificationDelivery.
+type NotificationDelivery struct {
+	Attempts    int64       `json:"attempts"`
+	CreatedAt   time.Time   `json:"createdAt"`
+	DeliveredAt *time.Time  `json:"deliveredAt,omitempty"`
+	EndpointId  string      `json:"endpointId"`
+	EventType   string      `json:"eventType"`
+	Id          string      `json:"id"`
+	LastError   *string     `json:"lastError,omitempty"`
+	Payload     interface{} `json:"payload"`
+	Status      string      `json:"status"`
+}
+
+// NotificationEndpoint defines model for NotificationEndpoint.
+type NotificationEndpoint struct {
+	CreatedAt time.Time `json:"createdAt"`
+	Enabled   bool      `json:"enabled"`
+	Events    *[]string `json:"events"`
+	Id        string    `json:"id"`
+	Kind      string    `json:"kind"`
+	Name      string    `json:"name"`
+	OrgId     string    `json:"orgId"`
+	Url       string    `json:"url"`
+}
+
+// Organization defines model for Organization.
+type Organization struct {
+	CreatedAt     time.Time `json:"createdAt"`
+	DisplayName   string    `json:"displayName"`
+	Id            string    `json:"id"`
+	KeycloakOrgId string    `json:"keycloakOrgId"`
+	Slug          string    `json:"slug"`
+}
+
+// PackOutputBody defines model for PackOutputBody.
+type PackOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string    `json:"$schema,omitempty"`
+	Pack   PolicyPack `json:"pack"`
+}
+
+// PinInputBody defines model for PinInputBody.
+type PinInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema  *string `json:"$schema,omitempty"`
+	Version string  `json:"version"`
+}
+
+// Policy defines model for Policy.
+type Policy struct {
+	CreatedAt time.Time `json:"createdAt"`
+	Enabled   bool      `json:"enabled"`
+	Engine    string    `json:"engine"`
+	Id        string    `json:"id"`
+	Name      string    `json:"name"`
+	OrgId     *string   `json:"orgId,omitempty"`
+	Source    string    `json:"source"`
+	Target    string    `json:"target"`
+	UpdatedAt time.Time `json:"updatedAt"`
+	Version   int64     `json:"version"`
+}
+
+// PolicyAssignment defines model for PolicyAssignment.
+type PolicyAssignment struct {
+	CreatedAt  time.Time `json:"createdAt"`
+	Id         string    `json:"id"`
+	PackId     string    `json:"packId"`
+	State      string    `json:"state"`
+	TargetId   string    `json:"targetId"`
+	TargetType string    `json:"targetType"`
+}
+
+// PolicyDecision defines model for PolicyDecision.
+type PolicyDecision struct {
+	Allow      bool               `json:"allow"`
+	Violations *[]PolicyViolation `json:"violations"`
+	Warnings   *[]PolicyViolation `json:"warnings"`
+}
+
+// PolicyOutputBody defines model for PolicyOutputBody.
+type PolicyOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string `json:"$schema,omitempty"`
+	Policy Policy  `json:"policy"`
+}
+
+// PolicyPack defines model for PolicyPack.
+type PolicyPack struct {
+	CreatedAt  time.Time    `json:"createdAt"`
+	Engine     string       `json:"engine"`
+	Id         string       `json:"id"`
+	Manifests  interface{}  `json:"manifests"`
+	Name       string       `json:"name"`
+	OciRef     *string      `json:"ociRef,omitempty"`
+	OrgId      *string      `json:"orgId,omitempty"`
+	Parameters *interface{} `json:"parameters,omitempty"`
+	Version    string       `json:"version"`
+}
+
+// PolicyViolation defines model for PolicyViolation.
+type PolicyViolation struct {
+	Exempted    *bool  `json:"exempted,omitempty"`
+	Reason      string `json:"reason"`
+	Remediation string `json:"remediation"`
+	Rule        string `json:"rule"`
+}
+
+// RegisterInputBody defines model for RegisterInputBody.
+type RegisterInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string `json:"$schema,omitempty"`
+
+	// AccountId 12-digit AWS account ID
+	AccountId  string  `json:"accountId"`
+	ExternalId *string `json:"externalId,omitempty"`
+	IssuerUrl  *string `json:"issuerUrl,omitempty"`
+
+	// Provider Cloud provider (aws)
+	Provider *string `json:"provider,omitempty"`
+
+	// RoleArn arn:aws:iam::<acct>:role/<name>
+	RoleArn string `json:"roleArn"`
+
+	// RunContext tenant (default) | platform
+	RunContext *string `json:"runContext,omitempty"`
+}
+
+// RegistrationToken defines model for RegistrationToken.
+type RegistrationToken struct {
+	ClusterId string     `json:"clusterId"`
+	CreatedAt time.Time  `json:"createdAt"`
+	CreatedBy string     `json:"createdBy"`
+	ExpiresAt time.Time  `json:"expiresAt"`
+	Id        string     `json:"id"`
+	UsedAt    *time.Time `json:"usedAt,omitempty"`
+}
+
+// RequestExemptionInputBody defines model for RequestExemptionInputBody.
+type RequestExemptionInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema    *string      `json:"$schema,omitempty"`
+	ExpiresAt time.Time    `json:"expiresAt"`
+	PolicyId  string       `json:"policyId"`
+	Reason    string       `json:"reason"`
+	Scope     *interface{} `json:"scope,omitempty"`
+}
+
+// RequestZoneInputBody defines model for RequestZoneInputBody.
+type RequestZoneInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema              *string            `json:"$schema,omitempty"`
+	DisplayName         string             `json:"displayName"`
+	ManagementAccountId string             `json:"managementAccountId"`
+	OuId                string             `json:"ouId"`
+	Region              string             `json:"region"`
+	Slug                string             `json:"slug"`
+	Tags                *map[string]string `json:"tags,omitempty"`
+	Tier                string             `json:"tier"`
+}
+
+// RequestZoneOutputBody defines model for RequestZoneOutputBody.
+type RequestZoneOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema     *string    `json:"$schema,omitempty"`
+	ApprovalId *string    `json:"approvalId,omitempty"`
+	Zone       TenantZone `json:"zone"`
+}
+
+// ResourceRef defines model for ResourceRef.
+type ResourceRef struct {
+	Group     *string `json:"group,omitempty"`
+	Kind      string  `json:"kind"`
+	Name      string  `json:"name"`
+	Namespace *string `json:"namespace,omitempty"`
+}
+
+// SyncOutputBody defines model for SyncOutputBody.
+type SyncOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string `json:"$schema,omitempty"`
+	Synced int64   `json:"synced"`
+}
+
+// Team defines model for Team.
+type Team struct {
+	CreatedAt         time.Time `json:"createdAt"`
+	Id                string    `json:"id"`
+	KeycloakGroupPath string    `json:"keycloakGroupPath"`
+	Name              string    `json:"name"`
+	OrgId             string    `json:"orgId"`
+}
+
+// TenantGitConfig defines model for TenantGitConfig.
+type TenantGitConfig struct {
+	BaseBranch   string `json:"baseBranch"`
+	CommitPolicy string `json:"commitPolicy"`
+	OrgId        string `json:"orgId"`
+	Repo         string `json:"repo"`
+}
+
+// TenantOutputBody defines model for TenantOutputBody.
+type TenantOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema       *string      `json:"$schema,omitempty"`
+	Organization Organization `json:"organization"`
+	Teams        *[]Team      `json:"teams"`
+}
+
+// TenantZone defines model for TenantZone.
+type TenantZone struct {
+	AwsAccountId        *string            `json:"awsAccountId,omitempty"`
+	CloudAccountId      *string            `json:"cloudAccountId,omitempty"`
+	ClusterId           *string            `json:"clusterId,omitempty"`
+	CreatedAt           time.Time          `json:"createdAt"`
+	CreatedBy           string             `json:"createdBy"`
+	DisplayName         string             `json:"displayName"`
+	Error               *string            `json:"error,omitempty"`
+	GitRepo             *string            `json:"gitRepo,omitempty"`
+	Id                  string             `json:"id"`
+	KeycloakOrgId       *string            `json:"keycloakOrgId,omitempty"`
+	ManagementAccountId string             `json:"managementAccountId"`
+	OrgId               *string            `json:"orgId,omitempty"`
+	OuId                string             `json:"ouId"`
+	OwnerOrgId          string             `json:"ownerOrgId"`
+	Region              string             `json:"region"`
+	Slug                string             `json:"slug"`
+	State               string             `json:"state"`
+	Tags                *map[string]string `json:"tags,omitempty"`
+	Tier                string             `json:"tier"`
+	UpdatedAt           time.Time          `json:"updatedAt"`
+}
+
+// TenantZoneStep defines model for TenantZoneStep.
+type TenantZoneStep struct {
+	Attempts    int64        `json:"attempts"`
+	Detail      *interface{} `json:"detail,omitempty"`
+	ExternalRef *string      `json:"externalRef,omitempty"`
+	Status      string       `json:"status"`
+	Step        string       `json:"step"`
+	UpdatedAt   time.Time    `json:"updatedAt"`
+	ZoneId      string       `json:"zoneId"`
+}
+
+// TestOutputBody defines model for TestOutputBody.
+type TestOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema   *string              `json:"$schema,omitempty"`
+	Delivery NotificationDelivery `json:"delivery"`
+}
+
+// TokenOutputBody defines model for TokenOutputBody.
+type TokenOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema    *string           `json:"$schema,omitempty"`
+	ExpiresAt string            `json:"expiresAt"`
+	Record    RegistrationToken `json:"record"`
+
+	// Token Plaintext bootstrap token, returned once
+	Token string `json:"token"`
+}
+
+// UpdateInputBody defines model for UpdateInputBody.
+type UpdateInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema  *string   `json:"$schema,omitempty"`
+	Enabled *bool     `json:"enabled,omitempty"`
+	Events  *[]string `json:"events"`
+	Name    *string   `json:"name,omitempty"`
+	Secret  *string   `json:"secret,omitempty"`
+	Url     *string   `json:"url,omitempty"`
+}
+
+// UpdatePolicyInputBody defines model for UpdatePolicyInputBody.
+type UpdatePolicyInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema  *string `json:"$schema,omitempty"`
+	Enabled bool    `json:"enabled"`
+	Source  string  `json:"source"`
+}
+
+// UpgradeInputBody defines model for UpgradeInputBody.
+type UpgradeInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema    *string `json:"$schema,omitempty"`
+	ToVersion string  `json:"toVersion"`
+}
+
+// VisibilityInputBody defines model for VisibilityInputBody.
+type VisibilityInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	Schema *string `json:"$schema,omitempty"`
+	Rules  *[]Item `json:"rules"`
+}
+
+// ListApprovalsParams defines parameters for ListApprovals.
+type ListApprovalsParams struct {
+	// State Filter by state (pending|approved|rejected|cancelled|expired)
+	State *string `form:"state,omitempty" json:"state,omitempty"`
+
+	// Requester Pass 'me' for the caller's own requests (inbox filter)
+	Requester *string `form:"requester,omitempty" json:"requester,omitempty"`
+}
+
+// ListCatalogParams defines parameters for ListCatalog.
+type ListCatalogParams struct {
+	// Cluster Cluster ID; intersects discovered capabilities
+	Cluster *string `form:"cluster,omitempty" json:"cluster,omitempty"`
+}
+
+// GetCatalogItemParams defines parameters for GetCatalogItem.
+type GetCatalogItemParams struct {
+	Cluster *string `form:"cluster,omitempty" json:"cluster,omitempty"`
+}
+
+// UnpinCatalogVersionParams defines parameters for UnpinCatalogVersion.
+type UnpinCatalogVersionParams struct {
+	Cluster *string `form:"cluster,omitempty" json:"cluster,omitempty"`
+}
+
+// RenderCloudAccountProviderConfigParams defines parameters for RenderCloudAccountProviderConfig.
+type RenderCloudAccountProviderConfigParams struct {
+	// ClusterId Cluster to render the ProviderConfig for
+	ClusterId string `form:"clusterId" json:"clusterId"`
+}
+
+// ListInstancesParams defines parameters for ListInstances.
+type ListInstancesParams struct {
+	Cluster   *string `form:"cluster,omitempty" json:"cluster,omitempty"`
+	Item      *string `form:"item,omitempty" json:"item,omitempty"`
+	Health    *string `form:"health,omitempty" json:"health,omitempty"`
+	OwnerTeam *string `form:"ownerTeam,omitempty" json:"ownerTeam,omitempty"`
+}
+
+// InstanceDiffParams defines parameters for InstanceDiff.
+type InstanceDiffParams struct {
+	// To Target version
+	To string `form:"to" json:"to"`
+}
+
+// SetCatalogVisibilityJSONRequestBody defines body for SetCatalogVisibility for application/json ContentType.
+type SetCatalogVisibilityJSONRequestBody = VisibilityInputBody
+
+// CreateTenantJSONRequestBody defines body for CreateTenant for application/json ContentType.
+type CreateTenantJSONRequestBody = CreateTenantInputBody
+
+// DecideApprovalJSONRequestBody defines body for DecideApproval for application/json ContentType.
+type DecideApprovalJSONRequestBody = DecideInputBody
+
+// PinCatalogVersionJSONRequestBody defines body for PinCatalogVersion for application/json ContentType.
+type PinCatalogVersionJSONRequestBody = PinInputBody
+
+// RegisterCloudAccountJSONRequestBody defines body for RegisterCloudAccount for application/json ContentType.
+type RegisterCloudAccountJSONRequestBody = RegisterInputBody
+
+// CreateClusterSetJSONRequestBody defines body for CreateClusterSet for application/json ContentType.
+type CreateClusterSetJSONRequestBody = CreateClusterSetInputBody
+
+// CreateClusterJSONRequestBody defines body for CreateCluster for application/json ContentType.
+type CreateClusterJSONRequestBody = CreateClusterInputBody
+
+// DecommissionClusterJSONRequestBody defines body for DecommissionCluster for application/json ContentType.
+type DecommissionClusterJSONRequestBody = DecommissionInputBody
+
+// DeployCatalogItemJSONRequestBody defines body for DeployCatalogItem for application/json ContentType.
+type DeployCatalogItemJSONRequestBody = DeployInputBody
+
+// RequestExemptionJSONRequestBody defines body for RequestExemption for application/json ContentType.
+type RequestExemptionJSONRequestBody = RequestExemptionInputBody
+
+// DecideExemptionJSONRequestBody defines body for DecideExemption for application/json ContentType.
+type DecideExemptionJSONRequestBody = DecideExemptionInputBody
+
+// SetTenantGitConfigJSONRequestBody defines body for SetTenantGitConfig for application/json ContentType.
+type SetTenantGitConfigJSONRequestBody = GitConfigInputBody
+
+// UpgradeInstanceJSONRequestBody defines body for UpgradeInstance for application/json ContentType.
+type UpgradeInstanceJSONRequestBody = UpgradeInputBody
+
+// CreateNotificationEndpointJSONRequestBody defines body for CreateNotificationEndpoint for application/json ContentType.
+type CreateNotificationEndpointJSONRequestBody = CreateInputBody
+
+// UpdateNotificationEndpointJSONRequestBody defines body for UpdateNotificationEndpoint for application/json ContentType.
+type UpdateNotificationEndpointJSONRequestBody = UpdateInputBody
+
+// CreatePolicyJSONRequestBody defines body for CreatePolicy for application/json ContentType.
+type CreatePolicyJSONRequestBody = CreatePolicyInputBody
+
+// EvaluatePoliciesJSONRequestBody defines body for EvaluatePolicies for application/json ContentType.
+type EvaluatePoliciesJSONRequestBody = EvaluateInputBody
+
+// UpdatePolicyJSONRequestBody defines body for UpdatePolicy for application/json ContentType.
+type UpdatePolicyJSONRequestBody = UpdatePolicyInputBody
+
+// CreatePolicyPackJSONRequestBody defines body for CreatePolicyPack for application/json ContentType.
+type CreatePolicyPackJSONRequestBody = CreatePackInputBody
+
+// AssignPolicyPackJSONRequestBody defines body for AssignPolicyPack for application/json ContentType.
+type AssignPolicyPackJSONRequestBody = AssignPackInputBody
+
+// AddMemberJSONRequestBody defines body for AddMember for application/json ContentType.
+type AddMemberJSONRequestBody = AddMemberInputBody
+
+// RequestTenantZoneJSONRequestBody defines body for RequestTenantZone for application/json ContentType.
+type RequestTenantZoneJSONRequestBody = RequestZoneInputBody
+
+// RequestEditorFn  is the function signature for the RequestEditor callback function
+type RequestEditorFn func(ctx context.Context, req *http.Request) error
+
+// Doer performs HTTP requests.
+//
+// The standard http.Client implements this interface.
+type HttpRequestDoer interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
+// Client which conforms to the OpenAPI3 specification for this service.
+type Client struct {
+	// The endpoint of the server conforming to this interface, with scheme,
+	// https://api.deepmap.com for example. This can contain a path relative
+	// to the server, such as https://api.deepmap.com/dev-test, and all the
+	// paths in the swagger spec will be appended to the server.
+	Server string
+
+	// Doer for performing requests, typically a *http.Client with any
+	// customized settings, such as certificate chains.
+	Client HttpRequestDoer
+
+	// A list of callbacks for modifying requests which are generated before sending over
+	// the network.
+	RequestEditors []RequestEditorFn
+}
+
+// ClientOption allows setting custom parameters during construction
+type ClientOption func(*Client) error
+
+// Creates a new Client, with reasonable defaults
+func NewClient(server string, opts ...ClientOption) (*Client, error) {
+	// create a client with sane default values
+	client := Client{
+		Server: server,
+	}
+	// mutate client and add all optional params
+	for _, o := range opts {
+		if err := o(&client); err != nil {
+			return nil, err
+		}
+	}
+	// ensure the server URL always has a trailing slash
+	if !strings.HasSuffix(client.Server, "/") {
+		client.Server += "/"
+	}
+	// create httpClient, if not already present
+	if client.Client == nil {
+		client.Client = &http.Client{}
+	}
+	return &client, nil
+}
+
+// WithHTTPClient allows overriding the default Doer, which is
+// automatically created using http.Client. This is useful for tests.
+func WithHTTPClient(doer HttpRequestDoer) ClientOption {
+	return func(c *Client) error {
+		c.Client = doer
+		return nil
+	}
+}
+
+// WithRequestEditorFn allows setting up a callback function, which will be
+// called right before sending the request. This can be used to mutate the request.
+func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
+	return func(c *Client) error {
+		c.RequestEditors = append(c.RequestEditors, fn)
+		return nil
+	}
+}
+
+// The interface specification for the client above.
+type ClientInterface interface {
+	// SyncCatalog request
+	SyncCatalog(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetCatalogVisibilityWithBody request with any body
+	SetCatalogVisibilityWithBody(ctx context.Context, item string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SetCatalogVisibility(ctx context.Context, item string, body SetCatalogVisibilityJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListTenants request
+	ListTenants(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateTenantWithBody request with any body
+	CreateTenantWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateTenant(ctx context.Context, body CreateTenantJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetTenant request
+	GetTenant(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListApprovals request
+	ListApprovals(ctx context.Context, org string, params *ListApprovalsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetApproval request
+	GetApproval(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CancelApproval request
+	CancelApproval(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DecideApprovalWithBody request with any body
+	DecideApprovalWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	DecideApproval(ctx context.Context, org string, id string, body DecideApprovalJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListCatalog request
+	ListCatalog(ctx context.Context, org string, params *ListCatalogParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetCatalogItem request
+	GetCatalogItem(ctx context.Context, org string, item string, params *GetCatalogItemParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnpinCatalogVersion request
+	UnpinCatalogVersion(ctx context.Context, org string, item string, params *UnpinCatalogVersionParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PinCatalogVersionWithBody request with any body
+	PinCatalogVersionWithBody(ctx context.Context, org string, item string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	PinCatalogVersion(ctx context.Context, org string, item string, body PinCatalogVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListCloudAccounts request
+	ListCloudAccounts(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RegisterCloudAccountWithBody request with any body
+	RegisterCloudAccountWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	RegisterCloudAccount(ctx context.Context, org string, body RegisterCloudAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeregisterCloudAccount request
+	DeregisterCloudAccount(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetCloudAccount request
+	GetCloudAccount(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RenderCloudAccountProviderConfig request
+	RenderCloudAccountProviderConfig(ctx context.Context, org string, id string, params *RenderCloudAccountProviderConfigParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ValidateCloudAccount request
+	ValidateCloudAccount(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListClusterSets request
+	ListClusterSets(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateClusterSetWithBody request with any body
+	CreateClusterSetWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateClusterSet(ctx context.Context, org string, body CreateClusterSetJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteClusterSet request
+	DeleteClusterSet(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetClusterSet request
+	GetClusterSet(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListClusters request
+	ListClusters(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateClusterWithBody request with any body
+	CreateClusterWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateCluster(ctx context.Context, org string, body CreateClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetCluster request
+	GetCluster(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ApproveCluster request
+	ApproveCluster(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListCapabilities request
+	ListCapabilities(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CordonCluster request
+	CordonCluster(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DecommissionClusterWithBody request with any body
+	DecommissionClusterWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	DecommissionCluster(ctx context.Context, org string, id string, body DecommissionClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RenderInstallManifest request
+	RenderInstallManifest(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RevokeCluster request
+	RevokeCluster(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// IssueRegistrationToken request
+	IssueRegistrationToken(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UncordonCluster request
+	UncordonCluster(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeployCatalogItemWithBody request with any body
+	DeployCatalogItemWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	DeployCatalogItem(ctx context.Context, org string, body DeployCatalogItemJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListExemptions request
+	ListExemptions(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RequestExemptionWithBody request with any body
+	RequestExemptionWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	RequestExemption(ctx context.Context, org string, body RequestExemptionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DecideExemptionWithBody request with any body
+	DecideExemptionWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	DecideExemption(ctx context.Context, org string, id string, body DecideExemptionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetTenantGitConfig request
+	GetTenantGitConfig(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetTenantGitConfigWithBody request with any body
+	SetTenantGitConfigWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	SetTenantGitConfig(ctx context.Context, org string, body SetTenantGitConfigJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListInstances request
+	ListInstances(ctx context.Context, org string, params *ListInstancesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInstance request
+	GetInstance(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// InstanceDiff request
+	InstanceDiff(ctx context.Context, org string, id string, params *InstanceDiffParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpgradeInstanceWithBody request with any body
+	UpgradeInstanceWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpgradeInstance(ctx context.Context, org string, id string, body UpgradeInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListNotificationEndpoints request
+	ListNotificationEndpoints(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateNotificationEndpointWithBody request with any body
+	CreateNotificationEndpointWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateNotificationEndpoint(ctx context.Context, org string, body CreateNotificationEndpointJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteNotificationEndpoint request
+	DeleteNotificationEndpoint(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetNotificationEndpoint request
+	GetNotificationEndpoint(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateNotificationEndpointWithBody request with any body
+	UpdateNotificationEndpointWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateNotificationEndpoint(ctx context.Context, org string, id string, body UpdateNotificationEndpointJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// TestNotificationEndpoint request
+	TestNotificationEndpoint(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListPolicies request
+	ListPolicies(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreatePolicyWithBody request with any body
+	CreatePolicyWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreatePolicy(ctx context.Context, org string, body CreatePolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// EvaluatePoliciesWithBody request with any body
+	EvaluatePoliciesWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	EvaluatePolicies(ctx context.Context, org string, body EvaluatePoliciesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeletePolicy request
+	DeletePolicy(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetPolicy request
+	GetPolicy(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdatePolicyWithBody request with any body
+	UpdatePolicyWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdatePolicy(ctx context.Context, org string, id string, body UpdatePolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListPolicyPacks request
+	ListPolicyPacks(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreatePolicyPackWithBody request with any body
+	CreatePolicyPackWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreatePolicyPack(ctx context.Context, org string, body CreatePolicyPackJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetPolicyPack request
+	GetPolicyPack(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AssignPolicyPackWithBody request with any body
+	AssignPolicyPackWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AssignPolicyPack(ctx context.Context, org string, id string, body AssignPolicyPackJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnassignPolicyPack request
+	UnassignPolicyPack(ctx context.Context, org string, id string, assignmentId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListTeams request
+	ListTeams(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListMembers request
+	ListMembers(ctx context.Context, org string, team string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddMemberWithBody request with any body
+	AddMemberWithBody(ctx context.Context, org string, team string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AddMember(ctx context.Context, org string, team string, body AddMemberJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RemoveMember request
+	RemoveMember(ctx context.Context, org string, team string, subject string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListTenantZones request
+	ListTenantZones(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RequestTenantZoneWithBody request with any body
+	RequestTenantZoneWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	RequestTenantZone(ctx context.Context, org string, body RequestTenantZoneJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetTenantZone request
+	GetTenantZone(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DecommissionTenantZone request
+	DecommissionTenantZone(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ResumeTenantZone request
+	ResumeTenantZone(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetHealth request
+	GetHealth(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetReady request
+	GetReady(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+}
+
+func (c *Client) SyncCatalog(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSyncCatalogRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetCatalogVisibilityWithBody(ctx context.Context, item string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetCatalogVisibilityRequestWithBody(c.Server, item, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetCatalogVisibility(ctx context.Context, item string, body SetCatalogVisibilityJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetCatalogVisibilityRequest(c.Server, item, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListTenants(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListTenantsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateTenantWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateTenantRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateTenant(ctx context.Context, body CreateTenantJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateTenantRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetTenant(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTenantRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListApprovals(ctx context.Context, org string, params *ListApprovalsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListApprovalsRequest(c.Server, org, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetApproval(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetApprovalRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CancelApproval(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCancelApprovalRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DecideApprovalWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDecideApprovalRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DecideApproval(ctx context.Context, org string, id string, body DecideApprovalJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDecideApprovalRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListCatalog(ctx context.Context, org string, params *ListCatalogParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListCatalogRequest(c.Server, org, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetCatalogItem(ctx context.Context, org string, item string, params *GetCatalogItemParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetCatalogItemRequest(c.Server, org, item, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UnpinCatalogVersion(ctx context.Context, org string, item string, params *UnpinCatalogVersionParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnpinCatalogVersionRequest(c.Server, org, item, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PinCatalogVersionWithBody(ctx context.Context, org string, item string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPinCatalogVersionRequestWithBody(c.Server, org, item, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) PinCatalogVersion(ctx context.Context, org string, item string, body PinCatalogVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPinCatalogVersionRequest(c.Server, org, item, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListCloudAccounts(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListCloudAccountsRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RegisterCloudAccountWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRegisterCloudAccountRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RegisterCloudAccount(ctx context.Context, org string, body RegisterCloudAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRegisterCloudAccountRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeregisterCloudAccount(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeregisterCloudAccountRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetCloudAccount(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetCloudAccountRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RenderCloudAccountProviderConfig(ctx context.Context, org string, id string, params *RenderCloudAccountProviderConfigParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRenderCloudAccountProviderConfigRequest(c.Server, org, id, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ValidateCloudAccount(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewValidateCloudAccountRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListClusterSets(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListClusterSetsRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateClusterSetWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateClusterSetRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateClusterSet(ctx context.Context, org string, body CreateClusterSetJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateClusterSetRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteClusterSet(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteClusterSetRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetClusterSet(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetClusterSetRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListClusters(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListClustersRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateClusterWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateClusterRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateCluster(ctx context.Context, org string, body CreateClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateClusterRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetCluster(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetClusterRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ApproveCluster(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewApproveClusterRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListCapabilities(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListCapabilitiesRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CordonCluster(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCordonClusterRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DecommissionClusterWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDecommissionClusterRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DecommissionCluster(ctx context.Context, org string, id string, body DecommissionClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDecommissionClusterRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RenderInstallManifest(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRenderInstallManifestRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RevokeCluster(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRevokeClusterRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) IssueRegistrationToken(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewIssueRegistrationTokenRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UncordonCluster(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUncordonClusterRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeployCatalogItemWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeployCatalogItemRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeployCatalogItem(ctx context.Context, org string, body DeployCatalogItemJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeployCatalogItemRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListExemptions(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListExemptionsRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RequestExemptionWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRequestExemptionRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RequestExemption(ctx context.Context, org string, body RequestExemptionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRequestExemptionRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DecideExemptionWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDecideExemptionRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DecideExemption(ctx context.Context, org string, id string, body DecideExemptionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDecideExemptionRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetTenantGitConfig(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTenantGitConfigRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetTenantGitConfigWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetTenantGitConfigRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) SetTenantGitConfig(ctx context.Context, org string, body SetTenantGitConfigJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetTenantGitConfigRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListInstances(ctx context.Context, org string, params *ListInstancesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListInstancesRequest(c.Server, org, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetInstance(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInstanceRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) InstanceDiff(ctx context.Context, org string, id string, params *InstanceDiffParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewInstanceDiffRequest(c.Server, org, id, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpgradeInstanceWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpgradeInstanceRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpgradeInstance(ctx context.Context, org string, id string, body UpgradeInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpgradeInstanceRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListNotificationEndpoints(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListNotificationEndpointsRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateNotificationEndpointWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateNotificationEndpointRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateNotificationEndpoint(ctx context.Context, org string, body CreateNotificationEndpointJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateNotificationEndpointRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteNotificationEndpoint(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteNotificationEndpointRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetNotificationEndpoint(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetNotificationEndpointRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateNotificationEndpointWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateNotificationEndpointRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateNotificationEndpoint(ctx context.Context, org string, id string, body UpdateNotificationEndpointJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateNotificationEndpointRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) TestNotificationEndpoint(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewTestNotificationEndpointRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListPolicies(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListPoliciesRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreatePolicyWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePolicyRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreatePolicy(ctx context.Context, org string, body CreatePolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePolicyRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EvaluatePoliciesWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEvaluatePoliciesRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) EvaluatePolicies(ctx context.Context, org string, body EvaluatePoliciesJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEvaluatePoliciesRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeletePolicy(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeletePolicyRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetPolicy(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPolicyRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdatePolicyWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdatePolicyRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdatePolicy(ctx context.Context, org string, id string, body UpdatePolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdatePolicyRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListPolicyPacks(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListPolicyPacksRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreatePolicyPackWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePolicyPackRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreatePolicyPack(ctx context.Context, org string, body CreatePolicyPackJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePolicyPackRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetPolicyPack(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPolicyPackRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AssignPolicyPackWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAssignPolicyPackRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AssignPolicyPack(ctx context.Context, org string, id string, body AssignPolicyPackJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAssignPolicyPackRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UnassignPolicyPack(ctx context.Context, org string, id string, assignmentId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnassignPolicyPackRequest(c.Server, org, id, assignmentId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListTeams(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListTeamsRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListMembers(ctx context.Context, org string, team string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListMembersRequest(c.Server, org, team)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddMemberWithBody(ctx context.Context, org string, team string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddMemberRequestWithBody(c.Server, org, team, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddMember(ctx context.Context, org string, team string, body AddMemberJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddMemberRequest(c.Server, org, team, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RemoveMember(ctx context.Context, org string, team string, subject string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRemoveMemberRequest(c.Server, org, team, subject)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListTenantZones(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListTenantZonesRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RequestTenantZoneWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRequestTenantZoneRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) RequestTenantZone(ctx context.Context, org string, body RequestTenantZoneJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRequestTenantZoneRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetTenantZone(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTenantZoneRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DecommissionTenantZone(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDecommissionTenantZoneRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ResumeTenantZone(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewResumeTenantZoneRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetHealth(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetHealthRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetReady(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetReadyRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// NewSyncCatalogRequest generates requests for SyncCatalog
+func NewSyncCatalogRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/admin/catalog/sync")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSetCatalogVisibilityRequest calls the generic SetCatalogVisibility builder with application/json body
+func NewSetCatalogVisibilityRequest(server string, item string, body SetCatalogVisibilityJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetCatalogVisibilityRequestWithBody(server, item, "application/json", bodyReader)
+}
+
+// NewSetCatalogVisibilityRequestWithBody generates requests for SetCatalogVisibility with any type of body
+func NewSetCatalogVisibilityRequestWithBody(server string, item string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "item", runtime.ParamLocationPath, item)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/admin/catalog/%s/visibility", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListTenantsRequest generates requests for ListTenants
+func NewListTenantsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateTenantRequest calls the generic CreateTenant builder with application/json body
+func NewCreateTenantRequest(server string, body CreateTenantJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateTenantRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateTenantRequestWithBody generates requests for CreateTenant with any type of body
+func NewCreateTenantRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetTenantRequest generates requests for GetTenant
+func NewGetTenantRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListApprovalsRequest generates requests for ListApprovals
+func NewListApprovalsRequest(server string, org string, params *ListApprovalsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/approvals", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.State != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", false, "state", runtime.ParamLocationQuery, *params.State); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Requester != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", false, "requester", runtime.ParamLocationQuery, *params.Requester); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetApprovalRequest generates requests for GetApproval
+func NewGetApprovalRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/approvals/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCancelApprovalRequest generates requests for CancelApproval
+func NewCancelApprovalRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/approvals/%s/cancel", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDecideApprovalRequest calls the generic DecideApproval builder with application/json body
+func NewDecideApprovalRequest(server string, org string, id string, body DecideApprovalJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewDecideApprovalRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewDecideApprovalRequestWithBody generates requests for DecideApproval with any type of body
+func NewDecideApprovalRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/approvals/%s/decide", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListCatalogRequest generates requests for ListCatalog
+func NewListCatalogRequest(server string, org string, params *ListCatalogParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/catalog", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Cluster != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", false, "cluster", runtime.ParamLocationQuery, *params.Cluster); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetCatalogItemRequest generates requests for GetCatalogItem
+func NewGetCatalogItemRequest(server string, org string, item string, params *GetCatalogItemParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "item", runtime.ParamLocationPath, item)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/catalog/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Cluster != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", false, "cluster", runtime.ParamLocationQuery, *params.Cluster); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUnpinCatalogVersionRequest generates requests for UnpinCatalogVersion
+func NewUnpinCatalogVersionRequest(server string, org string, item string, params *UnpinCatalogVersionParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "item", runtime.ParamLocationPath, item)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/catalog/%s/pin", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Cluster != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", false, "cluster", runtime.ParamLocationQuery, *params.Cluster); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPinCatalogVersionRequest calls the generic PinCatalogVersion builder with application/json body
+func NewPinCatalogVersionRequest(server string, org string, item string, body PinCatalogVersionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPinCatalogVersionRequestWithBody(server, org, item, "application/json", bodyReader)
+}
+
+// NewPinCatalogVersionRequestWithBody generates requests for PinCatalogVersion with any type of body
+func NewPinCatalogVersionRequestWithBody(server string, org string, item string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "item", runtime.ParamLocationPath, item)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/catalog/%s/pin", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListCloudAccountsRequest generates requests for ListCloudAccounts
+func NewListCloudAccountsRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/cloud-accounts", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRegisterCloudAccountRequest calls the generic RegisterCloudAccount builder with application/json body
+func NewRegisterCloudAccountRequest(server string, org string, body RegisterCloudAccountJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRegisterCloudAccountRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewRegisterCloudAccountRequestWithBody generates requests for RegisterCloudAccount with any type of body
+func NewRegisterCloudAccountRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/cloud-accounts", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeregisterCloudAccountRequest generates requests for DeregisterCloudAccount
+func NewDeregisterCloudAccountRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/cloud-accounts/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetCloudAccountRequest generates requests for GetCloudAccount
+func NewGetCloudAccountRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/cloud-accounts/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRenderCloudAccountProviderConfigRequest generates requests for RenderCloudAccountProviderConfig
+func NewRenderCloudAccountProviderConfigRequest(server string, org string, id string, params *RenderCloudAccountProviderConfigParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/cloud-accounts/%s/providerconfig", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", false, "clusterId", runtime.ParamLocationQuery, params.ClusterId); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewValidateCloudAccountRequest generates requests for ValidateCloudAccount
+func NewValidateCloudAccountRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/cloud-accounts/%s/validate", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListClusterSetsRequest generates requests for ListClusterSets
+func NewListClusterSetsRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/cluster-sets", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateClusterSetRequest calls the generic CreateClusterSet builder with application/json body
+func NewCreateClusterSetRequest(server string, org string, body CreateClusterSetJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateClusterSetRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewCreateClusterSetRequestWithBody generates requests for CreateClusterSet with any type of body
+func NewCreateClusterSetRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/cluster-sets", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteClusterSetRequest generates requests for DeleteClusterSet
+func NewDeleteClusterSetRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/cluster-sets/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetClusterSetRequest generates requests for GetClusterSet
+func NewGetClusterSetRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/cluster-sets/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListClustersRequest generates requests for ListClusters
+func NewListClustersRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateClusterRequest calls the generic CreateCluster builder with application/json body
+func NewCreateClusterRequest(server string, org string, body CreateClusterJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateClusterRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewCreateClusterRequestWithBody generates requests for CreateCluster with any type of body
+func NewCreateClusterRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetClusterRequest generates requests for GetCluster
+func NewGetClusterRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewApproveClusterRequest generates requests for ApproveCluster
+func NewApproveClusterRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters/%s/approve", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListCapabilitiesRequest generates requests for ListCapabilities
+func NewListCapabilitiesRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters/%s/capabilities", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCordonClusterRequest generates requests for CordonCluster
+func NewCordonClusterRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters/%s/cordon", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDecommissionClusterRequest calls the generic DecommissionCluster builder with application/json body
+func NewDecommissionClusterRequest(server string, org string, id string, body DecommissionClusterJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewDecommissionClusterRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewDecommissionClusterRequestWithBody generates requests for DecommissionCluster with any type of body
+func NewDecommissionClusterRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters/%s/decommission", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewRenderInstallManifestRequest generates requests for RenderInstallManifest
+func NewRenderInstallManifestRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters/%s/install-manifest", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRevokeClusterRequest generates requests for RevokeCluster
+func NewRevokeClusterRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters/%s/revoke", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewIssueRegistrationTokenRequest generates requests for IssueRegistrationToken
+func NewIssueRegistrationTokenRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters/%s/tokens", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUncordonClusterRequest generates requests for UncordonCluster
+func NewUncordonClusterRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters/%s/uncordon", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDeployCatalogItemRequest calls the generic DeployCatalogItem builder with application/json body
+func NewDeployCatalogItemRequest(server string, org string, body DeployCatalogItemJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewDeployCatalogItemRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewDeployCatalogItemRequestWithBody generates requests for DeployCatalogItem with any type of body
+func NewDeployCatalogItemRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/deploys", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListExemptionsRequest generates requests for ListExemptions
+func NewListExemptionsRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/exemptions", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRequestExemptionRequest calls the generic RequestExemption builder with application/json body
+func NewRequestExemptionRequest(server string, org string, body RequestExemptionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRequestExemptionRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewRequestExemptionRequestWithBody generates requests for RequestExemption with any type of body
+func NewRequestExemptionRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/exemptions", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDecideExemptionRequest calls the generic DecideExemption builder with application/json body
+func NewDecideExemptionRequest(server string, org string, id string, body DecideExemptionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewDecideExemptionRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewDecideExemptionRequestWithBody generates requests for DecideExemption with any type of body
+func NewDecideExemptionRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/exemptions/%s/decide", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetTenantGitConfigRequest generates requests for GetTenantGitConfig
+func NewGetTenantGitConfigRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/git-config", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSetTenantGitConfigRequest calls the generic SetTenantGitConfig builder with application/json body
+func NewSetTenantGitConfigRequest(server string, org string, body SetTenantGitConfigJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetTenantGitConfigRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewSetTenantGitConfigRequestWithBody generates requests for SetTenantGitConfig with any type of body
+func NewSetTenantGitConfigRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/git-config", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListInstancesRequest generates requests for ListInstances
+func NewListInstancesRequest(server string, org string, params *ListInstancesParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Cluster != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", false, "cluster", runtime.ParamLocationQuery, *params.Cluster); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Item != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", false, "item", runtime.ParamLocationQuery, *params.Item); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Health != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", false, "health", runtime.ParamLocationQuery, *params.Health); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.OwnerTeam != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", false, "ownerTeam", runtime.ParamLocationQuery, *params.OwnerTeam); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInstanceRequest generates requests for GetInstance
+func NewGetInstanceRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewInstanceDiffRequest generates requests for InstanceDiff
+func NewInstanceDiffRequest(server string, org string, id string, params *InstanceDiffParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s/diff", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", false, "to", runtime.ParamLocationQuery, params.To); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpgradeInstanceRequest calls the generic UpgradeInstance builder with application/json body
+func NewUpgradeInstanceRequest(server string, org string, id string, body UpgradeInstanceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpgradeInstanceRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewUpgradeInstanceRequestWithBody generates requests for UpgradeInstance with any type of body
+func NewUpgradeInstanceRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s/upgrade", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListNotificationEndpointsRequest generates requests for ListNotificationEndpoints
+func NewListNotificationEndpointsRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/notification-endpoints", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateNotificationEndpointRequest calls the generic CreateNotificationEndpoint builder with application/json body
+func NewCreateNotificationEndpointRequest(server string, org string, body CreateNotificationEndpointJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateNotificationEndpointRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewCreateNotificationEndpointRequestWithBody generates requests for CreateNotificationEndpoint with any type of body
+func NewCreateNotificationEndpointRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/notification-endpoints", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteNotificationEndpointRequest generates requests for DeleteNotificationEndpoint
+func NewDeleteNotificationEndpointRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/notification-endpoints/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetNotificationEndpointRequest generates requests for GetNotificationEndpoint
+func NewGetNotificationEndpointRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/notification-endpoints/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateNotificationEndpointRequest calls the generic UpdateNotificationEndpoint builder with application/json body
+func NewUpdateNotificationEndpointRequest(server string, org string, id string, body UpdateNotificationEndpointJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateNotificationEndpointRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewUpdateNotificationEndpointRequestWithBody generates requests for UpdateNotificationEndpoint with any type of body
+func NewUpdateNotificationEndpointRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/notification-endpoints/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewTestNotificationEndpointRequest generates requests for TestNotificationEndpoint
+func NewTestNotificationEndpointRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/notification-endpoints/%s/test", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListPoliciesRequest generates requests for ListPolicies
+func NewListPoliciesRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/policies", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreatePolicyRequest calls the generic CreatePolicy builder with application/json body
+func NewCreatePolicyRequest(server string, org string, body CreatePolicyJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreatePolicyRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewCreatePolicyRequestWithBody generates requests for CreatePolicy with any type of body
+func NewCreatePolicyRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/policies", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewEvaluatePoliciesRequest calls the generic EvaluatePolicies builder with application/json body
+func NewEvaluatePoliciesRequest(server string, org string, body EvaluatePoliciesJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewEvaluatePoliciesRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewEvaluatePoliciesRequestWithBody generates requests for EvaluatePolicies with any type of body
+func NewEvaluatePoliciesRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/policies/evaluate", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeletePolicyRequest generates requests for DeletePolicy
+func NewDeletePolicyRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/policies/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetPolicyRequest generates requests for GetPolicy
+func NewGetPolicyRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/policies/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdatePolicyRequest calls the generic UpdatePolicy builder with application/json body
+func NewUpdatePolicyRequest(server string, org string, id string, body UpdatePolicyJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdatePolicyRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewUpdatePolicyRequestWithBody generates requests for UpdatePolicy with any type of body
+func NewUpdatePolicyRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/policies/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListPolicyPacksRequest generates requests for ListPolicyPacks
+func NewListPolicyPacksRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/policy-packs", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreatePolicyPackRequest calls the generic CreatePolicyPack builder with application/json body
+func NewCreatePolicyPackRequest(server string, org string, body CreatePolicyPackJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreatePolicyPackRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewCreatePolicyPackRequestWithBody generates requests for CreatePolicyPack with any type of body
+func NewCreatePolicyPackRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/policy-packs", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetPolicyPackRequest generates requests for GetPolicyPack
+func NewGetPolicyPackRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/policy-packs/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAssignPolicyPackRequest calls the generic AssignPolicyPack builder with application/json body
+func NewAssignPolicyPackRequest(server string, org string, id string, body AssignPolicyPackJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAssignPolicyPackRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewAssignPolicyPackRequestWithBody generates requests for AssignPolicyPack with any type of body
+func NewAssignPolicyPackRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/policy-packs/%s/assign", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUnassignPolicyPackRequest generates requests for UnassignPolicyPack
+func NewUnassignPolicyPackRequest(server string, org string, id string, assignmentId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "assignmentId", runtime.ParamLocationPath, assignmentId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/policy-packs/%s/assignments/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListTeamsRequest generates requests for ListTeams
+func NewListTeamsRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/teams", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListMembersRequest generates requests for ListMembers
+func NewListMembersRequest(server string, org string, team string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "team", runtime.ParamLocationPath, team)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/teams/%s/members", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAddMemberRequest calls the generic AddMember builder with application/json body
+func NewAddMemberRequest(server string, org string, team string, body AddMemberJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAddMemberRequestWithBody(server, org, team, "application/json", bodyReader)
+}
+
+// NewAddMemberRequestWithBody generates requests for AddMember with any type of body
+func NewAddMemberRequestWithBody(server string, org string, team string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "team", runtime.ParamLocationPath, team)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/teams/%s/members", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewRemoveMemberRequest generates requests for RemoveMember
+func NewRemoveMemberRequest(server string, org string, team string, subject string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "team", runtime.ParamLocationPath, team)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithLocation("simple", false, "subject", runtime.ParamLocationPath, subject)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/teams/%s/members/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListTenantZonesRequest generates requests for ListTenantZones
+func NewListTenantZonesRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/zones", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRequestTenantZoneRequest calls the generic RequestTenantZone builder with application/json body
+func NewRequestTenantZoneRequest(server string, org string, body RequestTenantZoneJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRequestTenantZoneRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewRequestTenantZoneRequestWithBody generates requests for RequestTenantZone with any type of body
+func NewRequestTenantZoneRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/zones", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetTenantZoneRequest generates requests for GetTenantZone
+func NewGetTenantZoneRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/zones/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDecommissionTenantZoneRequest generates requests for DecommissionTenantZone
+func NewDecommissionTenantZoneRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/zones/%s/decommission", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewResumeTenantZoneRequest generates requests for ResumeTenantZone
+func NewResumeTenantZoneRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "org", runtime.ParamLocationPath, org)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "id", runtime.ParamLocationPath, id)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/zones/%s/resume", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetHealthRequest generates requests for GetHealth
+func NewGetHealthRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/healthz")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetReadyRequest generates requests for GetReady
+func NewGetReadyRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/readyz")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+func (c *Client) applyEditors(ctx context.Context, req *http.Request, additionalEditors []RequestEditorFn) error {
+	for _, r := range c.RequestEditors {
+		if err := r(ctx, req); err != nil {
+			return err
+		}
+	}
+	for _, r := range additionalEditors {
+		if err := r(ctx, req); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// ClientWithResponses builds on ClientInterface to offer response payloads
+type ClientWithResponses struct {
+	ClientInterface
+}
+
+// NewClientWithResponses creates a new ClientWithResponses, which wraps
+// Client with return type handling
+func NewClientWithResponses(server string, opts ...ClientOption) (*ClientWithResponses, error) {
+	client, err := NewClient(server, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &ClientWithResponses{client}, nil
+}
+
+// WithBaseURL overrides the baseURL.
+func WithBaseURL(baseURL string) ClientOption {
+	return func(c *Client) error {
+		newBaseURL, err := url.Parse(baseURL)
+		if err != nil {
+			return err
+		}
+		c.Server = newBaseURL.String()
+		return nil
+	}
+}
+
+// ClientWithResponsesInterface is the interface specification for the client with responses above.
+type ClientWithResponsesInterface interface {
+	// SyncCatalogWithResponse request
+	SyncCatalogWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*SyncCatalogResponse, error)
+
+	// SetCatalogVisibilityWithBodyWithResponse request with any body
+	SetCatalogVisibilityWithBodyWithResponse(ctx context.Context, item string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetCatalogVisibilityResponse, error)
+
+	SetCatalogVisibilityWithResponse(ctx context.Context, item string, body SetCatalogVisibilityJSONRequestBody, reqEditors ...RequestEditorFn) (*SetCatalogVisibilityResponse, error)
+
+	// ListTenantsWithResponse request
+	ListTenantsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListTenantsResponse, error)
+
+	// CreateTenantWithBodyWithResponse request with any body
+	CreateTenantWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTenantResponse, error)
+
+	CreateTenantWithResponse(ctx context.Context, body CreateTenantJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTenantResponse, error)
+
+	// GetTenantWithResponse request
+	GetTenantWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*GetTenantResponse, error)
+
+	// ListApprovalsWithResponse request
+	ListApprovalsWithResponse(ctx context.Context, org string, params *ListApprovalsParams, reqEditors ...RequestEditorFn) (*ListApprovalsResponse, error)
+
+	// GetApprovalWithResponse request
+	GetApprovalWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetApprovalResponse, error)
+
+	// CancelApprovalWithResponse request
+	CancelApprovalWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*CancelApprovalResponse, error)
+
+	// DecideApprovalWithBodyWithResponse request with any body
+	DecideApprovalWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DecideApprovalResponse, error)
+
+	DecideApprovalWithResponse(ctx context.Context, org string, id string, body DecideApprovalJSONRequestBody, reqEditors ...RequestEditorFn) (*DecideApprovalResponse, error)
+
+	// ListCatalogWithResponse request
+	ListCatalogWithResponse(ctx context.Context, org string, params *ListCatalogParams, reqEditors ...RequestEditorFn) (*ListCatalogResponse, error)
+
+	// GetCatalogItemWithResponse request
+	GetCatalogItemWithResponse(ctx context.Context, org string, item string, params *GetCatalogItemParams, reqEditors ...RequestEditorFn) (*GetCatalogItemResponse, error)
+
+	// UnpinCatalogVersionWithResponse request
+	UnpinCatalogVersionWithResponse(ctx context.Context, org string, item string, params *UnpinCatalogVersionParams, reqEditors ...RequestEditorFn) (*UnpinCatalogVersionResponse, error)
+
+	// PinCatalogVersionWithBodyWithResponse request with any body
+	PinCatalogVersionWithBodyWithResponse(ctx context.Context, org string, item string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PinCatalogVersionResponse, error)
+
+	PinCatalogVersionWithResponse(ctx context.Context, org string, item string, body PinCatalogVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*PinCatalogVersionResponse, error)
+
+	// ListCloudAccountsWithResponse request
+	ListCloudAccountsWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListCloudAccountsResponse, error)
+
+	// RegisterCloudAccountWithBodyWithResponse request with any body
+	RegisterCloudAccountWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RegisterCloudAccountResponse, error)
+
+	RegisterCloudAccountWithResponse(ctx context.Context, org string, body RegisterCloudAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*RegisterCloudAccountResponse, error)
+
+	// DeregisterCloudAccountWithResponse request
+	DeregisterCloudAccountWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DeregisterCloudAccountResponse, error)
+
+	// GetCloudAccountWithResponse request
+	GetCloudAccountWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetCloudAccountResponse, error)
+
+	// RenderCloudAccountProviderConfigWithResponse request
+	RenderCloudAccountProviderConfigWithResponse(ctx context.Context, org string, id string, params *RenderCloudAccountProviderConfigParams, reqEditors ...RequestEditorFn) (*RenderCloudAccountProviderConfigResponse, error)
+
+	// ValidateCloudAccountWithResponse request
+	ValidateCloudAccountWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*ValidateCloudAccountResponse, error)
+
+	// ListClusterSetsWithResponse request
+	ListClusterSetsWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListClusterSetsResponse, error)
+
+	// CreateClusterSetWithBodyWithResponse request with any body
+	CreateClusterSetWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateClusterSetResponse, error)
+
+	CreateClusterSetWithResponse(ctx context.Context, org string, body CreateClusterSetJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateClusterSetResponse, error)
+
+	// DeleteClusterSetWithResponse request
+	DeleteClusterSetWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DeleteClusterSetResponse, error)
+
+	// GetClusterSetWithResponse request
+	GetClusterSetWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetClusterSetResponse, error)
+
+	// ListClustersWithResponse request
+	ListClustersWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListClustersResponse, error)
+
+	// CreateClusterWithBodyWithResponse request with any body
+	CreateClusterWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateClusterResponse, error)
+
+	CreateClusterWithResponse(ctx context.Context, org string, body CreateClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateClusterResponse, error)
+
+	// GetClusterWithResponse request
+	GetClusterWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetClusterResponse, error)
+
+	// ApproveClusterWithResponse request
+	ApproveClusterWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*ApproveClusterResponse, error)
+
+	// ListCapabilitiesWithResponse request
+	ListCapabilitiesWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*ListCapabilitiesResponse, error)
+
+	// CordonClusterWithResponse request
+	CordonClusterWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*CordonClusterResponse, error)
+
+	// DecommissionClusterWithBodyWithResponse request with any body
+	DecommissionClusterWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DecommissionClusterResponse, error)
+
+	DecommissionClusterWithResponse(ctx context.Context, org string, id string, body DecommissionClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*DecommissionClusterResponse, error)
+
+	// RenderInstallManifestWithResponse request
+	RenderInstallManifestWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*RenderInstallManifestResponse, error)
+
+	// RevokeClusterWithResponse request
+	RevokeClusterWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*RevokeClusterResponse, error)
+
+	// IssueRegistrationTokenWithResponse request
+	IssueRegistrationTokenWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*IssueRegistrationTokenResponse, error)
+
+	// UncordonClusterWithResponse request
+	UncordonClusterWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*UncordonClusterResponse, error)
+
+	// DeployCatalogItemWithBodyWithResponse request with any body
+	DeployCatalogItemWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeployCatalogItemResponse, error)
+
+	DeployCatalogItemWithResponse(ctx context.Context, org string, body DeployCatalogItemJSONRequestBody, reqEditors ...RequestEditorFn) (*DeployCatalogItemResponse, error)
+
+	// ListExemptionsWithResponse request
+	ListExemptionsWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListExemptionsResponse, error)
+
+	// RequestExemptionWithBodyWithResponse request with any body
+	RequestExemptionWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RequestExemptionResponse, error)
+
+	RequestExemptionWithResponse(ctx context.Context, org string, body RequestExemptionJSONRequestBody, reqEditors ...RequestEditorFn) (*RequestExemptionResponse, error)
+
+	// DecideExemptionWithBodyWithResponse request with any body
+	DecideExemptionWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DecideExemptionResponse, error)
+
+	DecideExemptionWithResponse(ctx context.Context, org string, id string, body DecideExemptionJSONRequestBody, reqEditors ...RequestEditorFn) (*DecideExemptionResponse, error)
+
+	// GetTenantGitConfigWithResponse request
+	GetTenantGitConfigWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*GetTenantGitConfigResponse, error)
+
+	// SetTenantGitConfigWithBodyWithResponse request with any body
+	SetTenantGitConfigWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetTenantGitConfigResponse, error)
+
+	SetTenantGitConfigWithResponse(ctx context.Context, org string, body SetTenantGitConfigJSONRequestBody, reqEditors ...RequestEditorFn) (*SetTenantGitConfigResponse, error)
+
+	// ListInstancesWithResponse request
+	ListInstancesWithResponse(ctx context.Context, org string, params *ListInstancesParams, reqEditors ...RequestEditorFn) (*ListInstancesResponse, error)
+
+	// GetInstanceWithResponse request
+	GetInstanceWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetInstanceResponse, error)
+
+	// InstanceDiffWithResponse request
+	InstanceDiffWithResponse(ctx context.Context, org string, id string, params *InstanceDiffParams, reqEditors ...RequestEditorFn) (*InstanceDiffResponse, error)
+
+	// UpgradeInstanceWithBodyWithResponse request with any body
+	UpgradeInstanceWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpgradeInstanceResponse, error)
+
+	UpgradeInstanceWithResponse(ctx context.Context, org string, id string, body UpgradeInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpgradeInstanceResponse, error)
+
+	// ListNotificationEndpointsWithResponse request
+	ListNotificationEndpointsWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListNotificationEndpointsResponse, error)
+
+	// CreateNotificationEndpointWithBodyWithResponse request with any body
+	CreateNotificationEndpointWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateNotificationEndpointResponse, error)
+
+	CreateNotificationEndpointWithResponse(ctx context.Context, org string, body CreateNotificationEndpointJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateNotificationEndpointResponse, error)
+
+	// DeleteNotificationEndpointWithResponse request
+	DeleteNotificationEndpointWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DeleteNotificationEndpointResponse, error)
+
+	// GetNotificationEndpointWithResponse request
+	GetNotificationEndpointWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetNotificationEndpointResponse, error)
+
+	// UpdateNotificationEndpointWithBodyWithResponse request with any body
+	UpdateNotificationEndpointWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateNotificationEndpointResponse, error)
+
+	UpdateNotificationEndpointWithResponse(ctx context.Context, org string, id string, body UpdateNotificationEndpointJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateNotificationEndpointResponse, error)
+
+	// TestNotificationEndpointWithResponse request
+	TestNotificationEndpointWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*TestNotificationEndpointResponse, error)
+
+	// ListPoliciesWithResponse request
+	ListPoliciesWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListPoliciesResponse, error)
+
+	// CreatePolicyWithBodyWithResponse request with any body
+	CreatePolicyWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePolicyResponse, error)
+
+	CreatePolicyWithResponse(ctx context.Context, org string, body CreatePolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePolicyResponse, error)
+
+	// EvaluatePoliciesWithBodyWithResponse request with any body
+	EvaluatePoliciesWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EvaluatePoliciesResponse, error)
+
+	EvaluatePoliciesWithResponse(ctx context.Context, org string, body EvaluatePoliciesJSONRequestBody, reqEditors ...RequestEditorFn) (*EvaluatePoliciesResponse, error)
+
+	// DeletePolicyWithResponse request
+	DeletePolicyWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DeletePolicyResponse, error)
+
+	// GetPolicyWithResponse request
+	GetPolicyWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetPolicyResponse, error)
+
+	// UpdatePolicyWithBodyWithResponse request with any body
+	UpdatePolicyWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePolicyResponse, error)
+
+	UpdatePolicyWithResponse(ctx context.Context, org string, id string, body UpdatePolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePolicyResponse, error)
+
+	// ListPolicyPacksWithResponse request
+	ListPolicyPacksWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListPolicyPacksResponse, error)
+
+	// CreatePolicyPackWithBodyWithResponse request with any body
+	CreatePolicyPackWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePolicyPackResponse, error)
+
+	CreatePolicyPackWithResponse(ctx context.Context, org string, body CreatePolicyPackJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePolicyPackResponse, error)
+
+	// GetPolicyPackWithResponse request
+	GetPolicyPackWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetPolicyPackResponse, error)
+
+	// AssignPolicyPackWithBodyWithResponse request with any body
+	AssignPolicyPackWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AssignPolicyPackResponse, error)
+
+	AssignPolicyPackWithResponse(ctx context.Context, org string, id string, body AssignPolicyPackJSONRequestBody, reqEditors ...RequestEditorFn) (*AssignPolicyPackResponse, error)
+
+	// UnassignPolicyPackWithResponse request
+	UnassignPolicyPackWithResponse(ctx context.Context, org string, id string, assignmentId string, reqEditors ...RequestEditorFn) (*UnassignPolicyPackResponse, error)
+
+	// ListTeamsWithResponse request
+	ListTeamsWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListTeamsResponse, error)
+
+	// ListMembersWithResponse request
+	ListMembersWithResponse(ctx context.Context, org string, team string, reqEditors ...RequestEditorFn) (*ListMembersResponse, error)
+
+	// AddMemberWithBodyWithResponse request with any body
+	AddMemberWithBodyWithResponse(ctx context.Context, org string, team string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddMemberResponse, error)
+
+	AddMemberWithResponse(ctx context.Context, org string, team string, body AddMemberJSONRequestBody, reqEditors ...RequestEditorFn) (*AddMemberResponse, error)
+
+	// RemoveMemberWithResponse request
+	RemoveMemberWithResponse(ctx context.Context, org string, team string, subject string, reqEditors ...RequestEditorFn) (*RemoveMemberResponse, error)
+
+	// ListTenantZonesWithResponse request
+	ListTenantZonesWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListTenantZonesResponse, error)
+
+	// RequestTenantZoneWithBodyWithResponse request with any body
+	RequestTenantZoneWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RequestTenantZoneResponse, error)
+
+	RequestTenantZoneWithResponse(ctx context.Context, org string, body RequestTenantZoneJSONRequestBody, reqEditors ...RequestEditorFn) (*RequestTenantZoneResponse, error)
+
+	// GetTenantZoneWithResponse request
+	GetTenantZoneWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetTenantZoneResponse, error)
+
+	// DecommissionTenantZoneWithResponse request
+	DecommissionTenantZoneWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DecommissionTenantZoneResponse, error)
+
+	// ResumeTenantZoneWithResponse request
+	ResumeTenantZoneWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*ResumeTenantZoneResponse, error)
+
+	// GetHealthWithResponse request
+	GetHealthWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetHealthResponse, error)
+
+	// GetReadyWithResponse request
+	GetReadyWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetReadyResponse, error)
+}
+
+type SyncCatalogResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *SyncOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r SyncCatalogResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SyncCatalogResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SetCatalogVisibilityResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r SetCatalogVisibilityResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetCatalogVisibilityResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListTenantsResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ListTenantsOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ListTenantsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListTenantsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateTenantResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *TenantOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateTenantResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateTenantResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetTenantResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *TenantOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTenantResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTenantResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListApprovalsResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ListOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ListApprovalsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListApprovalsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetApprovalResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ApprovalOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r GetApprovalResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetApprovalResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CancelApprovalResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ApprovalOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r CancelApprovalResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CancelApprovalResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DecideApprovalResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *DecideOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r DecideApprovalResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DecideApprovalResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListCatalogResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ListCatalogOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ListCatalogResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListCatalogResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetCatalogItemResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ItemOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r GetCatalogItemResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetCatalogItemResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UnpinCatalogVersionResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r UnpinCatalogVersionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnpinCatalogVersionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type PinCatalogVersionResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r PinCatalogVersionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PinCatalogVersionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListCloudAccountsResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ListAccountsOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ListCloudAccountsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListCloudAccountsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RegisterCloudAccountResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *AccountOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r RegisterCloudAccountResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RegisterCloudAccountResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeregisterCloudAccountResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r DeregisterCloudAccountResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeregisterCloudAccountResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetCloudAccountResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *AccountOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r GetCloudAccountResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetCloudAccountResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RenderCloudAccountProviderConfigResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *[]byte
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r RenderCloudAccountProviderConfigResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RenderCloudAccountProviderConfigResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ValidateCloudAccountResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *AccountOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ValidateCloudAccountResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ValidateCloudAccountResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListClusterSetsResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ListClusterSetsOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ListClusterSetsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListClusterSetsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateClusterSetResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ClusterSetOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateClusterSetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateClusterSetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteClusterSetResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteClusterSetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteClusterSetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetClusterSetResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ClusterSetOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r GetClusterSetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetClusterSetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListClustersResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ListClustersOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ListClustersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListClustersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateClusterResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ClusterOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateClusterResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateClusterResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetClusterResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ClusterOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r GetClusterResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetClusterResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ApproveClusterResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ClusterOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ApproveClusterResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ApproveClusterResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListCapabilitiesResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ListCapabilitiesOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ListCapabilitiesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListCapabilitiesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CordonClusterResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ClusterOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r CordonClusterResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CordonClusterResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DecommissionClusterResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *DecommissionOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r DecommissionClusterResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DecommissionClusterResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RenderInstallManifestResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *[]byte
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r RenderInstallManifestResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RenderInstallManifestResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RevokeClusterResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r RevokeClusterResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RevokeClusterResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type IssueRegistrationTokenResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *TokenOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r IssueRegistrationTokenResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r IssueRegistrationTokenResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UncordonClusterResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ClusterOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r UncordonClusterResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UncordonClusterResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeployCatalogItemResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *DeployOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r DeployCatalogItemResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeployCatalogItemResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListExemptionsResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ListExemptionsOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ListExemptionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListExemptionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RequestExemptionResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ExemptionOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r RequestExemptionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RequestExemptionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DecideExemptionResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ExemptionOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r DecideExemptionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DecideExemptionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetTenantGitConfigResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *GitConfigOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTenantGitConfigResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTenantGitConfigResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type SetTenantGitConfigResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r SetTenantGitConfigResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetTenantGitConfigResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListInstancesResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ListOutputBody1
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ListInstancesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListInstancesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetInstanceResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *GetOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInstanceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInstanceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type InstanceDiffResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *DiffOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r InstanceDiffResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r InstanceDiffResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpgradeInstanceResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *DeployOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r UpgradeInstanceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpgradeInstanceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListNotificationEndpointsResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ListOutputBody2
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ListNotificationEndpointsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListNotificationEndpointsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateNotificationEndpointResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *EndpointOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateNotificationEndpointResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateNotificationEndpointResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteNotificationEndpointResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteNotificationEndpointResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteNotificationEndpointResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetNotificationEndpointResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *EndpointOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r GetNotificationEndpointResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetNotificationEndpointResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateNotificationEndpointResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *EndpointOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateNotificationEndpointResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateNotificationEndpointResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type TestNotificationEndpointResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *TestOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r TestNotificationEndpointResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r TestNotificationEndpointResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListPoliciesResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ListPoliciesOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ListPoliciesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListPoliciesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreatePolicyResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *PolicyOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r CreatePolicyResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreatePolicyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type EvaluatePoliciesResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *EvaluateOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r EvaluatePoliciesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r EvaluatePoliciesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeletePolicyResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r DeletePolicyResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeletePolicyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetPolicyResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *PolicyOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPolicyResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPolicyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdatePolicyResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *PolicyOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdatePolicyResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdatePolicyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListPolicyPacksResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ListPacksOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ListPolicyPacksResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListPolicyPacksResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreatePolicyPackResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *PackOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r CreatePolicyPackResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreatePolicyPackResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetPolicyPackResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *PackOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPolicyPackResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPolicyPackResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AssignPolicyPackResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *AssignPackOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r AssignPolicyPackResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AssignPolicyPackResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UnassignPolicyPackResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r UnassignPolicyPackResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnassignPolicyPackResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListTeamsResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ListTeamsOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ListTeamsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListTeamsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListMembersResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ListMembersOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ListMembersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListMembersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AddMemberResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r AddMemberResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddMemberResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RemoveMemberResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r RemoveMemberResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RemoveMemberResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListTenantZonesResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *ListZonesOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ListTenantZonesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListTenantZonesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type RequestTenantZoneResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *RequestZoneOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r RequestTenantZoneResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RequestTenantZoneResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetTenantZoneResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *GetZoneOutputBody
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTenantZoneResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTenantZoneResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DecommissionTenantZoneResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	JSON200                       *DecommissionOutputBody1
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r DecommissionTenantZoneResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DecommissionTenantZoneResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ResumeTenantZoneResponse struct {
+	Body                          []byte
+	HTTPResponse                  *http.Response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// Status returns HTTPResponse.Status
+func (r ResumeTenantZoneResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ResumeTenantZoneResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetHealthResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *HealthStatus
+}
+
+// Status returns HTTPResponse.Status
+func (r GetHealthResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetHealthResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetReadyResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *HealthStatus
+	JSON503      *HealthStatus
+}
+
+// Status returns HTTPResponse.Status
+func (r GetReadyResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetReadyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// SyncCatalogWithResponse request returning *SyncCatalogResponse
+func (c *ClientWithResponses) SyncCatalogWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*SyncCatalogResponse, error) {
+	rsp, err := c.SyncCatalog(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSyncCatalogResponse(rsp)
+}
+
+// SetCatalogVisibilityWithBodyWithResponse request with arbitrary body returning *SetCatalogVisibilityResponse
+func (c *ClientWithResponses) SetCatalogVisibilityWithBodyWithResponse(ctx context.Context, item string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetCatalogVisibilityResponse, error) {
+	rsp, err := c.SetCatalogVisibilityWithBody(ctx, item, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetCatalogVisibilityResponse(rsp)
+}
+
+func (c *ClientWithResponses) SetCatalogVisibilityWithResponse(ctx context.Context, item string, body SetCatalogVisibilityJSONRequestBody, reqEditors ...RequestEditorFn) (*SetCatalogVisibilityResponse, error) {
+	rsp, err := c.SetCatalogVisibility(ctx, item, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetCatalogVisibilityResponse(rsp)
+}
+
+// ListTenantsWithResponse request returning *ListTenantsResponse
+func (c *ClientWithResponses) ListTenantsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListTenantsResponse, error) {
+	rsp, err := c.ListTenants(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListTenantsResponse(rsp)
+}
+
+// CreateTenantWithBodyWithResponse request with arbitrary body returning *CreateTenantResponse
+func (c *ClientWithResponses) CreateTenantWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateTenantResponse, error) {
+	rsp, err := c.CreateTenantWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateTenantResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateTenantWithResponse(ctx context.Context, body CreateTenantJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateTenantResponse, error) {
+	rsp, err := c.CreateTenant(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateTenantResponse(rsp)
+}
+
+// GetTenantWithResponse request returning *GetTenantResponse
+func (c *ClientWithResponses) GetTenantWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*GetTenantResponse, error) {
+	rsp, err := c.GetTenant(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTenantResponse(rsp)
+}
+
+// ListApprovalsWithResponse request returning *ListApprovalsResponse
+func (c *ClientWithResponses) ListApprovalsWithResponse(ctx context.Context, org string, params *ListApprovalsParams, reqEditors ...RequestEditorFn) (*ListApprovalsResponse, error) {
+	rsp, err := c.ListApprovals(ctx, org, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListApprovalsResponse(rsp)
+}
+
+// GetApprovalWithResponse request returning *GetApprovalResponse
+func (c *ClientWithResponses) GetApprovalWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetApprovalResponse, error) {
+	rsp, err := c.GetApproval(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetApprovalResponse(rsp)
+}
+
+// CancelApprovalWithResponse request returning *CancelApprovalResponse
+func (c *ClientWithResponses) CancelApprovalWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*CancelApprovalResponse, error) {
+	rsp, err := c.CancelApproval(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCancelApprovalResponse(rsp)
+}
+
+// DecideApprovalWithBodyWithResponse request with arbitrary body returning *DecideApprovalResponse
+func (c *ClientWithResponses) DecideApprovalWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DecideApprovalResponse, error) {
+	rsp, err := c.DecideApprovalWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDecideApprovalResponse(rsp)
+}
+
+func (c *ClientWithResponses) DecideApprovalWithResponse(ctx context.Context, org string, id string, body DecideApprovalJSONRequestBody, reqEditors ...RequestEditorFn) (*DecideApprovalResponse, error) {
+	rsp, err := c.DecideApproval(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDecideApprovalResponse(rsp)
+}
+
+// ListCatalogWithResponse request returning *ListCatalogResponse
+func (c *ClientWithResponses) ListCatalogWithResponse(ctx context.Context, org string, params *ListCatalogParams, reqEditors ...RequestEditorFn) (*ListCatalogResponse, error) {
+	rsp, err := c.ListCatalog(ctx, org, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListCatalogResponse(rsp)
+}
+
+// GetCatalogItemWithResponse request returning *GetCatalogItemResponse
+func (c *ClientWithResponses) GetCatalogItemWithResponse(ctx context.Context, org string, item string, params *GetCatalogItemParams, reqEditors ...RequestEditorFn) (*GetCatalogItemResponse, error) {
+	rsp, err := c.GetCatalogItem(ctx, org, item, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetCatalogItemResponse(rsp)
+}
+
+// UnpinCatalogVersionWithResponse request returning *UnpinCatalogVersionResponse
+func (c *ClientWithResponses) UnpinCatalogVersionWithResponse(ctx context.Context, org string, item string, params *UnpinCatalogVersionParams, reqEditors ...RequestEditorFn) (*UnpinCatalogVersionResponse, error) {
+	rsp, err := c.UnpinCatalogVersion(ctx, org, item, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnpinCatalogVersionResponse(rsp)
+}
+
+// PinCatalogVersionWithBodyWithResponse request with arbitrary body returning *PinCatalogVersionResponse
+func (c *ClientWithResponses) PinCatalogVersionWithBodyWithResponse(ctx context.Context, org string, item string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PinCatalogVersionResponse, error) {
+	rsp, err := c.PinCatalogVersionWithBody(ctx, org, item, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePinCatalogVersionResponse(rsp)
+}
+
+func (c *ClientWithResponses) PinCatalogVersionWithResponse(ctx context.Context, org string, item string, body PinCatalogVersionJSONRequestBody, reqEditors ...RequestEditorFn) (*PinCatalogVersionResponse, error) {
+	rsp, err := c.PinCatalogVersion(ctx, org, item, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePinCatalogVersionResponse(rsp)
+}
+
+// ListCloudAccountsWithResponse request returning *ListCloudAccountsResponse
+func (c *ClientWithResponses) ListCloudAccountsWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListCloudAccountsResponse, error) {
+	rsp, err := c.ListCloudAccounts(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListCloudAccountsResponse(rsp)
+}
+
+// RegisterCloudAccountWithBodyWithResponse request with arbitrary body returning *RegisterCloudAccountResponse
+func (c *ClientWithResponses) RegisterCloudAccountWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RegisterCloudAccountResponse, error) {
+	rsp, err := c.RegisterCloudAccountWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRegisterCloudAccountResponse(rsp)
+}
+
+func (c *ClientWithResponses) RegisterCloudAccountWithResponse(ctx context.Context, org string, body RegisterCloudAccountJSONRequestBody, reqEditors ...RequestEditorFn) (*RegisterCloudAccountResponse, error) {
+	rsp, err := c.RegisterCloudAccount(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRegisterCloudAccountResponse(rsp)
+}
+
+// DeregisterCloudAccountWithResponse request returning *DeregisterCloudAccountResponse
+func (c *ClientWithResponses) DeregisterCloudAccountWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DeregisterCloudAccountResponse, error) {
+	rsp, err := c.DeregisterCloudAccount(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeregisterCloudAccountResponse(rsp)
+}
+
+// GetCloudAccountWithResponse request returning *GetCloudAccountResponse
+func (c *ClientWithResponses) GetCloudAccountWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetCloudAccountResponse, error) {
+	rsp, err := c.GetCloudAccount(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetCloudAccountResponse(rsp)
+}
+
+// RenderCloudAccountProviderConfigWithResponse request returning *RenderCloudAccountProviderConfigResponse
+func (c *ClientWithResponses) RenderCloudAccountProviderConfigWithResponse(ctx context.Context, org string, id string, params *RenderCloudAccountProviderConfigParams, reqEditors ...RequestEditorFn) (*RenderCloudAccountProviderConfigResponse, error) {
+	rsp, err := c.RenderCloudAccountProviderConfig(ctx, org, id, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRenderCloudAccountProviderConfigResponse(rsp)
+}
+
+// ValidateCloudAccountWithResponse request returning *ValidateCloudAccountResponse
+func (c *ClientWithResponses) ValidateCloudAccountWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*ValidateCloudAccountResponse, error) {
+	rsp, err := c.ValidateCloudAccount(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseValidateCloudAccountResponse(rsp)
+}
+
+// ListClusterSetsWithResponse request returning *ListClusterSetsResponse
+func (c *ClientWithResponses) ListClusterSetsWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListClusterSetsResponse, error) {
+	rsp, err := c.ListClusterSets(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListClusterSetsResponse(rsp)
+}
+
+// CreateClusterSetWithBodyWithResponse request with arbitrary body returning *CreateClusterSetResponse
+func (c *ClientWithResponses) CreateClusterSetWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateClusterSetResponse, error) {
+	rsp, err := c.CreateClusterSetWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateClusterSetResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateClusterSetWithResponse(ctx context.Context, org string, body CreateClusterSetJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateClusterSetResponse, error) {
+	rsp, err := c.CreateClusterSet(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateClusterSetResponse(rsp)
+}
+
+// DeleteClusterSetWithResponse request returning *DeleteClusterSetResponse
+func (c *ClientWithResponses) DeleteClusterSetWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DeleteClusterSetResponse, error) {
+	rsp, err := c.DeleteClusterSet(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteClusterSetResponse(rsp)
+}
+
+// GetClusterSetWithResponse request returning *GetClusterSetResponse
+func (c *ClientWithResponses) GetClusterSetWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetClusterSetResponse, error) {
+	rsp, err := c.GetClusterSet(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetClusterSetResponse(rsp)
+}
+
+// ListClustersWithResponse request returning *ListClustersResponse
+func (c *ClientWithResponses) ListClustersWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListClustersResponse, error) {
+	rsp, err := c.ListClusters(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListClustersResponse(rsp)
+}
+
+// CreateClusterWithBodyWithResponse request with arbitrary body returning *CreateClusterResponse
+func (c *ClientWithResponses) CreateClusterWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateClusterResponse, error) {
+	rsp, err := c.CreateClusterWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateClusterResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateClusterWithResponse(ctx context.Context, org string, body CreateClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateClusterResponse, error) {
+	rsp, err := c.CreateCluster(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateClusterResponse(rsp)
+}
+
+// GetClusterWithResponse request returning *GetClusterResponse
+func (c *ClientWithResponses) GetClusterWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetClusterResponse, error) {
+	rsp, err := c.GetCluster(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetClusterResponse(rsp)
+}
+
+// ApproveClusterWithResponse request returning *ApproveClusterResponse
+func (c *ClientWithResponses) ApproveClusterWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*ApproveClusterResponse, error) {
+	rsp, err := c.ApproveCluster(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseApproveClusterResponse(rsp)
+}
+
+// ListCapabilitiesWithResponse request returning *ListCapabilitiesResponse
+func (c *ClientWithResponses) ListCapabilitiesWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*ListCapabilitiesResponse, error) {
+	rsp, err := c.ListCapabilities(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListCapabilitiesResponse(rsp)
+}
+
+// CordonClusterWithResponse request returning *CordonClusterResponse
+func (c *ClientWithResponses) CordonClusterWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*CordonClusterResponse, error) {
+	rsp, err := c.CordonCluster(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCordonClusterResponse(rsp)
+}
+
+// DecommissionClusterWithBodyWithResponse request with arbitrary body returning *DecommissionClusterResponse
+func (c *ClientWithResponses) DecommissionClusterWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DecommissionClusterResponse, error) {
+	rsp, err := c.DecommissionClusterWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDecommissionClusterResponse(rsp)
+}
+
+func (c *ClientWithResponses) DecommissionClusterWithResponse(ctx context.Context, org string, id string, body DecommissionClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*DecommissionClusterResponse, error) {
+	rsp, err := c.DecommissionCluster(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDecommissionClusterResponse(rsp)
+}
+
+// RenderInstallManifestWithResponse request returning *RenderInstallManifestResponse
+func (c *ClientWithResponses) RenderInstallManifestWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*RenderInstallManifestResponse, error) {
+	rsp, err := c.RenderInstallManifest(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRenderInstallManifestResponse(rsp)
+}
+
+// RevokeClusterWithResponse request returning *RevokeClusterResponse
+func (c *ClientWithResponses) RevokeClusterWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*RevokeClusterResponse, error) {
+	rsp, err := c.RevokeCluster(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRevokeClusterResponse(rsp)
+}
+
+// IssueRegistrationTokenWithResponse request returning *IssueRegistrationTokenResponse
+func (c *ClientWithResponses) IssueRegistrationTokenWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*IssueRegistrationTokenResponse, error) {
+	rsp, err := c.IssueRegistrationToken(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseIssueRegistrationTokenResponse(rsp)
+}
+
+// UncordonClusterWithResponse request returning *UncordonClusterResponse
+func (c *ClientWithResponses) UncordonClusterWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*UncordonClusterResponse, error) {
+	rsp, err := c.UncordonCluster(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUncordonClusterResponse(rsp)
+}
+
+// DeployCatalogItemWithBodyWithResponse request with arbitrary body returning *DeployCatalogItemResponse
+func (c *ClientWithResponses) DeployCatalogItemWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DeployCatalogItemResponse, error) {
+	rsp, err := c.DeployCatalogItemWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeployCatalogItemResponse(rsp)
+}
+
+func (c *ClientWithResponses) DeployCatalogItemWithResponse(ctx context.Context, org string, body DeployCatalogItemJSONRequestBody, reqEditors ...RequestEditorFn) (*DeployCatalogItemResponse, error) {
+	rsp, err := c.DeployCatalogItem(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeployCatalogItemResponse(rsp)
+}
+
+// ListExemptionsWithResponse request returning *ListExemptionsResponse
+func (c *ClientWithResponses) ListExemptionsWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListExemptionsResponse, error) {
+	rsp, err := c.ListExemptions(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListExemptionsResponse(rsp)
+}
+
+// RequestExemptionWithBodyWithResponse request with arbitrary body returning *RequestExemptionResponse
+func (c *ClientWithResponses) RequestExemptionWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RequestExemptionResponse, error) {
+	rsp, err := c.RequestExemptionWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRequestExemptionResponse(rsp)
+}
+
+func (c *ClientWithResponses) RequestExemptionWithResponse(ctx context.Context, org string, body RequestExemptionJSONRequestBody, reqEditors ...RequestEditorFn) (*RequestExemptionResponse, error) {
+	rsp, err := c.RequestExemption(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRequestExemptionResponse(rsp)
+}
+
+// DecideExemptionWithBodyWithResponse request with arbitrary body returning *DecideExemptionResponse
+func (c *ClientWithResponses) DecideExemptionWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*DecideExemptionResponse, error) {
+	rsp, err := c.DecideExemptionWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDecideExemptionResponse(rsp)
+}
+
+func (c *ClientWithResponses) DecideExemptionWithResponse(ctx context.Context, org string, id string, body DecideExemptionJSONRequestBody, reqEditors ...RequestEditorFn) (*DecideExemptionResponse, error) {
+	rsp, err := c.DecideExemption(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDecideExemptionResponse(rsp)
+}
+
+// GetTenantGitConfigWithResponse request returning *GetTenantGitConfigResponse
+func (c *ClientWithResponses) GetTenantGitConfigWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*GetTenantGitConfigResponse, error) {
+	rsp, err := c.GetTenantGitConfig(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTenantGitConfigResponse(rsp)
+}
+
+// SetTenantGitConfigWithBodyWithResponse request with arbitrary body returning *SetTenantGitConfigResponse
+func (c *ClientWithResponses) SetTenantGitConfigWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetTenantGitConfigResponse, error) {
+	rsp, err := c.SetTenantGitConfigWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetTenantGitConfigResponse(rsp)
+}
+
+func (c *ClientWithResponses) SetTenantGitConfigWithResponse(ctx context.Context, org string, body SetTenantGitConfigJSONRequestBody, reqEditors ...RequestEditorFn) (*SetTenantGitConfigResponse, error) {
+	rsp, err := c.SetTenantGitConfig(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetTenantGitConfigResponse(rsp)
+}
+
+// ListInstancesWithResponse request returning *ListInstancesResponse
+func (c *ClientWithResponses) ListInstancesWithResponse(ctx context.Context, org string, params *ListInstancesParams, reqEditors ...RequestEditorFn) (*ListInstancesResponse, error) {
+	rsp, err := c.ListInstances(ctx, org, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListInstancesResponse(rsp)
+}
+
+// GetInstanceWithResponse request returning *GetInstanceResponse
+func (c *ClientWithResponses) GetInstanceWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetInstanceResponse, error) {
+	rsp, err := c.GetInstance(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInstanceResponse(rsp)
+}
+
+// InstanceDiffWithResponse request returning *InstanceDiffResponse
+func (c *ClientWithResponses) InstanceDiffWithResponse(ctx context.Context, org string, id string, params *InstanceDiffParams, reqEditors ...RequestEditorFn) (*InstanceDiffResponse, error) {
+	rsp, err := c.InstanceDiff(ctx, org, id, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseInstanceDiffResponse(rsp)
+}
+
+// UpgradeInstanceWithBodyWithResponse request with arbitrary body returning *UpgradeInstanceResponse
+func (c *ClientWithResponses) UpgradeInstanceWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpgradeInstanceResponse, error) {
+	rsp, err := c.UpgradeInstanceWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpgradeInstanceResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpgradeInstanceWithResponse(ctx context.Context, org string, id string, body UpgradeInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpgradeInstanceResponse, error) {
+	rsp, err := c.UpgradeInstance(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpgradeInstanceResponse(rsp)
+}
+
+// ListNotificationEndpointsWithResponse request returning *ListNotificationEndpointsResponse
+func (c *ClientWithResponses) ListNotificationEndpointsWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListNotificationEndpointsResponse, error) {
+	rsp, err := c.ListNotificationEndpoints(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListNotificationEndpointsResponse(rsp)
+}
+
+// CreateNotificationEndpointWithBodyWithResponse request with arbitrary body returning *CreateNotificationEndpointResponse
+func (c *ClientWithResponses) CreateNotificationEndpointWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateNotificationEndpointResponse, error) {
+	rsp, err := c.CreateNotificationEndpointWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateNotificationEndpointResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateNotificationEndpointWithResponse(ctx context.Context, org string, body CreateNotificationEndpointJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateNotificationEndpointResponse, error) {
+	rsp, err := c.CreateNotificationEndpoint(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateNotificationEndpointResponse(rsp)
+}
+
+// DeleteNotificationEndpointWithResponse request returning *DeleteNotificationEndpointResponse
+func (c *ClientWithResponses) DeleteNotificationEndpointWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DeleteNotificationEndpointResponse, error) {
+	rsp, err := c.DeleteNotificationEndpoint(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteNotificationEndpointResponse(rsp)
+}
+
+// GetNotificationEndpointWithResponse request returning *GetNotificationEndpointResponse
+func (c *ClientWithResponses) GetNotificationEndpointWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetNotificationEndpointResponse, error) {
+	rsp, err := c.GetNotificationEndpoint(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetNotificationEndpointResponse(rsp)
+}
+
+// UpdateNotificationEndpointWithBodyWithResponse request with arbitrary body returning *UpdateNotificationEndpointResponse
+func (c *ClientWithResponses) UpdateNotificationEndpointWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateNotificationEndpointResponse, error) {
+	rsp, err := c.UpdateNotificationEndpointWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateNotificationEndpointResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateNotificationEndpointWithResponse(ctx context.Context, org string, id string, body UpdateNotificationEndpointJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateNotificationEndpointResponse, error) {
+	rsp, err := c.UpdateNotificationEndpoint(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateNotificationEndpointResponse(rsp)
+}
+
+// TestNotificationEndpointWithResponse request returning *TestNotificationEndpointResponse
+func (c *ClientWithResponses) TestNotificationEndpointWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*TestNotificationEndpointResponse, error) {
+	rsp, err := c.TestNotificationEndpoint(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseTestNotificationEndpointResponse(rsp)
+}
+
+// ListPoliciesWithResponse request returning *ListPoliciesResponse
+func (c *ClientWithResponses) ListPoliciesWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListPoliciesResponse, error) {
+	rsp, err := c.ListPolicies(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListPoliciesResponse(rsp)
+}
+
+// CreatePolicyWithBodyWithResponse request with arbitrary body returning *CreatePolicyResponse
+func (c *ClientWithResponses) CreatePolicyWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePolicyResponse, error) {
+	rsp, err := c.CreatePolicyWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreatePolicyResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreatePolicyWithResponse(ctx context.Context, org string, body CreatePolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePolicyResponse, error) {
+	rsp, err := c.CreatePolicy(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreatePolicyResponse(rsp)
+}
+
+// EvaluatePoliciesWithBodyWithResponse request with arbitrary body returning *EvaluatePoliciesResponse
+func (c *ClientWithResponses) EvaluatePoliciesWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*EvaluatePoliciesResponse, error) {
+	rsp, err := c.EvaluatePoliciesWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEvaluatePoliciesResponse(rsp)
+}
+
+func (c *ClientWithResponses) EvaluatePoliciesWithResponse(ctx context.Context, org string, body EvaluatePoliciesJSONRequestBody, reqEditors ...RequestEditorFn) (*EvaluatePoliciesResponse, error) {
+	rsp, err := c.EvaluatePolicies(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEvaluatePoliciesResponse(rsp)
+}
+
+// DeletePolicyWithResponse request returning *DeletePolicyResponse
+func (c *ClientWithResponses) DeletePolicyWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DeletePolicyResponse, error) {
+	rsp, err := c.DeletePolicy(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeletePolicyResponse(rsp)
+}
+
+// GetPolicyWithResponse request returning *GetPolicyResponse
+func (c *ClientWithResponses) GetPolicyWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetPolicyResponse, error) {
+	rsp, err := c.GetPolicy(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPolicyResponse(rsp)
+}
+
+// UpdatePolicyWithBodyWithResponse request with arbitrary body returning *UpdatePolicyResponse
+func (c *ClientWithResponses) UpdatePolicyWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePolicyResponse, error) {
+	rsp, err := c.UpdatePolicyWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdatePolicyResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdatePolicyWithResponse(ctx context.Context, org string, id string, body UpdatePolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePolicyResponse, error) {
+	rsp, err := c.UpdatePolicy(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdatePolicyResponse(rsp)
+}
+
+// ListPolicyPacksWithResponse request returning *ListPolicyPacksResponse
+func (c *ClientWithResponses) ListPolicyPacksWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListPolicyPacksResponse, error) {
+	rsp, err := c.ListPolicyPacks(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListPolicyPacksResponse(rsp)
+}
+
+// CreatePolicyPackWithBodyWithResponse request with arbitrary body returning *CreatePolicyPackResponse
+func (c *ClientWithResponses) CreatePolicyPackWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePolicyPackResponse, error) {
+	rsp, err := c.CreatePolicyPackWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreatePolicyPackResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreatePolicyPackWithResponse(ctx context.Context, org string, body CreatePolicyPackJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePolicyPackResponse, error) {
+	rsp, err := c.CreatePolicyPack(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreatePolicyPackResponse(rsp)
+}
+
+// GetPolicyPackWithResponse request returning *GetPolicyPackResponse
+func (c *ClientWithResponses) GetPolicyPackWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetPolicyPackResponse, error) {
+	rsp, err := c.GetPolicyPack(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPolicyPackResponse(rsp)
+}
+
+// AssignPolicyPackWithBodyWithResponse request with arbitrary body returning *AssignPolicyPackResponse
+func (c *ClientWithResponses) AssignPolicyPackWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AssignPolicyPackResponse, error) {
+	rsp, err := c.AssignPolicyPackWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAssignPolicyPackResponse(rsp)
+}
+
+func (c *ClientWithResponses) AssignPolicyPackWithResponse(ctx context.Context, org string, id string, body AssignPolicyPackJSONRequestBody, reqEditors ...RequestEditorFn) (*AssignPolicyPackResponse, error) {
+	rsp, err := c.AssignPolicyPack(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAssignPolicyPackResponse(rsp)
+}
+
+// UnassignPolicyPackWithResponse request returning *UnassignPolicyPackResponse
+func (c *ClientWithResponses) UnassignPolicyPackWithResponse(ctx context.Context, org string, id string, assignmentId string, reqEditors ...RequestEditorFn) (*UnassignPolicyPackResponse, error) {
+	rsp, err := c.UnassignPolicyPack(ctx, org, id, assignmentId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnassignPolicyPackResponse(rsp)
+}
+
+// ListTeamsWithResponse request returning *ListTeamsResponse
+func (c *ClientWithResponses) ListTeamsWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListTeamsResponse, error) {
+	rsp, err := c.ListTeams(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListTeamsResponse(rsp)
+}
+
+// ListMembersWithResponse request returning *ListMembersResponse
+func (c *ClientWithResponses) ListMembersWithResponse(ctx context.Context, org string, team string, reqEditors ...RequestEditorFn) (*ListMembersResponse, error) {
+	rsp, err := c.ListMembers(ctx, org, team, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListMembersResponse(rsp)
+}
+
+// AddMemberWithBodyWithResponse request with arbitrary body returning *AddMemberResponse
+func (c *ClientWithResponses) AddMemberWithBodyWithResponse(ctx context.Context, org string, team string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddMemberResponse, error) {
+	rsp, err := c.AddMemberWithBody(ctx, org, team, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddMemberResponse(rsp)
+}
+
+func (c *ClientWithResponses) AddMemberWithResponse(ctx context.Context, org string, team string, body AddMemberJSONRequestBody, reqEditors ...RequestEditorFn) (*AddMemberResponse, error) {
+	rsp, err := c.AddMember(ctx, org, team, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddMemberResponse(rsp)
+}
+
+// RemoveMemberWithResponse request returning *RemoveMemberResponse
+func (c *ClientWithResponses) RemoveMemberWithResponse(ctx context.Context, org string, team string, subject string, reqEditors ...RequestEditorFn) (*RemoveMemberResponse, error) {
+	rsp, err := c.RemoveMember(ctx, org, team, subject, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRemoveMemberResponse(rsp)
+}
+
+// ListTenantZonesWithResponse request returning *ListTenantZonesResponse
+func (c *ClientWithResponses) ListTenantZonesWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListTenantZonesResponse, error) {
+	rsp, err := c.ListTenantZones(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListTenantZonesResponse(rsp)
+}
+
+// RequestTenantZoneWithBodyWithResponse request with arbitrary body returning *RequestTenantZoneResponse
+func (c *ClientWithResponses) RequestTenantZoneWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RequestTenantZoneResponse, error) {
+	rsp, err := c.RequestTenantZoneWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRequestTenantZoneResponse(rsp)
+}
+
+func (c *ClientWithResponses) RequestTenantZoneWithResponse(ctx context.Context, org string, body RequestTenantZoneJSONRequestBody, reqEditors ...RequestEditorFn) (*RequestTenantZoneResponse, error) {
+	rsp, err := c.RequestTenantZone(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRequestTenantZoneResponse(rsp)
+}
+
+// GetTenantZoneWithResponse request returning *GetTenantZoneResponse
+func (c *ClientWithResponses) GetTenantZoneWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetTenantZoneResponse, error) {
+	rsp, err := c.GetTenantZone(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTenantZoneResponse(rsp)
+}
+
+// DecommissionTenantZoneWithResponse request returning *DecommissionTenantZoneResponse
+func (c *ClientWithResponses) DecommissionTenantZoneWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DecommissionTenantZoneResponse, error) {
+	rsp, err := c.DecommissionTenantZone(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDecommissionTenantZoneResponse(rsp)
+}
+
+// ResumeTenantZoneWithResponse request returning *ResumeTenantZoneResponse
+func (c *ClientWithResponses) ResumeTenantZoneWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*ResumeTenantZoneResponse, error) {
+	rsp, err := c.ResumeTenantZone(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseResumeTenantZoneResponse(rsp)
+}
+
+// GetHealthWithResponse request returning *GetHealthResponse
+func (c *ClientWithResponses) GetHealthWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetHealthResponse, error) {
+	rsp, err := c.GetHealth(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetHealthResponse(rsp)
+}
+
+// GetReadyWithResponse request returning *GetReadyResponse
+func (c *ClientWithResponses) GetReadyWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetReadyResponse, error) {
+	rsp, err := c.GetReady(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetReadyResponse(rsp)
+}
+
+// ParseSyncCatalogResponse parses an HTTP response from a SyncCatalogWithResponse call
+func ParseSyncCatalogResponse(rsp *http.Response) (*SyncCatalogResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SyncCatalogResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SyncOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetCatalogVisibilityResponse parses an HTTP response from a SetCatalogVisibilityWithResponse call
+func ParseSetCatalogVisibilityResponse(rsp *http.Response) (*SetCatalogVisibilityResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetCatalogVisibilityResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListTenantsResponse parses an HTTP response from a ListTenantsWithResponse call
+func ParseListTenantsResponse(rsp *http.Response) (*ListTenantsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListTenantsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListTenantsOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateTenantResponse parses an HTTP response from a CreateTenantWithResponse call
+func ParseCreateTenantResponse(rsp *http.Response) (*CreateTenantResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateTenantResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest TenantOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTenantResponse parses an HTTP response from a GetTenantWithResponse call
+func ParseGetTenantResponse(rsp *http.Response) (*GetTenantResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTenantResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest TenantOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListApprovalsResponse parses an HTTP response from a ListApprovalsWithResponse call
+func ParseListApprovalsResponse(rsp *http.Response) (*ListApprovalsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListApprovalsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetApprovalResponse parses an HTTP response from a GetApprovalWithResponse call
+func ParseGetApprovalResponse(rsp *http.Response) (*GetApprovalResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetApprovalResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ApprovalOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCancelApprovalResponse parses an HTTP response from a CancelApprovalWithResponse call
+func ParseCancelApprovalResponse(rsp *http.Response) (*CancelApprovalResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CancelApprovalResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ApprovalOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDecideApprovalResponse parses an HTTP response from a DecideApprovalWithResponse call
+func ParseDecideApprovalResponse(rsp *http.Response) (*DecideApprovalResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DecideApprovalResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DecideOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListCatalogResponse parses an HTTP response from a ListCatalogWithResponse call
+func ParseListCatalogResponse(rsp *http.Response) (*ListCatalogResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListCatalogResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListCatalogOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetCatalogItemResponse parses an HTTP response from a GetCatalogItemWithResponse call
+func ParseGetCatalogItemResponse(rsp *http.Response) (*GetCatalogItemResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetCatalogItemResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ItemOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnpinCatalogVersionResponse parses an HTTP response from a UnpinCatalogVersionWithResponse call
+func ParseUnpinCatalogVersionResponse(rsp *http.Response) (*UnpinCatalogVersionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnpinCatalogVersionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePinCatalogVersionResponse parses an HTTP response from a PinCatalogVersionWithResponse call
+func ParsePinCatalogVersionResponse(rsp *http.Response) (*PinCatalogVersionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PinCatalogVersionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListCloudAccountsResponse parses an HTTP response from a ListCloudAccountsWithResponse call
+func ParseListCloudAccountsResponse(rsp *http.Response) (*ListCloudAccountsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListCloudAccountsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListAccountsOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRegisterCloudAccountResponse parses an HTTP response from a RegisterCloudAccountWithResponse call
+func ParseRegisterCloudAccountResponse(rsp *http.Response) (*RegisterCloudAccountResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RegisterCloudAccountResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AccountOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeregisterCloudAccountResponse parses an HTTP response from a DeregisterCloudAccountWithResponse call
+func ParseDeregisterCloudAccountResponse(rsp *http.Response) (*DeregisterCloudAccountResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeregisterCloudAccountResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetCloudAccountResponse parses an HTTP response from a GetCloudAccountWithResponse call
+func ParseGetCloudAccountResponse(rsp *http.Response) (*GetCloudAccountResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetCloudAccountResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AccountOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRenderCloudAccountProviderConfigResponse parses an HTTP response from a RenderCloudAccountProviderConfigWithResponse call
+func ParseRenderCloudAccountProviderConfigResponse(rsp *http.Response) (*RenderCloudAccountProviderConfigResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RenderCloudAccountProviderConfigResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []byte
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseValidateCloudAccountResponse parses an HTTP response from a ValidateCloudAccountWithResponse call
+func ParseValidateCloudAccountResponse(rsp *http.Response) (*ValidateCloudAccountResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ValidateCloudAccountResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AccountOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListClusterSetsResponse parses an HTTP response from a ListClusterSetsWithResponse call
+func ParseListClusterSetsResponse(rsp *http.Response) (*ListClusterSetsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListClusterSetsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListClusterSetsOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateClusterSetResponse parses an HTTP response from a CreateClusterSetWithResponse call
+func ParseCreateClusterSetResponse(rsp *http.Response) (*CreateClusterSetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateClusterSetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ClusterSetOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteClusterSetResponse parses an HTTP response from a DeleteClusterSetWithResponse call
+func ParseDeleteClusterSetResponse(rsp *http.Response) (*DeleteClusterSetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteClusterSetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetClusterSetResponse parses an HTTP response from a GetClusterSetWithResponse call
+func ParseGetClusterSetResponse(rsp *http.Response) (*GetClusterSetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetClusterSetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ClusterSetOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListClustersResponse parses an HTTP response from a ListClustersWithResponse call
+func ParseListClustersResponse(rsp *http.Response) (*ListClustersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListClustersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListClustersOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateClusterResponse parses an HTTP response from a CreateClusterWithResponse call
+func ParseCreateClusterResponse(rsp *http.Response) (*CreateClusterResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateClusterResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ClusterOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetClusterResponse parses an HTTP response from a GetClusterWithResponse call
+func ParseGetClusterResponse(rsp *http.Response) (*GetClusterResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetClusterResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ClusterOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseApproveClusterResponse parses an HTTP response from a ApproveClusterWithResponse call
+func ParseApproveClusterResponse(rsp *http.Response) (*ApproveClusterResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ApproveClusterResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ClusterOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListCapabilitiesResponse parses an HTTP response from a ListCapabilitiesWithResponse call
+func ParseListCapabilitiesResponse(rsp *http.Response) (*ListCapabilitiesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListCapabilitiesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListCapabilitiesOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCordonClusterResponse parses an HTTP response from a CordonClusterWithResponse call
+func ParseCordonClusterResponse(rsp *http.Response) (*CordonClusterResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CordonClusterResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ClusterOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDecommissionClusterResponse parses an HTTP response from a DecommissionClusterWithResponse call
+func ParseDecommissionClusterResponse(rsp *http.Response) (*DecommissionClusterResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DecommissionClusterResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DecommissionOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRenderInstallManifestResponse parses an HTTP response from a RenderInstallManifestWithResponse call
+func ParseRenderInstallManifestResponse(rsp *http.Response) (*RenderInstallManifestResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RenderInstallManifestResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []byte
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRevokeClusterResponse parses an HTTP response from a RevokeClusterWithResponse call
+func ParseRevokeClusterResponse(rsp *http.Response) (*RevokeClusterResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RevokeClusterResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseIssueRegistrationTokenResponse parses an HTTP response from a IssueRegistrationTokenWithResponse call
+func ParseIssueRegistrationTokenResponse(rsp *http.Response) (*IssueRegistrationTokenResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &IssueRegistrationTokenResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest TokenOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUncordonClusterResponse parses an HTTP response from a UncordonClusterWithResponse call
+func ParseUncordonClusterResponse(rsp *http.Response) (*UncordonClusterResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UncordonClusterResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ClusterOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeployCatalogItemResponse parses an HTTP response from a DeployCatalogItemWithResponse call
+func ParseDeployCatalogItemResponse(rsp *http.Response) (*DeployCatalogItemResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeployCatalogItemResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DeployOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListExemptionsResponse parses an HTTP response from a ListExemptionsWithResponse call
+func ParseListExemptionsResponse(rsp *http.Response) (*ListExemptionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListExemptionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListExemptionsOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRequestExemptionResponse parses an HTTP response from a RequestExemptionWithResponse call
+func ParseRequestExemptionResponse(rsp *http.Response) (*RequestExemptionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RequestExemptionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ExemptionOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDecideExemptionResponse parses an HTTP response from a DecideExemptionWithResponse call
+func ParseDecideExemptionResponse(rsp *http.Response) (*DecideExemptionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DecideExemptionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ExemptionOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTenantGitConfigResponse parses an HTTP response from a GetTenantGitConfigWithResponse call
+func ParseGetTenantGitConfigResponse(rsp *http.Response) (*GetTenantGitConfigResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTenantGitConfigResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GitConfigOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetTenantGitConfigResponse parses an HTTP response from a SetTenantGitConfigWithResponse call
+func ParseSetTenantGitConfigResponse(rsp *http.Response) (*SetTenantGitConfigResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetTenantGitConfigResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListInstancesResponse parses an HTTP response from a ListInstancesWithResponse call
+func ParseListInstancesResponse(rsp *http.Response) (*ListInstancesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListInstancesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListOutputBody1
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInstanceResponse parses an HTTP response from a GetInstanceWithResponse call
+func ParseGetInstanceResponse(rsp *http.Response) (*GetInstanceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInstanceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseInstanceDiffResponse parses an HTTP response from a InstanceDiffWithResponse call
+func ParseInstanceDiffResponse(rsp *http.Response) (*InstanceDiffResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &InstanceDiffResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DiffOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpgradeInstanceResponse parses an HTTP response from a UpgradeInstanceWithResponse call
+func ParseUpgradeInstanceResponse(rsp *http.Response) (*UpgradeInstanceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpgradeInstanceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DeployOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListNotificationEndpointsResponse parses an HTTP response from a ListNotificationEndpointsWithResponse call
+func ParseListNotificationEndpointsResponse(rsp *http.Response) (*ListNotificationEndpointsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListNotificationEndpointsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListOutputBody2
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateNotificationEndpointResponse parses an HTTP response from a CreateNotificationEndpointWithResponse call
+func ParseCreateNotificationEndpointResponse(rsp *http.Response) (*CreateNotificationEndpointResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateNotificationEndpointResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest EndpointOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteNotificationEndpointResponse parses an HTTP response from a DeleteNotificationEndpointWithResponse call
+func ParseDeleteNotificationEndpointResponse(rsp *http.Response) (*DeleteNotificationEndpointResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteNotificationEndpointResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetNotificationEndpointResponse parses an HTTP response from a GetNotificationEndpointWithResponse call
+func ParseGetNotificationEndpointResponse(rsp *http.Response) (*GetNotificationEndpointResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetNotificationEndpointResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest EndpointOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateNotificationEndpointResponse parses an HTTP response from a UpdateNotificationEndpointWithResponse call
+func ParseUpdateNotificationEndpointResponse(rsp *http.Response) (*UpdateNotificationEndpointResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateNotificationEndpointResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest EndpointOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseTestNotificationEndpointResponse parses an HTTP response from a TestNotificationEndpointWithResponse call
+func ParseTestNotificationEndpointResponse(rsp *http.Response) (*TestNotificationEndpointResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &TestNotificationEndpointResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest TestOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListPoliciesResponse parses an HTTP response from a ListPoliciesWithResponse call
+func ParseListPoliciesResponse(rsp *http.Response) (*ListPoliciesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListPoliciesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListPoliciesOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreatePolicyResponse parses an HTTP response from a CreatePolicyWithResponse call
+func ParseCreatePolicyResponse(rsp *http.Response) (*CreatePolicyResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreatePolicyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PolicyOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseEvaluatePoliciesResponse parses an HTTP response from a EvaluatePoliciesWithResponse call
+func ParseEvaluatePoliciesResponse(rsp *http.Response) (*EvaluatePoliciesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &EvaluatePoliciesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest EvaluateOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeletePolicyResponse parses an HTTP response from a DeletePolicyWithResponse call
+func ParseDeletePolicyResponse(rsp *http.Response) (*DeletePolicyResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeletePolicyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetPolicyResponse parses an HTTP response from a GetPolicyWithResponse call
+func ParseGetPolicyResponse(rsp *http.Response) (*GetPolicyResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPolicyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PolicyOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdatePolicyResponse parses an HTTP response from a UpdatePolicyWithResponse call
+func ParseUpdatePolicyResponse(rsp *http.Response) (*UpdatePolicyResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdatePolicyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PolicyOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListPolicyPacksResponse parses an HTTP response from a ListPolicyPacksWithResponse call
+func ParseListPolicyPacksResponse(rsp *http.Response) (*ListPolicyPacksResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListPolicyPacksResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListPacksOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreatePolicyPackResponse parses an HTTP response from a CreatePolicyPackWithResponse call
+func ParseCreatePolicyPackResponse(rsp *http.Response) (*CreatePolicyPackResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreatePolicyPackResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PackOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetPolicyPackResponse parses an HTTP response from a GetPolicyPackWithResponse call
+func ParseGetPolicyPackResponse(rsp *http.Response) (*GetPolicyPackResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPolicyPackResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PackOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAssignPolicyPackResponse parses an HTTP response from a AssignPolicyPackWithResponse call
+func ParseAssignPolicyPackResponse(rsp *http.Response) (*AssignPolicyPackResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AssignPolicyPackResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AssignPackOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnassignPolicyPackResponse parses an HTTP response from a UnassignPolicyPackWithResponse call
+func ParseUnassignPolicyPackResponse(rsp *http.Response) (*UnassignPolicyPackResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnassignPolicyPackResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListTeamsResponse parses an HTTP response from a ListTeamsWithResponse call
+func ParseListTeamsResponse(rsp *http.Response) (*ListTeamsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListTeamsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListTeamsOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListMembersResponse parses an HTTP response from a ListMembersWithResponse call
+func ParseListMembersResponse(rsp *http.Response) (*ListMembersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListMembersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListMembersOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddMemberResponse parses an HTTP response from a AddMemberWithResponse call
+func ParseAddMemberResponse(rsp *http.Response) (*AddMemberResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddMemberResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRemoveMemberResponse parses an HTTP response from a RemoveMemberWithResponse call
+func ParseRemoveMemberResponse(rsp *http.Response) (*RemoveMemberResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RemoveMemberResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListTenantZonesResponse parses an HTTP response from a ListTenantZonesWithResponse call
+func ParseListTenantZonesResponse(rsp *http.Response) (*ListTenantZonesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListTenantZonesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListZonesOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRequestTenantZoneResponse parses an HTTP response from a RequestTenantZoneWithResponse call
+func ParseRequestTenantZoneResponse(rsp *http.Response) (*RequestTenantZoneResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RequestTenantZoneResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RequestZoneOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTenantZoneResponse parses an HTTP response from a GetTenantZoneWithResponse call
+func ParseGetTenantZoneResponse(rsp *http.Response) (*GetTenantZoneResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTenantZoneResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetZoneOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDecommissionTenantZoneResponse parses an HTTP response from a DecommissionTenantZoneWithResponse call
+func ParseDecommissionTenantZoneResponse(rsp *http.Response) (*DecommissionTenantZoneResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DecommissionTenantZoneResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DecommissionOutputBody1
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseResumeTenantZoneResponse parses an HTTP response from a ResumeTenantZoneWithResponse call
+func ParseResumeTenantZoneResponse(rsp *http.Response) (*ResumeTenantZoneResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ResumeTenantZoneResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetHealthResponse parses an HTTP response from a GetHealthWithResponse call
+func ParseGetHealthResponse(rsp *http.Response) (*GetHealthResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetHealthResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest HealthStatus
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetReadyResponse parses an HTTP response from a GetReadyWithResponse call
+func ParseGetReadyResponse(rsp *http.Response) (*GetReadyResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetReadyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest HealthStatus
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 503:
+		var dest HealthStatus
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON503 = &dest
+
+	}
+
+	return response, nil
+}
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// Sync curated packages from the catalog registry (platform engineer)
+	// (POST /api/v1/admin/catalog/sync)
+	SyncCatalog(w http.ResponseWriter, r *http.Request)
+	// Set per-tenant/cluster visibility rules (platform engineer)
+	// (PUT /api/v1/admin/catalog/{item}/visibility)
+	SetCatalogVisibility(w http.ResponseWriter, r *http.Request, item string)
+	// List tenants visible to the caller (tenant switcher)
+	// (GET /api/v1/tenants)
+	ListTenants(w http.ResponseWriter, r *http.Request)
+	// Create a tenant (Keycloak Organization + default teams)
+	// (POST /api/v1/tenants)
+	CreateTenant(w http.ResponseWriter, r *http.Request)
+	// Get a tenant by slug
+	// (GET /api/v1/tenants/{org})
+	GetTenant(w http.ResponseWriter, r *http.Request, org string)
+	// List approval requests (default: pending)
+	// (GET /api/v1/tenants/{org}/approvals)
+	ListApprovals(w http.ResponseWriter, r *http.Request, org string, params ListApprovalsParams)
+	// Get one approval request
+	// (GET /api/v1/tenants/{org}/approvals/{id})
+	GetApproval(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Withdraw a pending approval request (requester only)
+	// (POST /api/v1/tenants/{org}/approvals/{id}/cancel)
+	CancelApproval(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Approve or reject a pending approval request
+	// (POST /api/v1/tenants/{org}/approvals/{id}/decide)
+	DecideApproval(w http.ResponseWriter, r *http.Request, org string, id string)
+	// List catalog items visible to the tenant (optionally per cluster)
+	// (GET /api/v1/tenants/{org}/catalog)
+	ListCatalog(w http.ResponseWriter, r *http.Request, org string, params ListCatalogParams)
+	// Get a catalog item with schema, UI hints, and versions
+	// (GET /api/v1/tenants/{org}/catalog/{item})
+	GetCatalogItem(w http.ResponseWriter, r *http.Request, org string, item string, params GetCatalogItemParams)
+	// Remove the tenant's version pin
+	// (DELETE /api/v1/tenants/{org}/catalog/{item}/pin)
+	UnpinCatalogVersion(w http.ResponseWriter, r *http.Request, org string, item string, params UnpinCatalogVersionParams)
+	// Pin the tenant to a catalog item version
+	// (PUT /api/v1/tenants/{org}/catalog/{item}/pin)
+	PinCatalogVersion(w http.ResponseWriter, r *http.Request, org string, item string)
+	// List cloud accounts of a tenant
+	// (GET /api/v1/tenants/{org}/cloud-accounts)
+	ListCloudAccounts(w http.ResponseWriter, r *http.Request, org string)
+	// Register a cloud account (role ARN + external ID, never keys)
+	// (POST /api/v1/tenants/{org}/cloud-accounts)
+	RegisterCloudAccount(w http.ResponseWriter, r *http.Request, org string)
+	// Delete the control-plane record (AWS-side role deletion is tenant-owned)
+	// (DELETE /api/v1/tenants/{org}/cloud-accounts/{id})
+	DeregisterCloudAccount(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Get a cloud account
+	// (GET /api/v1/tenants/{org}/cloud-accounts/{id})
+	GetCloudAccount(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Render the Crossplane ProviderConfig manifest for a cluster
+	// (GET /api/v1/tenants/{org}/cloud-accounts/{id}/providerconfig)
+	RenderCloudAccountProviderConfig(w http.ResponseWriter, r *http.Request, org string, id string, params RenderCloudAccountProviderConfigParams)
+	// Run the STS AssumeRole dry-run against the registered role
+	// (POST /api/v1/tenants/{org}/cloud-accounts/{id}/validate)
+	ValidateCloudAccount(w http.ResponseWriter, r *http.Request, org string, id string)
+	// List cluster sets
+	// (GET /api/v1/tenants/{org}/cluster-sets)
+	ListClusterSets(w http.ResponseWriter, r *http.Request, org string)
+	// Create a cluster set
+	// (POST /api/v1/tenants/{org}/cluster-sets)
+	CreateClusterSet(w http.ResponseWriter, r *http.Request, org string)
+	// Delete a cluster set
+	// (DELETE /api/v1/tenants/{org}/cluster-sets/{id})
+	DeleteClusterSet(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Get a cluster set
+	// (GET /api/v1/tenants/{org}/cluster-sets/{id})
+	GetClusterSet(w http.ResponseWriter, r *http.Request, org string, id string)
+	// List clusters of a tenant with connection health
+	// (GET /api/v1/tenants/{org}/clusters)
+	ListClusters(w http.ResponseWriter, r *http.Request, org string)
+	// Register a new cluster record
+	// (POST /api/v1/tenants/{org}/clusters)
+	CreateCluster(w http.ResponseWriter, r *http.Request, org string)
+	// Get a cluster
+	// (GET /api/v1/tenants/{org}/clusters/{id})
+	GetCluster(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Approve cluster enrollment (double opt-in)
+	// (POST /api/v1/tenants/{org}/clusters/{id}/approve)
+	ApproveCluster(w http.ResponseWriter, r *http.Request, org string, id string)
+	// List the live discovered capabilities of a cluster
+	// (GET /api/v1/tenants/{org}/clusters/{id}/capabilities)
+	ListCapabilities(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Cordon a cluster (blocks new deploys; workloads keep running)
+	// (POST /api/v1/tenants/{org}/clusters/{id}/cordon)
+	CordonCluster(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Decommission a cluster (ownership-checked drain, identity revocation, archived audit)
+	// (POST /api/v1/tenants/{org}/clusters/{id}/decommission)
+	DecommissionCluster(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Render the agent install manifest embedding a fresh registration token
+	// (POST /api/v1/tenants/{org}/clusters/{id}/install-manifest)
+	RenderInstallManifest(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Revoke a cluster (disables its Keycloak client)
+	// (POST /api/v1/tenants/{org}/clusters/{id}/revoke)
+	RevokeCluster(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Issue a one-time TTL'd registration token
+	// (POST /api/v1/tenants/{org}/clusters/{id}/tokens)
+	IssueRegistrationToken(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Uncordon a cluster (returns it to service)
+	// (POST /api/v1/tenants/{org}/clusters/{id}/uncordon)
+	UncordonCluster(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Deploy a catalog item to a cluster
+	// (POST /api/v1/tenants/{org}/deploys)
+	DeployCatalogItem(w http.ResponseWriter, r *http.Request, org string)
+	// List exemptions
+	// (GET /api/v1/tenants/{org}/exemptions)
+	ListExemptions(w http.ResponseWriter, r *http.Request, org string)
+	// Request a time-boxed policy exemption
+	// (POST /api/v1/tenants/{org}/exemptions)
+	RequestExemption(w http.ResponseWriter, r *http.Request, org string)
+	// Approve or reject a pending exemption (platform_engineer only, v1 gate)
+	// (POST /api/v1/tenants/{org}/exemptions/{id}/decide)
+	DecideExemption(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Read the tenant state repo config
+	// (GET /api/v1/tenants/{org}/git-config)
+	GetTenantGitConfig(w http.ResponseWriter, r *http.Request, org string)
+	// Set the tenant state repo + commit policy (platform engineer)
+	// (PUT /api/v1/tenants/{org}/git-config)
+	SetTenantGitConfig(w http.ResponseWriter, r *http.Request, org string)
+	// List resource instances (filterable by cluster, item, health, owner team)
+	// (GET /api/v1/tenants/{org}/instances)
+	ListInstances(w http.ResponseWriter, r *http.Request, org string, params ListInstancesParams)
+	// Get one resource instance with version badge
+	// (GET /api/v1/tenants/{org}/instances/{id})
+	GetInstance(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Diff preview data for an upgrade
+	// (GET /api/v1/tenants/{org}/instances/{id}/diff)
+	InstanceDiff(w http.ResponseWriter, r *http.Request, org string, id string, params InstanceDiffParams)
+	// One-click upgrade of an instance to a newer catalog version
+	// (POST /api/v1/tenants/{org}/instances/{id}/upgrade)
+	UpgradeInstance(w http.ResponseWriter, r *http.Request, org string, id string)
+	// List notification endpoints
+	// (GET /api/v1/tenants/{org}/notification-endpoints)
+	ListNotificationEndpoints(w http.ResponseWriter, r *http.Request, org string)
+	// Create a notification endpoint (slack|webhook)
+	// (POST /api/v1/tenants/{org}/notification-endpoints)
+	CreateNotificationEndpoint(w http.ResponseWriter, r *http.Request, org string)
+	// Delete a notification endpoint
+	// (DELETE /api/v1/tenants/{org}/notification-endpoints/{id})
+	DeleteNotificationEndpoint(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Get a notification endpoint
+	// (GET /api/v1/tenants/{org}/notification-endpoints/{id})
+	GetNotificationEndpoint(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Update a notification endpoint
+	// (PUT /api/v1/tenants/{org}/notification-endpoints/{id})
+	UpdateNotificationEndpoint(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Send a test notification to an endpoint
+	// (POST /api/v1/tenants/{org}/notification-endpoints/{id}/test)
+	TestNotificationEndpoint(w http.ResponseWriter, r *http.Request, org string, id string)
+	// List policies (org + platform-global)
+	// (GET /api/v1/tenants/{org}/policies)
+	ListPolicies(w http.ResponseWriter, r *http.Request, org string)
+	// Create a policy (rego, target request|render)
+	// (POST /api/v1/tenants/{org}/policies)
+	CreatePolicy(w http.ResponseWriter, r *http.Request, org string)
+	// Dry-run pre-flight policy evaluation
+	// (POST /api/v1/tenants/{org}/policies/evaluate)
+	EvaluatePolicies(w http.ResponseWriter, r *http.Request, org string)
+	// Delete a policy
+	// (DELETE /api/v1/tenants/{org}/policies/{id})
+	DeletePolicy(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Get a policy
+	// (GET /api/v1/tenants/{org}/policies/{id})
+	GetPolicy(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Update a policy (bumps version)
+	// (PUT /api/v1/tenants/{org}/policies/{id})
+	UpdatePolicy(w http.ResponseWriter, r *http.Request, org string, id string)
+	// List policy packs (org + platform-global)
+	// (GET /api/v1/tenants/{org}/policy-packs)
+	ListPolicyPacks(w http.ResponseWriter, r *http.Request, org string)
+	// Create a policy pack (kyverno|cel-vap)
+	// (POST /api/v1/tenants/{org}/policy-packs)
+	CreatePolicyPack(w http.ResponseWriter, r *http.Request, org string)
+	// Get a policy pack
+	// (GET /api/v1/tenants/{org}/policy-packs/{id})
+	GetPolicyPack(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Assign a policy pack to a clusterset|tenant|cluster
+	// (POST /api/v1/tenants/{org}/policy-packs/{id}/assign)
+	AssignPolicyPack(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Remove a policy pack assignment
+	// (DELETE /api/v1/tenants/{org}/policy-packs/{id}/assignments/{assignmentId})
+	UnassignPolicyPack(w http.ResponseWriter, r *http.Request, org string, id string, assignmentId string)
+	// List teams of a tenant
+	// (GET /api/v1/tenants/{org}/teams)
+	ListTeams(w http.ResponseWriter, r *http.Request, org string)
+	// List members of a team
+	// (GET /api/v1/tenants/{org}/teams/{team}/members)
+	ListMembers(w http.ResponseWriter, r *http.Request, org string, team string)
+	// Add a user to a team (platform-engineer/admin only)
+	// (POST /api/v1/tenants/{org}/teams/{team}/members)
+	AddMember(w http.ResponseWriter, r *http.Request, org string, team string)
+	// Remove a user from a team (platform-engineer/admin only)
+	// (DELETE /api/v1/tenants/{org}/teams/{team}/members/{subject})
+	RemoveMember(w http.ResponseWriter, r *http.Request, org string, team string, subject string)
+	// List tenant zones owned by this org
+	// (GET /api/v1/tenants/{org}/zones)
+	ListTenantZones(w http.ResponseWriter, r *http.Request, org string)
+	// Request a new tenant zone (approval-gated by default)
+	// (POST /api/v1/tenants/{org}/zones)
+	RequestTenantZone(w http.ResponseWriter, r *http.Request, org string)
+	// Get a tenant zone with its step sub-resources
+	// (GET /api/v1/tenants/{org}/zones/{id})
+	GetTenantZone(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Decommission a tenant zone (approval-gated, ownership-checked)
+	// (POST /api/v1/tenants/{org}/zones/{id}/decommission)
+	DecommissionTenantZone(w http.ResponseWriter, r *http.Request, org string, id string)
+	// Resume a zone after manual intervention (§10)
+	// (POST /api/v1/tenants/{org}/zones/{id}/resume)
+	ResumeTenantZone(w http.ResponseWriter, r *http.Request, org string, id string)
 	// Liveness probe
 	// (GET /healthz)
 	GetHealth(w http.ResponseWriter, r *http.Request)
@@ -54,6 +11007,2653 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc func(http.Handler) http.Handler
+
+// SyncCatalog operation middleware
+func (siw *ServerInterfaceWrapper) SyncCatalog(w http.ResponseWriter, r *http.Request) {
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SyncCatalog(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SetCatalogVisibility operation middleware
+func (siw *ServerInterfaceWrapper) SetCatalogVisibility(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "item" -------------
+	var item string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "item", r.PathValue("item"), &item, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "item", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetCatalogVisibility(w, r, item)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListTenants operation middleware
+func (siw *ServerInterfaceWrapper) ListTenants(w http.ResponseWriter, r *http.Request) {
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListTenants(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateTenant operation middleware
+func (siw *ServerInterfaceWrapper) CreateTenant(w http.ResponseWriter, r *http.Request) {
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateTenant(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetTenant operation middleware
+func (siw *ServerInterfaceWrapper) GetTenant(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetTenant(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListApprovals operation middleware
+func (siw *ServerInterfaceWrapper) ListApprovals(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListApprovalsParams
+
+	// ------------- Optional query parameter "state" -------------
+
+	err = runtime.BindQueryParameter("form", false, false, "state", r.URL.Query(), &params.State)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "state", Err: err})
+		return
+	}
+
+	// ------------- Optional query parameter "requester" -------------
+
+	err = runtime.BindQueryParameter("form", false, false, "requester", r.URL.Query(), &params.Requester)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "requester", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListApprovals(w, r, org, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetApproval operation middleware
+func (siw *ServerInterfaceWrapper) GetApproval(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetApproval(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CancelApproval operation middleware
+func (siw *ServerInterfaceWrapper) CancelApproval(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CancelApproval(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DecideApproval operation middleware
+func (siw *ServerInterfaceWrapper) DecideApproval(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DecideApproval(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListCatalog operation middleware
+func (siw *ServerInterfaceWrapper) ListCatalog(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListCatalogParams
+
+	// ------------- Optional query parameter "cluster" -------------
+
+	err = runtime.BindQueryParameter("form", false, false, "cluster", r.URL.Query(), &params.Cluster)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cluster", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListCatalog(w, r, org, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetCatalogItem operation middleware
+func (siw *ServerInterfaceWrapper) GetCatalogItem(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "item" -------------
+	var item string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "item", r.PathValue("item"), &item, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "item", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetCatalogItemParams
+
+	// ------------- Optional query parameter "cluster" -------------
+
+	err = runtime.BindQueryParameter("form", false, false, "cluster", r.URL.Query(), &params.Cluster)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cluster", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetCatalogItem(w, r, org, item, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UnpinCatalogVersion operation middleware
+func (siw *ServerInterfaceWrapper) UnpinCatalogVersion(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "item" -------------
+	var item string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "item", r.PathValue("item"), &item, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "item", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UnpinCatalogVersionParams
+
+	// ------------- Optional query parameter "cluster" -------------
+
+	err = runtime.BindQueryParameter("form", false, false, "cluster", r.URL.Query(), &params.Cluster)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cluster", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UnpinCatalogVersion(w, r, org, item, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PinCatalogVersion operation middleware
+func (siw *ServerInterfaceWrapper) PinCatalogVersion(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "item" -------------
+	var item string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "item", r.PathValue("item"), &item, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "item", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PinCatalogVersion(w, r, org, item)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListCloudAccounts operation middleware
+func (siw *ServerInterfaceWrapper) ListCloudAccounts(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListCloudAccounts(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RegisterCloudAccount operation middleware
+func (siw *ServerInterfaceWrapper) RegisterCloudAccount(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RegisterCloudAccount(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeregisterCloudAccount operation middleware
+func (siw *ServerInterfaceWrapper) DeregisterCloudAccount(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeregisterCloudAccount(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetCloudAccount operation middleware
+func (siw *ServerInterfaceWrapper) GetCloudAccount(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetCloudAccount(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RenderCloudAccountProviderConfig operation middleware
+func (siw *ServerInterfaceWrapper) RenderCloudAccountProviderConfig(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params RenderCloudAccountProviderConfigParams
+
+	// ------------- Required query parameter "clusterId" -------------
+
+	if paramValue := r.URL.Query().Get("clusterId"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "clusterId"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", false, true, "clusterId", r.URL.Query(), &params.ClusterId)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "clusterId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RenderCloudAccountProviderConfig(w, r, org, id, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ValidateCloudAccount operation middleware
+func (siw *ServerInterfaceWrapper) ValidateCloudAccount(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ValidateCloudAccount(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListClusterSets operation middleware
+func (siw *ServerInterfaceWrapper) ListClusterSets(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListClusterSets(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateClusterSet operation middleware
+func (siw *ServerInterfaceWrapper) CreateClusterSet(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateClusterSet(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteClusterSet operation middleware
+func (siw *ServerInterfaceWrapper) DeleteClusterSet(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteClusterSet(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetClusterSet operation middleware
+func (siw *ServerInterfaceWrapper) GetClusterSet(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetClusterSet(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListClusters operation middleware
+func (siw *ServerInterfaceWrapper) ListClusters(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListClusters(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateCluster operation middleware
+func (siw *ServerInterfaceWrapper) CreateCluster(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateCluster(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetCluster operation middleware
+func (siw *ServerInterfaceWrapper) GetCluster(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetCluster(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ApproveCluster operation middleware
+func (siw *ServerInterfaceWrapper) ApproveCluster(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ApproveCluster(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListCapabilities operation middleware
+func (siw *ServerInterfaceWrapper) ListCapabilities(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListCapabilities(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CordonCluster operation middleware
+func (siw *ServerInterfaceWrapper) CordonCluster(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CordonCluster(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DecommissionCluster operation middleware
+func (siw *ServerInterfaceWrapper) DecommissionCluster(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DecommissionCluster(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RenderInstallManifest operation middleware
+func (siw *ServerInterfaceWrapper) RenderInstallManifest(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RenderInstallManifest(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RevokeCluster operation middleware
+func (siw *ServerInterfaceWrapper) RevokeCluster(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RevokeCluster(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// IssueRegistrationToken operation middleware
+func (siw *ServerInterfaceWrapper) IssueRegistrationToken(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.IssueRegistrationToken(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UncordonCluster operation middleware
+func (siw *ServerInterfaceWrapper) UncordonCluster(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UncordonCluster(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeployCatalogItem operation middleware
+func (siw *ServerInterfaceWrapper) DeployCatalogItem(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeployCatalogItem(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListExemptions operation middleware
+func (siw *ServerInterfaceWrapper) ListExemptions(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListExemptions(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RequestExemption operation middleware
+func (siw *ServerInterfaceWrapper) RequestExemption(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RequestExemption(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DecideExemption operation middleware
+func (siw *ServerInterfaceWrapper) DecideExemption(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DecideExemption(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetTenantGitConfig operation middleware
+func (siw *ServerInterfaceWrapper) GetTenantGitConfig(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetTenantGitConfig(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SetTenantGitConfig operation middleware
+func (siw *ServerInterfaceWrapper) SetTenantGitConfig(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetTenantGitConfig(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListInstances operation middleware
+func (siw *ServerInterfaceWrapper) ListInstances(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListInstancesParams
+
+	// ------------- Optional query parameter "cluster" -------------
+
+	err = runtime.BindQueryParameter("form", false, false, "cluster", r.URL.Query(), &params.Cluster)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cluster", Err: err})
+		return
+	}
+
+	// ------------- Optional query parameter "item" -------------
+
+	err = runtime.BindQueryParameter("form", false, false, "item", r.URL.Query(), &params.Item)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "item", Err: err})
+		return
+	}
+
+	// ------------- Optional query parameter "health" -------------
+
+	err = runtime.BindQueryParameter("form", false, false, "health", r.URL.Query(), &params.Health)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "health", Err: err})
+		return
+	}
+
+	// ------------- Optional query parameter "ownerTeam" -------------
+
+	err = runtime.BindQueryParameter("form", false, false, "ownerTeam", r.URL.Query(), &params.OwnerTeam)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "ownerTeam", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListInstances(w, r, org, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetInstance operation middleware
+func (siw *ServerInterfaceWrapper) GetInstance(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetInstance(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// InstanceDiff operation middleware
+func (siw *ServerInterfaceWrapper) InstanceDiff(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params InstanceDiffParams
+
+	// ------------- Required query parameter "to" -------------
+
+	if paramValue := r.URL.Query().Get("to"); paramValue != "" {
+
+	} else {
+		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		return
+	}
+
+	err = runtime.BindQueryParameter("form", false, true, "to", r.URL.Query(), &params.To)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.InstanceDiff(w, r, org, id, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpgradeInstance operation middleware
+func (siw *ServerInterfaceWrapper) UpgradeInstance(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpgradeInstance(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListNotificationEndpoints operation middleware
+func (siw *ServerInterfaceWrapper) ListNotificationEndpoints(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListNotificationEndpoints(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateNotificationEndpoint operation middleware
+func (siw *ServerInterfaceWrapper) CreateNotificationEndpoint(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateNotificationEndpoint(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteNotificationEndpoint operation middleware
+func (siw *ServerInterfaceWrapper) DeleteNotificationEndpoint(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteNotificationEndpoint(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetNotificationEndpoint operation middleware
+func (siw *ServerInterfaceWrapper) GetNotificationEndpoint(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetNotificationEndpoint(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateNotificationEndpoint operation middleware
+func (siw *ServerInterfaceWrapper) UpdateNotificationEndpoint(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateNotificationEndpoint(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// TestNotificationEndpoint operation middleware
+func (siw *ServerInterfaceWrapper) TestNotificationEndpoint(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.TestNotificationEndpoint(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListPolicies operation middleware
+func (siw *ServerInterfaceWrapper) ListPolicies(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListPolicies(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreatePolicy operation middleware
+func (siw *ServerInterfaceWrapper) CreatePolicy(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreatePolicy(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// EvaluatePolicies operation middleware
+func (siw *ServerInterfaceWrapper) EvaluatePolicies(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.EvaluatePolicies(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeletePolicy operation middleware
+func (siw *ServerInterfaceWrapper) DeletePolicy(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeletePolicy(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPolicy operation middleware
+func (siw *ServerInterfaceWrapper) GetPolicy(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPolicy(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdatePolicy operation middleware
+func (siw *ServerInterfaceWrapper) UpdatePolicy(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdatePolicy(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListPolicyPacks operation middleware
+func (siw *ServerInterfaceWrapper) ListPolicyPacks(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListPolicyPacks(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreatePolicyPack operation middleware
+func (siw *ServerInterfaceWrapper) CreatePolicyPack(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreatePolicyPack(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPolicyPack operation middleware
+func (siw *ServerInterfaceWrapper) GetPolicyPack(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPolicyPack(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AssignPolicyPack operation middleware
+func (siw *ServerInterfaceWrapper) AssignPolicyPack(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AssignPolicyPack(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UnassignPolicyPack operation middleware
+func (siw *ServerInterfaceWrapper) UnassignPolicyPack(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "assignmentId" -------------
+	var assignmentId string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "assignmentId", r.PathValue("assignmentId"), &assignmentId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "assignmentId", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UnassignPolicyPack(w, r, org, id, assignmentId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListTeams operation middleware
+func (siw *ServerInterfaceWrapper) ListTeams(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListTeams(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListMembers operation middleware
+func (siw *ServerInterfaceWrapper) ListMembers(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "team" -------------
+	var team string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "team", r.PathValue("team"), &team, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "team", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListMembers(w, r, org, team)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AddMember operation middleware
+func (siw *ServerInterfaceWrapper) AddMember(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "team" -------------
+	var team string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "team", r.PathValue("team"), &team, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "team", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AddMember(w, r, org, team)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RemoveMember operation middleware
+func (siw *ServerInterfaceWrapper) RemoveMember(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "team" -------------
+	var team string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "team", r.PathValue("team"), &team, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "team", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "subject" -------------
+	var subject string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "subject", r.PathValue("subject"), &subject, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "subject", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RemoveMember(w, r, org, team, subject)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListTenantZones operation middleware
+func (siw *ServerInterfaceWrapper) ListTenantZones(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListTenantZones(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RequestTenantZone operation middleware
+func (siw *ServerInterfaceWrapper) RequestTenantZone(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RequestTenantZone(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetTenantZone operation middleware
+func (siw *ServerInterfaceWrapper) GetTenantZone(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetTenantZone(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DecommissionTenantZone operation middleware
+func (siw *ServerInterfaceWrapper) DecommissionTenantZone(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DecommissionTenantZone(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ResumeTenantZone operation middleware
+func (siw *ServerInterfaceWrapper) ResumeTenantZone(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	ctx := r.Context()
+
+	ctx = context.WithValue(ctx, BearerScopes, []string{})
+
+	r = r.WithContext(ctx)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ResumeTenantZone(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
 
 // GetHealth operation middleware
 func (siw *ServerInterfaceWrapper) GetHealth(w http.ResponseWriter, r *http.Request) {
@@ -203,6 +13803,76 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 		ErrorHandlerFunc:   options.ErrorHandlerFunc,
 	}
 
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/admin/catalog/sync", wrapper.SyncCatalog)
+	m.HandleFunc("PUT "+options.BaseURL+"/api/v1/admin/catalog/{item}/visibility", wrapper.SetCatalogVisibility)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants", wrapper.ListTenants)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants", wrapper.CreateTenant)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}", wrapper.GetTenant)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/approvals", wrapper.ListApprovals)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/approvals/{id}", wrapper.GetApproval)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/approvals/{id}/cancel", wrapper.CancelApproval)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/approvals/{id}/decide", wrapper.DecideApproval)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/catalog", wrapper.ListCatalog)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/catalog/{item}", wrapper.GetCatalogItem)
+	m.HandleFunc("DELETE "+options.BaseURL+"/api/v1/tenants/{org}/catalog/{item}/pin", wrapper.UnpinCatalogVersion)
+	m.HandleFunc("PUT "+options.BaseURL+"/api/v1/tenants/{org}/catalog/{item}/pin", wrapper.PinCatalogVersion)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/cloud-accounts", wrapper.ListCloudAccounts)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/cloud-accounts", wrapper.RegisterCloudAccount)
+	m.HandleFunc("DELETE "+options.BaseURL+"/api/v1/tenants/{org}/cloud-accounts/{id}", wrapper.DeregisterCloudAccount)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/cloud-accounts/{id}", wrapper.GetCloudAccount)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/cloud-accounts/{id}/providerconfig", wrapper.RenderCloudAccountProviderConfig)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/cloud-accounts/{id}/validate", wrapper.ValidateCloudAccount)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/cluster-sets", wrapper.ListClusterSets)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/cluster-sets", wrapper.CreateClusterSet)
+	m.HandleFunc("DELETE "+options.BaseURL+"/api/v1/tenants/{org}/cluster-sets/{id}", wrapper.DeleteClusterSet)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/cluster-sets/{id}", wrapper.GetClusterSet)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/clusters", wrapper.ListClusters)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/clusters", wrapper.CreateCluster)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}", wrapper.GetCluster)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/approve", wrapper.ApproveCluster)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/capabilities", wrapper.ListCapabilities)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/cordon", wrapper.CordonCluster)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/decommission", wrapper.DecommissionCluster)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/install-manifest", wrapper.RenderInstallManifest)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/revoke", wrapper.RevokeCluster)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/tokens", wrapper.IssueRegistrationToken)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/uncordon", wrapper.UncordonCluster)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/deploys", wrapper.DeployCatalogItem)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/exemptions", wrapper.ListExemptions)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/exemptions", wrapper.RequestExemption)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/exemptions/{id}/decide", wrapper.DecideExemption)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/git-config", wrapper.GetTenantGitConfig)
+	m.HandleFunc("PUT "+options.BaseURL+"/api/v1/tenants/{org}/git-config", wrapper.SetTenantGitConfig)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/instances", wrapper.ListInstances)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}", wrapper.GetInstance)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/diff", wrapper.InstanceDiff)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/upgrade", wrapper.UpgradeInstance)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/notification-endpoints", wrapper.ListNotificationEndpoints)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/notification-endpoints", wrapper.CreateNotificationEndpoint)
+	m.HandleFunc("DELETE "+options.BaseURL+"/api/v1/tenants/{org}/notification-endpoints/{id}", wrapper.DeleteNotificationEndpoint)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/notification-endpoints/{id}", wrapper.GetNotificationEndpoint)
+	m.HandleFunc("PUT "+options.BaseURL+"/api/v1/tenants/{org}/notification-endpoints/{id}", wrapper.UpdateNotificationEndpoint)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/notification-endpoints/{id}/test", wrapper.TestNotificationEndpoint)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/policies", wrapper.ListPolicies)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/policies", wrapper.CreatePolicy)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/policies/evaluate", wrapper.EvaluatePolicies)
+	m.HandleFunc("DELETE "+options.BaseURL+"/api/v1/tenants/{org}/policies/{id}", wrapper.DeletePolicy)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/policies/{id}", wrapper.GetPolicy)
+	m.HandleFunc("PUT "+options.BaseURL+"/api/v1/tenants/{org}/policies/{id}", wrapper.UpdatePolicy)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/policy-packs", wrapper.ListPolicyPacks)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/policy-packs", wrapper.CreatePolicyPack)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/policy-packs/{id}", wrapper.GetPolicyPack)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/policy-packs/{id}/assign", wrapper.AssignPolicyPack)
+	m.HandleFunc("DELETE "+options.BaseURL+"/api/v1/tenants/{org}/policy-packs/{id}/assignments/{assignmentId}", wrapper.UnassignPolicyPack)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/teams", wrapper.ListTeams)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/teams/{team}/members", wrapper.ListMembers)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/teams/{team}/members", wrapper.AddMember)
+	m.HandleFunc("DELETE "+options.BaseURL+"/api/v1/tenants/{org}/teams/{team}/members/{subject}", wrapper.RemoveMember)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/zones", wrapper.ListTenantZones)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/zones", wrapper.RequestTenantZone)
+	m.HandleFunc("GET "+options.BaseURL+"/api/v1/tenants/{org}/zones/{id}", wrapper.GetTenantZone)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/zones/{id}/decommission", wrapper.DecommissionTenantZone)
+	m.HandleFunc("POST "+options.BaseURL+"/api/v1/tenants/{org}/zones/{id}/resume", wrapper.ResumeTenantZone)
 	m.HandleFunc("GET "+options.BaseURL+"/healthz", wrapper.GetHealth)
 	m.HandleFunc("GET "+options.BaseURL+"/readyz", wrapper.GetReady)
 
@@ -212,18 +13882,132 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"H4sIAAAAAAAC/8xUwW4yNxB+FWvawx9p2SWhvewNUdpSRRUKkVqJcJh4B9ap13bt2UUU8Tx9jz5ZZe8S",
-	"glBz7X9izcx8/uabb3wEaRtnDRkOUB7BoceGmHw6PZNBw4sqflcUpFeOlTVQDhERpHUkttYLrkl4+rOl",
-	"wOILp+gI9+hJsE1BaT3d5ZCBivU1YUUeMjDYEJTw+2hh0KtRjzta/AAZRDjlqYKSfUsZBFlTg5HL1voG",
-	"GUpoW1VBBnxwESSwV2YHp9PpnJy6+JlQc71i5DadsapUbAP10ltHnhUFKLeoA2XgPvx1hPBeRKZtoFyD",
-	"/QM2Nxdm0JEPSZnjDZmPjazPiBcM+/pGklNeINl6xYdV5N4TeCX05Kct15fTj+fuf/ntGYZOI1IfvchR",
-	"M7teDGW29naGT/PVswit36IkYbdpSmkKQlrD3mrhNJp+vNKaYDUJNJWYPS6E1Cpa5sV8cRo5ziMli3/+",
-	"/i6f3OViuoth0QZKsLun5UzMOzK8Yk/Y9DegZKFMYMIqfzFTrUXUHiO9IJJ1ejckl1WiU5jAbrwiejfl",
-	"LwYy0EqSCRTbHbw1dShrGj3kY8ig9XqQJpRFsd/vc0zh3PpdMdSG4nExm/+6mqeaUwasWEekXp3ZoM4y",
-	"qTNdLuDD/GGc3/dF1pFBp6CEST7OJ5CBQ67TVIs6WfKv+L0jjj/vncdtg5+Ie9emNQjORlYx7WE8jj9R",
-	"PjKpEJ3TSqbS4i30FrxsyreetlDCN8VlzYthNYqrvUg+ufbHinynJAkVBGrVUX5lUijXmwxC2zToD1DC",
-	"o+rIUAjCeftK0YW4C9HxDTHCJpYWnrA6fNr1U8z4SppObPM4yu/Hk/+DgLH8TuIT5aNm6lPpr4uvX5X1",
-	"5hTRyHfp0V8fhxUp0Kmiu4cYHfCO/0E1XlMhY3od9NkHZCpnleGQX575ROi0Of0bAAD//5pAgaB3BgAA",
+	"H4sIAAAAAAAC/+x9624bOfLvqxA6C8TekSw7mbPA8eLgwBNnZ7ybmRi2kwEmm7OguksSxy2yl2Tb0cR+",
+	"nn2PfbI/eOmLWmTfLNlpxZ/iqLvJYtWPxWKxqvhlELBFzChQKQbHXwYimMMC6z9PgoAlVL5LZJzIH1i4",
+	"VD/iMCSSMIqjc85i4JKAGBxPcSRgOIgLP30Z/Mm0pf4MQQScxOrDwfHgBL2/eIskQ3IO6O+X735Bl/pN",
+	"NGUcyTkRiE1+h0AeDIYD+IwXcQSD48Fcylgcj8f2l4OALcaW2vEaqQe/C0YHw8GU8QWWg+NBwslgOOCA",
+	"w3c0Wg6OJU9gOJDLWDUtJCd0NrgfDrBpSJPPYTo4Hvyvcc6grL/XEUtC2+ng/l41/O+EcAgHxx+zNj5l",
+	"7ZvhqPZPwvBnWEyAn9Gvn6lrtHblqkgMA9aI/gcsg4jha5QI4IiEg+FgQehboDM5HxwfrTVV4nTarpPT",
+	"cczZDY56Ad81Wjvj17ZUB+C0xwv4dwLCgeG0nSrWph+34ysODB+/+KgH7nwYYBpAFEH4w9L9fI4phcj9",
+	"LEqEBH4Wup9ywBLCEz2SjOMhljCSZAEDB59DCEjY7hP4HBMOos0nxE0voUIqZniGQyQsPI8oXoD3gYhx",
+	"4H7K+MzTILulwK8AL5xPOWDhETU32PHIWsQQDI6/qL8klm6iboALN5BKWNZqxQwhY07+eREctuMidSkF",
+	"RZQ454QQZEbPcXDdB82+TmxXhSMxn4H0oMM8vNI/l0dluS5AojskgWKq/rC/Duo0f6HlAg3VgunFSuCg",
+	"tvNaoNtaQL05c84iEixP8vfXloP8kYvHr3GMJyQisi1nq/VyCBG01MtTwoW8BKBtPppxlsRuVeom7JpQ",
+	"94MIt+99gSmegeLtzyyEdmo7A+b9cJCQn4gx4lsrx6IG1GOzXa4Rt8rglfFW4+JCga8VNPxC8XLfw6bS",
+	"iIsDdBMtccRmZxIWH3IutgF1hSFCWi/ZMV5GDId2NdyMvF2LoCXayZHibqetsae/2pzhZT/x2IDwWQKn",
+	"OPJZRp6fhUiAv+dRS+NHGask9JgwnEVwwj3GT0JfMyrhs3TPar/NgyMStmWZ/Ygw+oZzxlsaTNkghwVh",
+	"5sNbGUxTY+m1XeVbzqtMm7yeQ3AtErfRGTBKIegGq1ZbAKL+niTe3Yxv8bB73tcRAe/MuE4mwClIEB+8",
+	"M1up3wlEws9Gl0lWlkWXJcu7HjESBmcdZ5MP9VXgtKtUK9T1wQxcI7WrDRjkM63an2VeKzM7/byCnZfQ",
+	"dk3oMNdI6Mf/JUQQSMYfNg38kPYAtgEsV8lrCM9LkD1C6Aq1DwSpRVIDnKo3PVBVj5zc1by33/dgi+6m",
+	"tyuHN7FQpDNkgT9nDtrDw3YOW7/RXRzuJci+SahI8oOEtFVt5pJGuV+/dHojkwdLAiieRFDU+hPGIsBU",
+	"P7xJz8pWR/NmEcsl+r8IRxGy75idlltmNIki1UuJCMw5XhZ3uaudiAgH1+gO3cJkzth1K+NMQMDBveNI",
+	"nNaaGy52/6w+8WOlJ45QB7HdMTMj1OHnvF7eAKcM3aEAotENjj0+IDIFke7m/cZIQKwnxeEn4HgBEnhb",
+	"j4AVq6W/6BPIqaoQtHYd9kfUq+RuWtgcZqzdnGQJDxwNXcCMIfMQ7cU4uMYzQIRiTg5iPYT9gdcZ7yJL",
+	"H2egO8SBhg3c6xYTtr0COCy9fjxcaU9+b/BQIrcrHkIi4ggvf1k3kV7WmkjDgYiS2fqQ31+8HQk8hfRw",
+	"RL81LLb9l1crTb9USkBK4Orr//8Rj/44HP2fT/bf0ac//6lW7LaL4mhckj7Vh59vPsNC09oDYfsoftgx",
+	"O7gMBOdBehUfe8O+bXKt4qy4NUP7sH0uU/pVx3ucQsAWCyJEbyb7OrldGTxlzvX5lGNCtZmPbudAEWV0",
+	"dKaW55E5MQsRB7NWCgSfiZBo77//OTpE7AY4JyEUlu+i5qhkfU9w7aD3sbyXw0Go5ALhWRYhoxnQdRfm",
+	"8YY6u/nUWHpHfRPf0UO1k8+B6mBYHLFlL3TMCqGdAd40Zq3GgszPj2teTDciq/xJcYzUY7R3+svl6Ojo",
+	"5SukPUP7f0UTBQsQmn1p8Bk6O0WYKj0XMxRjOUcCZjpCZM1GdVilex9H9q8/pz/t/78/+bZOWWTaJhuu",
+	"Dl3LI9CaH62np+prAWWfvFDvh05fpbTzJkm3U6fMTW8XIJJo3UyxTfj5ab9rx8vUODo7dULhtVKJ8vKn",
+	"E+fTbA1wf3x+8f7irfPJpcQyca9KH5pCrtB5/lXW9LA4suI4UrKcfCTTaS9QuUJn9437dFqLSDKdnnO4",
+	"IXC7Dkj1vY+N6Uctj0cTzoHKn63zzb02mHcuC+FA9qeqcIHuccPGEVRJknmlSJH5pTGWC9QVIpRKwyq3",
+	"Olxj1xqxLum8oWHMSD9yW9Zp7e61NC3VAf4XJsmUBCZkKP2mLK6sMSd/OWf8FCQmUUvGRsz0u87ZX+fA",
+	"QbMVVOuIBVr04RDBwewAvZgozmhL/+OrTwcSz8QLxDh6oWyTAzkndDYi4Qun9x2EwDOHXaSHgexjZEOc",
+	"XPFViePjqzkg/QhhqcmeEbVdzAboNIB1jz+zEKKvGJAZjd0tgRQZZVrnyQLTkWpA7coQfI4jTDW/kLKk",
+	"FCzNWBTdBgDKFmVTPbyYs0kEi9WhWNYt0ZQxRARKQYwmiVT/19sdOjtw5myooTrO+t7FRiwoUlt7NkWE",
+	"huSGhAmOLDrNEFeOAKumXHHCNDgcTHWlW9xniMMUDGfkHEtEQqBqSlsTPuNkQw66wKBHOYrYbIwnwdHL",
+	"V+socAZ4JQ5m/nR1dY7MQxSYKOOs7+8PDwsNEyr/8n3eNKESZmbfL4mMnNwQc8blsIwrkSwWmC9Lo0aq",
+	"3QN0pcBlZq6YsyQKEWUSqa3aDNAE5C0ALbBOpK1olqxy7gccotTlNvSd2yuip1ibrQM8YYk8nkSYXg+G",
+	"daJl5WGFLEjUFsxMGDPBnXR5JSrSn2rl6dReimv9iBRYI/WBPqr2NtVDdpgVyUufKuTSC3Nnjdbuq0xA",
+	"Ur7WZ7+cpm+v7zntAydn0yOltnHx5hTDm8u4+cD4TSUfVoTDm7P1sG0qoAiYVoMdY4CzbtOWss7ywOB8",
+	"+HVRmJlAezFX1ontvDcoArnSUsleXNsRZE9cjP2xH3GtP24ioLVonlXxMnXffHC5FrJGPNz8jVHoCUdX",
+	"Se1cRUBCXBnDWsVqE+ihCLmUEDuDJv9gFJo3syYv/XlKpVNmRL5mdEpmPTCP1mntKrUJFvADxzSYe7J1",
+	"FgsizRKsXgCaLIxjjSu2DQdxEkX/sgFMBbYWV5aYrbNEe/fH+jyDcaSHqplkbfV/JoeHrwITWaP/hpGO",
+	"rhrpFUMfarSsRWE/WRlPJQp6MXfXie1sJ+t2ms2vrNv1I1jzs4uxPwGO5Dz3qrfgaL4zTeHHrp1Ya2yp",
+	"2xZddK4o/bYZcFlqqi+jsrrQhTkBmONNGZ0zoMAzf12DffpcC6lNulyEJYhKt3aTBGq4tS2c3GBiXSuu",
+	"KKSulS5ib8JbGgdi43arwH9ReLVhEQyDs59zB+b6G0saXHq/T+L26aSNA4sdTB+u2u7F3esquIt73Jz1",
+	"hQIdOasyVOX2/lraegGoRaAXGeCcqxIWGy1pkOGrzdJiPvLR14d1ZJXOzma1lUalSS1h4Tan1cc+HnbQ",
+	"xWlsS266OCoWlcofVAYxrbzctSpRQYxfasOUm6rgTukIhFIIq9R2HvruUzGrsVvVzFur2dA2uEvrJUtT",
+	"lsFZZNgqe4dlANQ5Ft4SIW0NBdGHKeum94F19VpIdKXCXktZZr35BJFNNgK9EYab5s7meKG1FtMsq/PT",
+	"Onay2J9fLHoa90ciJXIfsrA1l0K+xLVVcbp1L/OzTNb+TAkXyQ/PQm+jpfJ89G7BxLq7GpH0TR6bE0Zr",
+	"SXQVg18Gmb+7N1JwUfzgY4HmkigcELSURaEznzRMQdreiGKN3K5yWJiGGgvBdNxplUi78omgL7zfXHJV",
+	"c7avpVm1NVyzHuu5f9QX9h899BithWm0cqDW1jzKuqtn/su+MP/lQ4NFmzPfHTbadg3IuvUJ4RwH171Z",
+	"AErEdhVGrJppLAjjkVBdt2a/6cjLetVwj7bM6/R2FoBtqaUM2vM/7ccngivAi97wv0Rs5xrTqpnGnNcH",
+	"BW35brrwM53iHrnt1sjtznjdUGPWv+MzTMkfuJP1n3bmE8JvjPZH85SI7SqAP1QzLZCfB6e0ZL7pyMX6",
+	"wk6iHcfrDhtgYXMAnKVz3aeVwnOwVhqNfS/to+zH1+27xlq0YE4hIjfA2+IMS6k2saLheXinQx5NWMvL",
+	"J6xZ5TmW1PXK0jr9zU/mhfRVFC7XrfblOroOYQq0FinLm8zaG+bsrjt+cRqnW69b2rCQXPcqcW0L1Lcu",
+	"c9qwNpyr/GmhUFw22JwldQJbWUu2LqiOJ6NpLed3/qrGtrZTA/Y5qi+Ve6hjWl+uudjMBRdqs9JmL+TY",
+	"67i5SPpQ5qZIZVcOFmJ52gSkpJ85mZfFQzylas3q8z08xsE/tf0BDHkhvg1HXNWaFC7FUlfNr6iUC5lF",
+	"jaOk1q6Peap64GpGt6wu3+oGowZK3JIw9NxQ1LRWfSknqaUNGkXs1j0xbgiLcLvzHEPKh/TDJlbJLeaU",
+	"0NkW+yj7zfWI/YzsxZpYovRBrqplU/+Uy/+0rODkuV1zt63c2+rvDVTQrchs61pbt6h+KwvsNtMH+QRp",
+	"JwFzsOpbLCtv6VtASLA3oJAnUQPFqN8qZOUVW3UN9gJmpCdl+tdIfWCA3Jmj5vfRy1FIZkSik18vkX0P",
+	"6Yo+re8/qryapXid0SoFOhgPpc/RHr4VzvrDhTuPVhvAnB7jW3FM8OL42OTe4CCwmTfH6rOx+VXNFfOr",
+	"s/2Ve5NWu7BVcvdsLv0+ukNxhKWSQ23dW9fFRn5gmjjyK3YNdKOx4V9x0m8i2tBVd8WcIxv3h/oAWnum",
+	"3qeyw16Su4fjtJbog7OynRaCmSqpQs/JqhDcb4xCf2S2Qu3my4IfNSgLniexnBQXh5qvWNLoNQ6zJhv/",
+	"3IFVIP7VyxXaXzkr0c8eeN2MJGYlanUfuMuDphmSDdg27OZuDXr7sItwkruV+q2bSZh2s3wlZe5JLg2t",
+	"vhK75ZWil0sa9AE8q3R2ztNf0sDsNdp6q+yXLhammZdP4ldKnfA/KnidY08C6zaukFvvuc5MKmdQt+NZ",
+	"y2z9FnvoNE2/Sarj0JlNv1JLwD/0Pky0MqVdpxorHZK1Cc54hKiaFfKGFUE2hVWipavzVpxUXzFcyCPr",
+	"ljO/6V1ZbVyE90h9RuSFexY94IDSY2W2mNmpxelOmX9XoRFm3txQ96lptRt/Uxbnw49sGp/uFjjkNVTX",
+	"c9pPCu4K9/657sSmVA1nqyEuWbHPgn/K54IV/prYwhK6iQM1ZXk2WZHte7Zzd9hJHaNFTxakTSRMhIWY",
+	"qaaR4lmc1XrdPfvAyVd2Db0o0VYidCOOH4cmDRgP68uLlL2XSumlbsxVRpxHmGhHK5owJtVXMdKvDhEH",
+	"mXAKIWI0qNd9pv2MxDpf0Xs9m3rgJioRuuWbRrsHiG30NlCPuHpzB6ST3K2IzhsbUt7xliMw3JNixnHY",
+	"j1mxSmnnwHP2oVtkUv6hi5EfiCCmfkEPeOkgtis7eRJBu/oCrbd6pot1phtNk3Ail5oh1s0AmBtj2/z1",
+	"t3RAf//1StdxVW+qGWXey1pV/Brc3+vcwKmj6t/Fm8srJBI+xXlJc30tGwoYlZxFKI4wBS2UgFHBItCX",
+	"GL1+e4aCiCg2/JPupeeG+mX03/98f/Bq/wCdzNRjlAhzCcHs4vw1eqM09KXkgBemBxxIfUMS4PDgn/Qk",
+	"ipBCj4m4QZinl3mO9OmKemUwHEQkACq0sjDaenAS42AOo5cHhzZ+NkfK7e3tAdaPDxifje23Yvz27PWb",
+	"Xy7f6G/yeugDM/jXdvDnevAn52eFKITjweHBkfmIxUBxTAbHg1cHhwevdDSTnGuBjXFMxjdHYxwuCB3b",
+	"Ul1jsaSBehozcylINlZlXGuvpy2RYSp2xUyRql58eXioPXSMyjReLI4jaxGOf7dnUvlcq4Jrybmq0VGq",
+	"1v8PY5zaIuvefm0Z+O/a9V+4ssHRtwmQL06DwfHHfAJ8/HT/aTiw5egtz1CQcLWlQPbeX4GmnC006Czj",
+	"ETem3BLlWDXhJcD3dWdueX1R8/9+fJNpFi28xCU7SKub5GposBoI8/HLgKgRxsYraaGry2wVVYPRHTkr",
+	"y/r70zC9njhVxxtBhUvV368qLUXZ/Rowv1/XKr8wPYPApLP2A0cgUQx8ZNTN2Lq4UC55pBV2LX4KGWA2",
+	"oHUVJ4V0s23OcXcSXr+nuhqTXQ6EEUwEqQER4CgCjvbSq59viQzmWjZDj7ItXmc92M6Ucl/w3WhSbQ4J",
+	"az7+foPA8BTh9JLvvX9Yhy0quuvRd8iOBmkfunOOjr8wPrv3ztQfQWboKKnx0r1FK9eNO1Q847NKDV/V",
+	"nFP7P0OlCVR+BJnjZLI0HPXiYLxSvMSru0+yt5os7nWSX9ublcHwNxKpZUhRr+ts78VAQ0Jnd+l9GHcc",
+	"1L4BwrsA0wCiCMI74zEK943zKNI1fu3mTNP47wT4Micy9Zf7APlQGmoHeY6FQC8W8CK7gceo8xcCsVuK",
+	"rGoWaI/QCfuMppqepqOzX5uTAc8IOxPwmLOzVEpoB9bydMYVGGyJP0YWY/tNJuz4Cwkr9Xg6abc1Z11m",
+	"fdjeqN8ScNLR75RiZxTW8NMYK2Ojp/w78df6+TNsdgo2vxI5Dzm+RTjVLmsIQnvZcoEYjZbN1c84hICY",
+	"YvpuSJ3q5z2B1Ob3Qmb4T7YLMt3vDJQNjPRNLcb2qsB0BYStm6vS4M0dko9g7tqipOjs9K+IUNUVBFKg",
+	"kIiA6RIeaKUscjML0PpyKuy/1t0+tt23Xud5B8y/1Derz1jKDp10e8/sxbHREsXAkZXlfj2ore+2yiws",
+	"FMF/TH3c1uE7/NIZ5o+J09LVGrvgOygiFN0SOUemsyF6f4bmhEox1Kdh2fULTVE5jomNIYnAhOetgvM9",
+	"jQlNzxOy7NdvE6G7cb5wAQu1YOeq7YVIYYMUGO6H7nOl8z7hYEu240p5mW/oTOqc0OJaKFlZJaVH0hVq",
+	"J2JJOCpeJuI39AqB3+Kb8Xl7bpnZBfNK56CnokdsmjnD/YdiaXb+ymUy21A4W9IU64UQHnmfaXm2M0hK",
+	"Gao0TxFPaI+zCNDJxS/oO5QGqaOz0yGicAMcXcNS7DfWS5kD12cPnQJ/LGRuyS+3GyvSqZaPOSExIVIj",
+	"Ex9mopXR3smvlyNBQkAaHlqcysIhIo3jYrcUwn1zFaZnV9ZTCT8rkZrNVFF/tFMN47SSSn4nrhM9F0DD",
+	"VRVxbj+0uZ1fLZy8njDJENej0pNudThoyng7H9hZ2MIoa0HCpmdHFq87WUpXyoRrNuhbTUN754tVrKO0",
+	"EJ2f8/f9WYozGbzmTAijeEviSAtk6YNsnLrLWs62GxyR0KYNuu3ED/aNZ129cwZfYvacl1eX6ESIZAEX",
+	"eiXnyxFPKMIzTKiQ+pXUJINQr/aVINMwHAmo3YPmd7xtbduxTT+980rAndhMmrVAS7AmprJwx1+Pto5l",
+	"2p9sC5mTsHtBmwUYNVQXDbaG6vctY+55U1i/KSxJt2qD10dZPU/wBju8FrO7kSHwbfmhHbfX7o7psOKB",
+	"NoepAaMUAu0gmgOO5LyhZdFbs+KpbYpddEtTuM0Uj62ZUK97aiOGt4m0vixQu7k6NUWHje+scILYILxn",
+	"qOwQVNLAylSjAOUsihagC2WzZBIBYrEcEbrfGEcroYPVkZYrMYbfIJrKXNix1NU5oIjcgC+u1BhIbdWU",
+	"WvHMuDyWk37+rKR2SEkZkRY2XHuTiAXXQttCIcQRW4q/olvGryOGQ4GuAWLEE0prEqpWgRWCLiYq0qoy",
+	"3rSG7K1+gGwruQ0ZD54ywyEjYmeQXhxUEe+6DKSYk3gUzCG4hhCFHBM6RCQEKnW1BrhhZhxDhHkwJzcQ",
+	"IpyERDafAfp++ygapYdq/llgzubOzPs/p6/vrLJ9Pp6tPJ7FM2UvWvTkR7KwmEBoUnTQlIOYp1VpTMkC",
+	"U/ivKTYVvq+hCpHqeQ+X/V0J91bsL6qskAg8iUAgIgXKilaYGlrNVZIGifCL/UyIBNbrVn6TZl+55Gm/",
+	"l0ItWYQRo6ZML7q6evsifIgKSWjd3uG9feN597BDu4dUqEXlZErUKt2EJEMC+A0JoEor2V1G1b5AvbDt",
+	"DLutGfSK+Cc05VX3O2TEq+GUc1dMNkutswPSq8CqfWdv8tf6GDeUk79bLq+C9CpyTlbvfOtXvonvir1H",
+	"VhkZBTt0xGcqcmCkrJ3RhH2GEJm79HJYNVIcbepzbBeFX3+BjmckP26xjgyleWHRf6WFRXUFmiG6OUIz",
+	"LCutsRmRo5rUiKyaYX7RVd8WyozyHdJxOCxm+Jr6ehxihqw4fWnhl48ozs3rmozob7bUsFvo3yFzf1u6",
+	"zjUsNmy1gHY40qDmlPkse2tLK9ymKkE0bMoWKXhwOzYCbQMt6cMJff3bU24pciV5tAs7CW6vOEUZytGe",
+	"qcOJJxGgyTLdSw719nJoIwqHSEtDVwFuNHdqI8PS+fNtOsN+3LGgZaZzl0vQMtGpaXWWCQ5n0Bg645BM",
+	"p178pOA5VS/1Jxn1CvMZyKzcSLOUU8naBF6Xe3hMUCtp7I63jUynKOZwQ+AWhViaC3UwRYm5aqg5ktMP",
+	"/McD6eVFvdCImzdj166ZevYTPwS57yiMgogE1ylUdUAczdWydhlTuAWeuZLrKyDRwtWJI6BhzEhdJaTi",
+	"bYtvsi/66FfOsfFyF4zAoixRLsuarBGXOPuXQvJ0DjnLst3LRnXCCe2JCAfXd7cwmTN2vd9atTTMWH00",
+	"VD7H6TTJXXVioSqLte/ye1YQNflCXkQ4HbLmptQegmIbZnH4vF5tMmBH89OPyC7r01hWxjNfgXhWcJ67",
+	"3vt+YSbQUOdhl+1ptbtqBCt9OFGXzHaevtTHbVNK/G4F46RyQ3uMz9B3KD1cGs0iNsFR7V2J5hrw/u2c",
+	"yretP/J6ZLrfvd1TekbJYcaGSBoHrpXinSkYuN9Ai4zhBkdJZbW5N/aN7euUzUMwpf3pzCFLwO44uG0p",
+	"upjDaBqR2Tw7LrdIqvYHZrhrtk3fotJ73pg32Zgb2VbtxPsnoufFpXLnnYu8YqvdC6lva3P9bNJsZYOd",
+	"mjSTZBFn17PUGjHLUYyD6wbboeW5fq+XOyJF+Q5uh5ZIy+5hWyLFnB5ui3Bw/XQaBAfXO7slUpBCe9fL",
+	"G+CU3QUQjW5w3FSN1AagbRlzX7/Js0vQKRo8GjdtUDLGQpBZRf7uiX7eG8BsXtNZBjylpstJ2J2EFj2k",
+	"kr4r5nMKkHcGu3f1GZ4+WC/0AL7k/zmr3q+/p7g3cHc3UhzqsxMgvzRxFWg5lypAJQEvqi3yK/3Gt1Re",
+	"WI94x0rqqSGtXm1XDYnxF/XP/XgBi0ldDeqf7TtfE0bWQ7MBL5DuyNm3NGkozTvPW3tseFp27xZALc5S",
+	"iOKFf0d5EoaGBY+4bNXC47HstHTs32RC4EkYIowSYe7aMjjJc/9Gae7fGIcLQnVW8H5LPTf+IpLJ7xDI",
+	"SgvKLLdfPwjdzdgRPhtORcNJg2rK2eLBsPqDUaizqNT7v+n3mq+ZhSRXxmeI3VJCZzo/doEpnoGuvWzv",
+	"J9vf8ALbtu/HXhI1L3fNYtPc12jSuZkhmiyRnBOhRFBbJSbHWA/LxCiyn8wPUaBhB2vEULgtQgvtmer9",
+	"OBrNsDQYsyOq1XG1DtgtY7APOcA7hSLjgy2iR+f/EimQkBAjkUxGaY6waISeDrWzv3VQuctXH+1W/eoK",
+	"DWULFRRrWjfTVGMOIllUVgJWz/uJr12xxpUEEDaCx1MJXBmYCY4QoRL4DVBTAuq//zk6tFI35Sv+qFqH",
+	"fkorlmxtUpoeLiWWiXDx4dIUCkVEIByRGzgo86Rk/90ABSGQEon2MOGZAuBgARIPPulhc8DhsnLUF+qN",
+	"r2TQmtoDhcP/ffjqKQigTGZEVHBe8YxUsl5/zG9SjZDwaHA8GA/uP93/TwAAAP//1ibTbPA6AQA=",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

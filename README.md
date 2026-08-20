@@ -16,9 +16,10 @@ Canonical architecture & development plan: [inari-docs/docs/architecture/inari-p
 
 ## Development
 
-Prerequisites: `buf`, Go, Node.js, `oapi-codegen`.
+Prerequisites: `buf`, Go, Node.js, `oapi-codegen`, `yq` (v4, for `import-openapi`).
 
 - `make generate` — regenerate everything (`buf generate`, oapi-codegen, Orval)
+- `make import-openapi` — pull the full REST surface from inari-server's offline export (`make export-openapi`) and merge it with `openapi/meta.fragment.yaml` (health endpoints, info, servers) into `openapi/openapi.yaml`; pass `EXPORTED=/path/to/openapi.yaml` to reuse an existing export, or `INARI_SERVER_REF=<ref>` to pin a ref. Run this whenever the inari-server REST surface changes, then `make generate`.
 - `make lint` — `buf lint` + `redocly lint`
 - `make breaking` — `buf breaking` against `main`
 - `make build` / `make test` — compile and smoke-test both clients

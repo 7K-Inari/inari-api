@@ -2,6 +2,7 @@ package: oas
 output: gen/go/oas/openapi.gen.go
 generate:
   models: true
+  client: true
   std-http-server: true
   embedded-spec: true
 output-options:
