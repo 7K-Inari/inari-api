@@ -3,12 +3,12 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { GetInfoRequest, GetInfoResponse } from "./plugin_pb.js";
+import { GetCapabilitiesRequest, GetCapabilitiesResponse, GetInfoRequest, GetInfoResponse, HealthCheckRequest, HealthCheckResponse, InvokeRequest, InvokeResponse } from "./plugin_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
- * PluginContractService is the minimal versioned gRPC surface every plugin
- * serves (platform plan §5.8). Placeholder; capability negotiation lands later.
+ * PluginContractService is the versioned gRPC surface every plugin serves
+ * (platform plan §5.8). Changes are additive within inari.plugin.v1.
  *
  * @generated from service inari.plugin.v1.PluginContractService
  */
@@ -22,6 +22,33 @@ export const PluginContractService = {
       name: "GetInfo",
       I: GetInfoRequest,
       O: GetInfoResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc inari.plugin.v1.PluginContractService.GetCapabilities
+     */
+    getCapabilities: {
+      name: "GetCapabilities",
+      I: GetCapabilitiesRequest,
+      O: GetCapabilitiesResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc inari.plugin.v1.PluginContractService.Invoke
+     */
+    invoke: {
+      name: "Invoke",
+      I: InvokeRequest,
+      O: InvokeResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc inari.plugin.v1.PluginContractService.HealthCheck
+     */
+    healthCheck: {
+      name: "HealthCheck",
+      I: HealthCheckRequest,
+      O: HealthCheckResponse,
       kind: MethodKind.Unary,
     },
   }
