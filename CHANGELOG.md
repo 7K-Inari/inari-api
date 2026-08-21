@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/7K-Inari/inari-api/compare/v0.3.0...v0.4.0) (2026-08-21)
+
+
+### Features
+
+* full REST surface in OpenAPI contract with typed Go/TS clients ([#6](https://github.com/7K-Inari/inari-api/issues/6)) ([76d69f9](https://github.com/7K-Inari/inari-api/commit/76d69f96bebeff944f22c59370ca32e0b7506219))
+
 ## [0.3.0](https://github.com/7K-Inari/inari-api/compare/v0.2.0...v0.3.0) (2026-08-20)
 
 
