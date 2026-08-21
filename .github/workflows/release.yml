@@ -1,10 +1,9 @@
 name: release
 
-# Fires on push to main. Only proceeds when the push is a release-please
-# Release PR merge (head commit "chore(main): release ..." and/or
-# .release-please-manifest.json changed). Creates the tag + GitHub Release
-# and runs publish jobs inline — tags pushed with GITHUB_TOKEN do not fire
-# tag-push triggers, so publish MUST live here (see docs/release.md).
+# Detects a merged Release PR (release-please action self-detection — robust
+# under merge-commit and squash alike), creates tag + GitHub Release, then
+# runs verify/publish jobs gated on the action's outputs. No tag-push
+# triggers, no manual releases.
 
 on:
   push:
@@ -12,41 +11,31 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
+  issues: write
 
 jobs:
-  detect:
+  release:
     runs-on: ubuntu-latest
     outputs:
-      released: ${{ steps.check.outputs.released }}
-      version: ${{ steps.check.outputs.version }}
+      released: ${{ steps.rp.outputs.release_created }}
+      tag_name: ${{ steps.rp.outputs.tag_name }}
+      version: ${{ steps.rp.outputs.version }}
     steps:
       - uses: actions/checkout@v4
+      - uses: googleapis/release-please-action@v4
+        id: rp
         with:
-          fetch-depth: 0
-
-      - name: Detect release merge
-        id: check
-        run: |
-          SUBJECT="$(git log -1 --pretty=%s)"
-          echo "head commit: $SUBJECT"
-          CHANGED="$(git diff --name-only "${{ github.event.before }}..HEAD" || true)"
-          if echo "$SUBJECT" | grep -Eq '^chore(\(main\))?: release' \
-             || echo "$CHANGED" | grep -qx '.release-please-manifest.json'; then
-            VERSION="$(jq -r '.["."]' .release-please-manifest.json)"
-            echo "released=true" >> "$GITHUB_OUTPUT"
-            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-            echo "release merge detected, version $VERSION"
-          else
-            echo "released=false" >> "$GITHUB_OUTPUT"
-            echo "not a release merge; skipping"
-          fi
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+          skip-github-pull-request: true
 
   verify:
-    needs: detect
-    if: needs.detect.outputs.released == 'true'
+    needs: release
+    if: needs.release.outputs.released == 'true'
     runs-on: ubuntu-latest
     env:
-      VERSION: ${{ needs.detect.outputs.version }}
+      VERSION: ${{ needs.release.outputs.version }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -92,45 +81,9 @@ jobs:
         run: |
           test "$(npm pkg get version | tr -d '"')" = "$VERSION"
 
-  tag-release:
-    needs: [detect, verify]
-    if: needs.detect.outputs.released == 'true'
-    runs-on: ubuntu-latest
-    env:
-      VERSION: ${{ needs.detect.outputs.version }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Extract changelog section
-        run: |
-          awk -v ver="$VERSION" '
-            $0 ~ "^## \\[" ver "\\]" { found=1; next }
-            found && /^## \[/ { exit }
-            found { print }
-          ' CHANGELOG.md > release-notes.md
-          test -s release-notes.md || echo "Release $VERSION" > release-notes.md
-          cat release-notes.md
-
-      - name: Create and push tag
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag "v$VERSION"
-          git push origin "v$VERSION"
-
-      - name: Create GitHub Release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release create "v$VERSION" \
-            --title "v$VERSION" \
-            --notes-file release-notes.md
-
   publish-npm:
-    needs: [detect, tag-release]
-    if: needs.detect.outputs.released == 'true'
+    needs: [release, verify]
+    if: needs.release.outputs.released == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -139,18 +92,27 @@ jobs:
           node-version: "24"
           registry-url: https://registry.npmjs.org
       - run: npm ci --include=dev
+      - name: Guard NPM_TOKEN
+        id: guard
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "${NPM_TOKEN:-}" ]; then
+            echo "::warning::NPM_TOKEN secret not set — skipping npm publish; the TS client stays unpublished until the secret exists"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
       - name: Publish npm package
+        if: steps.guard.outputs.skip != 'true'
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        # Requires the NPM_TOKEN repository secret; configure it before the first release.
 
   notify-go:
-    needs: [detect, tag-release]
-    if: needs.detect.outputs.released == 'true'
+    needs: [release, verify]
+    if: needs.release.outputs.released == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Go module published by tag
         run: |
           echo "Go consumers resolve this release directly from the git tag:"
-          echo "  go get github.com/7K-Inari/inari-api@v${{ needs.detect.outputs.version }}"
+          echo "  go get github.com/7K-Inari/inari-api@v${{ needs.release.outputs.version }}"
