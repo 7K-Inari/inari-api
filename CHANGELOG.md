@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/7K-Inari/inari-api/compare/v0.5.0...v0.5.1) (2026-08-21)
+
+
+### Bug Fixes
+
+* **ci:** pin npm ^11 for trusted publishing ([#13](https://github.com/7K-Inari/inari-api/issues/13)) ([f3ffff8](https://github.com/7K-Inari/inari-api/commit/f3ffff8163793f8c2bc18b83fc41917cf7ed671e))
+
 ## [0.5.0](https://github.com/7K-Inari/inari-api/compare/v0.4.0...v0.5.0) (2026-08-21)
 
 
