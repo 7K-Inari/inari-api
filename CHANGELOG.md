@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.2](https://github.com/7K-Inari/inari-api/compare/v0.5.1...v0.5.2) (2026-08-21)
+
+
+### Bug Fixes
+
+* add repository field for npm provenance validation ([#15](https://github.com/7K-Inari/inari-api/issues/15)) ([6576a47](https://github.com/7K-Inari/inari-api/commit/6576a47fab8b0c706b876d892bd8786e9d4760be))
+
 ## [0.5.1](https://github.com/7K-Inari/inari-api/compare/v0.5.0...v0.5.1) (2026-08-21)
 
 
