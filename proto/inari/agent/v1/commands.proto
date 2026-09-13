@@ -126,6 +126,82 @@ message RenderRgdInstance {
   reserved 100 to 199;
 }
 
+// SecretRef references a cluster-side Kubernetes Secret holding provider
+// credentials. Only the reference ever transits the control plane — never
+// credential values (plan §4.1/§5.10).
+message SecretRef {
+  string name = 1;
+  string namespace = 2;
+
+  reserved 100 to 199;
+}
+
+// AwsSMProvider configures an ESO AWS Secrets Manager backend.
+message AwsSMProvider {
+  string region = 1;
+  SecretRef auth_secret_ref = 2;
+
+  reserved 100 to 199;
+}
+
+// VaultProvider configures an ESO HashiCorp Vault backend.
+message VaultProvider {
+  string server = 1;
+  string path = 2;
+  SecretRef auth_secret_ref = 3;
+
+  reserved 100 to 199;
+}
+
+// GcpSMProvider configures an ESO GCP Secret Manager backend.
+message GcpSMProvider {
+  string project_id = 1;
+  SecretRef auth_secret_ref = 2;
+
+  reserved 100 to 199;
+}
+
+// AzureKVProvider configures an ESO Azure Key Vault backend.
+message AzureKVProvider {
+  string vault_url = 1;
+  string tenant_id = 2;
+  SecretRef auth_secret_ref = 3;
+
+  reserved 100 to 199;
+}
+
+// SecretStoreApply directs the agent to render an ESO SecretStore (scope
+// "cluster", namespaced) or ClusterSecretStore (scope "platform") manifest
+// and write it to the tenant state repo (Settings design §3.2, plan §4.1).
+message SecretStoreApply {
+  string command_id = 1;
+  string name = 2;
+  // "platform" or "cluster".
+  string scope = 3;
+  oneof provider {
+    AwsSMProvider aws_sm = 4;
+    VaultProvider vault = 5;
+    GcpSMProvider gcp_sm = 6;
+    AzureKVProvider azure_kv = 7;
+  }
+  GitTarget target = 8;
+  CommitPolicy policy = 9;
+
+  reserved 100 to 199;
+}
+
+// SecretStoreDelete directs the agent to prune a previously applied ESO
+// SecretStore manifest from the tenant state repo.
+message SecretStoreDelete {
+  string command_id = 1;
+  string name = 2;
+  string scope = 3;
+  GitTarget target = 4;
+  CommitPolicy policy = 5;
+
+  reserved 100 to 199;
+}
+
 // CommandAck reports the outcome of a command back to the gateway. Sent as an
 // agent→server event (EVENT_TYPE_COMMAND_ACK or, with
 // COMMAND_RESULT_FAILED, EVENT_TYPE_COMMAND_NACK).

@@ -194,6 +194,24 @@ func TestCommandPayloadsRoundTrip(t *testing.T) {
 			Target:          &agentv1.GitTarget{Repo: "acme-inari-state", Path: "instances/db"},
 			Policy:          agentv1.CommitPolicy_COMMIT_POLICY_DIRECT_COMMIT,
 		}},
+		{"inari.agent.secret-store-apply.v1", &agentv1.SecretStoreApply{
+			CommandId: "cmd-5",
+			Name:      "corp-vault",
+			Scope:     "platform",
+			Provider: &agentv1.SecretStoreApply_Vault{Vault: &agentv1.VaultProvider{
+				Server:        "https://vault.corp:8200",
+				Path:          "secret",
+				AuthSecretRef: &agentv1.SecretRef{Name: "vault-token", Namespace: "inari-system"},
+			}},
+			Target: &agentv1.GitTarget{Repo: "acme-inari-state", Path: "secretstores"},
+			Policy: agentv1.CommitPolicy_COMMIT_POLICY_DIRECT_COMMIT,
+		}},
+		{"inari.agent.secret-store-delete.v1", &agentv1.SecretStoreDelete{
+			CommandId: "cmd-6",
+			Name:      "corp-vault",
+			Scope:     "platform",
+			Target:    &agentv1.GitTarget{Repo: "acme-inari-state", Path: "secretstores"},
+		}},
 		{"inari.agent.command-ack.v1", &agentv1.CommandAck{
 			CommandId: "cmd-1",
 			Result:    agentv1.CommandResult_COMMAND_RESULT_APPLIED,
@@ -230,6 +248,8 @@ func TestEventTypeStringParity(t *testing.T) {
 		agentv1.EventType_EVENT_TYPE_RENDER_RGD_INSTANCE: "inari.agent.render-rgd-instance.v1",
 		agentv1.EventType_EVENT_TYPE_COMMAND_ACK:         "inari.agent.command-ack.v1",
 		agentv1.EventType_EVENT_TYPE_COMMAND_NACK:        "inari.agent.command-nack.v1",
+		agentv1.EventType_EVENT_TYPE_SECRET_STORE_APPLY:  "inari.agent.secret-store-apply.v1",
+		agentv1.EventType_EVENT_TYPE_SECRET_STORE_DELETE: "inari.agent.secret-store-delete.v1",
 	}
 	for enumVal, typeString := range want {
 		if got := agentv1.EventTypeString(enumVal); got != typeString {

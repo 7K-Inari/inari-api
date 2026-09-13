@@ -545,6 +545,409 @@ export class RenderRgdInstance extends Message<RenderRgdInstance> {
 }
 
 /**
+ * SecretRef references a cluster-side Kubernetes Secret holding provider
+ * credentials. Only the reference ever transits the control plane — never
+ * credential values (plan §4.1/§5.10).
+ *
+ * @generated from message inari.agent.v1.SecretRef
+ */
+export class SecretRef extends Message<SecretRef> {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name = "";
+
+  /**
+   * @generated from field: string namespace = 2;
+   */
+  namespace = "";
+
+  constructor(data?: PartialMessage<SecretRef>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "inari.agent.v1.SecretRef";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "namespace", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SecretRef {
+    return new SecretRef().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): SecretRef {
+    return new SecretRef().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SecretRef {
+    return new SecretRef().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: SecretRef | PlainMessage<SecretRef> | undefined, b: SecretRef | PlainMessage<SecretRef> | undefined): boolean {
+    return proto3.util.equals(SecretRef, a, b);
+  }
+}
+
+/**
+ * AwsSMProvider configures an ESO AWS Secrets Manager backend.
+ *
+ * @generated from message inari.agent.v1.AwsSMProvider
+ */
+export class AwsSMProvider extends Message<AwsSMProvider> {
+  /**
+   * @generated from field: string region = 1;
+   */
+  region = "";
+
+  /**
+   * @generated from field: inari.agent.v1.SecretRef auth_secret_ref = 2;
+   */
+  authSecretRef?: SecretRef;
+
+  constructor(data?: PartialMessage<AwsSMProvider>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "inari.agent.v1.AwsSMProvider";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "region", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "auth_secret_ref", kind: "message", T: SecretRef },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AwsSMProvider {
+    return new AwsSMProvider().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): AwsSMProvider {
+    return new AwsSMProvider().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): AwsSMProvider {
+    return new AwsSMProvider().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: AwsSMProvider | PlainMessage<AwsSMProvider> | undefined, b: AwsSMProvider | PlainMessage<AwsSMProvider> | undefined): boolean {
+    return proto3.util.equals(AwsSMProvider, a, b);
+  }
+}
+
+/**
+ * VaultProvider configures an ESO HashiCorp Vault backend.
+ *
+ * @generated from message inari.agent.v1.VaultProvider
+ */
+export class VaultProvider extends Message<VaultProvider> {
+  /**
+   * @generated from field: string server = 1;
+   */
+  server = "";
+
+  /**
+   * @generated from field: string path = 2;
+   */
+  path = "";
+
+  /**
+   * @generated from field: inari.agent.v1.SecretRef auth_secret_ref = 3;
+   */
+  authSecretRef?: SecretRef;
+
+  constructor(data?: PartialMessage<VaultProvider>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "inari.agent.v1.VaultProvider";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "server", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "path", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "auth_secret_ref", kind: "message", T: SecretRef },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): VaultProvider {
+    return new VaultProvider().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): VaultProvider {
+    return new VaultProvider().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): VaultProvider {
+    return new VaultProvider().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: VaultProvider | PlainMessage<VaultProvider> | undefined, b: VaultProvider | PlainMessage<VaultProvider> | undefined): boolean {
+    return proto3.util.equals(VaultProvider, a, b);
+  }
+}
+
+/**
+ * GcpSMProvider configures an ESO GCP Secret Manager backend.
+ *
+ * @generated from message inari.agent.v1.GcpSMProvider
+ */
+export class GcpSMProvider extends Message<GcpSMProvider> {
+  /**
+   * @generated from field: string project_id = 1;
+   */
+  projectId = "";
+
+  /**
+   * @generated from field: inari.agent.v1.SecretRef auth_secret_ref = 2;
+   */
+  authSecretRef?: SecretRef;
+
+  constructor(data?: PartialMessage<GcpSMProvider>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "inari.agent.v1.GcpSMProvider";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "project_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "auth_secret_ref", kind: "message", T: SecretRef },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GcpSMProvider {
+    return new GcpSMProvider().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): GcpSMProvider {
+    return new GcpSMProvider().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): GcpSMProvider {
+    return new GcpSMProvider().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: GcpSMProvider | PlainMessage<GcpSMProvider> | undefined, b: GcpSMProvider | PlainMessage<GcpSMProvider> | undefined): boolean {
+    return proto3.util.equals(GcpSMProvider, a, b);
+  }
+}
+
+/**
+ * AzureKVProvider configures an ESO Azure Key Vault backend.
+ *
+ * @generated from message inari.agent.v1.AzureKVProvider
+ */
+export class AzureKVProvider extends Message<AzureKVProvider> {
+  /**
+   * @generated from field: string vault_url = 1;
+   */
+  vaultUrl = "";
+
+  /**
+   * @generated from field: string tenant_id = 2;
+   */
+  tenantId = "";
+
+  /**
+   * @generated from field: inari.agent.v1.SecretRef auth_secret_ref = 3;
+   */
+  authSecretRef?: SecretRef;
+
+  constructor(data?: PartialMessage<AzureKVProvider>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "inari.agent.v1.AzureKVProvider";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "vault_url", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "tenant_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "auth_secret_ref", kind: "message", T: SecretRef },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AzureKVProvider {
+    return new AzureKVProvider().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): AzureKVProvider {
+    return new AzureKVProvider().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): AzureKVProvider {
+    return new AzureKVProvider().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: AzureKVProvider | PlainMessage<AzureKVProvider> | undefined, b: AzureKVProvider | PlainMessage<AzureKVProvider> | undefined): boolean {
+    return proto3.util.equals(AzureKVProvider, a, b);
+  }
+}
+
+/**
+ * SecretStoreApply directs the agent to render an ESO SecretStore (scope
+ * "cluster", namespaced) or ClusterSecretStore (scope "platform") manifest
+ * and write it to the tenant state repo (Settings design §3.2, plan §4.1).
+ *
+ * @generated from message inari.agent.v1.SecretStoreApply
+ */
+export class SecretStoreApply extends Message<SecretStoreApply> {
+  /**
+   * @generated from field: string command_id = 1;
+   */
+  commandId = "";
+
+  /**
+   * @generated from field: string name = 2;
+   */
+  name = "";
+
+  /**
+   * "platform" or "cluster".
+   *
+   * @generated from field: string scope = 3;
+   */
+  scope = "";
+
+  /**
+   * @generated from oneof inari.agent.v1.SecretStoreApply.provider
+   */
+  provider: {
+    /**
+     * @generated from field: inari.agent.v1.AwsSMProvider aws_sm = 4;
+     */
+    value: AwsSMProvider;
+    case: "awsSm";
+  } | {
+    /**
+     * @generated from field: inari.agent.v1.VaultProvider vault = 5;
+     */
+    value: VaultProvider;
+    case: "vault";
+  } | {
+    /**
+     * @generated from field: inari.agent.v1.GcpSMProvider gcp_sm = 6;
+     */
+    value: GcpSMProvider;
+    case: "gcpSm";
+  } | {
+    /**
+     * @generated from field: inari.agent.v1.AzureKVProvider azure_kv = 7;
+     */
+    value: AzureKVProvider;
+    case: "azureKv";
+  } | { case: undefined; value?: undefined } = { case: undefined };
+
+  /**
+   * @generated from field: inari.agent.v1.GitTarget target = 8;
+   */
+  target?: GitTarget;
+
+  /**
+   * @generated from field: inari.agent.v1.CommitPolicy policy = 9;
+   */
+  policy = CommitPolicy.UNSPECIFIED;
+
+  constructor(data?: PartialMessage<SecretStoreApply>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "inari.agent.v1.SecretStoreApply";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "command_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "scope", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "aws_sm", kind: "message", T: AwsSMProvider, oneof: "provider" },
+    { no: 5, name: "vault", kind: "message", T: VaultProvider, oneof: "provider" },
+    { no: 6, name: "gcp_sm", kind: "message", T: GcpSMProvider, oneof: "provider" },
+    { no: 7, name: "azure_kv", kind: "message", T: AzureKVProvider, oneof: "provider" },
+    { no: 8, name: "target", kind: "message", T: GitTarget },
+    { no: 9, name: "policy", kind: "enum", T: proto3.getEnumType(CommitPolicy) },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SecretStoreApply {
+    return new SecretStoreApply().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): SecretStoreApply {
+    return new SecretStoreApply().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SecretStoreApply {
+    return new SecretStoreApply().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: SecretStoreApply | PlainMessage<SecretStoreApply> | undefined, b: SecretStoreApply | PlainMessage<SecretStoreApply> | undefined): boolean {
+    return proto3.util.equals(SecretStoreApply, a, b);
+  }
+}
+
+/**
+ * SecretStoreDelete directs the agent to prune a previously applied ESO
+ * SecretStore manifest from the tenant state repo.
+ *
+ * @generated from message inari.agent.v1.SecretStoreDelete
+ */
+export class SecretStoreDelete extends Message<SecretStoreDelete> {
+  /**
+   * @generated from field: string command_id = 1;
+   */
+  commandId = "";
+
+  /**
+   * @generated from field: string name = 2;
+   */
+  name = "";
+
+  /**
+   * @generated from field: string scope = 3;
+   */
+  scope = "";
+
+  /**
+   * @generated from field: inari.agent.v1.GitTarget target = 4;
+   */
+  target?: GitTarget;
+
+  /**
+   * @generated from field: inari.agent.v1.CommitPolicy policy = 5;
+   */
+  policy = CommitPolicy.UNSPECIFIED;
+
+  constructor(data?: PartialMessage<SecretStoreDelete>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "inari.agent.v1.SecretStoreDelete";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "command_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "scope", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "target", kind: "message", T: GitTarget },
+    { no: 5, name: "policy", kind: "enum", T: proto3.getEnumType(CommitPolicy) },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): SecretStoreDelete {
+    return new SecretStoreDelete().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): SecretStoreDelete {
+    return new SecretStoreDelete().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SecretStoreDelete {
+    return new SecretStoreDelete().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: SecretStoreDelete | PlainMessage<SecretStoreDelete> | undefined, b: SecretStoreDelete | PlainMessage<SecretStoreDelete> | undefined): boolean {
+    return proto3.util.equals(SecretStoreDelete, a, b);
+  }
+}
+
+/**
  * CommandAck reports the outcome of a command back to the gateway. Sent as an
  * agent→server event (EVENT_TYPE_COMMAND_ACK or, with
  * COMMAND_RESULT_FAILED, EVENT_TYPE_COMMAND_NACK).

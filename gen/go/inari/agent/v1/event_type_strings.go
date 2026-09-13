@@ -13,6 +13,8 @@ var eventTypeStrings = map[EventType]string{
 	EventType_EVENT_TYPE_RENDER_RGD_INSTANCE: "inari.agent.render-rgd-instance.v1",
 	EventType_EVENT_TYPE_COMMAND_ACK:         "inari.agent.command-ack.v1",
 	EventType_EVENT_TYPE_COMMAND_NACK:        "inari.agent.command-nack.v1",
+	EventType_EVENT_TYPE_SECRET_STORE_APPLY:  "inari.agent.secret-store-apply.v1",
+	EventType_EVENT_TYPE_SECRET_STORE_DELETE: "inari.agent.secret-store-delete.v1",
 }
 
 var eventTypeByString = func() map[string]EventType {
