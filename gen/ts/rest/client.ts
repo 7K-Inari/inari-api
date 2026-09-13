@@ -1620,6 +1620,19 @@ export interface VisibilityInputBody {
   rules: Item[] | null;
 }
 
+export interface AccessInfoOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  accessInfo: ClusterAccessInfo;
+}
+
+export interface ClusterAccessInfo {
+  audience: string;
+  issuerUrl: string;
+  kubectlClientId: string;
+  organization: string;
+}
+
 export type InboxApprovalsParams = {
 /**
  * Max items to return (default 50, max 200)
@@ -8235,4 +8248,55 @@ export const resumeTenantZone = async (org: string,
   
   const data: resumeTenantZoneResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as resumeTenantZoneResponse
+}
+
+
+
+/**
+ * @summary OIDC access info for building a kubelogin kubeconfig (no secrets, no API URL)
+ */
+export type getClusterAccessInfoResponse200 = {
+  data: AccessInfoOutputBody
+  status: 200
+}
+
+export type getClusterAccessInfoResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type getClusterAccessInfoResponseSuccess = (getClusterAccessInfoResponse200) & {
+  headers: Headers;
+};
+export type getClusterAccessInfoResponseError = (getClusterAccessInfoResponseDefault) & {
+  headers: Headers;
+};
+
+export type getClusterAccessInfoResponse = (getClusterAccessInfoResponseSuccess | getClusterAccessInfoResponseError)
+
+export const getGetClusterAccessInfoUrl = (org: string,
+    id: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/clusters/${id}/access-info`
+}
+
+export const getClusterAccessInfo = async (org: string,
+    id: string, options?: RequestInit): Promise<getClusterAccessInfoResponse> => {
+  
+  const res = await fetch(getGetClusterAccessInfoUrl(org,id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: getClusterAccessInfoResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getClusterAccessInfoResponse
 }
