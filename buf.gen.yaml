@@ -1,9 +1,11 @@
 version: v2
+# NOTE: no grpc/go plugin here. Server and agent talk Connect RPC only, and
+# generating grpc stubs into the message packages links all of
+# google.golang.org/grpc into every consumer binary (~25MB — it broke the
+# inari-agent footprint budget). The plugin contract DOES use real gRPC
+# (hashicorp go-plugin model): its stubs come from buf.gen.plugin-grpc.yaml.
 plugins:
   - remote: buf.build/protocolbuffers/go:v1.36.5
-    out: gen/go
-    opt: paths=source_relative
-  - remote: buf.build/grpc/go:v1.5.1
     out: gen/go
     opt: paths=source_relative
   - remote: buf.build/connectrpc/go:v1.18.1

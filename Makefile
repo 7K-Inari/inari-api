@@ -10,6 +10,7 @@ import-openapi:
 
 generate:
 	buf generate
+	buf generate --template buf.gen.plugin-grpc.yaml --path proto/inari/plugin/v1
 	$(OAPI_CODEGEN) -config openapi/oapi-codegen.yaml openapi/openapi.yaml
 	npm run generate:rest
 
