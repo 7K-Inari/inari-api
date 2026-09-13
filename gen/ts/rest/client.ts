@@ -64,6 +64,27 @@ export interface AddMemberInputBody {
   subject: string;
 }
 
+export interface AgentChannel {
+  channel: string;
+  clusterSetId: string;
+  createdAt: string;
+  desiredAgentVersion: string;
+  id: string;
+  orgId: string;
+  updatedAt: string;
+}
+
+export interface ApprovalConfig {
+  approvalTtl: string;
+  /** @nullable */
+  approverGroups?: ApproverGroup[] | null;
+  /** @nullable */
+  autoApprove?: AutoApproveRule[] | null;
+  defaultPolicy: string;
+  /** @nullable */
+  thresholds?: ApprovalThreshold[] | null;
+}
+
 export interface ApprovalOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
@@ -93,6 +114,18 @@ export interface ApprovalRequest {
   version: string;
 }
 
+export interface ApprovalThreshold {
+  gt: number;
+  kind: string;
+  policy: string;
+}
+
+export interface ApproverGroup {
+  name: string;
+  /** @nullable */
+  subjects: string[] | null;
+}
+
 export interface AssignPackInputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
@@ -105,6 +138,74 @@ export interface AssignPackOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   assignment: PolicyAssignment;
+}
+
+export interface AutoApproveRule {
+  /** @nullable */
+  itemIds: string[] | null;
+  kind: string;
+}
+
+export interface BrokeredIdP {
+  alias: string;
+  claimMapping: IdPClaimMapping;
+  clientId: string;
+  createdAt: string;
+  /** @nullable */
+  domainHints: string[] | null;
+  issuerUrl: string;
+}
+
+export interface BrokeredIdPOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  provider: BrokeredIdP;
+}
+
+export interface BulkAssignPolicyInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  clusterSetIds: string[] | null;
+  packId: string;
+}
+
+export interface BulkDecideInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  approvalIds: string[] | null;
+  approve: boolean;
+  reason?: string;
+}
+
+export interface BulkItemResult {
+  error?: string;
+  id: string;
+  ok: boolean;
+}
+
+export interface BulkPinCatalogInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  itemIds: string[] | null;
+  version: string;
+}
+
+export type BulkQueryInputBodyLabelSelector = {[key: string]: string};
+
+export interface BulkQueryInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  labelSelector: BulkQueryInputBodyLabelSelector;
+}
+
+export interface BulkResultsOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  results: BulkItemResult[] | null;
 }
 
 export interface Capability {
@@ -136,6 +237,19 @@ export interface CatalogItemVersion {
   schema?: unknown;
   uiHints?: unknown;
   version: string;
+}
+
+export interface ChannelOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  channel: AgentChannel;
+}
+
+export interface ClaimMappingInput {
+  /** Claim carrying the user email (defaults to the IdP's standard mapping) */
+  email?: string;
+  /** Claim carrying group memberships, mapped into the tenant members group */
+  groups?: string;
 }
 
 export interface CloudAccount {
@@ -194,6 +308,45 @@ export interface ClusterSetOutputBody {
   clusterSet: ClusterSet;
 }
 
+export interface ConfigOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  config: ApprovalConfig;
+  orgId: string;
+  /** @nullable */
+  updatedAt: string | null;
+}
+
+export interface CreateBrokeredIdPInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /**
+   * URL-safe IdP alias (KC alias becomes org-<org>-<alias>)
+   * @minLength 1
+   * @maxLength 63
+   * @pattern ^[a-z0-9][a-z0-9-]*$
+   */
+  alias: string;
+  claimMapping?: ClaimMappingInput;
+  /** @minLength 1 */
+  clientId: string;
+  /**
+   * Write-only: forwarded to Keycloak, never stored or returned
+   * @minLength 1
+   */
+  clientSecret: string;
+  /**
+   * Org email domains used for home-IdP discovery
+   * @nullable
+   */
+  domainHints?: string[] | null;
+  /**
+   * OIDC issuer URL (https); discovered via the discovery endpoint
+   * @minLength 1
+   */
+  issuerUrl: string;
+}
+
 export type CreateClusterInputBodyLabels = {[key: string]: string};
 
 export interface CreateClusterInputBody {
@@ -214,6 +367,46 @@ export interface CreateClusterSetInputBody {
   readonly $schema?: string;
   labelSelector: CreateClusterSetInputBodyLabelSelector;
   name: string;
+}
+
+/**
+ * service = confidential client-credentials; public = browser/native with redirect URIs
+ */
+export type CreateIdentityClientInputBodyType = typeof CreateIdentityClientInputBodyType[keyof typeof CreateIdentityClientInputBodyType];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const CreateIdentityClientInputBodyType = {
+  service: 'service',
+  public: 'public',
+} as const;
+
+export interface CreateIdentityClientInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  audiences?: string[] | null;
+  /**
+   * URL-safe client name (clientId becomes org-<org>-<name>)
+   * @minLength 1
+   * @maxLength 63
+   * @pattern ^[a-z0-9][a-z0-9-]*$
+   */
+  name: string;
+  /** @nullable */
+  redirectUris?: string[] | null;
+  /** @nullable */
+  scopes?: string[] | null;
+  /** service = confidential client-credentials; public = browser/native with redirect URIs */
+  type: CreateIdentityClientInputBodyType;
+}
+
+export interface CreateIdentityClientOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  client: IdentityClient;
+  /** Returned exactly once; never stored server-side */
+  secret?: string;
 }
 
 export interface CreateInputBody {
@@ -254,6 +447,32 @@ export interface CreatePolicyInputBody {
   source: string;
   /** request | render */
   target: string;
+}
+
+export interface CreateRolloutInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  desiredVersion: string;
+  /** capability | policy_pack | agent_upgrade | catalog_version */
+  kind: string;
+  name: string;
+  /** @nullable */
+  stages: RolloutStage[] | null;
+  targetRef: string;
+}
+
+export interface CreateTeamInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /**
+   * URL-safe team name
+   * @minLength 1
+   * @maxLength 63
+   * @pattern ^[a-z0-9][a-z0-9-]*$
+   */
+  name: string;
+  /** Org role the team grants (default viewer) */
+  role?: string;
 }
 
 export interface CreateTenantInputBody {
@@ -313,6 +532,36 @@ export interface DecommissionOutputBody1 {
   approvalId?: string;
 }
 
+export interface DeleteTenantInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** Revoke non-terminal clusters and delete despite dependencies */
+  force?: boolean;
+  /** @maxLength 500 */
+  reason?: string;
+}
+
+export interface DeleteTenantOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  approvalId: string;
+  status: string;
+}
+
+export interface DeletionDependenciesOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  blockers: Dependency[] | null;
+}
+
+export interface Dependency {
+  id: string;
+  kind: string;
+  name: string;
+  state: string;
+}
+
 export interface DeployInputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
@@ -367,6 +616,19 @@ export interface DiffPreview {
   targetManifest: string;
   targetSchema?: unknown;
   targetVersion: string;
+}
+
+export interface DriftEvent {
+  clusterId: string;
+  desiredHash?: string;
+  detail?: string;
+  detectedAt: string;
+  id: string;
+  kind: string;
+  orgId: string;
+  reportedHash?: string;
+  resourceRef?: string;
+  status: string;
 }
 
 export interface EndpointOutputBody {
@@ -438,10 +700,36 @@ export interface ExemptionOutputBody {
   exemption: Exemption;
 }
 
+export interface Extension {
+  checksum: string;
+  createdAt: string;
+  endpoint: string;
+  id: string;
+  kind: string;
+  manifest?: unknown;
+  name: string;
+  orgId?: string;
+  state: string;
+  updatedAt: string;
+  version: string;
+}
+
+export interface ExtensionOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  extension: Extension;
+}
+
 export interface GetOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   instance: InstanceView;
+}
+
+export interface GetRBACMatrixOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  rbac: RbacMatrix;
 }
 
 export type GetZoneOutputBodySteps = {[key: string]: TenantZoneStep};
@@ -467,17 +755,73 @@ export interface GitConfigInputBody {
   readonly $schema?: string;
   baseBranch?: string;
   commitPolicy: GitConfigInputBodyCommitPolicy;
+  githubApp?: GitHubAppConfig;
   /**
    * owner/name or https URL of the <tenant>-inari-state repo
    * @minLength 1
    */
   repo: string;
+  scaffoldGitOrg?: string;
 }
 
 export interface GitConfigOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   config: TenantGitConfig;
+  gitProviderStatus?: GitProviderStatus;
+}
+
+export interface GitHubAppConfig {
+  apiBase?: string;
+  appId: number;
+  installationId: number;
+  keyRef: GitHubAppSecretRef;
+}
+
+export interface GitHubAppSecretRef {
+  key: string;
+  namespace: string;
+  secretName: string;
+}
+
+export interface GitProviderStatus {
+  apiBase?: string;
+  authModel: string;
+  checkedAt: string;
+  installationId?: number;
+  state: string;
+}
+
+export interface IdPClaimMapping {
+  email?: string;
+  groups?: string;
+}
+
+export interface IdentityClient {
+  /** @nullable */
+  audiences: string[] | null;
+  clientId: string;
+  createdAt: string;
+  name: string;
+  /** @nullable */
+  redirectUris?: string[] | null;
+  /** @nullable */
+  scopes: string[] | null;
+  status: string;
+  type: string;
+}
+
+export interface IdentityClientOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  client: IdentityClient;
+}
+
+export interface InboxOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  items: ApprovalRequest[] | null;
 }
 
 export interface InstanceView {
@@ -524,6 +868,7 @@ export interface ItemView {
   id: string;
   name: string;
   ociRef?: string;
+  orgId?: string;
   pinnedVersion?: string;
   source: string;
   /** @nullable */
@@ -535,6 +880,13 @@ export interface ListAccountsOutputBody {
   readonly $schema?: string;
   /** @nullable */
   accounts: CloudAccount[] | null;
+}
+
+export interface ListBrokeredIdPsOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  providers: BrokeredIdP[] | null;
 }
 
 export interface ListCapabilitiesOutputBody {
@@ -551,6 +903,13 @@ export interface ListCatalogOutputBody {
   items: ItemView[] | null;
 }
 
+export interface ListChannelsOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  channels: AgentChannel[] | null;
+}
+
 export interface ListClusterSetsOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
@@ -565,6 +924,13 @@ export interface ListClustersOutputBody {
   clusters: Cluster[] | null;
 }
 
+export interface ListDriftOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  driftEvents: DriftEvent[] | null;
+}
+
 export interface ListExemptionsOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
@@ -572,11 +938,39 @@ export interface ListExemptionsOutputBody {
   exemptions: Exemption[] | null;
 }
 
+export interface ListIdentityClientsOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  clients: IdentityClient[] | null;
+}
+
+export interface ListIdentityScopesOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  scopes: ServiceScopes[] | null;
+}
+
 export interface ListMembersOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   /** @nullable */
   members: MemberView[] | null;
+}
+
+export interface ListOrgMembersOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  members: OrgMemberView[] | null;
+}
+
+export interface ListOrgVisibilityOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  items: OrgVisibilityEntry[] | null;
 }
 
 export interface ListOutputBody {
@@ -600,6 +994,20 @@ export interface ListOutputBody2 {
   endpoints: NotificationEndpoint[] | null;
 }
 
+export interface ListOutputBody3 {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  extensions: Extension[] | null;
+}
+
+export interface ListPackAssignmentsOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  assignments: PolicyAssignment[] | null;
+}
+
 export interface ListPacksOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
@@ -612,6 +1020,13 @@ export interface ListPoliciesOutputBody {
   readonly $schema?: string;
   /** @nullable */
   policies: Policy[] | null;
+}
+
+export interface ListRolloutsOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  rollouts: Rollout[] | null;
 }
 
 export interface ListTeamsOutputBody {
@@ -628,6 +1043,13 @@ export interface ListTenantsOutputBody {
   tenants: Organization[] | null;
 }
 
+export interface ListTokensOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  tokens: RegistrationToken[] | null;
+}
+
 export interface ListZonesOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
@@ -640,6 +1062,13 @@ export interface MemberView {
   email: string;
   role: string;
   userId: string;
+}
+
+export interface MembersOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  clusters: Cluster[] | null;
 }
 
 export interface NotificationDelivery {
@@ -666,12 +1095,38 @@ export interface NotificationEndpoint {
   url: string;
 }
 
+export interface OrgMemberView {
+  displayName: string;
+  email: string;
+  role: string;
+  /** @nullable */
+  teams: string[] | null;
+  userId: string;
+}
+
+export interface OrgVisibilityEntry {
+  displayName: string;
+  itemId: string;
+  name: string;
+  orgHidden: boolean;
+  platformHidden: boolean;
+  visible: boolean;
+}
+
+export interface OrgVisibilityInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** false hides the item for this org; true shows it (subject to platform rules) */
+  visible: boolean;
+}
+
 export interface Organization {
   createdAt: string;
   displayName: string;
   id: string;
   keycloakOrgId: string;
   slug: string;
+  status: string;
 }
 
 export interface PackOutputBody {
@@ -742,6 +1197,63 @@ export interface PolicyViolation {
   rule: string;
 }
 
+export interface PutClientScopesInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  scopes: string[] | null;
+}
+
+export interface PutMemberInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** Org role to grant */
+  role: string;
+}
+
+export interface PutRBACMappingsInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /**
+   * Declarative team→role set; applied atomically
+   * @nullable
+   */
+  mappings: TeamRoleMapping[] | null;
+}
+
+export interface PutRBACMappingsOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  changes: TeamRoleChange[] | null;
+}
+
+export interface RbacClusterRole {
+  description: string;
+  kind: string;
+  name: string;
+}
+
+export interface RbacGroup {
+  memberCount: number;
+  path: string;
+  team: string;
+}
+
+export interface RbacMapping {
+  clusterRole: string;
+  groupPath: string;
+}
+
+export interface RbacMatrix {
+  /** @nullable */
+  groups: RbacGroup[] | null;
+  /** @nullable */
+  mappings: RbacMapping[] | null;
+  /** @nullable */
+  roles: RbacClusterRole[] | null;
+}
+
 export interface RegisterInputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
@@ -755,6 +1267,20 @@ export interface RegisterInputBody {
   roleArn: string;
   /** tenant (default) | platform */
   runContext?: string;
+}
+
+export interface RegisterInputBody1 {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** expected sha256 (hex) of the plugin artifact */
+  checksum?: string;
+  /** sidecar HTTP base URL (dial mode) */
+  endpoint: string;
+  /** backend */
+  kind: string;
+  manifest?: unknown;
+  name: string;
+  version: string;
 }
 
 export interface RegistrationToken {
@@ -815,10 +1341,103 @@ export interface ResourceRef {
   namespace?: string;
 }
 
+export interface RetryDeletionOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  deletion: TenantDeletion;
+}
+
+export interface RollbackInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  toVersion: string;
+}
+
+export interface Rollout {
+  createdAt: string;
+  createdBy: string;
+  currentStage: number;
+  desiredVersion: string;
+  gateContext?: RolloutGateContext;
+  id: string;
+  kind: string;
+  name: string;
+  orgId: string;
+  /** @nullable */
+  stages: RolloutStage[] | null;
+  state: string;
+  targetRef: string;
+  updatedAt: string;
+}
+
+export interface RolloutGateContext {
+  approvalId?: string;
+  enteredAt: string;
+  gate: string;
+  type: string;
+  waitSeconds?: number;
+}
+
+export interface RolloutOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  rollout: Rollout;
+}
+
+export interface RolloutStage {
+  afterGate?: RolloutStageGate;
+  beforeGate?: RolloutStageGate;
+  /** @nullable */
+  clusterSetIds: string[] | null;
+  maxConcurrency: string;
+  name: string;
+}
+
+export interface RolloutStageGate {
+  type: string;
+  waitSeconds?: number;
+}
+
+export interface RolloutTarget {
+  clusterId: string;
+  commandId?: string;
+  observedHealth?: string;
+  rolloutId: string;
+  stage: number;
+  status: string;
+  updatedAt: string;
+}
+
+export interface RotateSecretOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** Returned exactly once; never stored server-side */
+  secret: string;
+}
+
+export interface ServiceScopes {
+  audience: string;
+  /** @nullable */
+  scopes: string[] | null;
+}
+
+export interface SetChannelInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  desiredAgentVersion: string;
+}
+
 export interface SyncOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   synced: number;
+}
+
+export interface TargetsOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  targets: RolloutTarget[] | null;
 }
 
 export interface Team {
@@ -827,18 +1446,53 @@ export interface Team {
   keycloakGroupPath: string;
   name: string;
   orgId: string;
+  role: string;
+}
+
+export interface TeamOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  team: Team;
+}
+
+export interface TeamRoleChange {
+  name: string;
+  newRole: string;
+  oldRole: string;
+  teamId: string;
+}
+
+export interface TeamRoleMapping {
+  role: string;
+  team: string;
+}
+
+export interface TenantDeletion {
+  approvalId?: string;
+  createdAt: string;
+  force: boolean;
+  lastError?: string;
+  orgId: string;
+  reason?: string;
+  requestedBy: string;
+  state: string;
+  step: string;
+  updatedAt: string;
 }
 
 export interface TenantGitConfig {
   baseBranch: string;
   commitPolicy: string;
+  githubApp?: GitHubAppConfig;
   orgId: string;
   repo: string;
+  scaffoldGitOrg?: string;
 }
 
 export interface TenantOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
+  deletion?: TenantDeletion;
   organization: Organization;
   /** @nullable */
   teams: Team[] | null;
@@ -894,6 +1548,36 @@ export interface TokenOutputBody {
   token: string;
 }
 
+export interface UpdateBrokeredIdPInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  claimMapping?: ClaimMappingInput;
+  clientId?: string;
+  /** Write-only: rotates the secret when set */
+  clientSecret?: string;
+  domainHints?: string[];
+  issuerUrl?: string;
+}
+
+export interface UpdateConfigInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  config: ApprovalConfig;
+}
+
+export interface UpdateIdentityClientInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  audiences?: string[];
+  /**
+   * @minLength 1
+   * @maxLength 63
+   */
+  name?: string;
+  redirectUris?: string[];
+  scopes?: string[];
+}
+
 export interface UpdateInputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
@@ -912,6 +1596,16 @@ export interface UpdatePolicyInputBody {
   source: string;
 }
 
+export interface UpdateTenantInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /**
+   * @minLength 1
+   * @maxLength 200
+   */
+  displayName: string;
+}
+
 export interface UpgradeInputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
@@ -925,6 +1619,13 @@ export interface VisibilityInputBody {
   /** @nullable */
   rules: Item[] | null;
 }
+
+export type InboxApprovalsParams = {
+/**
+ * Max items to return (default 50, max 200)
+ */
+limit?: number;
+};
 
 export type ListApprovalsParams = {
 /**
@@ -959,6 +1660,11 @@ export type RenderCloudAccountProviderConfigParams = {
 clusterId: string;
 };
 
+export type ListDriftParams = {
+clusterId?: string;
+status?: string;
+};
+
 export type ListInstancesParams = {
 cluster?: string;
 item?: string;
@@ -971,6 +1677,17 @@ export type InstanceDiffParams = {
  * Target version
  */
 to: string;
+};
+
+export type DeletePolicyPackParams = {
+/**
+ * cascade-unassign active assignments before deleting
+ */
+force?: boolean;
+};
+
+export type ListRolloutTargetsParams = {
+stage?: number;
 };
 
 export type HTTPStatusCode1xx = 100 | 101 | 102 | 103;
@@ -1172,6 +1889,62 @@ export const setCatalogVisibility = async (item: string,
 
 
 /**
+ * @summary List pending approvals across all orgs the caller belongs to
+ */
+export type inboxApprovalsResponse200 = {
+  data: InboxOutputBody
+  status: 200
+}
+
+export type inboxApprovalsResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type inboxApprovalsResponseSuccess = (inboxApprovalsResponse200) & {
+  headers: Headers;
+};
+export type inboxApprovalsResponseError = (inboxApprovalsResponseDefault) & {
+  headers: Headers;
+};
+
+export type inboxApprovalsResponse = (inboxApprovalsResponseSuccess | inboxApprovalsResponseError)
+
+export const getInboxApprovalsUrl = (params?: InboxApprovalsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/approvals/inbox?${stringifiedParams}` : `/api/v1/approvals/inbox`
+}
+
+export const inboxApprovals = async (params?: InboxApprovalsParams, options?: RequestInit): Promise<inboxApprovalsResponse> => {
+  
+  const res = await fetch(getInboxApprovalsUrl(params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: inboxApprovalsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as inboxApprovalsResponse
+}
+
+
+
+/**
  * @summary List tenants visible to the caller (tenant switcher)
  */
 export type listTenantsResponse200 = {
@@ -1271,6 +2044,57 @@ export const createTenant = async (createTenantInputBody: NonReadonly<CreateTena
 
 
 /**
+ * @summary Decommission a tenant (org admin only; approval-gated, asynchronous)
+ */
+export type deleteTenantResponse202 = {
+  data: DeleteTenantOutputBody
+  status: 202
+}
+
+export type deleteTenantResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 202>
+}
+    
+export type deleteTenantResponseSuccess = (deleteTenantResponse202) & {
+  headers: Headers;
+};
+export type deleteTenantResponseError = (deleteTenantResponseDefault) & {
+  headers: Headers;
+};
+
+export type deleteTenantResponse = (deleteTenantResponseSuccess | deleteTenantResponseError)
+
+export const getDeleteTenantUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}`
+}
+
+export const deleteTenant = async (org: string,
+    deleteTenantInputBody: NonReadonly<DeleteTenantInputBody>, options?: RequestInit): Promise<deleteTenantResponse> => {
+  
+  const res = await fetch(getDeleteTenantUrl(org),
+  {      
+    ...options,
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      deleteTenantInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: deleteTenantResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteTenantResponse
+}
+
+
+
+/**
  * @summary Get a tenant by slug
  */
 export type getTenantResponse200 = {
@@ -1315,6 +2139,206 @@ export const getTenant = async (org: string, options?: RequestInit): Promise<get
   
   const data: getTenantResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getTenantResponse
+}
+
+
+
+/**
+ * @summary Update the tenant profile (org admin only)
+ */
+export type updateTenantResponse200 = {
+  data: TenantOutputBody
+  status: 200
+}
+
+export type updateTenantResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type updateTenantResponseSuccess = (updateTenantResponse200) & {
+  headers: Headers;
+};
+export type updateTenantResponseError = (updateTenantResponseDefault) & {
+  headers: Headers;
+};
+
+export type updateTenantResponse = (updateTenantResponseSuccess | updateTenantResponseError)
+
+export const getUpdateTenantUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}`
+}
+
+export const updateTenant = async (org: string,
+    updateTenantInputBody: NonReadonly<UpdateTenantInputBody>, options?: RequestInit): Promise<updateTenantResponse> => {
+  
+  const res = await fetch(getUpdateTenantUrl(org),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateTenantInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: updateTenantResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as updateTenantResponse
+}
+
+
+
+/**
+ * @summary List agent channel pins
+ */
+export type listAgentChannelsResponse200 = {
+  data: ListChannelsOutputBody
+  status: 200
+}
+
+export type listAgentChannelsResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type listAgentChannelsResponseSuccess = (listAgentChannelsResponse200) & {
+  headers: Headers;
+};
+export type listAgentChannelsResponseError = (listAgentChannelsResponseDefault) & {
+  headers: Headers;
+};
+
+export type listAgentChannelsResponse = (listAgentChannelsResponseSuccess | listAgentChannelsResponseError)
+
+export const getListAgentChannelsUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/agent-channels`
+}
+
+export const listAgentChannels = async (org: string, options?: RequestInit): Promise<listAgentChannelsResponse> => {
+  
+  const res = await fetch(getListAgentChannelsUrl(org),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: listAgentChannelsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listAgentChannelsResponse
+}
+
+
+
+/**
+ * @summary Get the org's effective approval policy config
+ */
+export type getApprovalConfigResponse200 = {
+  data: ConfigOutputBody
+  status: 200
+}
+
+export type getApprovalConfigResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type getApprovalConfigResponseSuccess = (getApprovalConfigResponse200) & {
+  headers: Headers;
+};
+export type getApprovalConfigResponseError = (getApprovalConfigResponseDefault) & {
+  headers: Headers;
+};
+
+export type getApprovalConfigResponse = (getApprovalConfigResponseSuccess | getApprovalConfigResponseError)
+
+export const getGetApprovalConfigUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/approval-config`
+}
+
+export const getApprovalConfig = async (org: string, options?: RequestInit): Promise<getApprovalConfigResponse> => {
+  
+  const res = await fetch(getGetApprovalConfigUrl(org),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: getApprovalConfigResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getApprovalConfigResponse
+}
+
+
+
+/**
+ * @summary Replace the org's approval policy config
+ */
+export type updateApprovalConfigResponse200 = {
+  data: ConfigOutputBody
+  status: 200
+}
+
+export type updateApprovalConfigResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type updateApprovalConfigResponseSuccess = (updateApprovalConfigResponse200) & {
+  headers: Headers;
+};
+export type updateApprovalConfigResponseError = (updateApprovalConfigResponseDefault) & {
+  headers: Headers;
+};
+
+export type updateApprovalConfigResponse = (updateApprovalConfigResponseSuccess | updateApprovalConfigResponseError)
+
+export const getUpdateApprovalConfigUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/approval-config`
+}
+
+export const updateApprovalConfig = async (org: string,
+    updateConfigInputBody: NonReadonly<UpdateConfigInputBody>, options?: RequestInit): Promise<updateApprovalConfigResponse> => {
+  
+  const res = await fetch(getUpdateApprovalConfigUrl(org),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateConfigInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: updateApprovalConfigResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as updateApprovalConfigResponse
 }
 
 
@@ -1533,6 +2557,210 @@ export const decideApproval = async (org: string,
 
 
 /**
+ * @summary Bulk approve/reject approvals
+ */
+export type bulkDecideApprovalsResponse200 = {
+  data: BulkResultsOutputBody
+  status: 200
+}
+
+export type bulkDecideApprovalsResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type bulkDecideApprovalsResponseSuccess = (bulkDecideApprovalsResponse200) & {
+  headers: Headers;
+};
+export type bulkDecideApprovalsResponseError = (bulkDecideApprovalsResponseDefault) & {
+  headers: Headers;
+};
+
+export type bulkDecideApprovalsResponse = (bulkDecideApprovalsResponseSuccess | bulkDecideApprovalsResponseError)
+
+export const getBulkDecideApprovalsUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/bulk/approvals:decide`
+}
+
+export const bulkDecideApprovals = async (org: string,
+    bulkDecideInputBody: NonReadonly<BulkDecideInputBody>, options?: RequestInit): Promise<bulkDecideApprovalsResponse> => {
+  
+  const res = await fetch(getBulkDecideApprovalsUrl(org),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      bulkDecideInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: bulkDecideApprovalsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as bulkDecideApprovalsResponse
+}
+
+
+
+/**
+ * @summary Bulk pin catalog items to a version
+ */
+export type bulkPinCatalogResponse200 = {
+  data: BulkResultsOutputBody
+  status: 200
+}
+
+export type bulkPinCatalogResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type bulkPinCatalogResponseSuccess = (bulkPinCatalogResponse200) & {
+  headers: Headers;
+};
+export type bulkPinCatalogResponseError = (bulkPinCatalogResponseDefault) & {
+  headers: Headers;
+};
+
+export type bulkPinCatalogResponse = (bulkPinCatalogResponseSuccess | bulkPinCatalogResponseError)
+
+export const getBulkPinCatalogUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/bulk/catalog:pin`
+}
+
+export const bulkPinCatalog = async (org: string,
+    bulkPinCatalogInputBody: NonReadonly<BulkPinCatalogInputBody>, options?: RequestInit): Promise<bulkPinCatalogResponse> => {
+  
+  const res = await fetch(getBulkPinCatalogUrl(org),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      bulkPinCatalogInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: bulkPinCatalogResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as bulkPinCatalogResponse
+}
+
+
+
+/**
+ * @summary Label query across the fleet
+ */
+export type bulkQueryClustersResponse200 = {
+  data: MembersOutputBody
+  status: 200
+}
+
+export type bulkQueryClustersResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type bulkQueryClustersResponseSuccess = (bulkQueryClustersResponse200) & {
+  headers: Headers;
+};
+export type bulkQueryClustersResponseError = (bulkQueryClustersResponseDefault) & {
+  headers: Headers;
+};
+
+export type bulkQueryClustersResponse = (bulkQueryClustersResponseSuccess | bulkQueryClustersResponseError)
+
+export const getBulkQueryClustersUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/bulk/clusters:query`
+}
+
+export const bulkQueryClusters = async (org: string,
+    bulkQueryInputBody: NonReadonly<BulkQueryInputBody>, options?: RequestInit): Promise<bulkQueryClustersResponse> => {
+  
+  const res = await fetch(getBulkQueryClustersUrl(org),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      bulkQueryInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: bulkQueryClustersResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as bulkQueryClustersResponse
+}
+
+
+
+/**
+ * @summary Bulk assign a policy pack to cluster sets
+ */
+export type bulkAssignPolicyResponse200 = {
+  data: BulkResultsOutputBody
+  status: 200
+}
+
+export type bulkAssignPolicyResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type bulkAssignPolicyResponseSuccess = (bulkAssignPolicyResponse200) & {
+  headers: Headers;
+};
+export type bulkAssignPolicyResponseError = (bulkAssignPolicyResponseDefault) & {
+  headers: Headers;
+};
+
+export type bulkAssignPolicyResponse = (bulkAssignPolicyResponseSuccess | bulkAssignPolicyResponseError)
+
+export const getBulkAssignPolicyUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/bulk/policy:assign`
+}
+
+export const bulkAssignPolicy = async (org: string,
+    bulkAssignPolicyInputBody: NonReadonly<BulkAssignPolicyInputBody>, options?: RequestInit): Promise<bulkAssignPolicyResponse> => {
+  
+  const res = await fetch(getBulkAssignPolicyUrl(org),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      bulkAssignPolicyInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: bulkAssignPolicyResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as bulkAssignPolicyResponse
+}
+
+
+
+/**
  * @summary List catalog items visible to the tenant (optionally per cluster)
  */
 export type listCatalogResponse200 = {
@@ -1586,6 +2814,108 @@ export const listCatalog = async (org: string,
   
   const data: listCatalogResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as listCatalogResponse
+}
+
+
+
+/**
+ * @summary List effective catalog visibility for the tenant (platform rule AND org overlay)
+ */
+export type listCatalogVisibilityResponse200 = {
+  data: ListOrgVisibilityOutputBody
+  status: 200
+}
+
+export type listCatalogVisibilityResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type listCatalogVisibilityResponseSuccess = (listCatalogVisibilityResponse200) & {
+  headers: Headers;
+};
+export type listCatalogVisibilityResponseError = (listCatalogVisibilityResponseDefault) & {
+  headers: Headers;
+};
+
+export type listCatalogVisibilityResponse = (listCatalogVisibilityResponseSuccess | listCatalogVisibilityResponseError)
+
+export const getListCatalogVisibilityUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/catalog-visibility`
+}
+
+export const listCatalogVisibility = async (org: string, options?: RequestInit): Promise<listCatalogVisibilityResponse> => {
+  
+  const res = await fetch(getListCatalogVisibilityUrl(org),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: listCatalogVisibilityResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listCatalogVisibilityResponse
+}
+
+
+
+/**
+ * @summary Set the org-level visibility overlay for one catalog item (org admin)
+ */
+export type setCatalogOrgVisibilityResponse204 = {
+  data: void
+  status: 204
+}
+
+export type setCatalogOrgVisibilityResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 204>
+}
+    
+export type setCatalogOrgVisibilityResponseSuccess = (setCatalogOrgVisibilityResponse204) & {
+  headers: Headers;
+};
+export type setCatalogOrgVisibilityResponseError = (setCatalogOrgVisibilityResponseDefault) & {
+  headers: Headers;
+};
+
+export type setCatalogOrgVisibilityResponse = (setCatalogOrgVisibilityResponseSuccess | setCatalogOrgVisibilityResponseError)
+
+export const getSetCatalogOrgVisibilityUrl = (org: string,
+    item: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/catalog-visibility/${item}`
+}
+
+export const setCatalogOrgVisibility = async (org: string,
+    item: string,
+    orgVisibilityInputBody: NonReadonly<OrgVisibilityInputBody>, options?: RequestInit): Promise<setCatalogOrgVisibilityResponse> => {
+  
+  const res = await fetch(getSetCatalogOrgVisibilityUrl(org,item),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      orgVisibilityInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: setCatalogOrgVisibilityResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as setCatalogOrgVisibilityResponse
 }
 
 
@@ -2279,6 +3609,112 @@ export const getClusterSet = async (org: string,
 
 
 /**
+ * @summary Pin desired agent version for a channel
+ */
+export type setAgentChannelResponse200 = {
+  data: ChannelOutputBody
+  status: 200
+}
+
+export type setAgentChannelResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type setAgentChannelResponseSuccess = (setAgentChannelResponse200) & {
+  headers: Headers;
+};
+export type setAgentChannelResponseError = (setAgentChannelResponseDefault) & {
+  headers: Headers;
+};
+
+export type setAgentChannelResponse = (setAgentChannelResponseSuccess | setAgentChannelResponseError)
+
+export const getSetAgentChannelUrl = (org: string,
+    id: string,
+    channel: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/cluster-sets/${id}/channels/${channel}`
+}
+
+export const setAgentChannel = async (org: string,
+    id: string,
+    channel: string,
+    setChannelInputBody: NonReadonly<SetChannelInputBody>, options?: RequestInit): Promise<setAgentChannelResponse> => {
+  
+  const res = await fetch(getSetAgentChannelUrl(org,id,channel),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      setChannelInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: setAgentChannelResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as setAgentChannelResponse
+}
+
+
+
+/**
+ * @summary Resolve cluster set members
+ */
+export type listClusterSetMembersResponse200 = {
+  data: MembersOutputBody
+  status: 200
+}
+
+export type listClusterSetMembersResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type listClusterSetMembersResponseSuccess = (listClusterSetMembersResponse200) & {
+  headers: Headers;
+};
+export type listClusterSetMembersResponseError = (listClusterSetMembersResponseDefault) & {
+  headers: Headers;
+};
+
+export type listClusterSetMembersResponse = (listClusterSetMembersResponseSuccess | listClusterSetMembersResponseError)
+
+export const getListClusterSetMembersUrl = (org: string,
+    id: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/cluster-sets/${id}/members`
+}
+
+export const listClusterSetMembers = async (org: string,
+    id: string, options?: RequestInit): Promise<listClusterSetMembersResponse> => {
+  
+  const res = await fetch(getListClusterSetMembersUrl(org,id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: listClusterSetMembersResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listClusterSetMembersResponse
+}
+
+
+
+/**
  * @summary List clusters of a tenant with connection health
  */
 export type listClustersResponse200 = {
@@ -2374,6 +3810,57 @@ export const createCluster = async (org: string,
   
   const data: createClusterResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as createClusterResponse
+}
+
+
+
+/**
+ * @summary Cancel a pending cluster registration (409 once registered)
+ */
+export type deleteClusterResponse204 = {
+  data: void
+  status: 204
+}
+
+export type deleteClusterResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 204>
+}
+    
+export type deleteClusterResponseSuccess = (deleteClusterResponse204) & {
+  headers: Headers;
+};
+export type deleteClusterResponseError = (deleteClusterResponseDefault) & {
+  headers: Headers;
+};
+
+export type deleteClusterResponse = (deleteClusterResponseSuccess | deleteClusterResponseError)
+
+export const getDeleteClusterUrl = (org: string,
+    id: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/clusters/${id}`
+}
+
+export const deleteCluster = async (org: string,
+    id: string, options?: RequestInit): Promise<deleteClusterResponse> => {
+  
+  const res = await fetch(getDeleteClusterUrl(org,id),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: deleteClusterResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteClusterResponse
 }
 
 
@@ -2738,6 +4225,57 @@ export const revokeCluster = async (org: string,
 
 
 /**
+ * @summary List active (unconsumed, unexpired) registration tokens
+ */
+export type listRegistrationTokensResponse200 = {
+  data: ListTokensOutputBody
+  status: 200
+}
+
+export type listRegistrationTokensResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type listRegistrationTokensResponseSuccess = (listRegistrationTokensResponse200) & {
+  headers: Headers;
+};
+export type listRegistrationTokensResponseError = (listRegistrationTokensResponseDefault) & {
+  headers: Headers;
+};
+
+export type listRegistrationTokensResponse = (listRegistrationTokensResponseSuccess | listRegistrationTokensResponseError)
+
+export const getListRegistrationTokensUrl = (org: string,
+    id: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/clusters/${id}/tokens`
+}
+
+export const listRegistrationTokens = async (org: string,
+    id: string, options?: RequestInit): Promise<listRegistrationTokensResponse> => {
+  
+  const res = await fetch(getListRegistrationTokensUrl(org,id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: listRegistrationTokensResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listRegistrationTokensResponse
+}
+
+
+
+/**
  * @summary Issue a one-time TTL'd registration token
  */
 export type issueRegistrationTokenResponse200 = {
@@ -2784,6 +4322,59 @@ export const issueRegistrationToken = async (org: string,
   
   const data: issueRegistrationTokenResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as issueRegistrationTokenResponse
+}
+
+
+
+/**
+ * @summary Revoke (burn) a registration token (org admin only)
+ */
+export type revokeRegistrationTokenResponse204 = {
+  data: void
+  status: 204
+}
+
+export type revokeRegistrationTokenResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 204>
+}
+    
+export type revokeRegistrationTokenResponseSuccess = (revokeRegistrationTokenResponse204) & {
+  headers: Headers;
+};
+export type revokeRegistrationTokenResponseError = (revokeRegistrationTokenResponseDefault) & {
+  headers: Headers;
+};
+
+export type revokeRegistrationTokenResponse = (revokeRegistrationTokenResponseSuccess | revokeRegistrationTokenResponseError)
+
+export const getRevokeRegistrationTokenUrl = (org: string,
+    id: string,
+    tokenId: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/clusters/${id}/tokens/${tokenId}`
+}
+
+export const revokeRegistrationToken = async (org: string,
+    id: string,
+    tokenId: string, options?: RequestInit): Promise<revokeRegistrationTokenResponse> => {
+  
+  const res = await fetch(getRevokeRegistrationTokenUrl(org,id,tokenId),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: revokeRegistrationTokenResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as revokeRegistrationTokenResponse
 }
 
 
@@ -2840,6 +4431,104 @@ export const uncordonCluster = async (org: string,
 
 
 /**
+ * @summary Dry-run: list resources blocking tenant deletion (org admin only)
+ */
+export type tenantDeletionDependenciesResponse200 = {
+  data: DeletionDependenciesOutputBody
+  status: 200
+}
+
+export type tenantDeletionDependenciesResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type tenantDeletionDependenciesResponseSuccess = (tenantDeletionDependenciesResponse200) & {
+  headers: Headers;
+};
+export type tenantDeletionDependenciesResponseError = (tenantDeletionDependenciesResponseDefault) & {
+  headers: Headers;
+};
+
+export type tenantDeletionDependenciesResponse = (tenantDeletionDependenciesResponseSuccess | tenantDeletionDependenciesResponseError)
+
+export const getTenantDeletionDependenciesUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/deletion/dependencies`
+}
+
+export const tenantDeletionDependencies = async (org: string, options?: RequestInit): Promise<tenantDeletionDependenciesResponse> => {
+  
+  const res = await fetch(getTenantDeletionDependenciesUrl(org),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: tenantDeletionDependenciesResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as tenantDeletionDependenciesResponse
+}
+
+
+
+/**
+ * @summary Retry a failed tenant deletion (org admin only)
+ */
+export type retryTenantDeletionResponse202 = {
+  data: RetryDeletionOutputBody
+  status: 202
+}
+
+export type retryTenantDeletionResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 202>
+}
+    
+export type retryTenantDeletionResponseSuccess = (retryTenantDeletionResponse202) & {
+  headers: Headers;
+};
+export type retryTenantDeletionResponseError = (retryTenantDeletionResponseDefault) & {
+  headers: Headers;
+};
+
+export type retryTenantDeletionResponse = (retryTenantDeletionResponseSuccess | retryTenantDeletionResponseError)
+
+export const getRetryTenantDeletionUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/deletion:retry`
+}
+
+export const retryTenantDeletion = async (org: string, options?: RequestInit): Promise<retryTenantDeletionResponse> => {
+  
+  const res = await fetch(getRetryTenantDeletionUrl(org),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: retryTenantDeletionResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as retryTenantDeletionResponse
+}
+
+
+
+/**
  * @summary Deploy a catalog item to a cluster
  */
 export type deployCatalogItemResponse200 = {
@@ -2886,6 +4575,64 @@ export const deployCatalogItem = async (org: string,
   
   const data: deployCatalogItemResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as deployCatalogItemResponse
+}
+
+
+
+/**
+ * @summary List drift events
+ */
+export type listDriftResponse200 = {
+  data: ListDriftOutputBody
+  status: 200
+}
+
+export type listDriftResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type listDriftResponseSuccess = (listDriftResponse200) & {
+  headers: Headers;
+};
+export type listDriftResponseError = (listDriftResponseDefault) & {
+  headers: Headers;
+};
+
+export type listDriftResponse = (listDriftResponseSuccess | listDriftResponseError)
+
+export const getListDriftUrl = (org: string,
+    params?: ListDriftParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/tenants/${org}/drift?${stringifiedParams}` : `/api/v1/tenants/${org}/drift`
+}
+
+export const listDrift = async (org: string,
+    params?: ListDriftParams, options?: RequestInit): Promise<listDriftResponse> => {
+  
+  const res = await fetch(getListDriftUrl(org,params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: listDriftResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listDriftResponse
 }
 
 
@@ -3044,6 +4791,259 @@ export const decideExemption = async (org: string,
 
 
 /**
+ * @summary List extensions
+ */
+export type listExtensionsResponse200 = {
+  data: ListOutputBody3
+  status: 200
+}
+
+export type listExtensionsResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type listExtensionsResponseSuccess = (listExtensionsResponse200) & {
+  headers: Headers;
+};
+export type listExtensionsResponseError = (listExtensionsResponseDefault) & {
+  headers: Headers;
+};
+
+export type listExtensionsResponse = (listExtensionsResponseSuccess | listExtensionsResponseError)
+
+export const getListExtensionsUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/extensions`
+}
+
+export const listExtensions = async (org: string, options?: RequestInit): Promise<listExtensionsResponse> => {
+  
+  const res = await fetch(getListExtensionsUrl(org),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: listExtensionsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listExtensionsResponse
+}
+
+
+
+/**
+ * @summary Register a backend extension (pending until handshake verifies)
+ */
+export type registerExtensionResponse200 = {
+  data: ExtensionOutputBody
+  status: 200
+}
+
+export type registerExtensionResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type registerExtensionResponseSuccess = (registerExtensionResponse200) & {
+  headers: Headers;
+};
+export type registerExtensionResponseError = (registerExtensionResponseDefault) & {
+  headers: Headers;
+};
+
+export type registerExtensionResponse = (registerExtensionResponseSuccess | registerExtensionResponseError)
+
+export const getRegisterExtensionUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/extensions`
+}
+
+export const registerExtension = async (org: string,
+    registerInputBody1: NonReadonly<RegisterInputBody1>, options?: RequestInit): Promise<registerExtensionResponse> => {
+  
+  const res = await fetch(getRegisterExtensionUrl(org),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      registerInputBody1,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: registerExtensionResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as registerExtensionResponse
+}
+
+
+
+/**
+ * @summary Unregister an extension
+ */
+export type unregisterExtensionResponse204 = {
+  data: void
+  status: 204
+}
+
+export type unregisterExtensionResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 204>
+}
+    
+export type unregisterExtensionResponseSuccess = (unregisterExtensionResponse204) & {
+  headers: Headers;
+};
+export type unregisterExtensionResponseError = (unregisterExtensionResponseDefault) & {
+  headers: Headers;
+};
+
+export type unregisterExtensionResponse = (unregisterExtensionResponseSuccess | unregisterExtensionResponseError)
+
+export const getUnregisterExtensionUrl = (org: string,
+    id: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/extensions/${id}`
+}
+
+export const unregisterExtension = async (org: string,
+    id: string, options?: RequestInit): Promise<unregisterExtensionResponse> => {
+  
+  const res = await fetch(getUnregisterExtensionUrl(org,id),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: unregisterExtensionResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as unregisterExtensionResponse
+}
+
+
+
+/**
+ * @summary Get an extension
+ */
+export type getExtensionResponse200 = {
+  data: ExtensionOutputBody
+  status: 200
+}
+
+export type getExtensionResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type getExtensionResponseSuccess = (getExtensionResponse200) & {
+  headers: Headers;
+};
+export type getExtensionResponseError = (getExtensionResponseDefault) & {
+  headers: Headers;
+};
+
+export type getExtensionResponse = (getExtensionResponseSuccess | getExtensionResponseError)
+
+export const getGetExtensionUrl = (org: string,
+    id: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/extensions/${id}`
+}
+
+export const getExtension = async (org: string,
+    id: string, options?: RequestInit): Promise<getExtensionResponse> => {
+  
+  const res = await fetch(getGetExtensionUrl(org,id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: getExtensionResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getExtensionResponse
+}
+
+
+
+/**
+ * @summary Run the SDK handshake and mark the extension ready
+ */
+export type verifyExtensionResponse200 = {
+  data: ExtensionOutputBody
+  status: 200
+}
+
+export type verifyExtensionResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type verifyExtensionResponseSuccess = (verifyExtensionResponse200) & {
+  headers: Headers;
+};
+export type verifyExtensionResponseError = (verifyExtensionResponseDefault) & {
+  headers: Headers;
+};
+
+export type verifyExtensionResponse = (verifyExtensionResponseSuccess | verifyExtensionResponseError)
+
+export const getVerifyExtensionUrl = (org: string,
+    id: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/extensions/${id}/verify`
+}
+
+export const verifyExtension = async (org: string,
+    id: string, options?: RequestInit): Promise<verifyExtensionResponse> => {
+  
+  const res = await fetch(getVerifyExtensionUrl(org,id),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: verifyExtensionResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as verifyExtensionResponse
+}
+
+
+
+/**
  * @summary Read the tenant state repo config
  */
 export type getTenantGitConfigResponse200 = {
@@ -3139,6 +5139,669 @@ export const setTenantGitConfig = async (org: string,
   
   const data: setTenantGitConfigResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as setTenantGitConfigResponse
+}
+
+
+
+/**
+ * @summary List OIDC clients of a tenant (org admin only)
+ */
+export type listIdentityClientsResponse200 = {
+  data: ListIdentityClientsOutputBody
+  status: 200
+}
+
+export type listIdentityClientsResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type listIdentityClientsResponseSuccess = (listIdentityClientsResponse200) & {
+  headers: Headers;
+};
+export type listIdentityClientsResponseError = (listIdentityClientsResponseDefault) & {
+  headers: Headers;
+};
+
+export type listIdentityClientsResponse = (listIdentityClientsResponseSuccess | listIdentityClientsResponseError)
+
+export const getListIdentityClientsUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/identity/clients`
+}
+
+export const listIdentityClients = async (org: string, options?: RequestInit): Promise<listIdentityClientsResponse> => {
+  
+  const res = await fetch(getListIdentityClientsUrl(org),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: listIdentityClientsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listIdentityClientsResponse
+}
+
+
+
+/**
+ * @summary Create an OIDC client; the secret is returned exactly once (org admin only)
+ */
+export type createIdentityClientResponse200 = {
+  data: CreateIdentityClientOutputBody
+  status: 200
+}
+
+export type createIdentityClientResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type createIdentityClientResponseSuccess = (createIdentityClientResponse200) & {
+  headers: Headers;
+};
+export type createIdentityClientResponseError = (createIdentityClientResponseDefault) & {
+  headers: Headers;
+};
+
+export type createIdentityClientResponse = (createIdentityClientResponseSuccess | createIdentityClientResponseError)
+
+export const getCreateIdentityClientUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/identity/clients`
+}
+
+export const createIdentityClient = async (org: string,
+    createIdentityClientInputBody: NonReadonly<CreateIdentityClientInputBody>, options?: RequestInit): Promise<createIdentityClientResponse> => {
+  
+  const res = await fetch(getCreateIdentityClientUrl(org),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createIdentityClientInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: createIdentityClientResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as createIdentityClientResponse
+}
+
+
+
+/**
+ * @summary Disable an OIDC client (org admin only; row retained for audit)
+ */
+export type disableIdentityClientResponse204 = {
+  data: void
+  status: 204
+}
+
+export type disableIdentityClientResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 204>
+}
+    
+export type disableIdentityClientResponseSuccess = (disableIdentityClientResponse204) & {
+  headers: Headers;
+};
+export type disableIdentityClientResponseError = (disableIdentityClientResponseDefault) & {
+  headers: Headers;
+};
+
+export type disableIdentityClientResponse = (disableIdentityClientResponseSuccess | disableIdentityClientResponseError)
+
+export const getDisableIdentityClientUrl = (org: string,
+    clientId: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/identity/clients/${clientId}`
+}
+
+export const disableIdentityClient = async (org: string,
+    clientId: string, options?: RequestInit): Promise<disableIdentityClientResponse> => {
+  
+  const res = await fetch(getDisableIdentityClientUrl(org,clientId),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: disableIdentityClientResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as disableIdentityClientResponse
+}
+
+
+
+/**
+ * @summary Get an OIDC client (org admin only)
+ */
+export type getIdentityClientResponse200 = {
+  data: IdentityClientOutputBody
+  status: 200
+}
+
+export type getIdentityClientResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type getIdentityClientResponseSuccess = (getIdentityClientResponse200) & {
+  headers: Headers;
+};
+export type getIdentityClientResponseError = (getIdentityClientResponseDefault) & {
+  headers: Headers;
+};
+
+export type getIdentityClientResponse = (getIdentityClientResponseSuccess | getIdentityClientResponseError)
+
+export const getGetIdentityClientUrl = (org: string,
+    clientId: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/identity/clients/${clientId}`
+}
+
+export const getIdentityClient = async (org: string,
+    clientId: string, options?: RequestInit): Promise<getIdentityClientResponse> => {
+  
+  const res = await fetch(getGetIdentityClientUrl(org,clientId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: getIdentityClientResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getIdentityClientResponse
+}
+
+
+
+/**
+ * @summary Update an OIDC client (org admin only)
+ */
+export type updateIdentityClientResponse200 = {
+  data: IdentityClientOutputBody
+  status: 200
+}
+
+export type updateIdentityClientResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type updateIdentityClientResponseSuccess = (updateIdentityClientResponse200) & {
+  headers: Headers;
+};
+export type updateIdentityClientResponseError = (updateIdentityClientResponseDefault) & {
+  headers: Headers;
+};
+
+export type updateIdentityClientResponse = (updateIdentityClientResponseSuccess | updateIdentityClientResponseError)
+
+export const getUpdateIdentityClientUrl = (org: string,
+    clientId: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/identity/clients/${clientId}`
+}
+
+export const updateIdentityClient = async (org: string,
+    clientId: string,
+    updateIdentityClientInputBody: NonReadonly<UpdateIdentityClientInputBody>, options?: RequestInit): Promise<updateIdentityClientResponse> => {
+  
+  const res = await fetch(getUpdateIdentityClientUrl(org,clientId),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateIdentityClientInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: updateIdentityClientResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as updateIdentityClientResponse
+}
+
+
+
+/**
+ * @summary Replace the scopes of an OIDC client (org admin only)
+ */
+export type putIdentityClientScopesResponse200 = {
+  data: IdentityClientOutputBody
+  status: 200
+}
+
+export type putIdentityClientScopesResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type putIdentityClientScopesResponseSuccess = (putIdentityClientScopesResponse200) & {
+  headers: Headers;
+};
+export type putIdentityClientScopesResponseError = (putIdentityClientScopesResponseDefault) & {
+  headers: Headers;
+};
+
+export type putIdentityClientScopesResponse = (putIdentityClientScopesResponseSuccess | putIdentityClientScopesResponseError)
+
+export const getPutIdentityClientScopesUrl = (org: string,
+    clientId: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/identity/clients/${clientId}/scopes`
+}
+
+export const putIdentityClientScopes = async (org: string,
+    clientId: string,
+    putClientScopesInputBody: NonReadonly<PutClientScopesInputBody>, options?: RequestInit): Promise<putIdentityClientScopesResponse> => {
+  
+  const res = await fetch(getPutIdentityClientScopesUrl(org,clientId),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      putClientScopesInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: putIdentityClientScopesResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as putIdentityClientScopesResponse
+}
+
+
+
+/**
+ * @summary Rotate the client secret; the new value is returned exactly once (org admin only)
+ */
+export type rotateIdentityClientSecretResponse200 = {
+  data: RotateSecretOutputBody
+  status: 200
+}
+
+export type rotateIdentityClientSecretResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type rotateIdentityClientSecretResponseSuccess = (rotateIdentityClientSecretResponse200) & {
+  headers: Headers;
+};
+export type rotateIdentityClientSecretResponseError = (rotateIdentityClientSecretResponseDefault) & {
+  headers: Headers;
+};
+
+export type rotateIdentityClientSecretResponse = (rotateIdentityClientSecretResponseSuccess | rotateIdentityClientSecretResponseError)
+
+export const getRotateIdentityClientSecretUrl = (org: string,
+    clientId: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/identity/clients/${clientId}/secret:rotate`
+}
+
+export const rotateIdentityClientSecret = async (org: string,
+    clientId: string, options?: RequestInit): Promise<rotateIdentityClientSecretResponse> => {
+  
+  const res = await fetch(getRotateIdentityClientSecretUrl(org,clientId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: rotateIdentityClientSecretResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as rotateIdentityClientSecretResponse
+}
+
+
+
+/**
+ * @summary List brokered identity providers of a tenant (org admin only; at most one in v1)
+ */
+export type listIdentityProvidersResponse200 = {
+  data: ListBrokeredIdPsOutputBody
+  status: 200
+}
+
+export type listIdentityProvidersResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type listIdentityProvidersResponseSuccess = (listIdentityProvidersResponse200) & {
+  headers: Headers;
+};
+export type listIdentityProvidersResponseError = (listIdentityProvidersResponseDefault) & {
+  headers: Headers;
+};
+
+export type listIdentityProvidersResponse = (listIdentityProvidersResponseSuccess | listIdentityProvidersResponseError)
+
+export const getListIdentityProvidersUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/identity/providers`
+}
+
+export const listIdentityProviders = async (org: string, options?: RequestInit): Promise<listIdentityProvidersResponse> => {
+  
+  const res = await fetch(getListIdentityProvidersUrl(org),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: listIdentityProvidersResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listIdentityProvidersResponse
+}
+
+
+
+/**
+ * @summary Broker an OIDC identity provider into the tenant; the client secret is write-only (org admin only)
+ */
+export type createIdentityProviderResponse200 = {
+  data: BrokeredIdPOutputBody
+  status: 200
+}
+
+export type createIdentityProviderResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type createIdentityProviderResponseSuccess = (createIdentityProviderResponse200) & {
+  headers: Headers;
+};
+export type createIdentityProviderResponseError = (createIdentityProviderResponseDefault) & {
+  headers: Headers;
+};
+
+export type createIdentityProviderResponse = (createIdentityProviderResponseSuccess | createIdentityProviderResponseError)
+
+export const getCreateIdentityProviderUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/identity/providers`
+}
+
+export const createIdentityProvider = async (org: string,
+    createBrokeredIdPInputBody: NonReadonly<CreateBrokeredIdPInputBody>, options?: RequestInit): Promise<createIdentityProviderResponse> => {
+  
+  const res = await fetch(getCreateIdentityProviderUrl(org),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createBrokeredIdPInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: createIdentityProviderResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as createIdentityProviderResponse
+}
+
+
+
+/**
+ * @summary Remove a brokered identity provider (org admin only)
+ */
+export type deleteIdentityProviderResponse204 = {
+  data: void
+  status: 204
+}
+
+export type deleteIdentityProviderResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 204>
+}
+    
+export type deleteIdentityProviderResponseSuccess = (deleteIdentityProviderResponse204) & {
+  headers: Headers;
+};
+export type deleteIdentityProviderResponseError = (deleteIdentityProviderResponseDefault) & {
+  headers: Headers;
+};
+
+export type deleteIdentityProviderResponse = (deleteIdentityProviderResponseSuccess | deleteIdentityProviderResponseError)
+
+export const getDeleteIdentityProviderUrl = (org: string,
+    alias: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/identity/providers/${alias}`
+}
+
+export const deleteIdentityProvider = async (org: string,
+    alias: string, options?: RequestInit): Promise<deleteIdentityProviderResponse> => {
+  
+  const res = await fetch(getDeleteIdentityProviderUrl(org,alias),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: deleteIdentityProviderResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteIdentityProviderResponse
+}
+
+
+
+/**
+ * @summary Get a brokered identity provider (org admin only)
+ */
+export type getIdentityProviderResponse200 = {
+  data: BrokeredIdPOutputBody
+  status: 200
+}
+
+export type getIdentityProviderResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type getIdentityProviderResponseSuccess = (getIdentityProviderResponse200) & {
+  headers: Headers;
+};
+export type getIdentityProviderResponseError = (getIdentityProviderResponseDefault) & {
+  headers: Headers;
+};
+
+export type getIdentityProviderResponse = (getIdentityProviderResponseSuccess | getIdentityProviderResponseError)
+
+export const getGetIdentityProviderUrl = (org: string,
+    alias: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/identity/providers/${alias}`
+}
+
+export const getIdentityProvider = async (org: string,
+    alias: string, options?: RequestInit): Promise<getIdentityProviderResponse> => {
+  
+  const res = await fetch(getGetIdentityProviderUrl(org,alias),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: getIdentityProviderResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getIdentityProviderResponse
+}
+
+
+
+/**
+ * @summary Update a brokered identity provider; clientSecret rotates the secret when set (org admin only)
+ */
+export type updateIdentityProviderResponse200 = {
+  data: BrokeredIdPOutputBody
+  status: 200
+}
+
+export type updateIdentityProviderResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type updateIdentityProviderResponseSuccess = (updateIdentityProviderResponse200) & {
+  headers: Headers;
+};
+export type updateIdentityProviderResponseError = (updateIdentityProviderResponseDefault) & {
+  headers: Headers;
+};
+
+export type updateIdentityProviderResponse = (updateIdentityProviderResponseSuccess | updateIdentityProviderResponseError)
+
+export const getUpdateIdentityProviderUrl = (org: string,
+    alias: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/identity/providers/${alias}`
+}
+
+export const updateIdentityProvider = async (org: string,
+    alias: string,
+    updateBrokeredIdPInputBody: NonReadonly<UpdateBrokeredIdPInputBody>, options?: RequestInit): Promise<updateIdentityProviderResponse> => {
+  
+  const res = await fetch(getUpdateIdentityProviderUrl(org,alias),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateBrokeredIdPInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: updateIdentityProviderResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as updateIdentityProviderResponse
+}
+
+
+
+/**
+ * @summary Read-only catalog of per-service audiences/scopes (org admin only)
+ */
+export type listIdentityScopesResponse200 = {
+  data: ListIdentityScopesOutputBody
+  status: 200
+}
+
+export type listIdentityScopesResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type listIdentityScopesResponseSuccess = (listIdentityScopesResponse200) & {
+  headers: Headers;
+};
+export type listIdentityScopesResponseError = (listIdentityScopesResponseDefault) & {
+  headers: Headers;
+};
+
+export type listIdentityScopesResponse = (listIdentityScopesResponseSuccess | listIdentityScopesResponseError)
+
+export const getListIdentityScopesUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/identity/scopes`
+}
+
+export const listIdentityScopes = async (org: string, options?: RequestInit): Promise<listIdentityScopesResponse> => {
+  
+  const res = await fetch(getListIdentityScopesUrl(org),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: listIdentityScopesResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listIdentityScopesResponse
 }
 
 
@@ -3361,6 +6024,159 @@ export const upgradeInstance = async (org: string,
   
   const data: upgradeInstanceResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as upgradeInstanceResponse
+}
+
+
+
+/**
+ * @summary Org-wide member view (highest role + teams)
+ */
+export type listOrgMembersResponse200 = {
+  data: ListOrgMembersOutputBody
+  status: 200
+}
+
+export type listOrgMembersResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type listOrgMembersResponseSuccess = (listOrgMembersResponse200) & {
+  headers: Headers;
+};
+export type listOrgMembersResponseError = (listOrgMembersResponseDefault) & {
+  headers: Headers;
+};
+
+export type listOrgMembersResponse = (listOrgMembersResponseSuccess | listOrgMembersResponseError)
+
+export const getListOrgMembersUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/members`
+}
+
+export const listOrgMembers = async (org: string, options?: RequestInit): Promise<listOrgMembersResponse> => {
+  
+  const res = await fetch(getListOrgMembersUrl(org),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: listOrgMembersResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listOrgMembersResponse
+}
+
+
+
+/**
+ * @summary Remove a user from the organization (org admin only)
+ */
+export type removeOrgMemberResponse204 = {
+  data: void
+  status: 204
+}
+
+export type removeOrgMemberResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 204>
+}
+    
+export type removeOrgMemberResponseSuccess = (removeOrgMemberResponse204) & {
+  headers: Headers;
+};
+export type removeOrgMemberResponseError = (removeOrgMemberResponseDefault) & {
+  headers: Headers;
+};
+
+export type removeOrgMemberResponse = (removeOrgMemberResponseSuccess | removeOrgMemberResponseError)
+
+export const getRemoveOrgMemberUrl = (org: string,
+    subject: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/members/${subject}`
+}
+
+export const removeOrgMember = async (org: string,
+    subject: string, options?: RequestInit): Promise<removeOrgMemberResponse> => {
+  
+  const res = await fetch(getRemoveOrgMemberUrl(org,subject),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: removeOrgMemberResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as removeOrgMemberResponse
+}
+
+
+
+/**
+ * @summary Set a user's org role (org admin only)
+ */
+export type setMemberRoleResponse204 = {
+  data: void
+  status: 204
+}
+
+export type setMemberRoleResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 204>
+}
+    
+export type setMemberRoleResponseSuccess = (setMemberRoleResponse204) & {
+  headers: Headers;
+};
+export type setMemberRoleResponseError = (setMemberRoleResponseDefault) & {
+  headers: Headers;
+};
+
+export type setMemberRoleResponse = (setMemberRoleResponseSuccess | setMemberRoleResponseError)
+
+export const getSetMemberRoleUrl = (org: string,
+    subject: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/members/${subject}`
+}
+
+export const setMemberRole = async (org: string,
+    subject: string,
+    putMemberInputBody: NonReadonly<PutMemberInputBody>, options?: RequestInit): Promise<setMemberRoleResponse> => {
+  
+  const res = await fetch(getSetMemberRoleUrl(org,subject),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      putMemberInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: setMemberRoleResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as setMemberRoleResponse
 }
 
 
@@ -4078,6 +6894,66 @@ export const createPolicyPack = async (org: string,
 
 
 /**
+ * @summary Delete a policy pack (409 while assigned unless force=true)
+ */
+export type deletePolicyPackResponse204 = {
+  data: void
+  status: 204
+}
+
+export type deletePolicyPackResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 204>
+}
+    
+export type deletePolicyPackResponseSuccess = (deletePolicyPackResponse204) & {
+  headers: Headers;
+};
+export type deletePolicyPackResponseError = (deletePolicyPackResponseDefault) & {
+  headers: Headers;
+};
+
+export type deletePolicyPackResponse = (deletePolicyPackResponseSuccess | deletePolicyPackResponseError)
+
+export const getDeletePolicyPackUrl = (org: string,
+    id: string,
+    params?: DeletePolicyPackParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/tenants/${org}/policy-packs/${id}?${stringifiedParams}` : `/api/v1/tenants/${org}/policy-packs/${id}`
+}
+
+export const deletePolicyPack = async (org: string,
+    id: string,
+    params?: DeletePolicyPackParams, options?: RequestInit): Promise<deletePolicyPackResponse> => {
+  
+  const res = await fetch(getDeletePolicyPackUrl(org,id,params),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: deletePolicyPackResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deletePolicyPackResponse
+}
+
+
+
+/**
  * @summary Get a policy pack
  */
 export type getPolicyPackResponse200 = {
@@ -4182,6 +7058,57 @@ export const assignPolicyPack = async (org: string,
 
 
 /**
+ * @summary List a policy pack's assignments
+ */
+export type listPolicyPackAssignmentsResponse200 = {
+  data: ListPackAssignmentsOutputBody
+  status: 200
+}
+
+export type listPolicyPackAssignmentsResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type listPolicyPackAssignmentsResponseSuccess = (listPolicyPackAssignmentsResponse200) & {
+  headers: Headers;
+};
+export type listPolicyPackAssignmentsResponseError = (listPolicyPackAssignmentsResponseDefault) & {
+  headers: Headers;
+};
+
+export type listPolicyPackAssignmentsResponse = (listPolicyPackAssignmentsResponseSuccess | listPolicyPackAssignmentsResponseError)
+
+export const getListPolicyPackAssignmentsUrl = (org: string,
+    id: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/policy-packs/${id}/assignments`
+}
+
+export const listPolicyPackAssignments = async (org: string,
+    id: string, options?: RequestInit): Promise<listPolicyPackAssignmentsResponse> => {
+  
+  const res = await fetch(getListPolicyPackAssignmentsUrl(org,id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: listPolicyPackAssignmentsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listPolicyPackAssignmentsResponse
+}
+
+
+
+/**
  * @summary Remove a policy pack assignment
  */
 export type unassignPolicyPackResponse204 = {
@@ -4235,6 +7162,523 @@ export const unassignPolicyPack = async (org: string,
 
 
 /**
+ * @summary RBAC matrix: tenant Keycloak groups × cluster roles with current mappings
+ */
+export type getRBACMatrixResponse200 = {
+  data: GetRBACMatrixOutputBody
+  status: 200
+}
+
+export type getRBACMatrixResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type getRBACMatrixResponseSuccess = (getRBACMatrixResponse200) & {
+  headers: Headers;
+};
+export type getRBACMatrixResponseError = (getRBACMatrixResponseDefault) & {
+  headers: Headers;
+};
+
+export type getRBACMatrixResponse = (getRBACMatrixResponseSuccess | getRBACMatrixResponseError)
+
+export const getGetRBACMatrixUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/rbac`
+}
+
+export const getRBACMatrix = async (org: string, options?: RequestInit): Promise<getRBACMatrixResponse> => {
+  
+  const res = await fetch(getGetRBACMatrixUrl(org),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: getRBACMatrixResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getRBACMatrixResponse
+}
+
+
+
+/**
+ * @summary Declarative bulk set of team→role mappings, applied atomically (org admin only)
+ */
+export type putRBACMappingsResponse200 = {
+  data: PutRBACMappingsOutputBody
+  status: 200
+}
+
+export type putRBACMappingsResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type putRBACMappingsResponseSuccess = (putRBACMappingsResponse200) & {
+  headers: Headers;
+};
+export type putRBACMappingsResponseError = (putRBACMappingsResponseDefault) & {
+  headers: Headers;
+};
+
+export type putRBACMappingsResponse = (putRBACMappingsResponseSuccess | putRBACMappingsResponseError)
+
+export const getPutRBACMappingsUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/rbac/mappings`
+}
+
+export const putRBACMappings = async (org: string,
+    putRBACMappingsInputBody: NonReadonly<PutRBACMappingsInputBody>, options?: RequestInit): Promise<putRBACMappingsResponse> => {
+  
+  const res = await fetch(getPutRBACMappingsUrl(org),
+  {      
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      putRBACMappingsInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: putRBACMappingsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as putRBACMappingsResponse
+}
+
+
+
+/**
+ * @summary List rollouts
+ */
+export type listRolloutsResponse200 = {
+  data: ListRolloutsOutputBody
+  status: 200
+}
+
+export type listRolloutsResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type listRolloutsResponseSuccess = (listRolloutsResponse200) & {
+  headers: Headers;
+};
+export type listRolloutsResponseError = (listRolloutsResponseDefault) & {
+  headers: Headers;
+};
+
+export type listRolloutsResponse = (listRolloutsResponseSuccess | listRolloutsResponseError)
+
+export const getListRolloutsUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/rollouts`
+}
+
+export const listRollouts = async (org: string, options?: RequestInit): Promise<listRolloutsResponse> => {
+  
+  const res = await fetch(getListRolloutsUrl(org),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: listRolloutsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listRolloutsResponse
+}
+
+
+
+/**
+ * @summary Create a staged fleet rollout
+ */
+export type createRolloutResponse200 = {
+  data: RolloutOutputBody
+  status: 200
+}
+
+export type createRolloutResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type createRolloutResponseSuccess = (createRolloutResponse200) & {
+  headers: Headers;
+};
+export type createRolloutResponseError = (createRolloutResponseDefault) & {
+  headers: Headers;
+};
+
+export type createRolloutResponse = (createRolloutResponseSuccess | createRolloutResponseError)
+
+export const getCreateRolloutUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/rollouts`
+}
+
+export const createRollout = async (org: string,
+    createRolloutInputBody: NonReadonly<CreateRolloutInputBody>, options?: RequestInit): Promise<createRolloutResponse> => {
+  
+  const res = await fetch(getCreateRolloutUrl(org),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createRolloutInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: createRolloutResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as createRolloutResponse
+}
+
+
+
+/**
+ * @summary Get a rollout
+ */
+export type getRolloutResponse200 = {
+  data: RolloutOutputBody
+  status: 200
+}
+
+export type getRolloutResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type getRolloutResponseSuccess = (getRolloutResponse200) & {
+  headers: Headers;
+};
+export type getRolloutResponseError = (getRolloutResponseDefault) & {
+  headers: Headers;
+};
+
+export type getRolloutResponse = (getRolloutResponseSuccess | getRolloutResponseError)
+
+export const getGetRolloutUrl = (org: string,
+    id: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/rollouts/${id}`
+}
+
+export const getRollout = async (org: string,
+    id: string, options?: RequestInit): Promise<getRolloutResponse> => {
+  
+  const res = await fetch(getGetRolloutUrl(org,id),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: getRolloutResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getRolloutResponse
+}
+
+
+
+/**
+ * @summary Resume a paused rollout
+ */
+export type resumeRolloutResponse200 = {
+  data: RolloutOutputBody
+  status: 200
+}
+
+export type resumeRolloutResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type resumeRolloutResponseSuccess = (resumeRolloutResponse200) & {
+  headers: Headers;
+};
+export type resumeRolloutResponseError = (resumeRolloutResponseDefault) & {
+  headers: Headers;
+};
+
+export type resumeRolloutResponse = (resumeRolloutResponseSuccess | resumeRolloutResponseError)
+
+export const getResumeRolloutUrl = (org: string,
+    id: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/rollouts/${id}/resume`
+}
+
+export const resumeRollout = async (org: string,
+    id: string, options?: RequestInit): Promise<resumeRolloutResponse> => {
+  
+  const res = await fetch(getResumeRolloutUrl(org,id),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: resumeRolloutResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as resumeRolloutResponse
+}
+
+
+
+/**
+ * @summary Roll back to a previous version
+ */
+export type rollbackRolloutResponse200 = {
+  data: RolloutOutputBody
+  status: 200
+}
+
+export type rollbackRolloutResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type rollbackRolloutResponseSuccess = (rollbackRolloutResponse200) & {
+  headers: Headers;
+};
+export type rollbackRolloutResponseError = (rollbackRolloutResponseDefault) & {
+  headers: Headers;
+};
+
+export type rollbackRolloutResponse = (rollbackRolloutResponseSuccess | rollbackRolloutResponseError)
+
+export const getRollbackRolloutUrl = (org: string,
+    id: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/rollouts/${id}/rollback`
+}
+
+export const rollbackRollout = async (org: string,
+    id: string,
+    rollbackInputBody: NonReadonly<RollbackInputBody>, options?: RequestInit): Promise<rollbackRolloutResponse> => {
+  
+  const res = await fetch(getRollbackRolloutUrl(org,id),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      rollbackInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: rollbackRolloutResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as rollbackRolloutResponse
+}
+
+
+
+/**
+ * @summary Start a rollout
+ */
+export type startRolloutResponse200 = {
+  data: RolloutOutputBody
+  status: 200
+}
+
+export type startRolloutResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type startRolloutResponseSuccess = (startRolloutResponse200) & {
+  headers: Headers;
+};
+export type startRolloutResponseError = (startRolloutResponseDefault) & {
+  headers: Headers;
+};
+
+export type startRolloutResponse = (startRolloutResponseSuccess | startRolloutResponseError)
+
+export const getStartRolloutUrl = (org: string,
+    id: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/rollouts/${id}/start`
+}
+
+export const startRollout = async (org: string,
+    id: string, options?: RequestInit): Promise<startRolloutResponse> => {
+  
+  const res = await fetch(getStartRolloutUrl(org,id),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: startRolloutResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as startRolloutResponse
+}
+
+
+
+/**
+ * @summary Stop (pause) a rollout
+ */
+export type stopRolloutResponse200 = {
+  data: RolloutOutputBody
+  status: 200
+}
+
+export type stopRolloutResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type stopRolloutResponseSuccess = (stopRolloutResponse200) & {
+  headers: Headers;
+};
+export type stopRolloutResponseError = (stopRolloutResponseDefault) & {
+  headers: Headers;
+};
+
+export type stopRolloutResponse = (stopRolloutResponseSuccess | stopRolloutResponseError)
+
+export const getStopRolloutUrl = (org: string,
+    id: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/rollouts/${id}/stop`
+}
+
+export const stopRollout = async (org: string,
+    id: string, options?: RequestInit): Promise<stopRolloutResponse> => {
+  
+  const res = await fetch(getStopRolloutUrl(org,id),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: stopRolloutResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as stopRolloutResponse
+}
+
+
+
+/**
+ * @summary List rollout target status for a stage
+ */
+export type listRolloutTargetsResponse200 = {
+  data: TargetsOutputBody
+  status: 200
+}
+
+export type listRolloutTargetsResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type listRolloutTargetsResponseSuccess = (listRolloutTargetsResponse200) & {
+  headers: Headers;
+};
+export type listRolloutTargetsResponseError = (listRolloutTargetsResponseDefault) & {
+  headers: Headers;
+};
+
+export type listRolloutTargetsResponse = (listRolloutTargetsResponseSuccess | listRolloutTargetsResponseError)
+
+export const getListRolloutTargetsUrl = (org: string,
+    id: string,
+    params?: ListRolloutTargetsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/tenants/${org}/rollouts/${id}/targets?${stringifiedParams}` : `/api/v1/tenants/${org}/rollouts/${id}/targets`
+}
+
+export const listRolloutTargets = async (org: string,
+    id: string,
+    params?: ListRolloutTargetsParams, options?: RequestInit): Promise<listRolloutTargetsResponse> => {
+  
+  const res = await fetch(getListRolloutTargetsUrl(org,id,params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: listRolloutTargetsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listRolloutTargetsResponse
+}
+
+
+
+/**
  * @summary List teams of a tenant
  */
 export type listTeamsResponse200 = {
@@ -4279,6 +7723,108 @@ export const listTeams = async (org: string, options?: RequestInit): Promise<lis
   
   const data: listTeamsResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as listTeamsResponse
+}
+
+
+
+/**
+ * @summary Create a team granting an org role (org admin only)
+ */
+export type createTeamResponse200 = {
+  data: TeamOutputBody
+  status: 200
+}
+
+export type createTeamResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type createTeamResponseSuccess = (createTeamResponse200) & {
+  headers: Headers;
+};
+export type createTeamResponseError = (createTeamResponseDefault) & {
+  headers: Headers;
+};
+
+export type createTeamResponse = (createTeamResponseSuccess | createTeamResponseError)
+
+export const getCreateTeamUrl = (org: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/teams`
+}
+
+export const createTeam = async (org: string,
+    createTeamInputBody: NonReadonly<CreateTeamInputBody>, options?: RequestInit): Promise<createTeamResponse> => {
+  
+  const res = await fetch(getCreateTeamUrl(org),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createTeamInputBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: createTeamResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as createTeamResponse
+}
+
+
+
+/**
+ * @summary Delete a team (org admin only; default teams are protected)
+ */
+export type deleteTeamResponse204 = {
+  data: void
+  status: 204
+}
+
+export type deleteTeamResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 204>
+}
+    
+export type deleteTeamResponseSuccess = (deleteTeamResponse204) & {
+  headers: Headers;
+};
+export type deleteTeamResponseError = (deleteTeamResponseDefault) & {
+  headers: Headers;
+};
+
+export type deleteTeamResponse = (deleteTeamResponseSuccess | deleteTeamResponseError)
+
+export const getDeleteTeamUrl = (org: string,
+    team: string,) => {
+
+
+  
+
+  return `/api/v1/tenants/${org}/teams/${team}`
+}
+
+export const deleteTeam = async (org: string,
+    team: string, options?: RequestInit): Promise<deleteTeamResponse> => {
+  
+  const res = await fetch(getDeleteTeamUrl(org,team),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: deleteTeamResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteTeamResponse
 }
 
 

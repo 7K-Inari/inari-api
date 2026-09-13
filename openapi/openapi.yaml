@@ -40,6 +40,60 @@ components:
       required:
         - subject
       type: object
+    AgentChannel:
+      additionalProperties: false
+      properties:
+        channel:
+          type: string
+        clusterSetId:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        desiredAgentVersion:
+          type: string
+        id:
+          type: string
+        orgId:
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - orgId
+        - clusterSetId
+        - channel
+        - desiredAgentVersion
+        - createdAt
+        - updatedAt
+      type: object
+    ApprovalConfig:
+      additionalProperties: false
+      properties:
+        approvalTtl:
+          type: string
+        approverGroups:
+          items:
+            $ref: "#/components/schemas/ApproverGroup"
+          type: array
+          nullable: true
+        autoApprove:
+          items:
+            $ref: "#/components/schemas/AutoApproveRule"
+          type: array
+          nullable: true
+        defaultPolicy:
+          type: string
+        thresholds:
+          items:
+            $ref: "#/components/schemas/ApprovalThreshold"
+          type: array
+          nullable: true
+      required:
+        - defaultPolicy
+        - approvalTtl
+      type: object
     ApprovalOutputBody:
       additionalProperties: false
       properties:
@@ -110,6 +164,35 @@ components:
         - state
         - createdAt
       type: object
+    ApprovalThreshold:
+      additionalProperties: false
+      properties:
+        gt:
+          format: double
+          type: number
+        kind:
+          type: string
+        policy:
+          type: string
+      required:
+        - kind
+        - gt
+        - policy
+      type: object
+    ApproverGroup:
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        subjects:
+          items:
+            type: string
+          type: array
+          nullable: true
+      required:
+        - name
+        - subjects
+      type: object
     AssignPackInputBody:
       additionalProperties: false
       properties:
@@ -141,6 +224,169 @@ components:
           $ref: "#/components/schemas/PolicyAssignment"
       required:
         - assignment
+      type: object
+    AutoApproveRule:
+      additionalProperties: false
+      properties:
+        itemIds:
+          items:
+            type: string
+          type: array
+          nullable: true
+        kind:
+          type: string
+      required:
+        - kind
+        - itemIds
+      type: object
+    BrokeredIdP:
+      additionalProperties: false
+      properties:
+        alias:
+          type: string
+        claimMapping:
+          $ref: "#/components/schemas/IdPClaimMapping"
+        clientId:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        domainHints:
+          items:
+            type: string
+          type: array
+          nullable: true
+        issuerUrl:
+          type: string
+      required:
+        - alias
+        - issuerUrl
+        - clientId
+        - claimMapping
+        - domainHints
+        - createdAt
+      type: object
+    BrokeredIdPOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/BrokeredIdPOutputBody.json
+        provider:
+          $ref: "#/components/schemas/BrokeredIdP"
+      required:
+        - provider
+      type: object
+    BulkAssignPolicyInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/BulkAssignPolicyInputBody.json
+        clusterSetIds:
+          items:
+            type: string
+          type: array
+          nullable: true
+        packId:
+          type: string
+      required:
+        - packId
+        - clusterSetIds
+      type: object
+    BulkDecideInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/BulkDecideInputBody.json
+        approvalIds:
+          items:
+            type: string
+          type: array
+          nullable: true
+        approve:
+          type: boolean
+        reason:
+          type: string
+      required:
+        - approvalIds
+        - approve
+      type: object
+    BulkItemResult:
+      additionalProperties: false
+      properties:
+        error:
+          type: string
+        id:
+          type: string
+        ok:
+          type: boolean
+      required:
+        - id
+        - ok
+      type: object
+    BulkPinCatalogInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/BulkPinCatalogInputBody.json
+        itemIds:
+          items:
+            type: string
+          type: array
+          nullable: true
+        version:
+          type: string
+      required:
+        - itemIds
+        - version
+      type: object
+    BulkQueryInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/BulkQueryInputBody.json
+        labelSelector:
+          additionalProperties:
+            type: string
+          type: object
+      required:
+        - labelSelector
+      type: object
+    BulkResultsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/BulkResultsOutputBody.json
+        results:
+          items:
+            $ref: "#/components/schemas/BulkItemResult"
+          type: array
+          nullable: true
+      required:
+        - results
       type: object
     Capability:
       additionalProperties: false
@@ -211,6 +457,30 @@ components:
         - itemId
         - version
         - channel
+      type: object
+    ChannelOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/ChannelOutputBody.json
+        channel:
+          $ref: "#/components/schemas/AgentChannel"
+      required:
+        - channel
+      type: object
+    ClaimMappingInput:
+      additionalProperties: false
+      properties:
+        email:
+          description: Claim carrying the user email (defaults to the IdP's standard mapping)
+          type: string
+        groups:
+          description: Claim carrying group memberships, mapped into the tenant members group
+          type: string
       type: object
     CloudAccount:
       additionalProperties: false
@@ -345,6 +615,68 @@ components:
       required:
         - clusterSet
       type: object
+    ConfigOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/ConfigOutputBody.json
+        config:
+          $ref: "#/components/schemas/ApprovalConfig"
+        orgId:
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+          nullable: true
+      required:
+        - config
+        - orgId
+        - updatedAt
+      type: object
+    CreateBrokeredIdPInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/CreateBrokeredIdPInputBody.json
+        alias:
+          description: URL-safe IdP alias (KC alias becomes org-<org>-<alias>)
+          maxLength: 63
+          minLength: 1
+          pattern: ^[a-z0-9][a-z0-9-]*$
+          type: string
+        claimMapping:
+          $ref: "#/components/schemas/ClaimMappingInput"
+        clientId:
+          minLength: 1
+          type: string
+        clientSecret:
+          description: "Write-only: forwarded to Keycloak, never stored or returned"
+          minLength: 1
+          type: string
+        domainHints:
+          description: Org email domains used for home-IdP discovery
+          items:
+            type: string
+          type: array
+          nullable: true
+        issuerUrl:
+          description: OIDC issuer URL (https); discovered via the discovery endpoint
+          minLength: 1
+          type: string
+      required:
+        - alias
+        - issuerUrl
+        - clientId
+        - clientSecret
+      type: object
     CreateClusterInputBody:
       additionalProperties: false
       properties:
@@ -383,6 +715,63 @@ components:
       required:
         - name
         - labelSelector
+      type: object
+    CreateIdentityClientInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/CreateIdentityClientInputBody.json
+        audiences:
+          items:
+            type: string
+          type: array
+          nullable: true
+        name:
+          description: URL-safe client name (clientId becomes org-<org>-<name>)
+          maxLength: 63
+          minLength: 1
+          pattern: ^[a-z0-9][a-z0-9-]*$
+          type: string
+        redirectUris:
+          items:
+            type: string
+          type: array
+          nullable: true
+        scopes:
+          items:
+            type: string
+          type: array
+          nullable: true
+        type:
+          description: service = confidential client-credentials; public = browser/native with redirect URIs
+          enum:
+            - service
+            - public
+          type: string
+      required:
+        - name
+        - type
+      type: object
+    CreateIdentityClientOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/CreateIdentityClientOutputBody.json
+        client:
+          $ref: "#/components/schemas/IdentityClient"
+        secret:
+          description: Returned exactly once; never stored server-side
+          type: string
+      required:
+        - client
       type: object
     CreateInputBody:
       additionalProperties: false
@@ -466,6 +855,57 @@ components:
         - target
         - engine
         - source
+      type: object
+    CreateRolloutInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/CreateRolloutInputBody.json
+        desiredVersion:
+          type: string
+        kind:
+          description: capability | policy_pack | agent_upgrade | catalog_version
+          type: string
+        name:
+          type: string
+        stages:
+          items:
+            $ref: "#/components/schemas/RolloutStage"
+          type: array
+          nullable: true
+        targetRef:
+          type: string
+      required:
+        - name
+        - kind
+        - targetRef
+        - desiredVersion
+        - stages
+      type: object
+    CreateTeamInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/CreateTeamInputBody.json
+        name:
+          description: URL-safe team name
+          maxLength: 63
+          minLength: 1
+          pattern: ^[a-z0-9][a-z0-9-]*$
+          type: string
+        role:
+          description: Org role the team grants (default viewer)
+          type: string
+      required:
+        - name
       type: object
     CreateTenantInputBody:
       additionalProperties: false
@@ -579,6 +1019,73 @@ components:
         approvalId:
           type: string
       type: object
+    DeleteTenantInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/DeleteTenantInputBody.json
+        force:
+          description: Revoke non-terminal clusters and delete despite dependencies
+          type: boolean
+        reason:
+          maxLength: 500
+          type: string
+      type: object
+    DeleteTenantOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/DeleteTenantOutputBody.json
+        approvalId:
+          type: string
+        status:
+          type: string
+      required:
+        - approvalId
+        - status
+      type: object
+    DeletionDependenciesOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/DeletionDependenciesOutputBody.json
+        blockers:
+          items:
+            $ref: "#/components/schemas/Dependency"
+          type: array
+          nullable: true
+      required:
+        - blockers
+      type: object
+    Dependency:
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+        kind:
+          type: string
+        name:
+          type: string
+        state:
+          type: string
+      required:
+        - kind
+        - id
+        - name
+        - state
+      type: object
     DeployInputBody:
       additionalProperties: false
       properties:
@@ -690,6 +1197,38 @@ components:
         - targetVersion
         - currentManifest
         - targetManifest
+      type: object
+    DriftEvent:
+      additionalProperties: false
+      properties:
+        clusterId:
+          type: string
+        desiredHash:
+          type: string
+        detail:
+          type: string
+        detectedAt:
+          format: date-time
+          type: string
+        id:
+          type: string
+        kind:
+          type: string
+        orgId:
+          type: string
+        reportedHash:
+          type: string
+        resourceRef:
+          type: string
+        status:
+          type: string
+      required:
+        - id
+        - orgId
+        - clusterId
+        - kind
+        - status
+        - detectedAt
       type: object
     EndpointOutputBody:
       additionalProperties: false
@@ -841,6 +1380,57 @@ components:
       required:
         - exemption
       type: object
+    Extension:
+      additionalProperties: false
+      properties:
+        checksum:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        endpoint:
+          type: string
+        id:
+          type: string
+        kind:
+          type: string
+        manifest: {}
+        name:
+          type: string
+        orgId:
+          type: string
+        state:
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        version:
+          type: string
+      required:
+        - id
+        - name
+        - version
+        - kind
+        - endpoint
+        - checksum
+        - state
+        - createdAt
+        - updatedAt
+      type: object
+    ExtensionOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/ExtensionOutputBody.json
+        extension:
+          $ref: "#/components/schemas/Extension"
+      required:
+        - extension
+      type: object
     GetOutputBody:
       additionalProperties: false
       properties:
@@ -854,6 +1444,20 @@ components:
           $ref: "#/components/schemas/InstanceView"
       required:
         - instance
+      type: object
+    GetRBACMatrixOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/GetRBACMatrixOutputBody.json
+        rbac:
+          $ref: "#/components/schemas/RbacMatrix"
+      required:
+        - rbac
       type: object
     GetZoneOutputBody:
       additionalProperties: false
@@ -890,9 +1494,13 @@ components:
             - direct
             - pull_request
           type: string
+        githubApp:
+          $ref: "#/components/schemas/GitHubAppConfig"
         repo:
           description: owner/name or https URL of the <tenant>-inari-state repo
           minLength: 1
+          type: string
+        scaffoldGitOrg:
           type: string
       required:
         - repo
@@ -909,8 +1517,139 @@ components:
           example: https://example.com/schemas/GitConfigOutputBody.json
         config:
           $ref: "#/components/schemas/TenantGitConfig"
+        gitProviderStatus:
+          $ref: "#/components/schemas/GitProviderStatus"
       required:
         - config
+      type: object
+    GitHubAppConfig:
+      additionalProperties: false
+      properties:
+        apiBase:
+          type: string
+        appId:
+          format: int64
+          type: integer
+        installationId:
+          format: int64
+          type: integer
+        keyRef:
+          $ref: "#/components/schemas/GitHubAppSecretRef"
+      required:
+        - appId
+        - installationId
+        - keyRef
+      type: object
+    GitHubAppSecretRef:
+      additionalProperties: false
+      properties:
+        key:
+          type: string
+        namespace:
+          type: string
+        secretName:
+          type: string
+      required:
+        - secretName
+        - namespace
+        - key
+      type: object
+    GitProviderStatus:
+      additionalProperties: false
+      properties:
+        apiBase:
+          type: string
+        authModel:
+          type: string
+        checkedAt:
+          format: date-time
+          type: string
+        installationId:
+          format: int64
+          type: integer
+        state:
+          type: string
+      required:
+        - state
+        - authModel
+        - checkedAt
+      type: object
+    IdPClaimMapping:
+      additionalProperties: false
+      properties:
+        email:
+          type: string
+        groups:
+          type: string
+      type: object
+    IdentityClient:
+      additionalProperties: false
+      properties:
+        audiences:
+          items:
+            type: string
+          type: array
+          nullable: true
+        clientId:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        name:
+          type: string
+        redirectUris:
+          items:
+            type: string
+          type: array
+          nullable: true
+        scopes:
+          items:
+            type: string
+          type: array
+          nullable: true
+        status:
+          type: string
+        type:
+          type: string
+      required:
+        - clientId
+        - name
+        - type
+        - audiences
+        - scopes
+        - status
+        - createdAt
+      type: object
+    IdentityClientOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/IdentityClientOutputBody.json
+        client:
+          $ref: "#/components/schemas/IdentityClient"
+      required:
+        - client
+      type: object
+    InboxOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/InboxOutputBody.json
+        items:
+          items:
+            $ref: "#/components/schemas/ApprovalRequest"
+          type: array
+          nullable: true
+      required:
+        - items
       type: object
     InstanceView:
       additionalProperties: false
@@ -1019,6 +1758,8 @@ components:
           type: string
         ociRef:
           type: string
+        orgId:
+          type: string
         pinnedVersion:
           type: string
         source:
@@ -1054,6 +1795,23 @@ components:
       required:
         - accounts
       type: object
+    ListBrokeredIdPsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/ListBrokeredIdPsOutputBody.json
+        providers:
+          items:
+            $ref: "#/components/schemas/BrokeredIdP"
+          type: array
+          nullable: true
+      required:
+        - providers
+      type: object
     ListCapabilitiesOutputBody:
       additionalProperties: false
       properties:
@@ -1087,6 +1845,23 @@ components:
           nullable: true
       required:
         - items
+      type: object
+    ListChannelsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/ListChannelsOutputBody.json
+        channels:
+          items:
+            $ref: "#/components/schemas/AgentChannel"
+          type: array
+          nullable: true
+      required:
+        - channels
       type: object
     ListClusterSetsOutputBody:
       additionalProperties: false
@@ -1122,6 +1897,23 @@ components:
       required:
         - clusters
       type: object
+    ListDriftOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/ListDriftOutputBody.json
+        driftEvents:
+          items:
+            $ref: "#/components/schemas/DriftEvent"
+          type: array
+          nullable: true
+      required:
+        - driftEvents
+      type: object
     ListExemptionsOutputBody:
       additionalProperties: false
       properties:
@@ -1139,6 +1931,40 @@ components:
       required:
         - exemptions
       type: object
+    ListIdentityClientsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/ListIdentityClientsOutputBody.json
+        clients:
+          items:
+            $ref: "#/components/schemas/IdentityClient"
+          type: array
+          nullable: true
+      required:
+        - clients
+      type: object
+    ListIdentityScopesOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/ListIdentityScopesOutputBody.json
+        scopes:
+          items:
+            $ref: "#/components/schemas/ServiceScopes"
+          type: array
+          nullable: true
+      required:
+        - scopes
+      type: object
     ListMembersOutputBody:
       additionalProperties: false
       properties:
@@ -1155,6 +1981,40 @@ components:
           nullable: true
       required:
         - members
+      type: object
+    ListOrgMembersOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/ListOrgMembersOutputBody.json
+        members:
+          items:
+            $ref: "#/components/schemas/OrgMemberView"
+          type: array
+          nullable: true
+      required:
+        - members
+      type: object
+    ListOrgVisibilityOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/ListOrgVisibilityOutputBody.json
+        items:
+          items:
+            $ref: "#/components/schemas/OrgVisibilityEntry"
+          type: array
+          nullable: true
+      required:
+        - items
       type: object
     ListOutputBody:
       additionalProperties: false
@@ -1207,6 +2067,40 @@ components:
       required:
         - endpoints
       type: object
+    ListOutputBody3:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/ListOutputBody3.json
+        extensions:
+          items:
+            $ref: "#/components/schemas/Extension"
+          type: array
+          nullable: true
+      required:
+        - extensions
+      type: object
+    ListPackAssignmentsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/ListPackAssignmentsOutputBody.json
+        assignments:
+          items:
+            $ref: "#/components/schemas/PolicyAssignment"
+          type: array
+          nullable: true
+      required:
+        - assignments
+      type: object
     ListPacksOutputBody:
       additionalProperties: false
       properties:
@@ -1240,6 +2134,23 @@ components:
           nullable: true
       required:
         - policies
+      type: object
+    ListRolloutsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/ListRolloutsOutputBody.json
+        rollouts:
+          items:
+            $ref: "#/components/schemas/Rollout"
+          type: array
+          nullable: true
+      required:
+        - rollouts
       type: object
     ListTeamsOutputBody:
       additionalProperties: false
@@ -1275,6 +2186,23 @@ components:
       required:
         - tenants
       type: object
+    ListTokensOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/ListTokensOutputBody.json
+        tokens:
+          items:
+            $ref: "#/components/schemas/RegistrationToken"
+          type: array
+          nullable: true
+      required:
+        - tokens
+      type: object
     ListZonesOutputBody:
       additionalProperties: false
       properties:
@@ -1308,6 +2236,23 @@ components:
         - email
         - displayName
         - role
+      type: object
+    MembersOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/MembersOutputBody.json
+        clusters:
+          items:
+            $ref: "#/components/schemas/Cluster"
+          type: array
+          nullable: true
+      required:
+        - clusters
       type: object
     NotificationDelivery:
       additionalProperties: false
@@ -1374,6 +2319,67 @@ components:
         - enabled
         - createdAt
       type: object
+    OrgMemberView:
+      additionalProperties: false
+      properties:
+        displayName:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        teams:
+          items:
+            type: string
+          type: array
+          nullable: true
+        userId:
+          type: string
+      required:
+        - userId
+        - email
+        - displayName
+        - role
+        - teams
+      type: object
+    OrgVisibilityEntry:
+      additionalProperties: false
+      properties:
+        displayName:
+          type: string
+        itemId:
+          type: string
+        name:
+          type: string
+        orgHidden:
+          type: boolean
+        platformHidden:
+          type: boolean
+        visible:
+          type: boolean
+      required:
+        - itemId
+        - name
+        - displayName
+        - visible
+        - orgHidden
+        - platformHidden
+      type: object
+    OrgVisibilityInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/OrgVisibilityInputBody.json
+        visible:
+          description: false hides the item for this org; true shows it (subject to platform rules)
+          type: boolean
+      required:
+        - visible
+      type: object
     Organization:
       additionalProperties: false
       properties:
@@ -1388,11 +2394,14 @@ components:
           type: string
         slug:
           type: string
+        status:
+          type: string
       required:
         - id
         - slug
         - displayName
         - keycloakOrgId
+        - status
         - createdAt
       type: object
     PackOutputBody:
@@ -1561,6 +2570,136 @@ components:
         - reason
         - remediation
       type: object
+    PutClientScopesInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/PutClientScopesInputBody.json
+        scopes:
+          items:
+            type: string
+          type: array
+          nullable: true
+      required:
+        - scopes
+      type: object
+    PutMemberInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/PutMemberInputBody.json
+        role:
+          description: Org role to grant
+          type: string
+      required:
+        - role
+      type: object
+    PutRBACMappingsInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/PutRBACMappingsInputBody.json
+        mappings:
+          description: Declarative team→role set; applied atomically
+          items:
+            $ref: "#/components/schemas/TeamRoleMapping"
+          type: array
+          nullable: true
+      required:
+        - mappings
+      type: object
+    PutRBACMappingsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/PutRBACMappingsOutputBody.json
+        changes:
+          items:
+            $ref: "#/components/schemas/TeamRoleChange"
+          type: array
+          nullable: true
+      required:
+        - changes
+      type: object
+    RbacClusterRole:
+      additionalProperties: false
+      properties:
+        description:
+          type: string
+        kind:
+          type: string
+        name:
+          type: string
+      required:
+        - name
+        - kind
+        - description
+      type: object
+    RbacGroup:
+      additionalProperties: false
+      properties:
+        memberCount:
+          format: int64
+          type: integer
+        path:
+          type: string
+        team:
+          type: string
+      required:
+        - path
+        - team
+        - memberCount
+      type: object
+    RbacMapping:
+      additionalProperties: false
+      properties:
+        clusterRole:
+          type: string
+        groupPath:
+          type: string
+      required:
+        - groupPath
+        - clusterRole
+      type: object
+    RbacMatrix:
+      additionalProperties: false
+      properties:
+        groups:
+          items:
+            $ref: "#/components/schemas/RbacGroup"
+          type: array
+          nullable: true
+        mappings:
+          items:
+            $ref: "#/components/schemas/RbacMapping"
+          type: array
+          nullable: true
+        roles:
+          items:
+            $ref: "#/components/schemas/RbacClusterRole"
+          type: array
+          nullable: true
+      required:
+        - groups
+        - roles
+        - mappings
+      type: object
     RegisterInputBody:
       additionalProperties: false
       properties:
@@ -1589,6 +2728,35 @@ components:
       required:
         - accountId
         - roleArn
+      type: object
+    RegisterInputBody1:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/RegisterInputBody1.json
+        checksum:
+          description: expected sha256 (hex) of the plugin artifact
+          type: string
+        endpoint:
+          description: sidecar HTTP base URL (dial mode)
+          type: string
+        kind:
+          description: backend
+          type: string
+        manifest: {}
+        name:
+          type: string
+        version:
+          type: string
+      required:
+        - name
+        - version
+        - kind
+        - endpoint
       type: object
     RegistrationToken:
       additionalProperties: false
@@ -1709,6 +2877,218 @@ components:
         - kind
         - name
       type: object
+    RetryDeletionOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/RetryDeletionOutputBody.json
+        deletion:
+          $ref: "#/components/schemas/TenantDeletion"
+      required:
+        - deletion
+      type: object
+    RollbackInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/RollbackInputBody.json
+        toVersion:
+          type: string
+      required:
+        - toVersion
+      type: object
+    Rollout:
+      additionalProperties: false
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        createdBy:
+          type: string
+        currentStage:
+          format: int64
+          type: integer
+        desiredVersion:
+          type: string
+        gateContext:
+          $ref: "#/components/schemas/RolloutGateContext"
+        id:
+          type: string
+        kind:
+          type: string
+        name:
+          type: string
+        orgId:
+          type: string
+        stages:
+          items:
+            $ref: "#/components/schemas/RolloutStage"
+          type: array
+          nullable: true
+        state:
+          type: string
+        targetRef:
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - orgId
+        - name
+        - kind
+        - targetRef
+        - desiredVersion
+        - stages
+        - state
+        - currentStage
+        - createdBy
+        - createdAt
+        - updatedAt
+      type: object
+    RolloutGateContext:
+      additionalProperties: false
+      properties:
+        approvalId:
+          type: string
+        enteredAt:
+          format: date-time
+          type: string
+        gate:
+          type: string
+        type:
+          type: string
+        waitSeconds:
+          format: int64
+          type: integer
+      required:
+        - gate
+        - type
+        - enteredAt
+      type: object
+    RolloutOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/RolloutOutputBody.json
+        rollout:
+          $ref: "#/components/schemas/Rollout"
+      required:
+        - rollout
+      type: object
+    RolloutStage:
+      additionalProperties: false
+      properties:
+        afterGate:
+          $ref: "#/components/schemas/RolloutStageGate"
+        beforeGate:
+          $ref: "#/components/schemas/RolloutStageGate"
+        clusterSetIds:
+          items:
+            type: string
+          type: array
+          nullable: true
+        maxConcurrency:
+          type: string
+        name:
+          type: string
+      required:
+        - name
+        - clusterSetIds
+        - maxConcurrency
+      type: object
+    RolloutStageGate:
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+        waitSeconds:
+          format: int64
+          type: integer
+      required:
+        - type
+      type: object
+    RolloutTarget:
+      additionalProperties: false
+      properties:
+        clusterId:
+          type: string
+        commandId:
+          type: string
+        observedHealth:
+          type: string
+        rolloutId:
+          type: string
+        stage:
+          format: int64
+          type: integer
+        status:
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - rolloutId
+        - clusterId
+        - stage
+        - status
+        - updatedAt
+      type: object
+    RotateSecretOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/RotateSecretOutputBody.json
+        secret:
+          description: Returned exactly once; never stored server-side
+          type: string
+      required:
+        - secret
+      type: object
+    ServiceScopes:
+      additionalProperties: false
+      properties:
+        audience:
+          type: string
+        scopes:
+          items:
+            type: string
+          type: array
+          nullable: true
+      required:
+        - audience
+        - scopes
+      type: object
+    SetChannelInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/SetChannelInputBody.json
+        desiredAgentVersion:
+          type: string
+      required:
+        - desiredAgentVersion
+      type: object
     SyncOutputBody:
       additionalProperties: false
       properties:
@@ -1724,6 +3104,23 @@ components:
       required:
         - synced
       type: object
+    TargetsOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/TargetsOutputBody.json
+        targets:
+          items:
+            $ref: "#/components/schemas/RolloutTarget"
+          type: array
+          nullable: true
+      required:
+        - targets
+      type: object
     Team:
       additionalProperties: false
       properties:
@@ -1738,12 +3135,91 @@ components:
           type: string
         orgId:
           type: string
+        role:
+          type: string
       required:
         - id
         - orgId
         - name
+        - role
         - keycloakGroupPath
         - createdAt
+      type: object
+    TeamOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/TeamOutputBody.json
+        team:
+          $ref: "#/components/schemas/Team"
+      required:
+        - team
+      type: object
+    TeamRoleChange:
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        newRole:
+          type: string
+        oldRole:
+          type: string
+        teamId:
+          type: string
+      required:
+        - teamId
+        - name
+        - oldRole
+        - newRole
+      type: object
+    TeamRoleMapping:
+      additionalProperties: false
+      properties:
+        role:
+          type: string
+        team:
+          type: string
+      required:
+        - team
+        - role
+      type: object
+    TenantDeletion:
+      additionalProperties: false
+      properties:
+        approvalId:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        force:
+          type: boolean
+        lastError:
+          type: string
+        orgId:
+          type: string
+        reason:
+          type: string
+        requestedBy:
+          type: string
+        state:
+          type: string
+        step:
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - orgId
+        - state
+        - step
+        - force
+        - requestedBy
+        - createdAt
+        - updatedAt
       type: object
     TenantGitConfig:
       additionalProperties: false
@@ -1752,9 +3228,13 @@ components:
           type: string
         commitPolicy:
           type: string
+        githubApp:
+          $ref: "#/components/schemas/GitHubAppConfig"
         orgId:
           type: string
         repo:
+          type: string
+        scaffoldGitOrg:
           type: string
       required:
         - orgId
@@ -1771,6 +3251,8 @@ components:
           readOnly: true
           type: string
           example: https://example.com/schemas/TenantOutputBody.json
+        deletion:
+          $ref: "#/components/schemas/TenantDeletion"
         organization:
           $ref: "#/components/schemas/Organization"
         teams:
@@ -1903,6 +3385,69 @@ components:
         - record
         - expiresAt
       type: object
+    UpdateBrokeredIdPInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/UpdateBrokeredIdPInputBody.json
+        claimMapping:
+          $ref: "#/components/schemas/ClaimMappingInput"
+        clientId:
+          type: string
+        clientSecret:
+          description: "Write-only: rotates the secret when set"
+          type: string
+        domainHints:
+          items:
+            type: string
+          type: array
+        issuerUrl:
+          type: string
+      type: object
+    UpdateConfigInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/UpdateConfigInputBody.json
+        config:
+          $ref: "#/components/schemas/ApprovalConfig"
+      required:
+        - config
+      type: object
+    UpdateIdentityClientInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/UpdateIdentityClientInputBody.json
+        audiences:
+          items:
+            type: string
+          type: array
+        name:
+          maxLength: 63
+          minLength: 1
+          type: string
+        redirectUris:
+          items:
+            type: string
+          type: array
+        scopes:
+          items:
+            type: string
+          type: array
+      type: object
     UpdateInputBody:
       additionalProperties: false
       properties:
@@ -1942,6 +3487,22 @@ components:
       required:
         - source
         - enabled
+      type: object
+    UpdateTenantInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/UpdateTenantInputBody.json
+        displayName:
+          maxLength: 200
+          minLength: 1
+          type: string
+      required:
+        - displayName
       type: object
     UpgradeInputBody:
       additionalProperties: false
@@ -2070,6 +3631,34 @@ paths:
       security:
         - bearer: []
       summary: Set per-tenant/cluster visibility rules (platform engineer)
+  /api/v1/approvals/inbox:
+    get:
+      operationId: inboxApprovals
+      parameters:
+        - description: Max items to return (default 50, max 200)
+          explode: false
+          in: query
+          name: limit
+          schema:
+            description: Max items to return (default 50, max 200)
+            format: int64
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InboxOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: List pending approvals across all orgs the caller belongs to
   /api/v1/tenants:
     get:
       operationId: listTenants
@@ -2114,6 +3703,38 @@ paths:
         - bearer: []
       summary: Create a tenant (Keycloak Organization + default teams)
   /api/v1/tenants/{org}:
+    delete:
+      operationId: deleteTenant
+      parameters:
+        - description: Tenant slug
+          in: path
+          name: org
+          required: true
+          schema:
+            description: Tenant slug
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteTenantInputBody"
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteTenantOutputBody"
+          description: Accepted
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Decommission a tenant (org admin only; approval-gated, asynchronous)
     get:
       operationId: getTenant
       parameters:
@@ -2140,6 +3761,118 @@ paths:
       security:
         - bearer: []
       summary: Get a tenant by slug
+    patch:
+      operationId: updateTenant
+      parameters:
+        - description: Tenant slug
+          in: path
+          name: org
+          required: true
+          schema:
+            description: Tenant slug
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTenantInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TenantOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Update the tenant profile (org admin only)
+  /api/v1/tenants/{org}/agent-channels:
+    get:
+      operationId: listAgentChannels
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListChannelsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: List agent channel pins
+  /api/v1/tenants/{org}/approval-config:
+    get:
+      operationId: getApprovalConfig
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Get the org's effective approval policy config
+    put:
+      operationId: updateApprovalConfig
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateConfigInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConfigOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Replace the org's approval policy config
   /api/v1/tenants/{org}/approvals:
     get:
       operationId: listApprovals
@@ -2275,6 +4008,130 @@ paths:
       security:
         - bearer: []
       summary: Approve or reject a pending approval request
+  /api/v1/tenants/{org}/bulk/approvals:decide:
+    post:
+      operationId: bulkDecideApprovals
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BulkDecideInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BulkResultsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Bulk approve/reject approvals
+  /api/v1/tenants/{org}/bulk/catalog:pin:
+    post:
+      operationId: bulkPinCatalog
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BulkPinCatalogInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BulkResultsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Bulk pin catalog items to a version
+  /api/v1/tenants/{org}/bulk/clusters:query:
+    post:
+      operationId: bulkQueryClusters
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BulkQueryInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MembersOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Label query across the fleet
+  /api/v1/tenants/{org}/bulk/policy:assign:
+    post:
+      operationId: bulkAssignPolicy
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BulkAssignPolicyInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BulkResultsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Bulk assign a policy pack to cluster sets
   /api/v1/tenants/{org}/catalog:
     get:
       operationId: listCatalog
@@ -2307,6 +4164,63 @@ paths:
       security:
         - bearer: []
       summary: List catalog items visible to the tenant (optionally per cluster)
+  /api/v1/tenants/{org}/catalog-visibility:
+    get:
+      operationId: listCatalogVisibility
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListOrgVisibilityOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: List effective catalog visibility for the tenant (platform rule AND org overlay)
+  /api/v1/tenants/{org}/catalog-visibility/{item}:
+    put:
+      operationId: setCatalogOrgVisibility
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: item
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrgVisibilityInputBody"
+        required: true
+      responses:
+        "204":
+          description: No Content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Set the org-level visibility overlay for one catalog item (org admin)
   /api/v1/tenants/{org}/catalog/{item}:
     get:
       operationId: getCatalogItem
@@ -2699,6 +4613,77 @@ paths:
       security:
         - bearer: []
       summary: Get a cluster set
+  /api/v1/tenants/{org}/cluster-sets/{id}/channels/{channel}:
+    put:
+      operationId: setAgentChannel
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: channel
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetChannelInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChannelOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Pin desired agent version for a channel
+  /api/v1/tenants/{org}/cluster-sets/{id}/members:
+    get:
+      operationId: listClusterSetMembers
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MembersOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Resolve cluster set members
   /api/v1/tenants/{org}/clusters:
     get:
       operationId: listClusters
@@ -2757,6 +4742,31 @@ paths:
         - bearer: []
       summary: Register a new cluster record
   /api/v1/tenants/{org}/clusters/{id}:
+    delete:
+      operationId: deleteCluster
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Cancel a pending cluster registration (409 once registered)
     get:
       operationId: getCluster
       parameters:
@@ -2974,6 +4984,35 @@ paths:
         - bearer: []
       summary: Revoke a cluster (disables its Keycloak client)
   /api/v1/tenants/{org}/clusters/{id}/tokens:
+    get:
+      operationId: listRegistrationTokens
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListTokensOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: List active (unconsumed, unexpired) registration tokens
     post:
       operationId: issueRegistrationToken
       parameters:
@@ -3003,6 +5042,37 @@ paths:
       security:
         - bearer: []
       summary: Issue a one-time TTL'd registration token
+  /api/v1/tenants/{org}/clusters/{id}/tokens/{tokenId}:
+    delete:
+      operationId: revokeRegistrationToken
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: tokenId
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Revoke (burn) a registration token (org admin only)
   /api/v1/tenants/{org}/clusters/{id}/uncordon:
     post:
       operationId: uncordonCluster
@@ -3033,6 +5103,60 @@ paths:
       security:
         - bearer: []
       summary: Uncordon a cluster (returns it to service)
+  /api/v1/tenants/{org}/deletion/dependencies:
+    get:
+      operationId: tenantDeletionDependencies
+      parameters:
+        - description: Tenant slug
+          in: path
+          name: org
+          required: true
+          schema:
+            description: Tenant slug
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeletionDependenciesOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: "Dry-run: list resources blocking tenant deletion (org admin only)"
+  /api/v1/tenants/{org}/deletion:retry:
+    post:
+      operationId: retryTenantDeletion
+      parameters:
+        - description: Tenant slug
+          in: path
+          name: org
+          required: true
+          schema:
+            description: Tenant slug
+            type: string
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RetryDeletionOutputBody"
+          description: Accepted
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Retry a failed tenant deletion (org admin only)
   /api/v1/tenants/{org}/deploys:
     post:
       operationId: deployCatalogItem
@@ -3064,6 +5188,41 @@ paths:
       security:
         - bearer: []
       summary: Deploy a catalog item to a cluster
+  /api/v1/tenants/{org}/drift:
+    get:
+      operationId: listDrift
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: clusterId
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: status
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListDriftOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: List drift events
   /api/v1/tenants/{org}/exemptions:
     get:
       operationId: listExemptions
@@ -3155,6 +5314,146 @@ paths:
       security:
         - bearer: []
       summary: Approve or reject a pending exemption (platform_engineer only, v1 gate)
+  /api/v1/tenants/{org}/extensions:
+    get:
+      operationId: listExtensions
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListOutputBody3"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: List extensions
+    post:
+      operationId: registerExtension
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterInputBody1"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExtensionOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Register a backend extension (pending until handshake verifies)
+  /api/v1/tenants/{org}/extensions/{id}:
+    delete:
+      operationId: unregisterExtension
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Unregister an extension
+    get:
+      operationId: getExtension
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExtensionOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Get an extension
+  /api/v1/tenants/{org}/extensions/{id}/verify:
+    post:
+      operationId: verifyExtension
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExtensionOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Run the SDK handshake and mark the extension ready
   /api/v1/tenants/{org}/git-config:
     get:
       operationId: getTenantGitConfig
@@ -3206,6 +5505,393 @@ paths:
       security:
         - bearer: []
       summary: Set the tenant state repo + commit policy (platform engineer)
+  /api/v1/tenants/{org}/identity/clients:
+    get:
+      operationId: listIdentityClients
+      parameters:
+        - description: Tenant slug
+          in: path
+          name: org
+          required: true
+          schema:
+            description: Tenant slug
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListIdentityClientsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: List OIDC clients of a tenant (org admin only)
+    post:
+      operationId: createIdentityClient
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateIdentityClientInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateIdentityClientOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Create an OIDC client; the secret is returned exactly once (org admin only)
+  /api/v1/tenants/{org}/identity/clients/{clientId}:
+    delete:
+      operationId: disableIdentityClient
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: clientId
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Disable an OIDC client (org admin only; row retained for audit)
+    get:
+      operationId: getIdentityClient
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: clientId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IdentityClientOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Get an OIDC client (org admin only)
+    patch:
+      operationId: updateIdentityClient
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: clientId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateIdentityClientInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IdentityClientOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Update an OIDC client (org admin only)
+  /api/v1/tenants/{org}/identity/clients/{clientId}/scopes:
+    put:
+      operationId: putIdentityClientScopes
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: clientId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PutClientScopesInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IdentityClientOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Replace the scopes of an OIDC client (org admin only)
+  /api/v1/tenants/{org}/identity/clients/{clientId}/secret:rotate:
+    post:
+      operationId: rotateIdentityClientSecret
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: clientId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RotateSecretOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Rotate the client secret; the new value is returned exactly once (org admin only)
+  /api/v1/tenants/{org}/identity/providers:
+    get:
+      operationId: listIdentityProviders
+      parameters:
+        - description: Tenant slug
+          in: path
+          name: org
+          required: true
+          schema:
+            description: Tenant slug
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListBrokeredIdPsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: List brokered identity providers of a tenant (org admin only; at most one in v1)
+    post:
+      operationId: createIdentityProvider
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBrokeredIdPInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BrokeredIdPOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Broker an OIDC identity provider into the tenant; the client secret is write-only (org admin only)
+  /api/v1/tenants/{org}/identity/providers/{alias}:
+    delete:
+      operationId: deleteIdentityProvider
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: alias
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Remove a brokered identity provider (org admin only)
+    get:
+      operationId: getIdentityProvider
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: alias
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BrokeredIdPOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Get a brokered identity provider (org admin only)
+    patch:
+      operationId: updateIdentityProvider
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: alias
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBrokeredIdPInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BrokeredIdPOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Update a brokered identity provider; clientSecret rotates the secret when set (org admin only)
+  /api/v1/tenants/{org}/identity/scopes:
+    get:
+      operationId: listIdentityScopes
+      parameters:
+        - description: Tenant slug
+          in: path
+          name: org
+          required: true
+          schema:
+            description: Tenant slug
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListIdentityScopesOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Read-only catalog of per-service audiences/scopes (org admin only)
   /api/v1/tenants/{org}/instances:
     get:
       operationId: listInstances
@@ -3355,6 +6041,90 @@ paths:
       security:
         - bearer: []
       summary: One-click upgrade of an instance to a newer catalog version
+  /api/v1/tenants/{org}/members:
+    get:
+      operationId: listOrgMembers
+      parameters:
+        - description: Tenant slug
+          in: path
+          name: org
+          required: true
+          schema:
+            description: Tenant slug
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListOrgMembersOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Org-wide member view (highest role + teams)
+  /api/v1/tenants/{org}/members/{subject}:
+    delete:
+      operationId: removeOrgMember
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: subject
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: No Content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Remove a user from the organization (org admin only)
+    put:
+      operationId: setMemberRole
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: subject
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PutMemberInputBody"
+        required: true
+      responses:
+        "204":
+          description: No Content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Set a user's org role (org admin only)
   /api/v1/tenants/{org}/notification-endpoints:
     get:
       operationId: listNotificationEndpoints
@@ -3762,6 +6532,38 @@ paths:
         - bearer: []
       summary: Create a policy pack (kyverno|cel-vap)
   /api/v1/tenants/{org}/policy-packs/{id}:
+    delete:
+      operationId: deletePolicyPack
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - description: cascade-unassign active assignments before deleting
+          explode: false
+          in: query
+          name: force
+          schema:
+            description: cascade-unassign active assignments before deleting
+            type: boolean
+      responses:
+        "204":
+          description: No Content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Delete a policy pack (409 while assigned unless force=true)
     get:
       operationId: getPolicyPack
       parameters:
@@ -3827,6 +6629,36 @@ paths:
       security:
         - bearer: []
       summary: Assign a policy pack to a clusterset|tenant|cluster
+  /api/v1/tenants/{org}/policy-packs/{id}/assignments:
+    get:
+      operationId: listPolicyPackAssignments
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListPackAssignmentsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: List a policy pack's assignments
   /api/v1/tenants/{org}/policy-packs/{id}/assignments/{assignmentId}:
     delete:
       operationId: unassignPolicyPack
@@ -3858,6 +6690,309 @@ paths:
       security:
         - bearer: []
       summary: Remove a policy pack assignment
+  /api/v1/tenants/{org}/rbac:
+    get:
+      operationId: getRBACMatrix
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetRBACMatrixOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: "RBAC matrix: tenant Keycloak groups × cluster roles with current mappings"
+  /api/v1/tenants/{org}/rbac/mappings:
+    put:
+      operationId: putRBACMappings
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PutRBACMappingsInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PutRBACMappingsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Declarative bulk set of team→role mappings, applied atomically (org admin only)
+  /api/v1/tenants/{org}/rollouts:
+    get:
+      operationId: listRollouts
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListRolloutsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: List rollouts
+    post:
+      operationId: createRollout
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRolloutInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RolloutOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Create a staged fleet rollout
+  /api/v1/tenants/{org}/rollouts/{id}:
+    get:
+      operationId: getRollout
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RolloutOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Get a rollout
+  /api/v1/tenants/{org}/rollouts/{id}/resume:
+    post:
+      operationId: resumeRollout
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RolloutOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Resume a paused rollout
+  /api/v1/tenants/{org}/rollouts/{id}/rollback:
+    post:
+      operationId: rollbackRollout
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RollbackInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RolloutOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Roll back to a previous version
+  /api/v1/tenants/{org}/rollouts/{id}/start:
+    post:
+      operationId: startRollout
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RolloutOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Start a rollout
+  /api/v1/tenants/{org}/rollouts/{id}/stop:
+    post:
+      operationId: stopRollout
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RolloutOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Stop (pause) a rollout
+  /api/v1/tenants/{org}/rollouts/{id}/targets:
+    get:
+      operationId: listRolloutTargets
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - explode: false
+          in: query
+          name: stage
+          schema:
+            format: int64
+            type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TargetsOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: List rollout target status for a stage
   /api/v1/tenants/{org}/teams:
     get:
       operationId: listTeams
@@ -3885,6 +7020,68 @@ paths:
       security:
         - bearer: []
       summary: List teams of a tenant
+    post:
+      operationId: createTeam
+      parameters:
+        - description: Tenant slug
+          in: path
+          name: org
+          required: true
+          schema:
+            description: Tenant slug
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTeamInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TeamOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Create a team granting an org role (org admin only)
+  /api/v1/tenants/{org}/teams/{team}:
+    delete:
+      operationId: deleteTeam
+      parameters:
+        - description: Tenant slug
+          in: path
+          name: org
+          required: true
+          schema:
+            description: Tenant slug
+            type: string
+        - description: Team name
+          in: path
+          name: team
+          required: true
+          schema:
+            description: Team name
+            type: string
+      responses:
+        "204":
+          description: No Content
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Delete a team (org admin only; default teams are protected)
   /api/v1/tenants/{org}/teams/{team}/members:
     get:
       operationId: listMembers
