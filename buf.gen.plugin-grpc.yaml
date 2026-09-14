@@ -1,0 +1,8 @@
+version: v2
+# gRPC stubs for the plugin contract only (hashicorp go-plugin uses real
+# gRPC). Kept out of buf.gen.yaml so the agent/v1 message package does not
+# link google.golang.org/grpc into Connect-only consumers (see note there).
+plugins:
+  - remote: buf.build/grpc/go:v1.5.1
+    out: gen/go
+    opt: paths=source_relative

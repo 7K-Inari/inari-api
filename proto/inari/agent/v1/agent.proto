@@ -54,6 +54,10 @@ enum EventType {
   EVENT_TYPE_COMMAND_ACK = 11;
   // agent→server: command outcome (failure).
   EVENT_TYPE_COMMAND_NACK = 12;
+  // server→agent: deliver an ESO SecretStore to tenant Git (plan §4.1).
+  EVENT_TYPE_SECRET_STORE_APPLY = 13;
+  // server→agent: prune an ESO SecretStore from tenant Git (plan §4.1).
+  EVENT_TYPE_SECRET_STORE_DELETE = 14;
 }
 
 // Event is the CloudEvents-style envelope exchanged on the agent EventStream

@@ -103,6 +103,20 @@ export enum EventType {
    * @generated from enum value: EVENT_TYPE_COMMAND_NACK = 12;
    */
   COMMAND_NACK = 12,
+
+  /**
+   * server→agent: deliver an ESO SecretStore to tenant Git (plan §4.1).
+   *
+   * @generated from enum value: EVENT_TYPE_SECRET_STORE_APPLY = 13;
+   */
+  SECRET_STORE_APPLY = 13,
+
+  /**
+   * server→agent: prune an ESO SecretStore from tenant Git (plan §4.1).
+   *
+   * @generated from enum value: EVENT_TYPE_SECRET_STORE_DELETE = 14;
+   */
+  SECRET_STORE_DELETE = 14,
 }
 // Retrieve enum metadata with: proto3.getEnumType(EventType)
 proto3.util.setEnumType(EventType, "inari.agent.v1.EventType", [
@@ -119,6 +133,8 @@ proto3.util.setEnumType(EventType, "inari.agent.v1.EventType", [
   { no: 10, name: "EVENT_TYPE_RENDER_RGD_INSTANCE" },
   { no: 11, name: "EVENT_TYPE_COMMAND_ACK" },
   { no: 12, name: "EVENT_TYPE_COMMAND_NACK" },
+  { no: 13, name: "EVENT_TYPE_SECRET_STORE_APPLY" },
+  { no: 14, name: "EVENT_TYPE_SECRET_STORE_DELETE" },
 ]);
 
 /**
