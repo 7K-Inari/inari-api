@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/7K-Inari/inari-api/compare/v0.5.2...v0.6.0) (2026-09-14)
+
+
+### Features
+
+* **agent/v1:** add SecretStoreApply/SecretStoreDelete commands and event types ([#18](https://github.com/7K-Inari/inari-api/issues/18)) ([b01da6a](https://github.com/7K-Inari/inari-api/commit/b01da6a8ca27b94b7219ed5f5b62fafbf7fa6406))
+
 ## [0.5.2](https://github.com/7K-Inari/inari-api/compare/v0.5.1...v0.5.2) (2026-08-21)
 
 
