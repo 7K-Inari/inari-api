@@ -434,6 +434,17 @@ export class InvokeAction extends Message<InvokeAction> {
    */
   timeout?: Duration;
 
+  /**
+   * Opaque reference to a per-user credential the agent redeems via
+   * AgentCredentials.RedeemUserCredential. Command payloads are persisted
+   * (agent_commands.payload), so they carry only this reference, never a
+   * token. Redemption is single-use, bound to this cluster, and expires with
+   * the command timeout. Empty means the legacy static-token fallback.
+   *
+   * @generated from field: string user_credential_ref = 6;
+   */
+  userCredentialRef = "";
+
   constructor(data?: PartialMessage<InvokeAction>) {
     super();
     proto3.util.initPartial(data, this);
@@ -447,6 +458,7 @@ export class InvokeAction extends Message<InvokeAction> {
     { no: 3, name: "resource", kind: "message", T: ResourceRef },
     { no: 4, name: "parameters", kind: "message", T: Struct },
     { no: 5, name: "timeout", kind: "message", T: Duration },
+    { no: 6, name: "user_credential_ref", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): InvokeAction {
