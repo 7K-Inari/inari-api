@@ -179,11 +179,12 @@ func TestCommandPayloadsRoundTrip(t *testing.T) {
 			SyncPolicy:           &agentv1.SyncPolicy{Automated: true, SelfHeal: true},
 		}},
 		{"inari.agent.invoke-action.v1", &agentv1.InvokeAction{
-			CommandId:  "cmd-3",
-			Action:     "restart",
-			Resource:   &agentv1.ResourceRef{Kind: "Deployment", Name: "web", Namespace: "web"},
-			Parameters: params,
-			Timeout:    durationpb.New(30 * time.Second),
+			CommandId:         "cmd-3",
+			Action:            "restart",
+			Resource:          &agentv1.ResourceRef{Kind: "Deployment", Name: "web", Namespace: "web"},
+			Parameters:        params,
+			Timeout:           durationpb.New(30 * time.Second),
+			UserCredentialRef: "ucr-abc123",
 		}},
 		{"inari.agent.render-rgd-instance.v1", &agentv1.RenderRgdInstance{
 			CommandId:       "cmd-4",
@@ -327,6 +328,73 @@ func TestRegistrationMessages(t *testing.T) {
 	}
 	if resp.GetClientSecretDelivery().GetSecretName() != "inari-agent-oidc" {
 		t.Fatalf("delivery reference mismatch: %v", resp.GetClientSecretDelivery())
+	}
+}
+
+func TestInvokeActionUserCredentialRefRoundTrip(t *testing.T) {
+	in := &agentv1.InvokeAction{
+		CommandId:         "cmd-9",
+		Action:            "sync",
+		UserCredentialRef: "ucr-xyz",
+	}
+	raw, err := proto.Marshal(in)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+	out := &agentv1.InvokeAction{}
+	if err := proto.Unmarshal(raw, out); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if out.GetUserCredentialRef() != "ucr-xyz" {
+		t.Fatalf("user_credential_ref mismatch: %q", out.GetUserCredentialRef())
+	}
+	// Empty means legacy static-token fallback.
+	legacy := &agentv1.InvokeAction{}
+	if legacy.GetUserCredentialRef() != "" {
+		t.Fatalf("legacy fallback must default to empty ref, got %q", legacy.GetUserCredentialRef())
+	}
+}
+
+func TestRedeemUserCredentialRoundTrip(t *testing.T) {
+	expiry := timestamppb.New(time.Unix(60, 0).UTC())
+	for _, m := range []proto.Message{
+		&agentv1.RedeemUserCredentialRequest{CredentialRef: "ucr-abc123"},
+		&agentv1.RedeemUserCredentialResponse{BearerToken: "tok-1", ExpiresAt: expiry},
+	} {
+		raw, err := proto.Marshal(m)
+		if err != nil {
+			t.Fatalf("marshal %T: %v", m, err)
+		}
+		if err := proto.Unmarshal(raw, m); err != nil {
+			t.Fatalf("unmarshal %T: %v", m, err)
+		}
+	}
+	resp := &agentv1.RedeemUserCredentialResponse{BearerToken: "tok-1", ExpiresAt: expiry}
+	raw, err := proto.Marshal(resp)
+	if err != nil {
+		t.Fatalf("marshal response: %v", err)
+	}
+	out := &agentv1.RedeemUserCredentialResponse{}
+	if err := proto.Unmarshal(raw, out); err != nil {
+		t.Fatalf("unmarshal response: %v", err)
+	}
+	if out.GetBearerToken() != "tok-1" || out.GetExpiresAt().GetSeconds() != 60 {
+		t.Fatalf("redeem response mismatch: %v", out)
+	}
+}
+
+func TestAgentCredentialsServiceDescriptor(t *testing.T) {
+	sd := agentv1.File_inari_agent_v1_credentials_proto.Services().ByName("AgentCredentialsService")
+	if sd == nil {
+		t.Fatal("AgentCredentialsService service not found in credentials.proto descriptor")
+	}
+	md := sd.Methods().ByName("RedeemUserCredential")
+	if md == nil {
+		t.Fatal("RedeemUserCredential method not found on AgentCredentialsService")
+	}
+	if string(md.Input().FullName()) != "inari.agent.v1.RedeemUserCredentialRequest" ||
+		string(md.Output().FullName()) != "inari.agent.v1.RedeemUserCredentialResponse" {
+		t.Fatalf("method signature mismatch: %s -> %s", md.Input().FullName(), md.Output().FullName())
 	}
 }
 

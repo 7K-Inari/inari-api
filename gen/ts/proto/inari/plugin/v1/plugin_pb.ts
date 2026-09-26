@@ -211,6 +211,16 @@ export class GetInfoResponse extends Message<GetInfoResponse> {
    */
   info?: PluginInfo;
 
+  /**
+   * Authentication methods the plugin supports for downstream calls. The
+   * host picks one (preferring is_default) and injects the corresponding
+   * credentials out-of-band via headers/metadata; credentials never travel
+   * inside AuthContext.
+   *
+   * @generated from field: repeated inari.plugin.v1.AuthMethod auth_methods = 2;
+   */
+  authMethods: AuthMethod[] = [];
+
   constructor(data?: PartialMessage<GetInfoResponse>) {
     super();
     proto3.util.initPartial(data, this);
@@ -220,6 +230,7 @@ export class GetInfoResponse extends Message<GetInfoResponse> {
   static readonly typeName = "inari.plugin.v1.GetInfoResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "info", kind: "message", T: PluginInfo },
+    { no: 2, name: "auth_methods", kind: "message", T: AuthMethod, repeated: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): GetInfoResponse {
@@ -238,6 +249,128 @@ export class GetInfoResponse extends Message<GetInfoResponse> {
     return proto3.util.equals(GetInfoResponse, a, b);
   }
 }
+
+/**
+ * AuthMethod declares one way a plugin accepts downstream authentication
+ * (platform plan §5.8, extension OIDC pass-through). It is a declaration of
+ * capability only: the host performs any token exchange and injects the
+ * resulting credential separately from AuthContext.
+ *
+ * @generated from message inari.plugin.v1.AuthMethod
+ */
+export class AuthMethod extends Message<AuthMethod> {
+  /**
+   * @generated from field: inari.plugin.v1.AuthMethod.Type type = 1;
+   */
+  type = AuthMethod_Type.UNSPECIFIED;
+
+  /**
+   * Target audience for OIDC token exchange (TYPE_OIDC_USER); empty
+   * otherwise.
+   *
+   * @generated from field: string audience = 2;
+   */
+  audience = "";
+
+  /**
+   * OAuth scopes requested during exchange; empty means provider defaults.
+   *
+   * @generated from field: repeated string scopes = 3;
+   */
+  scopes: string[] = [];
+
+  /**
+   * Exactly one method should be marked default; hosts fall back to the
+   * first entry when none is.
+   *
+   * @generated from field: bool is_default = 4;
+   */
+  isDefault = false;
+
+  constructor(data?: PartialMessage<AuthMethod>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "inari.plugin.v1.AuthMethod";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "type", kind: "enum", T: proto3.getEnumType(AuthMethod_Type) },
+    { no: 2, name: "audience", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "scopes", kind: "scalar", T: 9 /* ScalarType.STRING */, repeated: true },
+    { no: 4, name: "is_default", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AuthMethod {
+    return new AuthMethod().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): AuthMethod {
+    return new AuthMethod().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): AuthMethod {
+    return new AuthMethod().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: AuthMethod | PlainMessage<AuthMethod> | undefined, b: AuthMethod | PlainMessage<AuthMethod> | undefined): boolean {
+    return proto3.util.equals(AuthMethod, a, b);
+  }
+}
+
+/**
+ * @generated from enum inari.plugin.v1.AuthMethod.Type
+ */
+export enum AuthMethod_Type {
+  /**
+   * @generated from enum value: TYPE_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * OIDC token exchange for the end user's identity (audience-scoped).
+   *
+   * @generated from enum value: TYPE_OIDC_USER = 1;
+   */
+  OIDC_USER = 1,
+
+  /**
+   * Plugin-managed service account (e.g. Kubernetes TokenRequest).
+   *
+   * @generated from enum value: TYPE_SERVICE_ACCOUNT = 2;
+   */
+  SERVICE_ACCOUNT = 2,
+
+  /**
+   * Static API key held by the host secret store.
+   *
+   * @generated from enum value: TYPE_API_KEY = 3;
+   */
+  API_KEY = 3,
+
+  /**
+   * Shared secret held by the host secret store.
+   *
+   * @generated from enum value: TYPE_SHARED_SECRET = 4;
+   */
+  SHARED_SECRET = 4,
+
+  /**
+   * Reuse of the caller's SSO session token (no exchange).
+   *
+   * @generated from enum value: TYPE_OIDC_SSO_SESSION = 5;
+   */
+  OIDC_SSO_SESSION = 5,
+}
+// Retrieve enum metadata with: proto3.getEnumType(AuthMethod_Type)
+proto3.util.setEnumType(AuthMethod_Type, "inari.plugin.v1.AuthMethod.Type", [
+  { no: 0, name: "TYPE_UNSPECIFIED" },
+  { no: 1, name: "TYPE_OIDC_USER" },
+  { no: 2, name: "TYPE_SERVICE_ACCOUNT" },
+  { no: 3, name: "TYPE_API_KEY" },
+  { no: 4, name: "TYPE_SHARED_SECRET" },
+  { no: 5, name: "TYPE_OIDC_SSO_SESSION" },
+]);
 
 /**
  * AuthContext carries the authenticated principal and tenant identity from the

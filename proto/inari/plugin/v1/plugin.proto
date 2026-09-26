@@ -25,6 +25,40 @@ message GetInfoRequest {}
 
 message GetInfoResponse {
   PluginInfo info = 1;
+  // Authentication methods the plugin supports for downstream calls. The
+  // host picks one (preferring is_default) and injects the corresponding
+  // credentials out-of-band via headers/metadata; credentials never travel
+  // inside AuthContext.
+  repeated AuthMethod auth_methods = 2;
+}
+
+// AuthMethod declares one way a plugin accepts downstream authentication
+// (platform plan §5.8, extension OIDC pass-through). It is a declaration of
+// capability only: the host performs any token exchange and injects the
+// resulting credential separately from AuthContext.
+message AuthMethod {
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    // OIDC token exchange for the end user's identity (audience-scoped).
+    TYPE_OIDC_USER = 1;
+    // Plugin-managed service account (e.g. Kubernetes TokenRequest).
+    TYPE_SERVICE_ACCOUNT = 2;
+    // Static API key held by the host secret store.
+    TYPE_API_KEY = 3;
+    // Shared secret held by the host secret store.
+    TYPE_SHARED_SECRET = 4;
+    // Reuse of the caller's SSO session token (no exchange).
+    TYPE_OIDC_SSO_SESSION = 5;
+  }
+  Type type = 1;
+  // Target audience for OIDC token exchange (TYPE_OIDC_USER); empty
+  // otherwise.
+  string audience = 2;
+  // OAuth scopes requested during exchange; empty means provider defaults.
+  repeated string scopes = 3;
+  // Exactly one method should be marked default; hosts fall back to the
+  // first entry when none is.
+  bool is_default = 4;
 }
 
 // AuthContext carries the authenticated principal and tenant identity from the

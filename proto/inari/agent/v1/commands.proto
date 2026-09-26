@@ -107,6 +107,12 @@ message InvokeAction {
   ResourceRef resource = 3;
   google.protobuf.Struct parameters = 4;
   google.protobuf.Duration timeout = 5;
+  // Opaque reference to a per-user credential the agent redeems via
+  // AgentCredentials.RedeemUserCredential. Command payloads are persisted
+  // (agent_commands.payload), so they carry only this reference, never a
+  // token. Redemption is single-use, bound to this cluster, and expires with
+  // the command timeout. Empty means the legacy static-token fallback.
+  string user_credential_ref = 6;
 
   reserved 100 to 199;
 }
