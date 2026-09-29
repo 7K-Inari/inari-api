@@ -302,6 +302,16 @@ export class HandshakeResponse extends Message<HandshakeResponse> {
    */
   resyncRequired = false;
 
+  /**
+   * Agent version the platform recommends (from the platform's agent
+   * compatibility declaration). Empty when the server has no
+   * recommendation. Agents running a different version should plan an
+   * upgrade.
+   *
+   * @generated from field: string desired_agent_version = 4;
+   */
+  desiredAgentVersion = "";
+
   constructor(data?: PartialMessage<HandshakeResponse>) {
     super();
     proto3.util.initPartial(data, this);
@@ -313,6 +323,7 @@ export class HandshakeResponse extends Message<HandshakeResponse> {
     { no: 1, name: "session_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "server_contract_versions", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "resync_required", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+    { no: 4, name: "desired_agent_version", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): HandshakeResponse {
