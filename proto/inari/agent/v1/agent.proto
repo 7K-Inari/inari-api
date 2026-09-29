@@ -101,6 +101,11 @@ message HandshakeResponse {
   string server_contract_versions = 2;
   // True when the agent must re-send full state (checksum mismatch or gap).
   bool resync_required = 3;
+  // Agent version the platform recommends (from the platform's agent
+  // compatibility declaration). Empty when the server has no
+  // recommendation. Agents running a different version should plan an
+  // upgrade.
+  string desired_agent_version = 4;
 
   reserved 100 to 199;
 }
