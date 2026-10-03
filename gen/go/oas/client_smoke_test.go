@@ -116,3 +116,92 @@ func TestClientMalformedJSON(t *testing.T) {
 		t.Fatal("expected error on malformed JSON, got nil")
 	}
 }
+
+// TestGetClusterKubeconfigRequestPathAndParams verifies the generated request
+// builder uses the correct path and serializes the new query parameters.
+func TestGetClusterKubeconfigRequestPathAndParams(t *testing.T) {
+	mode := GetClusterKubeconfigParamsModeGateway
+	grant := DeviceCode
+	server := "https://k8s.example.com"
+	req, err := NewGetClusterKubeconfigRequest(
+		"https://api.inari.example",
+		"acme",
+		"cluster-1",
+		&GetClusterKubeconfigParams{
+			Mode:      &mode,
+			GrantType: &grant,
+			Server:    &server,
+		},
+	)
+	if err != nil {
+		t.Fatalf("NewGetClusterKubeconfigRequest: %v", err)
+	}
+	if req.URL.Path != "/api/v1/tenants/acme/clusters/cluster-1/kubeconfig" {
+		t.Fatalf("unexpected path: %s", req.URL.Path)
+	}
+	q := req.URL.Query()
+	if q.Get("mode") != "gateway" {
+		t.Fatalf("mode param mismatch: %q", q.Get("mode"))
+	}
+	if q.Get("grantType") != "device-code" {
+		t.Fatalf("grantType param mismatch: %q", q.Get("grantType"))
+	}
+	if q.Get("server") != "https://k8s.example.com" {
+		t.Fatalf("server param mismatch: %q", q.Get("server"))
+	}
+}
+
+// TestGetClusterKubeconfigRequestNoParams verifies that nil parameters omit
+// the query string entirely, letting the server apply its defaults.
+func TestGetClusterKubeconfigRequestNoParams(t *testing.T) {
+	req, err := NewGetClusterKubeconfigRequest(
+		"https://api.inari.example",
+		"acme",
+		"cluster-1",
+		nil,
+	)
+	if err != nil {
+		t.Fatalf("NewGetClusterKubeconfigRequest: %v", err)
+	}
+	if req.URL.RawQuery != "" {
+		t.Fatalf("expected empty query string, got %q", req.URL.RawQuery)
+	}
+}
+
+// TestClusterAccessInfoNewFieldsRoundTrip verifies that the new optional
+// ClusterAccessInfo fields marshal/unmarshal through the generated model.
+func TestClusterAccessInfoNewFieldsRoundTrip(t *testing.T) {
+	trueValue := true
+	info := ClusterAccessInfo{
+		IssuerUrl:               "https://keycloak.example/realms/inari",
+		KubectlClientId:         "cluster-cluster-1",
+		Audience:                "inari-server",
+		Organization:            "acme",
+		KubectlAccessEnabled:    &trueValue,
+		ProxyUrl:                strPtr("https://kubeproxy.example"),
+		TunnelAvailable:         &trueValue,
+		TunnelUnavailableReason: strPtr("agent not upgraded"),
+	}
+	data, err := json.Marshal(info)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+	var got ClusterAccessInfo
+	if err := json.Unmarshal(data, &got); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if got.KubectlAccessEnabled == nil || *got.KubectlAccessEnabled != true {
+		t.Fatalf("kubectlAccessEnabled mismatch: got %v", got.KubectlAccessEnabled)
+	}
+	if got.ProxyUrl == nil || *got.ProxyUrl != "https://kubeproxy.example" {
+		t.Fatalf("proxyUrl mismatch: got %v", got.ProxyUrl)
+	}
+	if got.TunnelAvailable == nil || *got.TunnelAvailable != true {
+		t.Fatalf("tunnelAvailable mismatch: got %v", got.TunnelAvailable)
+	}
+	if got.TunnelUnavailableReason == nil || *got.TunnelUnavailableReason != "agent not upgraded" {
+		t.Fatalf("tunnelUnavailableReason mismatch: got %v", got.TunnelUnavailableReason)
+	}
+}
+
+func strPtr(s string) *string { return &s }

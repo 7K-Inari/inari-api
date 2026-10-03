@@ -316,6 +316,13 @@ func TestRegistrationMessages(t *testing.T) {
 			SecretNamespace: "inari-system",
 			SecretKey:       "client-secret",
 		},
+		TunnelClientId: "tunnel-cluster-1",
+		TunnelClientSecretDelivery: &agentv1.SecretDeliveryReference{
+			EsoSecretStore:  "inari-platform",
+			SecretName:      "inari-tunnel-oidc",
+			SecretNamespace: "inari-system",
+			SecretKey:       "client-secret",
+		},
 	}
 	for _, m := range []proto.Message{req, resp} {
 		raw, err := proto.Marshal(m)
@@ -328,6 +335,72 @@ func TestRegistrationMessages(t *testing.T) {
 	}
 	if resp.GetClientSecretDelivery().GetSecretName() != "inari-agent-oidc" {
 		t.Fatalf("delivery reference mismatch: %v", resp.GetClientSecretDelivery())
+	}
+	if resp.GetTunnelClientId() != "tunnel-cluster-1" {
+		t.Fatalf("tunnel client id mismatch: %q", resp.GetTunnelClientId())
+	}
+	if resp.GetTunnelClientSecretDelivery().GetSecretName() != "inari-tunnel-oidc" {
+		t.Fatalf("tunnel secret delivery mismatch: %v", resp.GetTunnelClientSecretDelivery())
+	}
+}
+
+// TestRegisterClusterResponseBackwardCompatibility verifies that a response
+// from an old server (without tunnel fields) round-trips through the current
+// generated message: tunnel getters return zero values.
+func TestRegisterClusterResponseBackwardCompatibility(t *testing.T) {
+	old := &agentv1.RegisterClusterResponse{
+		ClusterId:     "cluster-1",
+		OidcIssuerUrl: "https://keycloak.example/realms/inari",
+		ClientId:      "cluster-cluster-1",
+		ClientSecretDelivery: &agentv1.SecretDeliveryReference{
+			EsoSecretStore:  "inari-platform",
+			SecretName:      "inari-agent-oidc",
+			SecretNamespace: "inari-system",
+			SecretKey:       "client-secret",
+		},
+	}
+	raw, err := proto.Marshal(old)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+	var got agentv1.RegisterClusterResponse
+	if err := proto.Unmarshal(raw, &got); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if got.GetTunnelClientId() != "" {
+		t.Fatalf("expected empty tunnel_client_id from old server, got %q", got.GetTunnelClientId())
+	}
+	if got.GetTunnelClientSecretDelivery() != nil {
+		t.Fatalf("expected nil tunnel secret delivery from old server, got %v", got.GetTunnelClientSecretDelivery())
+	}
+}
+
+// TestRegisterClusterResponseForwardCompatibility verifies that a response
+// with tunnel fields is preserved when round-tripped by a newer consumer.
+func TestRegisterClusterResponseForwardCompatibility(t *testing.T) {
+	resp := &agentv1.RegisterClusterResponse{
+		ClusterId:      "cluster-1",
+		TunnelClientId: "tunnel-cluster-1",
+		TunnelClientSecretDelivery: &agentv1.SecretDeliveryReference{
+			EsoSecretStore:  "inari-platform",
+			SecretName:      "inari-tunnel-oidc",
+			SecretNamespace: "inari-system",
+			SecretKey:       "client-secret",
+		},
+	}
+	raw, err := proto.Marshal(resp)
+	if err != nil {
+		t.Fatalf("marshal: %v", err)
+	}
+	var got agentv1.RegisterClusterResponse
+	if err := proto.Unmarshal(raw, &got); err != nil {
+		t.Fatalf("unmarshal: %v", err)
+	}
+	if got.GetTunnelClientId() != resp.GetTunnelClientId() {
+		t.Fatalf("tunnel client id lost in round trip: got %q", got.GetTunnelClientId())
+	}
+	if got.GetTunnelClientSecretDelivery().GetSecretName() != resp.GetTunnelClientSecretDelivery().GetSecretName() {
+		t.Fatalf("tunnel secret delivery lost in round trip: got %v", got.GetTunnelClientSecretDelivery())
 	}
 }
 
