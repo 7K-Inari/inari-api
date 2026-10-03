@@ -1629,8 +1629,16 @@ export interface AccessInfoOutputBody {
 export interface ClusterAccessInfo {
   audience: string;
   issuerUrl: string;
+  /** State of the global kubectl_access.enabled feature flag. */
+  kubectlAccessEnabled?: boolean;
   kubectlClientId: string;
   organization: string;
+  /** Public URL of the inari-kubeproxy gateway for this cluster. */
+  proxyUrl?: string;
+  /** Whether a tunnel-agent session is live for this cluster. */
+  tunnelAvailable?: boolean;
+  /** Why the tunnel is unavailable (e.g. agent not upgraded, ESO not configured). */
+  tunnelUnavailableReason?: string;
 }
 
 export type InboxApprovalsParams = {
@@ -1672,6 +1680,33 @@ export type RenderCloudAccountProviderConfigParams = {
  */
 clusterId: string;
 };
+
+export type GetClusterKubeconfigParams = {
+mode?: GetClusterKubeconfigMode;
+grantType?: GetClusterKubeconfigGrantType;
+/**
+ * Apiserver URL for direct mode (adds a direct context).
+ */
+server?: string;
+};
+
+export type GetClusterKubeconfigMode = typeof GetClusterKubeconfigMode[keyof typeof GetClusterKubeconfigMode];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetClusterKubeconfigMode = {
+  direct: 'direct',
+  gateway: 'gateway',
+} as const;
+
+export type GetClusterKubeconfigGrantType = typeof GetClusterKubeconfigGrantType[keyof typeof GetClusterKubeconfigGrantType];
+
+
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const GetClusterKubeconfigGrantType = {
+  authcode: 'authcode',
+  'device-code': 'device-code',
+} as const;
 
 export type ListDriftParams = {
 clusterId?: string;
@@ -4182,6 +4217,66 @@ export const renderInstallManifest = async (org: string,
   
   const data: renderInstallManifestResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as renderInstallManifestResponse
+}
+
+
+
+/**
+ * @summary Render a secret-free kubeconfig (gateway or direct mode) for download
+ */
+export type getClusterKubeconfigResponse200 = {
+  data: string
+  status: 200
+}
+
+export type getClusterKubeconfigResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+    
+export type getClusterKubeconfigResponseSuccess = (getClusterKubeconfigResponse200) & {
+  headers: Headers;
+};
+export type getClusterKubeconfigResponseError = (getClusterKubeconfigResponseDefault) & {
+  headers: Headers;
+};
+
+export type getClusterKubeconfigResponse = (getClusterKubeconfigResponseSuccess | getClusterKubeconfigResponseError)
+
+export const getGetClusterKubeconfigUrl = (org: string,
+    id: string,
+    params?: GetClusterKubeconfigParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/tenants/${org}/clusters/${id}/kubeconfig?${stringifiedParams}` : `/api/v1/tenants/${org}/clusters/${id}/kubeconfig`
+}
+
+export const getClusterKubeconfig = async (org: string,
+    id: string,
+    params?: GetClusterKubeconfigParams, options?: RequestInit): Promise<getClusterKubeconfigResponse> => {
+  
+  const res = await fetch(getGetClusterKubeconfigUrl(org,id,params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: getClusterKubeconfigResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getClusterKubeconfigResponse
 }
 
 

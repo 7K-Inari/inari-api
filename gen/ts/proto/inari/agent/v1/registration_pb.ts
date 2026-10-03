@@ -175,6 +175,23 @@ export class RegisterClusterResponse extends Message<RegisterClusterResponse> {
    */
   credentialsExpireHint?: Timestamp;
 
+  /**
+   * Second OIDC client credential pair for the kubectl gateway tunnel agent
+   * (plan §3.2): client-credentials only, client "tunnel-<cluster_id>",
+   * audience inari-kubeproxy, hardcoded cluster_id claim. Delivered via the
+   * same ESO secret-delivery mechanism as client_secret_delivery. Additive:
+   * old servers simply don't return it (tunnel agent stays unconfigured);
+   * old agents ignore it.
+   *
+   * @generated from field: string tunnel_client_id = 6;
+   */
+  tunnelClientId = "";
+
+  /**
+   * @generated from field: inari.agent.v1.SecretDeliveryReference tunnel_client_secret_delivery = 7;
+   */
+  tunnelClientSecretDelivery?: SecretDeliveryReference;
+
   constructor(data?: PartialMessage<RegisterClusterResponse>) {
     super();
     proto3.util.initPartial(data, this);
@@ -188,6 +205,8 @@ export class RegisterClusterResponse extends Message<RegisterClusterResponse> {
     { no: 3, name: "client_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 4, name: "client_secret_delivery", kind: "message", T: SecretDeliveryReference },
     { no: 5, name: "credentials_expire_hint", kind: "message", T: Timestamp },
+    { no: 6, name: "tunnel_client_id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 7, name: "tunnel_client_secret_delivery", kind: "message", T: SecretDeliveryReference },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RegisterClusterResponse {
