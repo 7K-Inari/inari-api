@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+package inari.tunnel.v1;
+
+option go_package = "github.com/7K-Inari/inari-api/gen/go/inari/tunnel/v1;tunnelv1";
+
+import "google/protobuf/timestamp.proto";
+
+// kubectl gateway tunnel protocol (plan §3.1): dedicated bidi stream between
+// inari-kubeproxy (platform cluster) and inari-tunnel-agent (tenant cluster).
+// Separate package from inari.agent.v1: different contract consumer
+// (kubeproxy ↔ tunnel-agent, not inari-server ↔ inari-agent) with its own
+// compatibility window, so control-plane N/N−1 agent skew is unaffected.
+// Payload-agnostic: connection_id + bytes + lifecycle.
+
+// TunnelMessage is the envelope on the bidi stream; exactly one payload set.
+message TunnelMessage {
+  // kubeproxy-generated UUID per proxied HTTP request.
+  string connection_id = 1;
+  oneof payload {
+    // kubeproxy→agent: new proxied request.
+    TunnelOpen open = 2;
+    // agent→kubeproxy: apiserver response head.
+    TunnelOpenResult open_result = 3;
+    // both directions: body/upgraded bytes, ≤32 KiB.
+    TunnelFrame frame = 4;
+    // both directions: terminal, reason.
+    TunnelClose close = 5;
+    // keepalive (session-level: connection_id empty).
+    TunnelPing ping = 6;
+  }
+
+  reserved 100 to 199;
+}
+
+message TunnelOpen {
+  string method = 1;
+  // /api/v1/..., incl. query.
+  string path = 2;
+  // sanitized; kubeproxy-set Impersonate-User/Group.
+  map<string, string> headers = 3;
+  // exec/logs -f/port-forward/watch.
+  bool upgrade_expected = 4;
+
+  reserved 100 to 199;
+}
+
+message TunnelOpenResult {
+  int32 status = 1;
+  map<string, string> headers = 2;
+  // dial/handshake failure (e.g. apiserver unreachable).
+  string error = 3;
+
+  reserved 100 to 199;
+}
+
+message TunnelFrame {
+  bytes data = 1;
+  // sender finished sending (EOF).
+  bool half_close = 2;
+
+  reserved 100 to 199;
+}
+
+message TunnelClose {
+  string reason = 1;
+
+  reserved 100 to 199;
+}
+
+message TunnelPing {
+  google.protobuf.Timestamp time = 1;
+
+  reserved 100 to 199;
+}
+
+service TunnelService {
+  // Tunnel agents dial OUT to kubeproxy (pull, never push). Auth: bearer JWT,
+  // client_credentials, per-cluster client `tunnel-<cluster-id>`, hardcoded
+  // cluster_id claim — same pattern as the agent EventStream.
+  // TunnelMessage is a symmetric self-describing envelope (oneof payload), so
+  // request/response wrapper messages would add no information.
+  // buf:lint:ignore RPC_REQUEST_RESPONSE_UNIQUE
+  // buf:lint:ignore RPC_REQUEST_STANDARD_NAME
+  // buf:lint:ignore RPC_RESPONSE_STANDARD_NAME
+  rpc Connect(stream TunnelMessage) returns (stream TunnelMessage);
+}

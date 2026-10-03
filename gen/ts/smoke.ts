@@ -23,7 +23,15 @@ import {
 } from "./proto/inari/agent/v1/registration_pb";
 import { RegistrationService } from "./proto/inari/agent/v1/registration_connect";
 import { EventStreamService } from "./proto/inari/agent/v1/agent_connect";
-import { getHealth } from "./rest/client";
+import {
+  TunnelMessage,
+  TunnelOpen,
+  TunnelFrame,
+  TunnelClose,
+  TunnelPing,
+} from "./proto/inari/tunnel/v1/tunnel_pb";
+import { TunnelService } from "./proto/inari/tunnel/v1/tunnel_connect";
+import { getHealth, getGetClusterKubeconfigUrl } from "./rest/client";
 
 const event = new Event({
   eventId: "evt-1",
@@ -82,6 +90,25 @@ if (regReq.registrationToken !== "tok-1" || regResp.clientId !== "cluster-1") {
 }
 
 if (EventType.CAPABILITY_UPDATE !== 1) throw new Error("enum failed");
+
+const tunnelOpen = new TunnelMessage({
+  connectionId: "conn-1",
+  payload: { case: "open", value: new TunnelOpen({ method: "GET", path: "/api/v1/pods" }) },
+});
+const tunnelBytes = tunnelOpen.toBinary();
+const tunnelDecoded = TunnelMessage.fromBinary(tunnelBytes);
+if (tunnelDecoded.payload.case !== "open" || tunnelDecoded.payload.value.method !== "GET") {
+  throw new Error("tunnel open round trip failed");
+}
+
+const tunnelClose = new TunnelMessage({
+  connectionId: "conn-1",
+  payload: { case: "close", value: new TunnelClose({ reason: "done" }) },
+});
+if (tunnelClose.payload.case !== "close") throw new Error("tunnel close payload failed");
+
+void TunnelService;
+void getGetClusterKubeconfigUrl;
 
 void RegistrationService;
 void EventStreamService;

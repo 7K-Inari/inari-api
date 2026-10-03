@@ -3557,9 +3557,21 @@ components:
           type: string
         issuerUrl:
           type: string
+        kubectlAccessEnabled:
+          description: State of the global kubectl_access.enabled feature flag.
+          type: boolean
         kubectlClientId:
           type: string
         organization:
+          type: string
+        proxyUrl:
+          description: Public URL of the inari-kubeproxy gateway for this cluster.
+          type: string
+        tunnelAvailable:
+          description: Whether a tunnel-agent session is live for this cluster.
+          type: boolean
+        tunnelUnavailableReason:
+          description: Why the tunnel is unavailable (e.g. agent not upgraded, ESO not configured).
           type: string
       required:
         - issuerUrl
@@ -4988,6 +5000,57 @@ paths:
       security:
         - bearer: []
       summary: Render the agent install manifest embedding a fresh registration token
+  /api/v1/tenants/{org}/clusters/{id}/kubeconfig:
+    get:
+      operationId: getClusterKubeconfig
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: mode
+          schema:
+            default: gateway
+            enum:
+              - direct
+              - gateway
+            type: string
+        - in: query
+          name: grantType
+          schema:
+            default: device-code
+            enum:
+              - authcode
+              - device-code
+            type: string
+        - description: Apiserver URL for direct mode (adds a direct context).
+          in: query
+          name: server
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/yaml:
+              schema:
+                type: string
+          description: Secret-free kubelogin exec-credential kubeconfig
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Render a secret-free kubeconfig (gateway or direct mode) for download
   /api/v1/tenants/{org}/clusters/{id}/revoke:
     post:
       operationId: revokeCluster
