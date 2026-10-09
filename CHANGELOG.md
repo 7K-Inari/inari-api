@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.7.0](https://github.com/7K-Inari/inari-api/compare/v0.6.0...v0.7.0) (2026-10-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* add inari.tunnel.v2 with multi-valued headers
+
+### Features
+
+* add inari.tunnel.v1 contract for kubectl gateway tunnel ([#34](https://github.com/7K-Inari/inari-api/issues/34)) ([25e482f](https://github.com/7K-Inari/inari-api/commit/25e482f0464f3ed70c61c893509aaeae76c6624f))
+* add inari.tunnel.v2 with multi-valued headers ([c10b708](https://github.com/7K-Inari/inari-api/commit/c10b708d8a111546089a6aa25ac0d8315169fded))
+* **release:** per-merge edge releases (vX.Y.Z-&lt;sha&gt; + moving edge channel) ([#22](https://github.com/7K-Inari/inari-api/issues/22)) ([e384273](https://github.com/7K-Inari/inari-api/commit/e384273d2619c3e81fdc737ad4848a788037f63b))
+* shared cluster-ID charset testdata ([6735649](https://github.com/7K-Inari/inari-api/commit/6735649947dc2c40be756fe7bbc411a1b266d3a4))
+* Wave 1 contracts for extension OIDC pass-through and per-user Git credential redemption ([#20](https://github.com/7K-Inari/inari-api/issues/20)) ([52ea583](https://github.com/7K-Inari/inari-api/commit/52ea5837ecacf8cab48b8bd26ead0301ce4c65b5))
+
 ## [0.6.0](https://github.com/7K-Inari/inari-api/compare/v0.5.2...v0.6.0) (2026-09-14)
 
 
