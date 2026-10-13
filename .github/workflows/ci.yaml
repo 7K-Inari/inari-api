@@ -38,7 +38,7 @@ jobs:
 
       - name: Install codegen tools
         run: |
-          go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.4.1
+          go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.8.0
           echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
           npm ci --include=dev
 
