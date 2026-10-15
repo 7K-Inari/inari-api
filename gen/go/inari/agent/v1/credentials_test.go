@@ -3,12 +3,11 @@ package agentv1_test
 import (
 	"context"
 	"errors"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 	"time"
 
-	"connectrpc.com/connect"
+	connect "connectrpc.com/connect/v2"
+	"connectrpc.com/connect/v2/connectinprocess"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	agentv1 "github.com/7K-Inari/inari-api/gen/go/inari/agent/v1"
@@ -22,41 +21,38 @@ type stubCredentialsHandler struct {
 
 func (h *stubCredentialsHandler) RedeemUserCredential(
 	_ context.Context,
-	req *connect.Request[agentv1.RedeemUserCredentialRequest],
-) (*connect.Response[agentv1.RedeemUserCredentialResponse], error) {
-	h.lastRef = req.Msg.GetCredentialRef()
+	req *agentv1.RedeemUserCredentialRequest,
+) (*agentv1.RedeemUserCredentialResponse, error) {
+	h.lastRef = req.GetCredentialRef()
 	if h.lastRef == "" {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("credential_ref is required"))
+		return nil, connect.NewError(connect.CodeInvalidArgument, "credential_ref is required")
 	}
-	return connect.NewResponse(&agentv1.RedeemUserCredentialResponse{
+	return &agentv1.RedeemUserCredentialResponse{
 		BearerToken: "tok-live",
 		ExpiresAt:   timestamppb.New(time.Unix(3600, 0).UTC()),
-	}), nil
+	}, nil
 }
 
-func newCredentialsClient(t *testing.T, h agentv1connect.AgentCredentialsServiceHandler) agentv1connect.AgentCredentialsServiceClient {
-	t.Helper()
-	mux := http.NewServeMux()
-	mux.Handle(agentv1connect.NewAgentCredentialsServiceHandler(h))
-	srv := httptest.NewServer(mux)
-	t.Cleanup(srv.Close)
-	return agentv1connect.NewAgentCredentialsServiceClient(srv.Client(), srv.URL)
+func newCredentialsClient(h agentv1connect.AgentCredentialsServiceHandler) agentv1connect.AgentCredentialsServiceClient {
+	server := connect.NewServer()
+	agentv1connect.RegisterAgentCredentialsServiceHandler(server, h)
+	return agentv1connect.NewAgentCredentialsServiceClient(connect.NewClient(connectinprocess.New(server)))
 }
 
 func TestRedeemUserCredentialOverTheWire(t *testing.T) {
 	h := &stubCredentialsHandler{}
-	client := newCredentialsClient(t, h)
+	client := newCredentialsClient(h)
 
 	resp, err := client.RedeemUserCredential(context.Background(),
-		connect.NewRequest(&agentv1.RedeemUserCredentialRequest{CredentialRef: "ucr-abc123"}))
+		&agentv1.RedeemUserCredentialRequest{CredentialRef: "ucr-abc123"})
 	if err != nil {
 		t.Fatalf("redeem: %v", err)
 	}
-	if resp.Msg.GetBearerToken() != "tok-live" {
-		t.Fatalf("bearer token mismatch: %q", resp.Msg.GetBearerToken())
+	if resp.GetBearerToken() != "tok-live" {
+		t.Fatalf("bearer token mismatch: %q", resp.GetBearerToken())
 	}
-	if resp.Msg.GetExpiresAt().GetSeconds() != 3600 {
-		t.Fatalf("expires_at mismatch: %v", resp.Msg.GetExpiresAt())
+	if resp.GetExpiresAt().GetSeconds() != 3600 {
+		t.Fatalf("expires_at mismatch: %v", resp.GetExpiresAt())
 	}
 	if h.lastRef != "ucr-abc123" {
 		t.Fatalf("handler saw ref %q, want ucr-abc123", h.lastRef)
@@ -64,10 +60,10 @@ func TestRedeemUserCredentialOverTheWire(t *testing.T) {
 }
 
 func TestRedeemUserCredentialEmptyRefRejected(t *testing.T) {
-	client := newCredentialsClient(t, &stubCredentialsHandler{})
+	client := newCredentialsClient(&stubCredentialsHandler{})
 
 	_, err := client.RedeemUserCredential(context.Background(),
-		connect.NewRequest(&agentv1.RedeemUserCredentialRequest{}))
+		&agentv1.RedeemUserCredentialRequest{})
 	var connectErr *connect.Error
 	if !errors.As(err, &connectErr) {
 		t.Fatalf("expected connect error, got %v", err)
@@ -78,10 +74,10 @@ func TestRedeemUserCredentialEmptyRefRejected(t *testing.T) {
 }
 
 func TestRedeemUserCredentialUnimplemented(t *testing.T) {
-	client := newCredentialsClient(t, agentv1connect.UnimplementedAgentCredentialsServiceHandler{})
+	client := newCredentialsClient(agentv1connect.UnimplementedAgentCredentialsServiceHandler{})
 
 	_, err := client.RedeemUserCredential(context.Background(),
-		connect.NewRequest(&agentv1.RedeemUserCredentialRequest{CredentialRef: "ucr-1"}))
+		&agentv1.RedeemUserCredentialRequest{CredentialRef: "ucr-1"})
 	var connectErr *connect.Error
 	if !errors.As(err, &connectErr) || connectErr.Code() != connect.CodeUnimplemented {
 		t.Fatalf("expected unimplemented, got %v", err)

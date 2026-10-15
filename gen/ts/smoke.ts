@@ -1,53 +1,56 @@
-import { ConnectRequest, Event, EventType } from "./proto/inari/agent/v1/agent_pb";
+import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
+import {
+  ConnectRequestSchema,
+  EventSchema,
+  EventType,
+} from "./proto/inari/agent/v1/agent_pb";
 import {
   CapabilityAction,
   CapabilityKind,
-  CapabilityUpdate,
+  CapabilityUpdateSchema,
   ManagementMode,
-  Ping,
-  ResyncResponse,
-  StatusUpdate,
+  PingSchema,
+  ResyncResponseSchema,
+  StatusUpdateSchema,
 } from "./proto/inari/agent/v1/events_pb";
 import {
-  ApplyBundle,
-  CommandAck,
+  ApplyBundleSchema,
+  CommandAckSchema,
   CommandResult,
   CommitPolicy,
-  InvokeAction,
-  RegisterArgoCDApp,
-  RenderRgdInstance,
+  InvokeActionSchema,
+  RegisterArgoCDAppSchema,
+  RenderRgdInstanceSchema,
 } from "./proto/inari/agent/v1/commands_pb";
 import {
-  RegisterClusterRequest,
-  RegisterClusterResponse,
+  RegisterClusterRequestSchema,
+  RegisterClusterResponseSchema,
+  RegistrationService,
 } from "./proto/inari/agent/v1/registration_pb";
-import { RegistrationService } from "./proto/inari/agent/v1/registration_connect";
-import { EventStreamService } from "./proto/inari/agent/v1/agent_connect";
+import { EventStreamService } from "./proto/inari/agent/v1/agent_pb";
 import {
-  TunnelMessage,
-  TunnelOpen,
-  TunnelFrame,
-  TunnelClose,
-  TunnelPing,
+  TunnelCloseSchema,
+  TunnelMessageSchema,
+  TunnelOpenSchema,
+  TunnelService,
 } from "./proto/inari/tunnel/v1/tunnel_pb";
-import { TunnelService } from "./proto/inari/tunnel/v1/tunnel_connect";
 import { getHealth, getGetClusterKubeconfigUrl } from "./rest/client";
 
-const event = new Event({
+const event = create(EventSchema, {
   eventId: "evt-1",
   resourceId: "res-1",
   type: "inari.agent.heartbeat.v1",
   sequence: 7n,
 });
-const bytes = event.toBinary();
-const decoded = Event.fromBinary(bytes);
+const bytes = toBinary(EventSchema, event);
+const decoded = fromBinary(EventSchema, bytes);
 if (decoded.eventId !== "evt-1") throw new Error("round trip failed");
 if (decoded.sequence !== 7n) throw new Error("sequence round trip failed");
 
-const req = new ConnectRequest({ event });
+const req = create(ConnectRequestSchema, { event });
 if (req.event?.type !== event.type) throw new Error("wrapper failed");
 
-const cap = new CapabilityUpdate({
+const cap = create(CapabilityUpdateSchema, {
   fullSync: true,
   stateChecksum: "sha256:abc",
   capabilities: [
@@ -61,49 +64,49 @@ const cap = new CapabilityUpdate({
 });
 if (cap.capabilities[0]?.kind !== CapabilityKind.CRD) throw new Error("capability failed");
 
-const status = new StatusUpdate({ message: "ok" });
+const status = create(StatusUpdateSchema, { message: "ok" });
 if (status.message !== "ok") throw new Error("status failed");
 
-const ping = new Ping({ sequence: 1n });
+const ping = create(PingSchema, { sequence: 1n });
 if (ping.sequence !== 1n) throw new Error("ping failed");
 
-const resync = new ResyncResponse({ appliedThroughSequence: 42n });
+const resync = create(ResyncResponseSchema, { appliedThroughSequence: 42n });
 if (resync.appliedThroughSequence !== 42n) throw new Error("resync failed");
 
-const bundle = new ApplyBundle({
+const bundle = create(ApplyBundleSchema, {
   commandId: "cmd-1",
   source: { case: "ociRef", value: "oci://registry/bundle:v1" },
   policy: CommitPolicy.PULL_REQUEST,
 });
 if (bundle.source.case !== "ociRef") throw new Error("apply-bundle failed");
 
-const app = new RegisterArgoCDApp({ commandId: "cmd-2", name: "web" });
-const action = new InvokeAction({ commandId: "cmd-3", action: "restart" });
-const rgd = new RenderRgdInstance({ commandId: "cmd-4", rgdRef: "oci://registry/rgd:v1" });
-const ack = new CommandAck({ commandId: "cmd-1", result: CommandResult.APPLIED });
+const app = create(RegisterArgoCDAppSchema, { commandId: "cmd-2", name: "web" });
+const action = create(InvokeActionSchema, { commandId: "cmd-3", action: "restart" });
+const rgd = create(RenderRgdInstanceSchema, { commandId: "cmd-4", rgdRef: "oci://registry/rgd:v1" });
+const ack = create(CommandAckSchema, { commandId: "cmd-1", result: CommandResult.APPLIED });
 void [app, action, rgd, ack];
 
-const regReq = new RegisterClusterRequest({ registrationToken: "tok-1" });
-const regResp = new RegisterClusterResponse({ clientId: "cluster-1" });
+const regReq = create(RegisterClusterRequestSchema, { registrationToken: "tok-1" });
+const regResp = create(RegisterClusterResponseSchema, { clientId: "cluster-1" });
 if (regReq.registrationToken !== "tok-1" || regResp.clientId !== "cluster-1") {
   throw new Error("registration failed");
 }
 
 if (EventType.CAPABILITY_UPDATE !== 1) throw new Error("enum failed");
 
-const tunnelOpen = new TunnelMessage({
+const tunnelOpen = create(TunnelMessageSchema, {
   connectionId: "conn-1",
-  payload: { case: "open", value: new TunnelOpen({ method: "GET", path: "/api/v1/pods" }) },
+  payload: { case: "open", value: create(TunnelOpenSchema, { method: "GET", path: "/api/v1/pods" }) },
 });
-const tunnelBytes = tunnelOpen.toBinary();
-const tunnelDecoded = TunnelMessage.fromBinary(tunnelBytes);
+const tunnelBytes = toBinary(TunnelMessageSchema, tunnelOpen);
+const tunnelDecoded = fromBinary(TunnelMessageSchema, tunnelBytes);
 if (tunnelDecoded.payload.case !== "open" || tunnelDecoded.payload.value.method !== "GET") {
   throw new Error("tunnel open round trip failed");
 }
 
-const tunnelClose = new TunnelMessage({
+const tunnelClose = create(TunnelMessageSchema, {
   connectionId: "conn-1",
-  payload: { case: "close", value: new TunnelClose({ reason: "done" }) },
+  payload: { case: "close", value: create(TunnelCloseSchema, { reason: "done" }) },
 });
 if (tunnelClose.payload.case !== "close") throw new Error("tunnel close payload failed");
 
