@@ -3,7 +3,7 @@ module github.com/7K-Inari/inari-api
 go 1.26.3
 
 require (
-	connectrpc.com/connect/v2 v2.0.0
+	connectrpc.com/connect/v2 v2.0.1
 	github.com/getkin/kin-openapi v0.150.0
 	github.com/oapi-codegen/runtime v1.7.0
 	go.yaml.in/yaml/v3 v3.0.5
