@@ -2,18 +2,13 @@ package tunnelv2_test
 
 import (
 	"context"
-	"crypto/tls"
 	"errors"
 	"io"
-	"net"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 	"time"
 
-	"connectrpc.com/connect"
-	"golang.org/x/net/http2"
-	"golang.org/x/net/http2/h2c"
+	connect "connectrpc.com/connect/v2"
+	"connectrpc.com/connect/v2/connectinprocess"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
@@ -92,25 +87,18 @@ func TestMultiValuedHeadersPreserved(t *testing.T) {
 }
 
 // TestConnectStream wires a generated Connect client to a generated handler
-// over httptest and echoes one TunnelOpen/TunnelFrame pair, proving the bidi
+// in process and echoes one TunnelOpen/TunnelFrame pair, proving the bidi
 // stream contract compiles and round-trips end to end.
 func TestConnectStream(t *testing.T) {
-	mux := http.NewServeMux()
-	mux.Handle(tunnelv2connect.NewTunnelServiceHandler(echoTunnelHandler{}))
-	// Bidi streaming requires HTTP/2; serve h2c and dial with an h2 client.
-	srv := httptest.NewUnstartedServer(h2c.NewHandler(mux, &http2.Server{}))
-	srv.Start()
-	t.Cleanup(srv.Close)
+	server := connect.NewServer()
+	tunnelv2connect.RegisterTunnelServiceHandler(server, echoTunnelHandler{})
+	client := tunnelv2connect.NewTunnelServiceClient(connect.NewClient(connectinprocess.New(server)))
 
-	h2client := &http.Client{Transport: &http2.Transport{
-		AllowHTTP: true,
-		DialTLSContext: func(ctx context.Context, network, addr string, _ *tls.Config) (net.Conn, error) {
-			return (&net.Dialer{}).DialContext(ctx, network, addr)
-		},
-	}}
-	client := tunnelv2connect.NewTunnelServiceClient(h2client, srv.URL)
-	stream := client.Connect(context.Background())
-	defer func() { _ = stream.CloseRequest() }()
+	stream, err := client.Connect(context.Background())
+	if err != nil {
+		t.Fatalf("connect: %v", err)
+	}
+	defer func() { _ = stream.Close() }()
 
 	open := &tunnelv2.TunnelMessage{
 		ConnectionId: "conn-1",
@@ -122,8 +110,8 @@ func TestConnectStream(t *testing.T) {
 	if err := stream.Send(open); err != nil {
 		t.Fatalf("send open: %v", err)
 	}
-	if err := stream.CloseRequest(); err != nil {
-		t.Fatalf("close request: %v", err)
+	if err := stream.CloseSend(); err != nil {
+		t.Fatalf("close send: %v", err)
 	}
 
 	got, err := stream.Receive()
@@ -142,7 +130,7 @@ type echoTunnelHandler struct{}
 
 func (echoTunnelHandler) Connect(
 	_ context.Context,
-	stream *connect.BidiStream[tunnelv2.TunnelMessage, tunnelv2.TunnelMessage],
+	stream tunnelv2connect.TunnelServiceConnectServerStream,
 ) error {
 	for {
 		msg, err := stream.Receive()

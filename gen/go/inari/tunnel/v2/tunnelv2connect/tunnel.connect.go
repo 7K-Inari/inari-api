@@ -5,36 +5,37 @@
 package tunnelv2connect
 
 import (
-	connect "connectrpc.com/connect"
+	connect "connectrpc.com/connect/v2"
 	context "context"
-	errors "errors"
 	v2 "github.com/7K-Inari/inari-api/gen/go/inari/tunnel/v2"
-	http "net/http"
-	strings "strings"
+	sync "sync"
 )
-
-// This is a compile-time assertion to ensure that this generated file and the connect package are
-// compatible. If you get a compiler error that this constant is not defined, this code was
-// generated with a version of connect newer than the one compiled into your binary. You can fix the
-// problem by either regenerating this code with an older version of connect or updating the connect
-// version compiled into your binary.
-const _ = connect.IsAtLeastVersion1_13_0
 
 const (
 	// TunnelServiceName is the fully-qualified name of the TunnelService service.
 	TunnelServiceName = "inari.tunnel.v2.TunnelService"
 )
 
-// These constants are the fully-qualified names of the RPCs defined in this package. They're
-// exposed at runtime as Spec.Procedure and as the final two segments of the HTTP route.
+// These constants are the procedure names of the RPCs defined in this package. They're exposed at
+// runtime as Spec.Procedure and as the final two segments of the HTTP route.
 //
 // Note that these are different from the fully-qualified method names used by
 // google.golang.org/protobuf/reflect/protoreflect. To convert from these constants to
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// TunnelServiceConnectProcedure is the fully-qualified name of the TunnelService's Connect RPC.
+	// TunnelServiceConnectProcedure is the procedure name of the TunnelService's Connect RPC.
 	TunnelServiceConnectProcedure = "/inari.tunnel.v2.TunnelService/Connect"
+)
+
+var (
+	tunnelServiceConnectSpec = sync.OnceValue(func() connect.Spec {
+		return connect.Spec{
+			StreamType: connect.StreamTypeBidi,
+			Schema:     v2.File_inari_tunnel_v2_tunnel_proto.Services().ByName("TunnelService").Methods().ByName("Connect"),
+			Procedure:  TunnelServiceConnectProcedure,
+		}
+	})
 )
 
 // TunnelServiceClient is a client for the inari.tunnel.v2.TunnelService service.
@@ -47,37 +48,49 @@ type TunnelServiceClient interface {
 	// buf:lint:ignore RPC_REQUEST_RESPONSE_UNIQUE
 	// buf:lint:ignore RPC_REQUEST_STANDARD_NAME
 	// buf:lint:ignore RPC_RESPONSE_STANDARD_NAME
-	Connect(context.Context) *connect.BidiStreamForClient[v2.TunnelMessage, v2.TunnelMessage]
+	Connect(context.Context) (TunnelServiceConnectClientStream, error)
 }
 
-// NewTunnelServiceClient constructs a client for the inari.tunnel.v2.TunnelService service. By
-// default, it uses the Connect protocol with the binary Protobuf Codec, asks for gzipped responses,
-// and sends uncompressed requests. To use the gRPC or gRPC-Web protocols, supply the
-// connect.WithGRPC() or connect.WithGRPCWeb() options.
-//
-// The URL supplied here should be the base URL for the Connect or gRPC server (for example,
-// http://api.acme.com or https://acme.com/grpc).
-func NewTunnelServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) TunnelServiceClient {
-	baseURL = strings.TrimRight(baseURL, "/")
-	tunnelServiceMethods := v2.File_inari_tunnel_v2_tunnel_proto.Services().ByName("TunnelService").Methods()
-	return &tunnelServiceClient{
-		connect: connect.NewClient[v2.TunnelMessage, v2.TunnelMessage](
-			httpClient,
-			baseURL+TunnelServiceConnectProcedure,
-			connect.WithSchema(tunnelServiceMethods.ByName("Connect")),
-			connect.WithClientOptions(opts...),
-		),
+// NewTunnelServiceClient constructs a client for the inari.tunnel.v2.TunnelService service.
+// Multiple service clients may share a single connect.Client.
+func NewTunnelServiceClient(client *connect.Client) TunnelServiceClient {
+	return &tunnelServiceClient{client: client}
+}
+
+// TunnelServiceConnectClientStream is the client stream for the TunnelService's Connect RPC.
+type TunnelServiceConnectClientStream struct {
+	stream connect.ClientStream
+}
+
+// SendHeaders opens the stream and flushes the request headers without a message. The first Send or
+// Receive does this implicitly.
+func (s TunnelServiceConnectClientStream) SendHeaders() error {
+	return s.stream.SendHeaders()
+}
+
+// Send sends a request message to the server.
+func (s TunnelServiceConnectClientStream) Send(req *v2.TunnelMessage) error {
+	return s.stream.Send(req)
+}
+
+// CloseSend closes the request side of the stream.
+func (s TunnelServiceConnectClientStream) CloseSend() error {
+	return s.stream.CloseSend()
+}
+
+// Receive returns the next response message from the server.
+func (s TunnelServiceConnectClientStream) Receive() (*v2.TunnelMessage, error) {
+	var res v2.TunnelMessage
+	if err := s.stream.Receive(&res); err != nil {
+		return nil, err
 	}
+	return &res, nil
 }
 
-// tunnelServiceClient implements TunnelServiceClient.
-type tunnelServiceClient struct {
-	connect *connect.Client[v2.TunnelMessage, v2.TunnelMessage]
-}
-
-// Connect calls inari.tunnel.v2.TunnelService.Connect.
-func (c *tunnelServiceClient) Connect(ctx context.Context) *connect.BidiStreamForClient[v2.TunnelMessage, v2.TunnelMessage] {
-	return c.connect.CallBidiStream(ctx)
+// Close releases the stream's resources. It is idempotent and is typically deferred to clean up a
+// stream abandoned before io.EOF.
+func (s TunnelServiceConnectClientStream) Close() error {
+	return s.stream.Close()
 }
 
 // TunnelServiceHandler is an implementation of the inari.tunnel.v2.TunnelService service.
@@ -90,35 +103,63 @@ type TunnelServiceHandler interface {
 	// buf:lint:ignore RPC_REQUEST_RESPONSE_UNIQUE
 	// buf:lint:ignore RPC_REQUEST_STANDARD_NAME
 	// buf:lint:ignore RPC_RESPONSE_STANDARD_NAME
-	Connect(context.Context, *connect.BidiStream[v2.TunnelMessage, v2.TunnelMessage]) error
+	Connect(context.Context, TunnelServiceConnectServerStream) error
 }
 
-// NewTunnelServiceHandler builds an HTTP handler from the service implementation. It returns the
-// path on which to mount the handler and the handler itself.
-//
-// By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
-// and JSON codecs. They also support gzip compression.
-func NewTunnelServiceHandler(svc TunnelServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
-	tunnelServiceMethods := v2.File_inari_tunnel_v2_tunnel_proto.Services().ByName("TunnelService").Methods()
-	tunnelServiceConnectHandler := connect.NewBidiStreamHandler(
-		TunnelServiceConnectProcedure,
-		svc.Connect,
-		connect.WithSchema(tunnelServiceMethods.ByName("Connect")),
-		connect.WithHandlerOptions(opts...),
+// RegisterTunnelServiceHandler registers svc as the inari.tunnel.v2.TunnelService implementation on
+// server.
+func RegisterTunnelServiceHandler(server *connect.Server, svc TunnelServiceHandler) {
+	adapter := tunnelServiceHandler{svc: svc}
+	server.Register(
+		connect.Method{Spec: tunnelServiceConnectSpec(), Handler: adapter.connect},
 	)
-	return "/inari.tunnel.v2.TunnelService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		switch r.URL.Path {
-		case TunnelServiceConnectProcedure:
-			tunnelServiceConnectHandler.ServeHTTP(w, r)
-		default:
-			http.NotFound(w, r)
-		}
-	})
+}
+
+// TunnelServiceConnectServerStream is the server stream for the TunnelService's Connect RPC.
+type TunnelServiceConnectServerStream struct {
+	stream connect.ServerStream
+}
+
+// Receive returns the next request message from the client.
+func (s TunnelServiceConnectServerStream) Receive() (*v2.TunnelMessage, error) {
+	var req v2.TunnelMessage
+	if err := s.stream.Receive(&req); err != nil {
+		return nil, err
+	}
+	return &req, nil
+}
+
+// SendHeaders flushes the response headers without a message. The first Send does this implicitly.
+func (s TunnelServiceConnectServerStream) SendHeaders() error {
+	return s.stream.SendHeaders()
+}
+
+// Send sends a response message to the client.
+func (s TunnelServiceConnectServerStream) Send(res *v2.TunnelMessage) error {
+	return s.stream.Send(res)
 }
 
 // UnimplementedTunnelServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedTunnelServiceHandler struct{}
 
-func (UnimplementedTunnelServiceHandler) Connect(context.Context, *connect.BidiStream[v2.TunnelMessage, v2.TunnelMessage]) error {
-	return connect.NewError(connect.CodeUnimplemented, errors.New("inari.tunnel.v2.TunnelService.Connect is not implemented"))
+func (UnimplementedTunnelServiceHandler) Connect(context.Context, TunnelServiceConnectServerStream) error {
+	return connect.NewError(connect.CodeUnimplemented, "inari.tunnel.v2.TunnelService.Connect is not implemented")
+}
+
+type tunnelServiceClient struct {
+	client *connect.Client
+}
+
+func (c *tunnelServiceClient) Connect(ctx context.Context) (TunnelServiceConnectClientStream, error) {
+	stream, err := c.client.CallClientStream(ctx, tunnelServiceConnectSpec())
+	if err != nil {
+		return TunnelServiceConnectClientStream{}, err
+	}
+	return TunnelServiceConnectClientStream{stream: stream}, nil
+}
+
+type tunnelServiceHandler struct{ svc TunnelServiceHandler }
+
+func (h tunnelServiceHandler) connect(ctx context.Context, _ connect.Spec, stream connect.ServerStream) error {
+	return h.svc.Connect(ctx, TunnelServiceConnectServerStream{stream: stream})
 }
