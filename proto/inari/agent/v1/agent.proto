@@ -58,6 +58,8 @@ enum EventType {
   EVENT_TYPE_SECRET_STORE_APPLY = 13;
   // server→agent: prune an ESO SecretStore from tenant Git (plan §4.1).
   EVENT_TYPE_SECRET_STORE_DELETE = 14;
+  // server→agent: update the cluster's bound baseline repo.
+  EVENT_TYPE_GITOPS_CONFIG_UPDATE = 15;
 }
 
 // Event is the CloudEvents-style envelope exchanged on the agent EventStream

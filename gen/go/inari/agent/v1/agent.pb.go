@@ -59,6 +59,8 @@ const (
 	EventType_EVENT_TYPE_SECRET_STORE_APPLY EventType = 13
 	// server→agent: prune an ESO SecretStore from tenant Git (plan §4.1).
 	EventType_EVENT_TYPE_SECRET_STORE_DELETE EventType = 14
+	// server→agent: update the cluster's bound baseline repo.
+	EventType_EVENT_TYPE_GITOPS_CONFIG_UPDATE EventType = 15
 )
 
 // Enum value maps for EventType.
@@ -79,23 +81,25 @@ var (
 		12: "EVENT_TYPE_COMMAND_NACK",
 		13: "EVENT_TYPE_SECRET_STORE_APPLY",
 		14: "EVENT_TYPE_SECRET_STORE_DELETE",
+		15: "EVENT_TYPE_GITOPS_CONFIG_UPDATE",
 	}
 	EventType_value = map[string]int32{
-		"EVENT_TYPE_UNSPECIFIED":         0,
-		"EVENT_TYPE_CAPABILITY_UPDATE":   1,
-		"EVENT_TYPE_STATUS_UPDATE":       2,
-		"EVENT_TYPE_PING":                3,
-		"EVENT_TYPE_PONG":                4,
-		"EVENT_TYPE_RESYNC_REQUEST":      5,
-		"EVENT_TYPE_RESYNC_RESPONSE":     6,
-		"EVENT_TYPE_APPLY_BUNDLE":        7,
-		"EVENT_TYPE_REGISTER_ARGOCD_APP": 8,
-		"EVENT_TYPE_INVOKE_ACTION":       9,
-		"EVENT_TYPE_RENDER_RGD_INSTANCE": 10,
-		"EVENT_TYPE_COMMAND_ACK":         11,
-		"EVENT_TYPE_COMMAND_NACK":        12,
-		"EVENT_TYPE_SECRET_STORE_APPLY":  13,
-		"EVENT_TYPE_SECRET_STORE_DELETE": 14,
+		"EVENT_TYPE_UNSPECIFIED":          0,
+		"EVENT_TYPE_CAPABILITY_UPDATE":    1,
+		"EVENT_TYPE_STATUS_UPDATE":        2,
+		"EVENT_TYPE_PING":                 3,
+		"EVENT_TYPE_PONG":                 4,
+		"EVENT_TYPE_RESYNC_REQUEST":       5,
+		"EVENT_TYPE_RESYNC_RESPONSE":      6,
+		"EVENT_TYPE_APPLY_BUNDLE":         7,
+		"EVENT_TYPE_REGISTER_ARGOCD_APP":  8,
+		"EVENT_TYPE_INVOKE_ACTION":        9,
+		"EVENT_TYPE_RENDER_RGD_INSTANCE":  10,
+		"EVENT_TYPE_COMMAND_ACK":          11,
+		"EVENT_TYPE_COMMAND_NACK":         12,
+		"EVENT_TYPE_SECRET_STORE_APPLY":   13,
+		"EVENT_TYPE_SECRET_STORE_DELETE":  14,
+		"EVENT_TYPE_GITOPS_CONFIG_UPDATE": 15,
 	}
 )
 
@@ -483,7 +487,7 @@ const file_inari_agent_v1_agent_proto_rawDesc = "" +
 	"\x0eConnectRequest\x12+\n" +
 	"\x05event\x18\x01 \x01(\v2\x15.inari.agent.v1.EventR\x05eventJ\x05\bd\x10\xc8\x01\"E\n" +
 	"\x0fConnectResponse\x12+\n" +
-	"\x05event\x18\x01 \x01(\v2\x15.inari.agent.v1.EventR\x05eventJ\x05\bd\x10\xc8\x01*\xd3\x03\n" +
+	"\x05event\x18\x01 \x01(\v2\x15.inari.agent.v1.EventR\x05eventJ\x05\bd\x10\xc8\x01*\xf8\x03\n" +
 	"\tEventType\x12\x1a\n" +
 	"\x16EVENT_TYPE_UNSPECIFIED\x10\x00\x12 \n" +
 	"\x1cEVENT_TYPE_CAPABILITY_UPDATE\x10\x01\x12\x1c\n" +
@@ -500,7 +504,8 @@ const file_inari_agent_v1_agent_proto_rawDesc = "" +
 	"\x16EVENT_TYPE_COMMAND_ACK\x10\v\x12\x1b\n" +
 	"\x17EVENT_TYPE_COMMAND_NACK\x10\f\x12!\n" +
 	"\x1dEVENT_TYPE_SECRET_STORE_APPLY\x10\r\x12\"\n" +
-	"\x1eEVENT_TYPE_SECRET_STORE_DELETE\x10\x0e2d\n" +
+	"\x1eEVENT_TYPE_SECRET_STORE_DELETE\x10\x0e\x12#\n" +
+	"\x1fEVENT_TYPE_GITOPS_CONFIG_UPDATE\x10\x0f2d\n" +
 	"\x12EventStreamService\x12N\n" +
 	"\aConnect\x12\x1e.inari.agent.v1.ConnectRequest\x1a\x1f.inari.agent.v1.ConnectResponse(\x010\x01B=Z;github.com/7K-Inari/inari-api/gen/go/inari/agent/v1;agentv1b\x06proto3"
 

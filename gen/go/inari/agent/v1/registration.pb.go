@@ -197,8 +197,13 @@ type RegisterClusterResponse struct {
 	// old agents ignore it.
 	TunnelClientId             string                   `protobuf:"bytes,6,opt,name=tunnel_client_id,json=tunnelClientId,proto3" json:"tunnel_client_id,omitempty"`
 	TunnelClientSecretDelivery *SecretDeliveryReference `protobuf:"bytes,7,opt,name=tunnel_client_secret_delivery,json=tunnelClientSecretDelivery,proto3" json:"tunnel_client_secret_delivery,omitempty"`
-	unknownFields              protoimpl.UnknownFields
-	sizeCache                  protoimpl.SizeCache
+	// baseline_repo is the org's assigned baseline GitOps repo for this
+	// cluster (e.g. "myorg/platform-baseline"). Empty when the server has
+	// no registry row yet (pre-Feature-A); the agent falls back to env or
+	// convention.
+	BaselineRepo  string `protobuf:"bytes,8,opt,name=baseline_repo,json=baselineRepo,proto3" json:"baseline_repo,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *RegisterClusterResponse) Reset() {
@@ -280,6 +285,13 @@ func (x *RegisterClusterResponse) GetTunnelClientSecretDelivery() *SecretDeliver
 	return nil
 }
 
+func (x *RegisterClusterResponse) GetBaselineRepo() string {
+	if x != nil {
+		return x.BaselineRepo
+	}
+	return ""
+}
+
 var File_inari_agent_v1_registration_proto protoreflect.FileDescriptor
 
 const file_inari_agent_v1_registration_proto_rawDesc = "" +
@@ -300,7 +312,7 @@ const file_inari_agent_v1_registration_proto_rawDesc = "" +
 	"secretName\x12)\n" +
 	"\x10secret_namespace\x18\x03 \x01(\tR\x0fsecretNamespace\x12\x1d\n" +
 	"\n" +
-	"secret_key\x18\x04 \x01(\tR\tsecretKeyJ\x05\bd\x10\xc8\x01\"\xcd\x03\n" +
+	"secret_key\x18\x04 \x01(\tR\tsecretKeyJ\x05\bd\x10\xc8\x01\"\xf2\x03\n" +
 	"\x17RegisterClusterResponse\x12\x1d\n" +
 	"\n" +
 	"cluster_id\x18\x01 \x01(\tR\tclusterId\x12&\n" +
@@ -309,7 +321,8 @@ const file_inari_agent_v1_registration_proto_rawDesc = "" +
 	"\x16client_secret_delivery\x18\x04 \x01(\v2'.inari.agent.v1.SecretDeliveryReferenceR\x14clientSecretDelivery\x12R\n" +
 	"\x17credentials_expire_hint\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\x15credentialsExpireHint\x12(\n" +
 	"\x10tunnel_client_id\x18\x06 \x01(\tR\x0etunnelClientId\x12j\n" +
-	"\x1dtunnel_client_secret_delivery\x18\a \x01(\v2'.inari.agent.v1.SecretDeliveryReferenceR\x1atunnelClientSecretDeliveryJ\x05\bd\x10\xc8\x012y\n" +
+	"\x1dtunnel_client_secret_delivery\x18\a \x01(\v2'.inari.agent.v1.SecretDeliveryReferenceR\x1atunnelClientSecretDelivery\x12#\n" +
+	"\rbaseline_repo\x18\b \x01(\tR\fbaselineRepoJ\x05\bd\x10\xc8\x012y\n" +
 	"\x13RegistrationService\x12b\n" +
 	"\x0fRegisterCluster\x12&.inari.agent.v1.RegisterClusterRequest\x1a'.inari.agent.v1.RegisterClusterResponseB=Z;github.com/7K-Inari/inari-api/gen/go/inari/agent/v1;agentv1b\x06proto3"
 

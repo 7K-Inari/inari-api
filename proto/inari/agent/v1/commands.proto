@@ -208,6 +208,17 @@ message SecretStoreDelete {
   reserved 100 to 199;
 }
 
+// GitopsConfigUpdate directs the agent to rebind to a different baseline
+// repo. Idempotent: applying the same repo is a no-op.
+message GitopsConfigUpdate {
+  string command_id = 1;
+  // New baseline repo ("owner/name"). Must be a platform-scope repo
+  // registered in the org's tenant_git_repos.
+  string baseline_repo = 2;
+
+  reserved 100 to 199;
+}
+
 // CommandAck reports the outcome of a command back to the gateway. Sent as an
 // agent→server event (EVENT_TYPE_COMMAND_ACK or, with
 // COMMAND_RESULT_FAILED, EVENT_TYPE_COMMAND_NACK).

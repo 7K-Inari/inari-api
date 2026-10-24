@@ -1245,6 +1245,62 @@ func (x *SecretStoreDelete) GetPolicy() CommitPolicy {
 	return CommitPolicy_COMMIT_POLICY_UNSPECIFIED
 }
 
+// GitopsConfigUpdate directs the agent to rebind to a different baseline
+// repo. Idempotent: applying the same repo is a no-op.
+type GitopsConfigUpdate struct {
+	state     protoimpl.MessageState `protogen:"open.v1"`
+	CommandId string                 `protobuf:"bytes,1,opt,name=command_id,json=commandId,proto3" json:"command_id,omitempty"`
+	// New baseline repo ("owner/name"). Must be a platform-scope repo
+	// registered in the org's tenant_git_repos.
+	BaselineRepo  string `protobuf:"bytes,2,opt,name=baseline_repo,json=baselineRepo,proto3" json:"baseline_repo,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GitopsConfigUpdate) Reset() {
+	*x = GitopsConfigUpdate{}
+	mi := &file_inari_agent_v1_commands_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GitopsConfigUpdate) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GitopsConfigUpdate) ProtoMessage() {}
+
+func (x *GitopsConfigUpdate) ProtoReflect() protoreflect.Message {
+	mi := &file_inari_agent_v1_commands_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GitopsConfigUpdate.ProtoReflect.Descriptor instead.
+func (*GitopsConfigUpdate) Descriptor() ([]byte, []int) {
+	return file_inari_agent_v1_commands_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *GitopsConfigUpdate) GetCommandId() string {
+	if x != nil {
+		return x.CommandId
+	}
+	return ""
+}
+
+func (x *GitopsConfigUpdate) GetBaselineRepo() string {
+	if x != nil {
+		return x.BaselineRepo
+	}
+	return ""
+}
+
 // CommandAck reports the outcome of a command back to the gateway. Sent as an
 // agent→server event (EVENT_TYPE_COMMAND_ACK or, with
 // COMMAND_RESULT_FAILED, EVENT_TYPE_COMMAND_NACK).
@@ -1259,7 +1315,7 @@ type CommandAck struct {
 
 func (x *CommandAck) Reset() {
 	*x = CommandAck{}
-	mi := &file_inari_agent_v1_commands_proto_msgTypes[14]
+	mi := &file_inari_agent_v1_commands_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1271,7 +1327,7 @@ func (x *CommandAck) String() string {
 func (*CommandAck) ProtoMessage() {}
 
 func (x *CommandAck) ProtoReflect() protoreflect.Message {
-	mi := &file_inari_agent_v1_commands_proto_msgTypes[14]
+	mi := &file_inari_agent_v1_commands_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1284,7 +1340,7 @@ func (x *CommandAck) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CommandAck.ProtoReflect.Descriptor instead.
 func (*CommandAck) Descriptor() ([]byte, []int) {
-	return file_inari_agent_v1_commands_proto_rawDescGZIP(), []int{14}
+	return file_inari_agent_v1_commands_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *CommandAck) GetCommandId() string {
@@ -1404,7 +1460,11 @@ const file_inari_agent_v1_commands_proto_rawDesc = "" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
 	"\x05scope\x18\x03 \x01(\tR\x05scope\x121\n" +
 	"\x06target\x18\x04 \x01(\v2\x19.inari.agent.v1.GitTargetR\x06target\x124\n" +
-	"\x06policy\x18\x05 \x01(\x0e2\x1c.inari.agent.v1.CommitPolicyR\x06policyJ\x05\bd\x10\xc8\x01\"\x83\x01\n" +
+	"\x06policy\x18\x05 \x01(\x0e2\x1c.inari.agent.v1.CommitPolicyR\x06policyJ\x05\bd\x10\xc8\x01\"_\n" +
+	"\x12GitopsConfigUpdate\x12\x1d\n" +
+	"\n" +
+	"command_id\x18\x01 \x01(\tR\tcommandId\x12#\n" +
+	"\rbaseline_repo\x18\x02 \x01(\tR\fbaselineRepoJ\x05\bd\x10\xc8\x01\"\x83\x01\n" +
 	"\n" +
 	"CommandAck\x12\x1d\n" +
 	"\n" +
@@ -1434,7 +1494,7 @@ func file_inari_agent_v1_commands_proto_rawDescGZIP() []byte {
 }
 
 var file_inari_agent_v1_commands_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_inari_agent_v1_commands_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
+var file_inari_agent_v1_commands_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_inari_agent_v1_commands_proto_goTypes = []any{
 	(CommitPolicy)(0),           // 0: inari.agent.v1.CommitPolicy
 	(CommandResult)(0),          // 1: inari.agent.v1.CommandResult
@@ -1452,20 +1512,21 @@ var file_inari_agent_v1_commands_proto_goTypes = []any{
 	(*AzureKVProvider)(nil),     // 13: inari.agent.v1.AzureKVProvider
 	(*SecretStoreApply)(nil),    // 14: inari.agent.v1.SecretStoreApply
 	(*SecretStoreDelete)(nil),   // 15: inari.agent.v1.SecretStoreDelete
-	(*CommandAck)(nil),          // 16: inari.agent.v1.CommandAck
-	(*ResourceRef)(nil),         // 17: inari.agent.v1.ResourceRef
-	(*structpb.Struct)(nil),     // 18: google.protobuf.Struct
-	(*durationpb.Duration)(nil), // 19: google.protobuf.Duration
+	(*GitopsConfigUpdate)(nil),  // 16: inari.agent.v1.GitopsConfigUpdate
+	(*CommandAck)(nil),          // 17: inari.agent.v1.CommandAck
+	(*ResourceRef)(nil),         // 18: inari.agent.v1.ResourceRef
+	(*structpb.Struct)(nil),     // 19: google.protobuf.Struct
+	(*durationpb.Duration)(nil), // 20: google.protobuf.Duration
 }
 var file_inari_agent_v1_commands_proto_depIdxs = []int32{
 	2,  // 0: inari.agent.v1.ApplyBundle.target:type_name -> inari.agent.v1.GitTarget
 	0,  // 1: inari.agent.v1.ApplyBundle.policy:type_name -> inari.agent.v1.CommitPolicy
 	4,  // 2: inari.agent.v1.RegisterArgoCDApp.source:type_name -> inari.agent.v1.ApplicationSource
 	5,  // 3: inari.agent.v1.RegisterArgoCDApp.sync_policy:type_name -> inari.agent.v1.SyncPolicy
-	17, // 4: inari.agent.v1.InvokeAction.resource:type_name -> inari.agent.v1.ResourceRef
-	18, // 5: inari.agent.v1.InvokeAction.parameters:type_name -> google.protobuf.Struct
-	19, // 6: inari.agent.v1.InvokeAction.timeout:type_name -> google.protobuf.Duration
-	18, // 7: inari.agent.v1.RenderRgdInstance.parameters:type_name -> google.protobuf.Struct
+	18, // 4: inari.agent.v1.InvokeAction.resource:type_name -> inari.agent.v1.ResourceRef
+	19, // 5: inari.agent.v1.InvokeAction.parameters:type_name -> google.protobuf.Struct
+	20, // 6: inari.agent.v1.InvokeAction.timeout:type_name -> google.protobuf.Duration
+	19, // 7: inari.agent.v1.RenderRgdInstance.parameters:type_name -> google.protobuf.Struct
 	2,  // 8: inari.agent.v1.RenderRgdInstance.target:type_name -> inari.agent.v1.GitTarget
 	0,  // 9: inari.agent.v1.RenderRgdInstance.policy:type_name -> inari.agent.v1.CommitPolicy
 	9,  // 10: inari.agent.v1.AwsSMProvider.auth_secret_ref:type_name -> inari.agent.v1.SecretRef
@@ -1510,7 +1571,7 @@ func file_inari_agent_v1_commands_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_inari_agent_v1_commands_proto_rawDesc), len(file_inari_agent_v1_commands_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   15,
+			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

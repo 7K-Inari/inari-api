@@ -58,6 +58,11 @@ message RegisterClusterResponse {
   // old agents ignore it.
   string tunnel_client_id = 6;
   SecretDeliveryReference tunnel_client_secret_delivery = 7;
+  // baseline_repo is the org's assigned baseline GitOps repo for this
+  // cluster (e.g. "myorg/platform-baseline"). Empty when the server has
+  // no registry row yet (pre-Feature-A); the agent falls back to env or
+  // convention.
+  string baseline_repo = 8;
 
   reserved 100 to 199;
 }

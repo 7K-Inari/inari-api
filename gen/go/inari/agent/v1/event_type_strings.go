@@ -15,6 +15,7 @@ var eventTypeStrings = map[EventType]string{
 	EventType_EVENT_TYPE_COMMAND_NACK:        "inari.agent.command-nack.v1",
 	EventType_EVENT_TYPE_SECRET_STORE_APPLY:  "inari.agent.secret-store-apply.v1",
 	EventType_EVENT_TYPE_SECRET_STORE_DELETE: "inari.agent.secret-store-delete.v1",
+	EventType_EVENT_TYPE_GITOPS_CONFIG_UPDATE: "inari.agent.gitops-config-update.v1",
 }
 
 var eventTypeByString = func() map[string]EventType {

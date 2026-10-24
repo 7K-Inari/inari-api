@@ -251,6 +251,7 @@ func TestEventTypeStringParity(t *testing.T) {
 		agentv1.EventType_EVENT_TYPE_COMMAND_NACK:        "inari.agent.command-nack.v1",
 		agentv1.EventType_EVENT_TYPE_SECRET_STORE_APPLY:  "inari.agent.secret-store-apply.v1",
 		agentv1.EventType_EVENT_TYPE_SECRET_STORE_DELETE: "inari.agent.secret-store-delete.v1",
+		agentv1.EventType_EVENT_TYPE_GITOPS_CONFIG_UPDATE: "inari.agent.gitops-config-update.v1",
 	}
 	for enumVal, typeString := range want {
 		if got := agentv1.EventTypeString(enumVal); got != typeString {
