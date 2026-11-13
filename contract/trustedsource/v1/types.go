@@ -167,6 +167,7 @@ type IndexEntry struct {
 	Producer       Producer         `json:"producer" yaml:"producer"`
 	ChartRef       string           `json:"chartRef,omitempty" yaml:"chartRef,omitempty"`
 	ChartDigest    string           `json:"chartDigest,omitempty" yaml:"chartDigest,omitempty"`
+	ChartProducer  *Producer        `json:"chartProducer,omitempty" yaml:"chartProducer,omitempty"`
 	Lanes          []Lane           `json:"lanes" yaml:"lanes"`
 	Compatibility  *Compatibility   `json:"compatibility,omitempty" yaml:"compatibility,omitempty"`
 	Runtime        *RuntimeEvidence `json:"runtime,omitempty" yaml:"runtime,omitempty"`

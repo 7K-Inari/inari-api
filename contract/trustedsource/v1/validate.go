@@ -453,7 +453,13 @@ func (e *IndexEntry) validate(path, kind string) error {
 		if !digestPattern.MatchString(e.ChartDigest) {
 			return field(path+".chartDigest", "platform-app requires a sha256 chart digest")
 		}
-	} else if e.ChartRef != "" || e.ChartDigest != "" {
+		if e.ChartProducer == nil {
+			return field(path+".chartProducer", "platform-app requires the chart release producer")
+		}
+		if err := validateProducer(*e.ChartProducer, string(ArtifactHelmChart), path+".chartProducer"); err != nil {
+			return err
+		}
+	} else if e.ChartRef != "" || e.ChartDigest != "" || e.ChartProducer != nil {
 		return field(path, "chartRef/chartDigest are valid only for platform-app entries")
 	}
 	if len(e.Lanes) == 0 {

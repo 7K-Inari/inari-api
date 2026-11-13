@@ -176,6 +176,9 @@
         },
         "runtime": {
           "$ref": "#/$defs/runtime"
+        },
+        "chartProducer": {
+          "$ref": "#/$defs/chartProducer"
         }
       },
       "allOf": [
@@ -190,7 +193,8 @@
           "then": {
             "required": [
               "chartRef",
-              "chartDigest"
+              "chartDigest",
+              "chartProducer"
             ]
           }
         }
@@ -334,6 +338,37 @@
       "properties": {
         "workflowPath": {
           "const": ".github/workflows/release-oci.yml"
+        },
+        "workflowSha": {
+          "$ref": "#/$defs/sha"
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "runAttempt": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "runUri": {
+          "type": "string",
+          "pattern": "^https://github.com/"
+        }
+      }
+    },
+    "chartProducer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workflowPath",
+        "workflowSha",
+        "runId",
+        "runAttempt",
+        "runUri"
+      ],
+      "properties": {
+        "workflowPath": {
+          "const": ".github/workflows/release-chart.yml"
         },
         "workflowSha": {
           "$ref": "#/$defs/sha"
