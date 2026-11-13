@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://inari.dev/schemas/source-file-v1.schema.json",
+  "title": "Inari trusted source configuration v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "environment": {"enum": ["production", "staging", "development"]},
+    "catalog": {"$ref": "#/$defs/group"},
+    "template": {"$ref": "#/$defs/group"}
+  },
+  "$defs": {
+    "group": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "syncInterval": {"type": "string", "minLength": 1},
+        "sources": {"type": "array", "items": {"$ref": "#/$defs/source"}}
+      },
+      "required": ["sources"]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "indexRef", "trustTier", "artifactPrefixes", "publisher"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$", "maxLength": 40},
+        "indexRef": {"type": "string", "pattern": "^[^:/ ]+(/[^:/ ]+)+(:[^:/ ]+)?(@sha256:[0-9a-f]{64})?$"},
+        "trustTier": {"enum": ["official", "reviewed", "experimental"]},
+        "allowUnsigned": {"const": "development-only"},
+        "artifactPrefixes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[^:/ ]+(/[^:/ ]+)*/$"}},
+        "pluginCompatibilityMaxAge": {"type": "string", "minLength": 1},
+        "publisher": {"$ref": "#/$defs/publisher"}
+      }
+    },
+    "publisher": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issuer", "repository", "workflows", "workflowSha", "sourceRepository", "sourceWorkflow"],
+      "properties": {
+        "issuer": {"const": "https://token.actions.githubusercontent.com"},
+        "repository": {"$ref": "#/$defs/repository"},
+        "workflows": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["index", "catalogPackage", "template", "helmChart", "smokeSuite"],
+          "properties": {
+            "index": {"const": ".github/workflows/release.yml"},
+            "catalogPackage": {"const": ".github/workflows/release-oci.yml"},
+            "template": {"const": ".github/workflows/release-oci.yml"},
+            "helmChart": {"const": ".github/workflows/release-chart.yml"},
+            "smokeSuite": {"const": ".github/workflows/release-smoke-suite.yml"}
+          }
+        },
+        "workflowSha": {"$ref": "#/$defs/sha"},
+        "sourceRepository": {"$ref": "#/$defs/repository"},
+        "sourceWorkflow": {"type": "string", "pattern": "^\\.github/workflows/[A-Za-z0-9_.-]+\\.yml$"},
+        "sourceRef": {"type": "string", "minLength": 1},
+        "event": {"type": "string", "minLength": 1},
+        "releaseEnvironment": {"type": "string", "minLength": 1}
+      }
+    },
+    "repository": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"},
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+  }
+}

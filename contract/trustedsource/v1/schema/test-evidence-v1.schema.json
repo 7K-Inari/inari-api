@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://inari.dev/schemas/test-evidence-v1.schema.json",
+  "title": "Inari signed test evidence predicate v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "app", "component", "trustTier", "sourceRepository", "sourceSha", "releaseTag", "artifact", "producer", "lanes", "finishedAt", "evidenceDigest"],
+  "properties": {
+    "schema": {"const": "https://inari.dev/schemas/test-evidence-v1.schema.json"},
+    "app": {"type": "string", "minLength": 1},
+    "component": {"type": "string", "minLength": 1},
+    "trustTier": {"enum": ["official", "reviewed", "experimental"]},
+    "sourceRepository": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"},
+    "sourceSha": {"$ref": "#/$defs/sha"},
+    "releaseTag": {"type": "string", "minLength": 1},
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repository", "digest", "mediaType"],
+      "properties": {
+        "repository": {"type": "string", "pattern": "^[^:/ ]+(/[^:/ ]+)+$"},
+        "digest": {"$ref": "#/$defs/digest"},
+        "mediaType": {"type": "string", "minLength": 1}
+      }
+    },
+    "producer": {"$ref": "#/$defs/producer"},
+    "lanes": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/lane"}},
+    "compatibility": {"$ref": "#/$defs/compatibility"},
+    "runtime": {"$ref": "#/$defs/runtime"},
+    "finishedAt": {"type": "string", "format": "date-time"},
+    "evidenceDigest": {"$ref": "#/$defs/digest"}
+  },
+  "$defs": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "producer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["workflowPath", "workflowSha", "runId", "runAttempt", "runUri"],
+      "properties": {
+        "workflowPath": {"type": "string", "pattern": "^\\.github/workflows/[A-Za-z0-9_.-]+\\.yml$"},
+        "workflowSha": {"$ref": "#/$defs/sha"},
+        "runId": {"type": "string", "minLength": 1},
+        "runAttempt": {"type": "integer", "minimum": 1},
+        "runUri": {"type": "string", "pattern": "^https://github.com/"}
+      }
+    },
+    "lane": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "required", "status", "runId", "jobId", "sourceSha"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "required": {"type": "boolean"},
+        "status": {"enum": ["passed", "failed", "skipped", "pending"]},
+        "runId": {"type": "string", "minLength": 1},
+        "jobId": {"type": "string", "minLength": 1},
+        "sourceSha": {"$ref": "#/$defs/sha"}
+      },
+      "if": {"properties": {"required": {"const": true}}},
+      "then": {"properties": {"status": {"const": "passed"}}}
+    },
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["matrix", "result", "completedAt", "browser", "slots"],
+      "properties": {
+        "matrix": {"type": "object", "required": ["stable", "previous-stable"], "properties": {"stable": {"const": "passed"}, "previous-stable": {"const": "passed"}}},
+        "result": {"const": "passed"},
+        "completedAt": {"type": "string", "format": "date-time"},
+        "browser": {"const": "passed"},
+        "slots": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "suiteDigest", "profile", "result"],
+      "properties": {
+        "target": {"type": "string", "minLength": 1},
+        "suiteDigest": {"$ref": "#/$defs/digest"},
+        "profile": {"type": "string", "minLength": 1},
+        "result": {"const": "passed"}
+      }
+    }
+  }
+}
