@@ -11,6 +11,7 @@ Canonical architecture & development plan: [inari-docs/docs/architecture/inari-p
 
 - `proto/inari/agent/v1/` — agent EventStream protocol (bidirectional gRPC stream, CloudEvents-style envelope)
 - `proto/inari/plugin/v1/` — versioned plugin contract (hashicorp go-plugin model)
+- `proto/inari/extensions/v1/` — extension-to-control-plane AgentGateway contract (Connect RPC; see `docs/extension-gateway.md`)
 - `openapi/openapi.yaml` — REST surface for console/CLI (OpenAPI 3.0)
 - `gen/go/`, `gen/ts/` — generated Go and TypeScript clients, **committed to the repo** (see below)
 
@@ -24,6 +25,8 @@ Prerequisites: `buf`, Go, Node.js, `oapi-codegen`, `yq` (v4, for `import-openapi
 - `make breaking` — `buf breaking` against `main`
 - `make build` / `make test` — compile and smoke-test both clients
 - `make ci` — the full local gate
+
+AgentGateway uses the normal Connect generators; gRPC stubs remain limited to the plugin contract. Its non-protobuf routing metadata constants are maintained in `gen/go/inari/extensions/v1/metadata.go`, a hand-written companion that code generation does not overwrite.
 
 Note: `npm ci` must run with dev dependencies (`npm ci --include=dev`, or unset `NODE_ENV=production`); Orval and TypeScript are devDependencies.
 
