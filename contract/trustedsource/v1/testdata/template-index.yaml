@@ -21,6 +21,12 @@ templates:
     sourceSha: abcdef0123456789abcdef0123456789abcdef01
     releaseTag: web-service-v1.2.0
     mediaType: application/vnd.inari.template.v1
+    producer:
+      workflowPath: .github/workflows/release-oci.yml
+      workflowSha: 0123456789abcdef0123456789abcdef01234567
+      runId: "123"
+      runAttempt: 1
+      runUri: https://github.com/7k-hiroba/argocd/actions/runs/123
     lanes:
       - name: validate-template
         required: true

@@ -164,6 +164,7 @@ type IndexEntry struct {
 	SourceSHA      string           `json:"sourceSha" yaml:"sourceSha"`
 	ReleaseTag     string           `json:"releaseTag" yaml:"releaseTag"`
 	MediaType      string           `json:"mediaType" yaml:"mediaType"`
+	Producer       Producer         `json:"producer" yaml:"producer"`
 	ChartRef       string           `json:"chartRef,omitempty" yaml:"chartRef,omitempty"`
 	ChartDigest    string           `json:"chartDigest,omitempty" yaml:"chartDigest,omitempty"`
 	Lanes          []Lane           `json:"lanes" yaml:"lanes"`

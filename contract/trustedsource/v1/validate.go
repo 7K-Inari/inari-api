@@ -429,6 +429,13 @@ func (e *IndexEntry) validate(path, kind string) error {
 	if e.MediaType != expectedMedia {
 		return field(path+".mediaType", "must be %s", expectedMedia)
 	}
+	role := string(ArtifactCatalogPackage)
+	if kind == TemplateIndexKind {
+		role = string(ArtifactTemplate)
+	}
+	if err := validateProducer(e.Producer, role, path+".producer"); err != nil {
+		return err
+	}
 	if kind == TemplateIndexKind && e.Type != "template" {
 		return field(path+".type", "must be template for a TemplateIndex")
 	}

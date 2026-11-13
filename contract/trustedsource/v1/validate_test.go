@@ -47,7 +47,8 @@ func validIndex() *trustedsource.Index {
 			Name: "web-service", Version: "1.2.0", PackageVersion: "1.2.0", Channel: "stable", Type: "kro-rgd",
 			Description: "Web service", Category: "compute", OCIRef: "ghcr.io/7k-hiroba/argocd/catalog/web-service:1.2.0",
 			Digest: testDigest, SourceSHA: testOtherSHA, ReleaseTag: "web-service-v1.2.0", MediaType: trustedsource.CatalogPackageMediaType,
-			Lanes: []trustedsource.Lane{validLane()},
+			Producer: trustedsource.Producer{WorkflowPath: ".github/workflows/release-oci.yml", WorkflowSHA: testSHA, RunID: "123", RunAttempt: 1, RunURI: "https://github.com/7k-hiroba/argocd/actions/runs/123"},
+			Lanes:    []trustedsource.Lane{validLane()},
 		}},
 	}
 }
