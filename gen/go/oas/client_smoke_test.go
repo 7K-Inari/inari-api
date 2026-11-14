@@ -39,7 +39,7 @@ type fullSurfaceOps interface {
 	ListInstances(http.ResponseWriter, *http.Request, string, ListInstancesParams)
 	DeployCatalogItem(http.ResponseWriter, *http.Request, string)
 	ListCapabilities(http.ResponseWriter, *http.Request, string, string)
-	RenderInstallManifest(http.ResponseWriter, *http.Request, string, string)
+	ListResourceTargets(http.ResponseWriter, *http.Request, string, ListResourceTargetsParams)
 }
 
 var _ fullSurfaceOps = (ServerInterface)(nil)
@@ -55,6 +55,23 @@ func qaClient(t *testing.T, h http.HandlerFunc) *ClientWithResponses {
 		t.Fatalf("NewClientWithResponses: %v", err)
 	}
 	return c
+}
+
+func TestClientListResourceTargetsRoundTrip(t *testing.T) {
+	c := qaClient(t, func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/api/v1/tenants/acme/resource-targets" {
+			t.Fatalf("unexpected path: %s", r.URL.Path)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"targets":[]}`))
+	})
+	resp, err := c.ListResourceTargetsWithResponse(context.Background(), "acme", &ListResourceTargetsParams{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if resp.StatusCode() != http.StatusOK || resp.JSON200 == nil || resp.JSON200.Targets == nil || len(*resp.JSON200.Targets) != 0 {
+		t.Fatalf("bad target response: %d %+v", resp.StatusCode(), resp.JSON200)
+	}
 }
 
 func TestClientListClustersRoundTrip(t *testing.T) {
@@ -168,8 +185,8 @@ func TestGetClusterKubeconfigRequestNoParams(t *testing.T) {
 	}
 }
 
-// TestClusterAccessInfoNewFieldsRoundTrip verifies that the new optional
-// ClusterAccessInfo fields marshal/unmarshal through the generated model.
+// TestClusterAccessInfoNewFieldsRoundTrip verifies that ClusterAccessInfo
+// fields marshal/unmarshal through the generated model.
 func TestClusterAccessInfoNewFieldsRoundTrip(t *testing.T) {
 	trueValue := true
 	info := ClusterAccessInfo{
@@ -177,9 +194,9 @@ func TestClusterAccessInfoNewFieldsRoundTrip(t *testing.T) {
 		KubectlClientId:         "cluster-cluster-1",
 		Audience:                "inari-server",
 		Organization:            "acme",
-		KubectlAccessEnabled:    &trueValue,
+		KubectlAccessEnabled:    trueValue,
 		ProxyUrl:                strPtr("https://kubeproxy.example"),
-		TunnelAvailable:         &trueValue,
+		TunnelAvailable:         trueValue,
 		TunnelUnavailableReason: strPtr("agent not upgraded"),
 	}
 	data, err := json.Marshal(info)
@@ -190,13 +207,13 @@ func TestClusterAccessInfoNewFieldsRoundTrip(t *testing.T) {
 	if err := json.Unmarshal(data, &got); err != nil {
 		t.Fatalf("unmarshal: %v", err)
 	}
-	if got.KubectlAccessEnabled == nil || *got.KubectlAccessEnabled != true {
+	if !got.KubectlAccessEnabled {
 		t.Fatalf("kubectlAccessEnabled mismatch: got %v", got.KubectlAccessEnabled)
 	}
 	if got.ProxyUrl == nil || *got.ProxyUrl != "https://kubeproxy.example" {
 		t.Fatalf("proxyUrl mismatch: got %v", got.ProxyUrl)
 	}
-	if got.TunnelAvailable == nil || *got.TunnelAvailable != true {
+	if !got.TunnelAvailable {
 		t.Fatalf("tunnelAvailable mismatch: got %v", got.TunnelAvailable)
 	}
 	if got.TunnelUnavailableReason == nil || *got.TunnelUnavailableReason != "agent not upgraded" {

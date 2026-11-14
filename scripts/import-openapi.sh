@@ -51,7 +51,12 @@ yq eval-all '
 
 yq eval -i '
   .paths."/api/v1/tenants/{org}/git-config".get.parameters
-    |= map(select(.name != "id"))
+    |= map(select(.name != "id")) |
+  # These routes are intentionally public at runtime: the OAuth state and the
+  # per-repo HMAC signature are their respective credentials. Make that
+  # explicit instead of leaving the Redocly security-defined rule unsatisfied.
+  .paths."/api/v1/tenants/{org}/git-connections/{provider}/callback".get.security = [] |
+  .paths."/api/v1/webhooks/git/{provider}".post.security = []
 ' "$OUT.tmp"
 
 # Downgrade OpenAPI 3.1 -> 3.0.3 for the codegen toolchain (oapi-codegen and
@@ -63,8 +68,11 @@ yq eval -i '
     .example = .examples[0] | del(.examples)
   ) |
   with((..) | select(.contentEncoding? == "base64");
-    .format = "byte" | del(.contentEncoding)
+    .format = "byte" | del(.contentEncoding) | del(.contentMediaType)
   ) |
+  # contentMediaType is 3.1-only; the enclosing media type and format: binary
+  # already carry its 3.0 equivalent.
+  with(.. | select(.contentMediaType? != null); del(.contentMediaType)) |
   with(.. | select((.type? | tag == "!!seq") and (.type | contains(["null"])));
     .type = (.type | map(select(. != "null")) | .[0]) |
     .nullable = true

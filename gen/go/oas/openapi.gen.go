@@ -20,11 +20,28 @@ import (
 	"strings"
 	"time"
 
-	"go.yaml.in/yaml/v3"
-
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/oapi-codegen/runtime"
+	openapi_types "github.com/oapi-codegen/runtime/types"
 )
+
+// Defines values for AdoptInputBodyDeployMode.
+const (
+	Application    AdoptInputBodyDeployMode = "application"
+	Applicationset AdoptInputBodyDeployMode = "applicationset"
+)
+
+// Valid indicates whether the value is a known member of the AdoptInputBodyDeployMode enum.
+func (e AdoptInputBodyDeployMode) Valid() bool {
+	switch e {
+	case Application:
+		return true
+	case Applicationset:
+		return true
+	default:
+		return false
+	}
+}
 
 // Defines values for CreateIdentityClientInputBodyType.
 const (
@@ -62,6 +79,27 @@ func (e GitConfigInputBodyCommitPolicy) Valid() bool {
 	}
 }
 
+// Defines values for GrantInputBodyRelation.
+const (
+	GrantInputBodyRelationProvision GrantInputBodyRelation = "provision"
+	GrantInputBodyRelationUse       GrantInputBodyRelation = "use"
+	GrantInputBodyRelationView      GrantInputBodyRelation = "view"
+)
+
+// Valid indicates whether the value is a known member of the GrantInputBodyRelation enum.
+func (e GrantInputBodyRelation) Valid() bool {
+	switch e {
+	case GrantInputBodyRelationProvision:
+		return true
+	case GrantInputBodyRelationUse:
+		return true
+	case GrantInputBodyRelationView:
+		return true
+	default:
+		return false
+	}
+}
+
 // Defines values for HealthStatusStatus.
 const (
 	Ok HealthStatusStatus = "ok"
@@ -71,6 +109,144 @@ const (
 func (e HealthStatusStatus) Valid() bool {
 	switch e {
 	case Ok:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RegisterInputBodyCommitPolicy.
+const (
+	RegisterInputBodyCommitPolicyDirect      RegisterInputBodyCommitPolicy = "direct"
+	RegisterInputBodyCommitPolicyPullRequest RegisterInputBodyCommitPolicy = "pull_request"
+)
+
+// Valid indicates whether the value is a known member of the RegisterInputBodyCommitPolicy enum.
+func (e RegisterInputBodyCommitPolicy) Valid() bool {
+	switch e {
+	case RegisterInputBodyCommitPolicyDirect:
+		return true
+	case RegisterInputBodyCommitPolicyPullRequest:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RegisterInputBodyProvider.
+const (
+	Github RegisterInputBodyProvider = "github"
+)
+
+// Valid indicates whether the value is a known member of the RegisterInputBodyProvider enum.
+func (e RegisterInputBodyProvider) Valid() bool {
+	switch e {
+	case Github:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RegisterInputBodyScope.
+const (
+	RegisterInputBodyScopePlatform RegisterInputBodyScope = "platform"
+	RegisterInputBodyScopeTeam     RegisterInputBodyScope = "team"
+)
+
+// Valid indicates whether the value is a known member of the RegisterInputBodyScope enum.
+func (e RegisterInputBodyScope) Valid() bool {
+	switch e {
+	case RegisterInputBodyScopePlatform:
+		return true
+	case RegisterInputBodyScopeTeam:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for RepoOutputBodyWebhookStatus.
+const (
+	Disabled      RepoOutputBodyWebhookStatus = "disabled"
+	Provisioned   RepoOutputBodyWebhookStatus = "provisioned"
+	Unprovisioned RepoOutputBodyWebhookStatus = "unprovisioned"
+)
+
+// Valid indicates whether the value is a known member of the RepoOutputBodyWebhookStatus enum.
+func (e RepoOutputBodyWebhookStatus) Valid() bool {
+	switch e {
+	case Disabled:
+		return true
+	case Provisioned:
+		return true
+	case Unprovisioned:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for UpdateInputBodyCommitPolicy.
+const (
+	UpdateInputBodyCommitPolicyDirect      UpdateInputBodyCommitPolicy = "direct"
+	UpdateInputBodyCommitPolicyPullRequest UpdateInputBodyCommitPolicy = "pull_request"
+)
+
+// Valid indicates whether the value is a known member of the UpdateInputBodyCommitPolicy enum.
+func (e UpdateInputBodyCommitPolicy) Valid() bool {
+	switch e {
+	case UpdateInputBodyCommitPolicyDirect:
+		return true
+	case UpdateInputBodyCommitPolicyPullRequest:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListCatalogParamsSource.
+const (
+	ListCatalogParamsSourceCurated    ListCatalogParamsSource = "curated"
+	ListCatalogParamsSourceDiscovered ListCatalogParamsSource = "discovered"
+	ListCatalogParamsSourcePlatform   ListCatalogParamsSource = "platform"
+	ListCatalogParamsSourceTemplate   ListCatalogParamsSource = "template"
+)
+
+// Valid indicates whether the value is a known member of the ListCatalogParamsSource enum.
+func (e ListCatalogParamsSource) Valid() bool {
+	switch e {
+	case ListCatalogParamsSourceCurated:
+		return true
+	case ListCatalogParamsSourceDiscovered:
+		return true
+	case ListCatalogParamsSourcePlatform:
+		return true
+	case ListCatalogParamsSourceTemplate:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListCatalogParamsSort.
+const (
+	Name     ListCatalogParamsSort = "name"
+	NameDesc ListCatalogParamsSort = "name-desc"
+	Newest   ListCatalogParamsSort = "newest"
+	Oldest   ListCatalogParamsSort = "oldest"
+)
+
+// Valid indicates whether the value is a known member of the ListCatalogParamsSort enum.
+func (e ListCatalogParamsSort) Valid() bool {
+	switch e {
+	case Name:
+		return true
+	case NameDesc:
+		return true
+	case Newest:
+		return true
+	case Oldest:
 		return true
 	default:
 		return false
@@ -113,6 +289,51 @@ func (e GetClusterKubeconfigParamsGrantType) Valid() bool {
 	}
 }
 
+// Defines values for UnregisterGitRepoParamsMode.
+const (
+	Orphan   UnregisterGitRepoParamsMode = "orphan"
+	Teardown UnregisterGitRepoParamsMode = "teardown"
+)
+
+// Valid indicates whether the value is a known member of the UnregisterGitRepoParamsMode enum.
+func (e UnregisterGitRepoParamsMode) Valid() bool {
+	switch e {
+	case Orphan:
+		return true
+	case Teardown:
+		return true
+	default:
+		return false
+	}
+}
+
+// Defines values for ListResourceTargetsParamsAction.
+const (
+	ListResourceTargetsParamsActionProvision ListResourceTargetsParamsAction = "provision"
+	ListResourceTargetsParamsActionUse       ListResourceTargetsParamsAction = "use"
+	ListResourceTargetsParamsActionView      ListResourceTargetsParamsAction = "view"
+)
+
+// Valid indicates whether the value is a known member of the ListResourceTargetsParamsAction enum.
+func (e ListResourceTargetsParamsAction) Valid() bool {
+	switch e {
+	case ListResourceTargetsParamsActionProvision:
+		return true
+	case ListResourceTargetsParamsActionUse:
+		return true
+	case ListResourceTargetsParamsActionView:
+		return true
+	default:
+		return false
+	}
+}
+
+// AWSSMProvider defines model for AWSSMProvider.
+type AWSSMProvider struct {
+	AuthSecretRef SecretRef `json:"authSecretRef"`
+	Region        string    `json:"region"`
+}
+
 // AccessInfoOutputBody defines model for AccessInfoOutputBody.
 type AccessInfoOutputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -142,6 +363,67 @@ type AddMemberInputBody struct {
 	Subject string `json:"subject"`
 }
 
+// AddonView defines model for AddonView.
+type AddonView struct {
+	ArgocdApp         *string            `json:"argocdApp,omitempty"`
+	AvailableVersions *[]string          `json:"availableVersions,omitempty"`
+	CatalogItem       string             `json:"catalogItem"`
+	ChartVersion      *string            `json:"chartVersion,omitempty"`
+	ClusterId         string             `json:"clusterId"`
+	ClusterSelector   *map[string]string `json:"clusterSelector,omitempty"`
+	CommitSha         *string            `json:"commitSha,omitempty"`
+	CreatedAt         time.Time          `json:"createdAt"`
+	DeployMode        string             `json:"deployMode"`
+	DiscoveredMeta    interface{}        `json:"discoveredMeta,omitempty"`
+	Health            *string            `json:"health,omitempty"`
+	Id                string             `json:"id"`
+	Namespace         *string            `json:"namespace,omitempty"`
+	OrgId             string             `json:"orgId"`
+	PrUrl             *string            `json:"prUrl,omitempty"`
+	PruneEnabled      bool               `json:"pruneEnabled"`
+	RepoId            *string            `json:"repoId,omitempty"`
+	RepoPath          *string            `json:"repoPath,omitempty"`
+	Source            SourceDescriptor   `json:"source"`
+	State             string             `json:"state"`
+	Sync              *string            `json:"sync,omitempty"`
+	UpdatedAt         time.Time          `json:"updatedAt"`
+	Values            interface{}        `json:"values,omitempty"`
+}
+
+// AdoptInputBody defines model for AdoptInputBody.
+type AdoptInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/AdoptInputBody.json
+	Schema *string `json:"$schema,omitempty"`
+
+	// ClusterSelector fleet label query (applicationset mode); empty = all org clusters
+	ClusterSelector *map[string]string        `json:"clusterSelector,omitempty"`
+	DeployMode      *AdoptInputBodyDeployMode `json:"deployMode,omitempty"`
+	Namespace       *string                   `json:"namespace,omitempty"`
+
+	// RepoId tenant_git_repos row id; empty = the cluster's bound baseline
+	RepoId *string     `json:"repoId,omitempty"`
+	Values interface{} `json:"values,omitempty"`
+
+	// Version catalog version (= chart version); empty = effective pin/latest stable
+	Version *string `json:"version,omitempty"`
+}
+
+// AdoptInputBodyDeployMode defines model for AdoptInputBody.DeployMode.
+type AdoptInputBodyDeployMode string
+
+// AdoptOutputBody defines model for AdoptOutputBody.
+type AdoptOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/AdoptOutputBody.json
+	Schema    *string      `json:"$schema,omitempty"`
+	Addon     ClusterAddon `json:"addon"`
+	CommitSha *string      `json:"commitSha,omitempty"`
+	PrUrl     *string      `json:"prUrl,omitempty"`
+}
+
 // AgentChannel defines model for AgentChannel.
 type AgentChannel struct {
 	Channel             string    `json:"channel"`
@@ -151,6 +433,13 @@ type AgentChannel struct {
 	Id                  string    `json:"id"`
 	OrgId               string    `json:"orgId"`
 	UpdatedAt           time.Time `json:"updatedAt"`
+}
+
+// AgentCompatStatus defines model for AgentCompatStatus.
+type AgentCompatStatus struct {
+	RecommendedVersion *string `json:"recommendedVersion,omitempty"`
+	Supported          bool    `json:"supported"`
+	UpgradeAvailable   bool    `json:"upgradeAvailable"`
 }
 
 // ApprovalConfig defines model for ApprovalConfig.
@@ -189,6 +478,7 @@ type ApprovalRequest struct {
 	OrgId       string      `json:"orgId"`
 	OwnerTeam   *string     `json:"ownerTeam,omitempty"`
 	Reason      *string     `json:"reason,omitempty"`
+	RepoId      *string     `json:"repoId,omitempty"`
 	Requester   string      `json:"requester"`
 	Spec        interface{} `json:"spec"`
 	State       string      `json:"state"`
@@ -229,10 +519,59 @@ type AssignPackOutputBody struct {
 	Assignment PolicyAssignment `json:"assignment"`
 }
 
+// AuditEvent defines model for AuditEvent.
+type AuditEvent struct {
+	Action       string      `json:"action"`
+	Actor        string      `json:"actor"`
+	CreatedAt    time.Time   `json:"createdAt"`
+	Id           string      `json:"id"`
+	Impersonator *string     `json:"impersonator,omitempty"`
+	ObjectId     string      `json:"objectId"`
+	ObjectType   string      `json:"objectType"`
+	OrgId        string      `json:"orgId"`
+	Payload      interface{} `json:"payload,omitempty"`
+}
+
+// AuthorizeInputBody defines model for AuthorizeInputBody.
+type AuthorizeInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/AuthorizeInputBody.json
+	Schema *string `json:"$schema,omitempty"`
+
+	// ApiBase GHE/self-hosted API base (must be allowlisted); empty = github.com
+	ApiBase *string `json:"apiBase,omitempty"`
+}
+
+// AuthorizeURLBody defines model for AuthorizeURLBody.
+type AuthorizeURLBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/AuthorizeURLBody.json
+	Schema       *string `json:"$schema,omitempty"`
+	AuthorizeUrl string  `json:"authorizeUrl"`
+}
+
 // AutoApproveRule defines model for AutoApproveRule.
 type AutoApproveRule struct {
 	ItemIds *[]string `json:"itemIds"`
 	Kind    string    `json:"kind"`
+}
+
+// AzureKVProvider defines model for AzureKVProvider.
+type AzureKVProvider struct {
+	AuthSecretRef SecretRef `json:"authSecretRef"`
+	TenantId      *string   `json:"tenantId,omitempty"`
+	VaultUrl      string    `json:"vaultUrl"`
+}
+
+// Binding defines model for Binding.
+type Binding struct {
+	BaseBranch     *string `json:"baseBranch,omitempty"`
+	BaselineRepoId *string `json:"baselineRepoId,omitempty"`
+	ClusterId      *string `json:"clusterId,omitempty"`
+	CommitPolicy   *string `json:"commitPolicy,omitempty"`
+	Renderer       *string `json:"renderer,omitempty"`
 }
 
 // BrokeredIdP defines model for BrokeredIdP.
@@ -381,6 +720,8 @@ type CloudAccount struct {
 
 // Cluster defines model for Cluster.
 type Cluster struct {
+	AgentCompat        *AgentCompatStatus `json:"agentCompat,omitempty"`
+	AgentVersion       *string            `json:"agentVersion,omitempty"`
 	CapabilityChecksum *string            `json:"capabilityChecksum,omitempty"`
 	ConnectedAt        *time.Time         `json:"connectedAt,omitempty"`
 	CreatedAt          time.Time          `json:"createdAt"`
@@ -398,22 +739,40 @@ type Cluster struct {
 
 // ClusterAccessInfo defines model for ClusterAccessInfo.
 type ClusterAccessInfo struct {
-	Audience  string `json:"audience"`
-	IssuerUrl string `json:"issuerUrl"`
-
-	// KubectlAccessEnabled State of the global kubectl_access.enabled feature flag.
-	KubectlAccessEnabled *bool  `json:"kubectlAccessEnabled,omitempty"`
-	KubectlClientId      string `json:"kubectlClientId"`
-	Organization         string `json:"organization"`
-
-	// ProxyUrl Public URL of the inari-kubeproxy gateway for this cluster.
-	ProxyUrl *string `json:"proxyUrl,omitempty"`
-
-	// TunnelAvailable Whether a tunnel-agent session is live for this cluster.
-	TunnelAvailable *bool `json:"tunnelAvailable,omitempty"`
-
-	// TunnelUnavailableReason Why the tunnel is unavailable (e.g. agent not upgraded, ESO not configured).
+	Audience                string  `json:"audience"`
+	IssuerUrl               string  `json:"issuerUrl"`
+	KubectlAccessEnabled    bool    `json:"kubectlAccessEnabled"`
+	KubectlClientId         string  `json:"kubectlClientId"`
+	Organization            string  `json:"organization"`
+	ProxyUrl                *string `json:"proxyUrl,omitempty"`
+	TunnelAvailable         bool    `json:"tunnelAvailable"`
 	TunnelUnavailableReason *string `json:"tunnelUnavailableReason,omitempty"`
+}
+
+// ClusterAddon defines model for ClusterAddon.
+type ClusterAddon struct {
+	ArgocdApp       *string            `json:"argocdApp,omitempty"`
+	CatalogItem     string             `json:"catalogItem"`
+	ChartVersion    *string            `json:"chartVersion,omitempty"`
+	ClusterId       string             `json:"clusterId"`
+	ClusterSelector *map[string]string `json:"clusterSelector,omitempty"`
+	CommitSha       *string            `json:"commitSha,omitempty"`
+	CreatedAt       time.Time          `json:"createdAt"`
+	DeployMode      string             `json:"deployMode"`
+	DiscoveredMeta  interface{}        `json:"discoveredMeta,omitempty"`
+	Health          *string            `json:"health,omitempty"`
+	Id              string             `json:"id"`
+	Namespace       *string            `json:"namespace,omitempty"`
+	OrgId           string             `json:"orgId"`
+	PrUrl           *string            `json:"prUrl,omitempty"`
+	PruneEnabled    bool               `json:"pruneEnabled"`
+	RepoId          *string            `json:"repoId,omitempty"`
+	RepoPath        *string            `json:"repoPath,omitempty"`
+	Source          SourceDescriptor   `json:"source"`
+	State           string             `json:"state"`
+	Sync            *string            `json:"sync,omitempty"`
+	UpdatedAt       time.Time          `json:"updatedAt"`
+	Values          interface{}        `json:"values,omitempty"`
 }
 
 // ClusterOutputBody defines model for ClusterOutputBody.
@@ -452,6 +811,18 @@ type ConfigOutputBody struct {
 	Config    ApprovalConfig `json:"config"`
 	OrgId     string         `json:"orgId"`
 	UpdatedAt *time.Time     `json:"updatedAt"`
+}
+
+// Connection defines model for Connection.
+type Connection struct {
+	ApiBase       *string    `json:"apiBase,omitempty"`
+	CreatedAt     time.Time  `json:"createdAt"`
+	Id            string     `json:"id"`
+	LastUsedAt    *time.Time `json:"lastUsedAt,omitempty"`
+	OrgId         string     `json:"orgId"`
+	Provider      string     `json:"provider"`
+	ProviderLogin string     `json:"providerLogin"`
+	Scopes        string     `json:"scopes"`
 }
 
 // CreateBrokeredIdPInputBody defines model for CreateBrokeredIdPInputBody.
@@ -533,6 +904,19 @@ type CreateInputBody struct {
 	// Schema A URL to the JSON Schema for this object.
 	//
 	// Example: https://example.com/schemas/CreateInputBody.json
+	Schema      *string           `json:"$schema,omitempty"`
+	Capability  string            `json:"capability"`
+	Config      interface{}       `json:"config,omitempty"`
+	IsDefault   *bool             `json:"isDefault,omitempty"`
+	Name        string            `json:"name"`
+	ResourceRef TargetResourceRef `json:"resourceRef"`
+}
+
+// CreateInputBody1 defines model for CreateInputBody1.
+type CreateInputBody1 struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/CreateInputBody1.json
 	Schema  *string `json:"$schema,omitempty"`
 	Enabled *bool   `json:"enabled,omitempty"`
 
@@ -544,6 +928,18 @@ type CreateInputBody struct {
 	Name   string  `json:"name"`
 	Secret *string `json:"secret,omitempty"`
 	Url    string  `json:"url"`
+}
+
+// CreateInputBody2 defines model for CreateInputBody2.
+type CreateInputBody2 struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/CreateInputBody2.json
+	Schema   *string             `json:"$schema,omitempty"`
+	Name     string              `json:"name"`
+	Provider SecretStoreProvider `json:"provider"`
+	Scope    string              `json:"scope"`
+	Targets  SecretStoreTargets  `json:"targets"`
 }
 
 // CreatePackInputBody defines model for CreatePackInputBody.
@@ -580,6 +976,22 @@ type CreatePolicyInputBody struct {
 	Target string `json:"target"`
 }
 
+// CreateRoleInputBody defines model for CreateRoleInputBody.
+type CreateRoleInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/CreateRoleInputBody.json
+	Schema      *string `json:"$schema,omitempty"`
+	Description *string `json:"description,omitempty"`
+	DisplayName *string `json:"displayName,omitempty"`
+
+	// Name DNS-1123 role name (ClusterRole suffix tenant-<slug>-<name>)
+	Name string `json:"name"`
+
+	// Permissions Permission-catalog slugs (GET permissions/catalog)
+	Permissions *[]string `json:"permissions"`
+}
+
 // CreateRolloutInputBody defines model for CreateRolloutInputBody.
 type CreateRolloutInputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -595,6 +1007,54 @@ type CreateRolloutInputBody struct {
 	TargetRef string          `json:"targetRef"`
 }
 
+// CreateRunInputBody defines model for CreateRunInputBody.
+type CreateRunInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/CreateRunInputBody.json
+	Schema      *string                `json:"$schema,omitempty"`
+	DisplayName *string                `json:"displayName,omitempty"`
+	Values      map[string]interface{} `json:"values"`
+
+	// Version Template version; defaults to the tenant's effective version
+	Version *string `json:"version,omitempty"`
+}
+
+// CreateRunOutputBody defines model for CreateRunOutputBody.
+type CreateRunOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/CreateRunOutputBody.json
+	Schema *string `json:"$schema,omitempty"`
+	Run    RunView `json:"run"`
+}
+
+// CreateScaffoldInputBody defines model for CreateScaffoldInputBody.
+type CreateScaffoldInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/CreateScaffoldInputBody.json
+	Schema *string `json:"$schema,omitempty"`
+
+	// Name Component name; becomes the run display name
+	Name string `json:"name"`
+
+	// Parameters Wizard answers, validated against the template schema
+	Parameters map[string]interface{} `json:"parameters"`
+
+	// TemplateId Catalog item ID (or name) of the template
+	TemplateId string `json:"templateId"`
+}
+
+// CreateScaffoldOutputBody defines model for CreateScaffoldOutputBody.
+type CreateScaffoldOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/CreateScaffoldOutputBody.json
+	Schema   *string      `json:"$schema,omitempty"`
+	Scaffold ScaffoldView `json:"scaffold"`
+}
+
 // CreateTeamInputBody defines model for CreateTeamInputBody.
 type CreateTeamInputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -605,8 +1065,8 @@ type CreateTeamInputBody struct {
 	// Name URL-safe team name
 	Name string `json:"name"`
 
-	// Role Org role the team grants (default viewer)
-	Role *string `json:"role,omitempty"`
+	// RoleId Org role the team grants (roles.id or built-in role name; default viewer)
+	RoleId *string `json:"roleId,omitempty"`
 }
 
 // CreateTenantInputBody defines model for CreateTenantInputBody.
@@ -679,6 +1139,15 @@ type DecommissionOutputBody1 struct {
 	ApprovalId *string `json:"approvalId,omitempty"`
 }
 
+// DeleteOutputBody defines model for DeleteOutputBody.
+type DeleteOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/DeleteOutputBody.json
+	Schema  *string `json:"$schema,omitempty"`
+	Deleted bool    `json:"deleted"`
+}
+
 // DeleteTenantInputBody defines model for DeleteTenantInputBody.
 type DeleteTenantInputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -732,6 +1201,7 @@ type DeployInputBody struct {
 	Name      *string     `json:"name,omitempty"`
 	Namespace *string     `json:"namespace,omitempty"`
 	OwnerTeam *string     `json:"ownerTeam,omitempty"`
+	RepoId    *string     `json:"repoId,omitempty"`
 	Spec      interface{} `json:"spec"`
 	Version   *string     `json:"version,omitempty"`
 }
@@ -893,17 +1363,25 @@ type ExemptionOutputBody struct {
 
 // Extension defines model for Extension.
 type Extension struct {
-	Checksum  string      `json:"checksum"`
-	CreatedAt time.Time   `json:"createdAt"`
-	Endpoint  string      `json:"endpoint"`
-	Id        string      `json:"id"`
-	Kind      string      `json:"kind"`
-	Manifest  interface{} `json:"manifest,omitempty"`
-	Name      string      `json:"name"`
-	OrgId     *string     `json:"orgId,omitempty"`
-	State     string      `json:"state"`
-	UpdatedAt time.Time   `json:"updatedAt"`
-	Version   string      `json:"version"`
+	Checksum  string                 `json:"checksum"`
+	ClientId  *string                `json:"clientId,omitempty"`
+	CreatedAt time.Time              `json:"createdAt"`
+	Endpoint  string                 `json:"endpoint"`
+	Id        string                 `json:"id"`
+	Kind      string                 `json:"kind"`
+	Manifest  interface{}            `json:"manifest,omitempty"`
+	Name      string                 `json:"name"`
+	OrgId     *string                `json:"orgId,omitempty"`
+	State     string                 `json:"state"`
+	Ui        *UiExtensionDescriptor `json:"ui,omitempty"`
+	UpdatedAt time.Time              `json:"updatedAt"`
+	Version   string                 `json:"version"`
+}
+
+// ExtensionCredentials defines model for ExtensionCredentials.
+type ExtensionCredentials struct {
+	ClientId string `json:"clientId"`
+	Secret   string `json:"secret"`
 }
 
 // ExtensionOutputBody defines model for ExtensionOutputBody.
@@ -911,8 +1389,26 @@ type ExtensionOutputBody struct {
 	// Schema A URL to the JSON Schema for this object.
 	//
 	// Example: https://example.com/schemas/ExtensionOutputBody.json
-	Schema    *string   `json:"$schema,omitempty"`
-	Extension Extension `json:"extension"`
+	Schema      *string               `json:"$schema,omitempty"`
+	Credentials *ExtensionCredentials `json:"credentials,omitempty"`
+	Extension   Extension             `json:"extension"`
+}
+
+// FlagView defines model for FlagView.
+type FlagView struct {
+	Default     bool   `json:"default"`
+	Description string `json:"description"`
+	EnvPinned   bool   `json:"envPinned"`
+	Key         string `json:"key"`
+	Overridden  bool   `json:"overridden"`
+	Type        string `json:"type"`
+	Value       bool   `json:"value"`
+}
+
+// GCPSMProvider defines model for GCPSMProvider.
+type GCPSMProvider struct {
+	AuthSecretRef SecretRef `json:"authSecretRef"`
+	ProjectId     string    `json:"projectId"`
 }
 
 // GetOutputBody defines model for GetOutputBody.
@@ -924,6 +1420,15 @@ type GetOutputBody struct {
 	Instance InstanceView `json:"instance"`
 }
 
+// GetOutputBody1 defines model for GetOutputBody1.
+type GetOutputBody1 struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/GetOutputBody1.json
+	Schema   *string      `json:"$schema,omitempty"`
+	Resource ResourceView `json:"resource"`
+}
+
 // GetRBACMatrixOutputBody defines model for GetRBACMatrixOutputBody.
 type GetRBACMatrixOutputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -931,6 +1436,33 @@ type GetRBACMatrixOutputBody struct {
 	// Example: https://example.com/schemas/GetRBACMatrixOutputBody.json
 	Schema *string    `json:"$schema,omitempty"`
 	Rbac   RbacMatrix `json:"rbac"`
+}
+
+// GetRunOutputBody defines model for GetRunOutputBody.
+type GetRunOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/GetRunOutputBody.json
+	Schema *string `json:"$schema,omitempty"`
+	Run    RunView `json:"run"`
+}
+
+// GetScaffoldOutputBody defines model for GetScaffoldOutputBody.
+type GetScaffoldOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/GetScaffoldOutputBody.json
+	Schema   *string      `json:"$schema,omitempty"`
+	Scaffold ScaffoldView `json:"scaffold"`
+}
+
+// GetTemplateOutputBody defines model for GetTemplateOutputBody.
+type GetTemplateOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/GetTemplateOutputBody.json
+	Schema   *string        `json:"$schema,omitempty"`
+	Template TemplateDetail `json:"template"`
 }
 
 // GetZoneOutputBody defines model for GetZoneOutputBody.
@@ -948,14 +1480,16 @@ type GitConfigInputBody struct {
 	// Schema A URL to the JSON Schema for this object.
 	//
 	// Example: https://example.com/schemas/GitConfigInputBody.json
-	Schema       *string                        `json:"$schema,omitempty"`
-	BaseBranch   *string                        `json:"baseBranch,omitempty"`
-	CommitPolicy GitConfigInputBodyCommitPolicy `json:"commitPolicy"`
-	GithubApp    *GitHubAppConfig               `json:"githubApp,omitempty"`
+	Schema         *string                        `json:"$schema,omitempty"`
+	BaseBranch     *string                        `json:"baseBranch,omitempty"`
+	ClearGithubApp *bool                          `json:"clearGithubApp,omitempty"`
+	CommitPolicy   GitConfigInputBodyCommitPolicy `json:"commitPolicy"`
+	GithubApp      *GitHubAppConfig               `json:"githubApp,omitempty"`
 
 	// Repo owner/name or https URL of the <tenant>-inari-state repo
-	Repo           string  `json:"repo"`
-	ScaffoldGitOrg *string `json:"scaffoldGitOrg,omitempty"`
+	Repo                 string  `json:"repo"`
+	ScaffoldGitOrg       *string `json:"scaffoldGitOrg,omitempty"`
+	UserTemplateFallback *string `json:"userTemplateFallback,omitempty"`
 }
 
 // GitConfigInputBodyCommitPolicy defines model for GitConfigInputBody.CommitPolicy.
@@ -995,6 +1529,37 @@ type GitProviderStatus struct {
 	State          string    `json:"state"`
 }
 
+// Grant defines model for Grant.
+type Grant struct {
+	CreatedAt time.Time `json:"createdAt"`
+	CreatedBy *string   `json:"createdBy,omitempty"`
+	Relation  string    `json:"relation"`
+	TargetId  string    `json:"targetId"`
+	TeamId    string    `json:"teamId"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+// GrantInputBody defines model for GrantInputBody.
+type GrantInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/GrantInputBody.json
+	Schema   *string                `json:"$schema,omitempty"`
+	Relation GrantInputBodyRelation `json:"relation"`
+}
+
+// GrantInputBodyRelation defines model for GrantInputBody.Relation.
+type GrantInputBodyRelation string
+
+// GrantOutputBody defines model for GrantOutputBody.
+type GrantOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/GrantOutputBody.json
+	Schema *string `json:"$schema,omitempty"`
+	Grant  Grant   `json:"grant"`
+}
+
 // HealthStatus defines model for HealthStatus.
 type HealthStatus struct {
 	Status  HealthStatusStatus `json:"status"`
@@ -1003,6 +1568,14 @@ type HealthStatus struct {
 
 // HealthStatusStatus defines model for HealthStatus.Status.
 type HealthStatusStatus string
+
+// HelmSource defines model for HelmSource.
+type HelmSource struct {
+	Chart     string  `json:"chart"`
+	RepoUrl   string  `json:"repoUrl"`
+	ValuesRef *string `json:"valuesRef,omitempty"`
+	Version   string  `json:"version"`
+}
 
 // IdPClaimMapping defines model for IdPClaimMapping.
 type IdPClaimMapping struct {
@@ -1055,6 +1628,7 @@ type InstanceView struct {
 	OrgId               string      `json:"orgId"`
 	OwnerTeam           string      `json:"ownerTeam"`
 	PrUrl               *string     `json:"prUrl,omitempty"`
+	RepoId              *string     `json:"repoId,omitempty"`
 	ResourceRef         ResourceRef `json:"resourceRef"`
 	Spec                interface{} `json:"spec"`
 	State               string      `json:"state"`
@@ -1083,6 +1657,7 @@ type ItemOutputBody struct {
 type ItemView struct {
 	ApprovalPolicy string                `json:"approvalPolicy"`
 	CapabilityRef  *CapabilityRef        `json:"capabilityRef,omitempty"`
+	Category       *string               `json:"category,omitempty"`
 	CreatedAt      time.Time             `json:"createdAt"`
 	Description    string                `json:"description"`
 	DisplayName    string                `json:"displayName"`
@@ -1095,6 +1670,18 @@ type ItemView struct {
 	Versions       *[]CatalogItemVersion `json:"versions,omitempty"`
 }
 
+// KROSource defines model for KROSource.
+type KROSource struct {
+	Instance interface{} `json:"instance,omitempty"`
+	RgdRef   string      `json:"rgdRef"`
+}
+
+// KustomizeSource defines model for KustomizeSource.
+type KustomizeSource struct {
+	Overlays *[]string `json:"overlays,omitempty"`
+	Path     string    `json:"path"`
+}
+
 // ListAccountsOutputBody defines model for ListAccountsOutputBody.
 type ListAccountsOutputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -1102,6 +1689,24 @@ type ListAccountsOutputBody struct {
 	// Example: https://example.com/schemas/ListAccountsOutputBody.json
 	Schema   *string         `json:"$schema,omitempty"`
 	Accounts *[]CloudAccount `json:"accounts"`
+}
+
+// ListAddonsOutputBody defines model for ListAddonsOutputBody.
+type ListAddonsOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/ListAddonsOutputBody.json
+	Schema *string      `json:"$schema,omitempty"`
+	Addons *[]AddonView `json:"addons"`
+}
+
+// ListAuditUIOutputBody defines model for ListAuditUIOutputBody.
+type ListAuditUIOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/ListAuditUIOutputBody.json
+	Schema *string         `json:"$schema,omitempty"`
+	Events *[]UiAuditEvent `json:"events"`
 }
 
 // ListBrokeredIdPsOutputBody defines model for ListBrokeredIdPsOutputBody.
@@ -1129,6 +1734,7 @@ type ListCatalogOutputBody struct {
 	// Example: https://example.com/schemas/ListCatalogOutputBody.json
 	Schema *string     `json:"$schema,omitempty"`
 	Items  *[]ItemView `json:"items"`
+	Total  int64       `json:"total"`
 }
 
 // ListChannelsOutputBody defines model for ListChannelsOutputBody.
@@ -1158,6 +1764,16 @@ type ListClustersOutputBody struct {
 	Clusters *[]Cluster `json:"clusters"`
 }
 
+// ListConnectionsOutputBody defines model for ListConnectionsOutputBody.
+type ListConnectionsOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/ListConnectionsOutputBody.json
+	Schema      *string         `json:"$schema,omitempty"`
+	Connections *[]Connection   `json:"connections"`
+	Providers   *[]ProviderInfo `json:"providers"`
+}
+
 // ListDriftOutputBody defines model for ListDriftOutputBody.
 type ListDriftOutputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -1167,6 +1783,15 @@ type ListDriftOutputBody struct {
 	DriftEvents *[]DriftEvent `json:"driftEvents"`
 }
 
+// ListEventsOutputBody defines model for ListEventsOutputBody.
+type ListEventsOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/ListEventsOutputBody.json
+	Schema *string       `json:"$schema,omitempty"`
+	Events *[]AuditEvent `json:"events"`
+}
+
 // ListExemptionsOutputBody defines model for ListExemptionsOutputBody.
 type ListExemptionsOutputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -1174,6 +1799,15 @@ type ListExemptionsOutputBody struct {
 	// Example: https://example.com/schemas/ListExemptionsOutputBody.json
 	Schema     *string      `json:"$schema,omitempty"`
 	Exemptions *[]Exemption `json:"exemptions"`
+}
+
+// ListFlagsOutputBody defines model for ListFlagsOutputBody.
+type ListFlagsOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/ListFlagsOutputBody.json
+	Schema *string     `json:"$schema,omitempty"`
+	Flags  *[]FlagView `json:"flags"`
 }
 
 // ListIdentityClientsOutputBody defines model for ListIdentityClientsOutputBody.
@@ -1244,8 +1878,8 @@ type ListOutputBody2 struct {
 	// Schema A URL to the JSON Schema for this object.
 	//
 	// Example: https://example.com/schemas/ListOutputBody2.json
-	Schema    *string                 `json:"$schema,omitempty"`
-	Endpoints *[]NotificationEndpoint `json:"endpoints"`
+	Schema    *string         `json:"$schema,omitempty"`
+	Resources *[]ResourceView `json:"resources"`
 }
 
 // ListOutputBody3 defines model for ListOutputBody3.
@@ -1253,6 +1887,42 @@ type ListOutputBody3 struct {
 	// Schema A URL to the JSON Schema for this object.
 	//
 	// Example: https://example.com/schemas/ListOutputBody3.json
+	Schema *string          `json:"$schema,omitempty"`
+	Repos  *[]TenantGitRepo `json:"repos"`
+}
+
+// ListOutputBody4 defines model for ListOutputBody4.
+type ListOutputBody4 struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/ListOutputBody4.json
+	Schema  *string   `json:"$schema,omitempty"`
+	Targets *[]Target `json:"targets"`
+}
+
+// ListOutputBody5 defines model for ListOutputBody5.
+type ListOutputBody5 struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/ListOutputBody5.json
+	Schema    *string                 `json:"$schema,omitempty"`
+	Endpoints *[]NotificationEndpoint `json:"endpoints"`
+}
+
+// ListOutputBody6 defines model for ListOutputBody6.
+type ListOutputBody6 struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/ListOutputBody6.json
+	Schema *string        `json:"$schema,omitempty"`
+	Stores *[]SecretStore `json:"stores"`
+}
+
+// ListOutputBody7 defines model for ListOutputBody7.
+type ListOutputBody7 struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/ListOutputBody7.json
 	Schema     *string      `json:"$schema,omitempty"`
 	Extensions *[]Extension `json:"extensions"`
 }
@@ -1275,6 +1945,15 @@ type ListPacksOutputBody struct {
 	Packs  *[]PolicyPack `json:"packs"`
 }
 
+// ListPlatformAdminsOutputBody defines model for ListPlatformAdminsOutputBody.
+type ListPlatformAdminsOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/ListPlatformAdminsOutputBody.json
+	Schema *string              `json:"$schema,omitempty"`
+	Admins *[]PlatformAdminView `json:"admins"`
+}
+
 // ListPoliciesOutputBody defines model for ListPoliciesOutputBody.
 type ListPoliciesOutputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -1282,6 +1961,15 @@ type ListPoliciesOutputBody struct {
 	// Example: https://example.com/schemas/ListPoliciesOutputBody.json
 	Schema   *string   `json:"$schema,omitempty"`
 	Policies *[]Policy `json:"policies"`
+}
+
+// ListRolesOutputBody defines model for ListRolesOutputBody.
+type ListRolesOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/ListRolesOutputBody.json
+	Schema *string `json:"$schema,omitempty"`
+	Roles  *[]Role `json:"roles"`
 }
 
 // ListRolloutsOutputBody defines model for ListRolloutsOutputBody.
@@ -1302,6 +1990,15 @@ type ListTeamsOutputBody struct {
 	Teams  *[]Team `json:"teams"`
 }
 
+// ListTemplatesOutputBody defines model for ListTemplatesOutputBody.
+type ListTemplatesOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/ListTemplatesOutputBody.json
+	Schema    *string            `json:"$schema,omitempty"`
+	Templates *[]TemplateSummary `json:"templates"`
+}
+
 // ListTenantsOutputBody defines model for ListTenantsOutputBody.
 type ListTenantsOutputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -1320,6 +2017,15 @@ type ListTokensOutputBody struct {
 	Tokens *[]RegistrationToken `json:"tokens"`
 }
 
+// ListUiOutputBody defines model for ListUiOutputBody.
+type ListUiOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/ListUiOutputBody.json
+	Schema     *string              `json:"$schema,omitempty"`
+	Extensions *[]UiExtensionRemote `json:"extensions"`
+}
+
 // ListZonesOutputBody defines model for ListZonesOutputBody.
 type ListZonesOutputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -1327,6 +2033,12 @@ type ListZonesOutputBody struct {
 	// Example: https://example.com/schemas/ListZonesOutputBody.json
 	Schema *string       `json:"$schema,omitempty"`
 	Zones  *[]TenantZone `json:"zones"`
+}
+
+// ManifestSource defines model for ManifestSource.
+type ManifestSource struct {
+	Inline interface{}        `json:"inline,omitempty"`
+	Params *map[string]string `json:"params,omitempty"`
 }
 
 // MemberView defines model for MemberView.
@@ -1344,6 +2056,19 @@ type MembersOutputBody struct {
 	// Example: https://example.com/schemas/MembersOutputBody.json
 	Schema   *string    `json:"$schema,omitempty"`
 	Clusters *[]Cluster `json:"clusters"`
+}
+
+// MyPermissionsOutputBody defines model for MyPermissionsOutputBody.
+type MyPermissionsOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/MyPermissionsOutputBody.json
+	Schema *string `json:"$schema,omitempty"`
+
+	// CanCreateOrganizations Caller may create tenants (platform:inari org_creator)
+	CanCreateOrganizations bool                           `json:"canCreateOrganizations"`
+	Roles                  *map[string]*[]string          `json:"roles,omitempty"`
+	Tenants                *map[string]TenantCapabilities `json:"tenants,omitempty"`
 }
 
 // NotificationDelivery defines model for NotificationDelivery.
@@ -1375,7 +2100,7 @@ type NotificationEndpoint struct {
 type OrgMemberView struct {
 	DisplayName string    `json:"displayName"`
 	Email       string    `json:"email"`
-	Role        string    `json:"role"`
+	Roles       *[]string `json:"roles"`
 	Teams       *[]string `json:"teams"`
 	UserId      string    `json:"userId"`
 }
@@ -1420,6 +2145,23 @@ type PackOutputBody struct {
 	Pack   PolicyPack `json:"pack"`
 }
 
+// Permission defines model for Permission.
+type Permission struct {
+	Description string `json:"description"`
+	Domain      string `json:"domain"`
+	Name        string `json:"name"`
+	Slug        string `json:"slug"`
+}
+
+// PermissionCatalogOutputBody defines model for PermissionCatalogOutputBody.
+type PermissionCatalogOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/PermissionCatalogOutputBody.json
+	Schema      *string       `json:"$schema,omitempty"`
+	Permissions *[]Permission `json:"permissions"`
+}
+
 // PinInputBody defines model for PinInputBody.
 type PinInputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -1427,6 +2169,13 @@ type PinInputBody struct {
 	// Example: https://example.com/schemas/PinInputBody.json
 	Schema  *string `json:"$schema,omitempty"`
 	Version string  `json:"version"`
+}
+
+// PlatformAdminView defines model for PlatformAdminView.
+type PlatformAdminView struct {
+	DisplayName string `json:"displayName"`
+	Email       string `json:"email"`
+	UserId      string `json:"userId"`
 }
 
 // Policy defines model for Policy.
@@ -1490,6 +2239,42 @@ type PolicyViolation struct {
 	Rule        string `json:"rule"`
 }
 
+// ProviderCompatOutputBody defines model for ProviderCompatOutputBody.
+type ProviderCompatOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/ProviderCompatOutputBody.json
+	Schema   *string     `json:"$schema,omitempty"`
+	Provider BrokeredIdP `json:"provider"`
+}
+
+// ProviderDescriptor defines model for ProviderDescriptor.
+type ProviderDescriptor struct {
+	Actions         *[]string   `json:"actions"`
+	Capability      string      `json:"capability"`
+	ConfigSchema    interface{} `json:"configSchema"`
+	ResourceKinds   *[]string   `json:"resourceKinds"`
+	SelectionSchema interface{} `json:"selectionSchema"`
+	SupportsDefault bool        `json:"supportsDefault"`
+	UiSchema        interface{} `json:"uiSchema"`
+}
+
+// ProviderInfo defines model for ProviderInfo.
+type ProviderInfo struct {
+	ApiBase *string `json:"apiBase,omitempty"`
+	Enabled bool    `json:"enabled"`
+	Id      string  `json:"id"`
+}
+
+// ProvidersOutputBody defines model for ProvidersOutputBody.
+type ProvidersOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/ProvidersOutputBody.json
+	Schema    *string               `json:"$schema,omitempty"`
+	Providers *[]ProviderDescriptor `json:"providers"`
+}
+
 // PutClientScopesInputBody defines model for PutClientScopesInputBody.
 type PutClientScopesInputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -1506,8 +2291,33 @@ type PutMemberInputBody struct {
 	// Example: https://example.com/schemas/PutMemberInputBody.json
 	Schema *string `json:"$schema,omitempty"`
 
-	// Role Org role to grant
-	Role string `json:"role"`
+	// RoleId Org role to grant (roles.id or built-in role name)
+	RoleId string `json:"roleId"`
+}
+
+// PutProviderCompatInputBody defines model for PutProviderCompatInputBody.
+type PutProviderCompatInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/PutProviderCompatInputBody.json
+	Schema       *string            `json:"$schema,omitempty"`
+	Alias        string             `json:"alias"`
+	ClaimMapping *ClaimMappingInput `json:"claimMapping,omitempty"`
+	ClientId     string             `json:"clientId"`
+
+	// ClientSecret Write-only: required on create, rotates on update when set
+	ClientSecret *string   `json:"clientSecret,omitempty"`
+	DomainHints  *[]string `json:"domainHints,omitempty"`
+	IssuerUrl    string    `json:"issuerUrl"`
+}
+
+// PutProviderDomainsInputBody defines model for PutProviderDomainsInputBody.
+type PutProviderDomainsInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/PutProviderDomainsInputBody.json
+	Schema      *string   `json:"$schema,omitempty"`
+	DomainHints *[]string `json:"domainHints"`
 }
 
 // PutRBACMappingsInputBody defines model for PutRBACMappingsInputBody.
@@ -1517,7 +2327,7 @@ type PutRBACMappingsInputBody struct {
 	// Example: https://example.com/schemas/PutRBACMappingsInputBody.json
 	Schema *string `json:"$schema,omitempty"`
 
-	// Mappings Declarative team→role set; applied atomically
+	// Mappings Declarative team→roleId set; applied atomically
 	Mappings *[]TeamRoleMapping `json:"mappings"`
 }
 
@@ -1557,11 +2367,78 @@ type RbacMatrix struct {
 	Roles    *[]RbacClusterRole `json:"roles"`
 }
 
+// Readiness defines model for Readiness.
+type Readiness struct {
+	ObservedAt *time.Time `json:"observedAt,omitempty"`
+	Reasons    *[]string  `json:"reasons,omitempty"`
+	State      string     `json:"state"`
+}
+
+// RebindBaselineInputBody defines model for RebindBaselineInputBody.
+type RebindBaselineInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/RebindBaselineInputBody.json
+	Schema *string `json:"$schema,omitempty"`
+	RepoId string  `json:"repoId"`
+}
+
+// ReceiveOutputBody defines model for ReceiveOutputBody.
+type ReceiveOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/ReceiveOutputBody.json
+	Schema    *string `json:"$schema,omitempty"`
+	Accepted  bool    `json:"accepted"`
+	EventType *string `json:"eventType,omitempty"`
+}
+
+// ReconcileOutputBody defines model for ReconcileOutputBody.
+type ReconcileOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/ReconcileOutputBody.json
+	Schema               *string `json:"$schema,omitempty"`
+	ClustersNotified     int64   `json:"clustersNotified"`
+	ResourcesReRequested int64   `json:"resourcesReRequested"`
+}
+
 // RegisterInputBody defines model for RegisterInputBody.
 type RegisterInputBody struct {
 	// Schema A URL to the JSON Schema for this object.
 	//
 	// Example: https://example.com/schemas/RegisterInputBody.json
+	Schema       *string                        `json:"$schema,omitempty"`
+	BaseBranch   *string                        `json:"baseBranch,omitempty"`
+	CommitPolicy *RegisterInputBodyCommitPolicy `json:"commitPolicy,omitempty"`
+	IsDefault    *bool                          `json:"isDefault,omitempty"`
+	Name         string                         `json:"name"`
+
+	// Provider only github is active in this phase
+	Provider *RegisterInputBodyProvider `json:"provider,omitempty"`
+
+	// Repo owner/name of the existing repo
+	Repo  string                  `json:"repo"`
+	Scope *RegisterInputBodyScope `json:"scope,omitempty"`
+
+	// TeamId owning team (team scope only)
+	TeamId *string `json:"teamId,omitempty"`
+}
+
+// RegisterInputBodyCommitPolicy defines model for RegisterInputBody.CommitPolicy.
+type RegisterInputBodyCommitPolicy string
+
+// RegisterInputBodyProvider only github is active in this phase
+type RegisterInputBodyProvider string
+
+// RegisterInputBodyScope defines model for RegisterInputBody.Scope.
+type RegisterInputBodyScope string
+
+// RegisterInputBody1 defines model for RegisterInputBody1.
+type RegisterInputBody1 struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/RegisterInputBody1.json
 	Schema *string `json:"$schema,omitempty"`
 
 	// AccountId 12-digit AWS account ID
@@ -1579,11 +2456,11 @@ type RegisterInputBody struct {
 	RunContext *string `json:"runContext,omitempty"`
 }
 
-// RegisterInputBody1 defines model for RegisterInputBody1.
-type RegisterInputBody1 struct {
+// RegisterInputBody2 defines model for RegisterInputBody2.
+type RegisterInputBody2 struct {
 	// Schema A URL to the JSON Schema for this object.
 	//
-	// Example: https://example.com/schemas/RegisterInputBody1.json
+	// Example: https://example.com/schemas/RegisterInputBody2.json
 	Schema *string `json:"$schema,omitempty"`
 
 	// Checksum expected sha256 (hex) of the plugin artifact
@@ -1599,6 +2476,25 @@ type RegisterInputBody1 struct {
 	Version  string      `json:"version"`
 }
 
+// RegisterUiInputBody defines model for RegisterUiInputBody.
+type RegisterUiInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/RegisterUiInputBody.json
+	Schema             *string             `json:"$schema,omitempty"`
+	Checksum           *string             `json:"checksum,omitempty"`
+	Description        *string             `json:"description,omitempty"`
+	Enabled            *bool               `json:"enabled,omitempty"`
+	Name               string              `json:"name"`
+	RemoteEntry        *string             `json:"remoteEntry,omitempty"`
+	RemoteEntryOci     *string             `json:"remoteEntryOci,omitempty"`
+	RemoteEntryUrl     *string             `json:"remoteEntryUrl,omitempty"`
+	RequiredPermission *string             `json:"requiredPermission,omitempty"`
+	Slots              *[]UiSlotDescriptor `json:"slots,omitempty"`
+	Title              *string             `json:"title,omitempty"`
+	Version            *string             `json:"version,omitempty"`
+}
+
 // RegistrationToken defines model for RegistrationToken.
 type RegistrationToken struct {
 	ClusterId string     `json:"clusterId"`
@@ -1608,6 +2504,22 @@ type RegistrationToken struct {
 	Id        string     `json:"id"`
 	UsedAt    *time.Time `json:"usedAt,omitempty"`
 }
+
+// RepoOutputBody defines model for RepoOutputBody.
+type RepoOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/RepoOutputBody.json
+	Schema            *string            `json:"$schema,omitempty"`
+	GitProviderStatus *GitProviderStatus `json:"gitProviderStatus,omitempty"`
+	Repo              TenantGitRepo      `json:"repo"`
+
+	// WebhookStatus webhook registration state: provisioned (provider hook live), unprovisioned (reconcile sweeper retries; repair via POST .../git-repos/{id}/webhook), disabled (provisioning not configured)
+	WebhookStatus RepoOutputBodyWebhookStatus `json:"webhookStatus"`
+}
+
+// RepoOutputBodyWebhookStatus webhook registration state: provisioned (provider hook live), unprovisioned (reconcile sweeper retries; repair via POST .../git-repos/{id}/webhook), disabled (provisioning not configured)
+type RepoOutputBodyWebhookStatus string
 
 // RequestExemptionInputBody defines model for RequestExemptionInputBody.
 type RequestExemptionInputBody struct {
@@ -1654,6 +2566,17 @@ type ResourceRef struct {
 	Namespace *string `json:"namespace,omitempty"`
 }
 
+// ResourceView defines model for ResourceView.
+type ResourceView struct {
+	Detail    string    `json:"detail"`
+	Id        string    `json:"id"`
+	Kind      string    `json:"kind"`
+	Name      string    `json:"name"`
+	Status    string    `json:"status"`
+	Tenant    string    `json:"tenant"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
 // RetryDeletionOutputBody defines model for RetryDeletionOutputBody.
 type RetryDeletionOutputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -1663,11 +2586,64 @@ type RetryDeletionOutputBody struct {
 	Deletion TenantDeletion `json:"deletion"`
 }
 
+// RetryRunOutputBody defines model for RetryRunOutputBody.
+type RetryRunOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/RetryRunOutputBody.json
+	Schema *string `json:"$schema,omitempty"`
+	Run    RunView `json:"run"`
+}
+
+// Role defines model for Role.
+type Role struct {
+	Builtin     bool      `json:"builtin"`
+	CreatedAt   time.Time `json:"createdAt"`
+	Description string    `json:"description"`
+	DisplayName string    `json:"displayName"`
+	Id          string    `json:"id"`
+	Name        string    `json:"name"`
+	OrgId       string    `json:"orgId"`
+	Permissions *[]string `json:"permissions"`
+	UpdatedAt   time.Time `json:"updatedAt"`
+}
+
+// RoleOutputBody defines model for RoleOutputBody.
+type RoleOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/RoleOutputBody.json
+	Schema *string `json:"$schema,omitempty"`
+	Role   Role    `json:"role"`
+}
+
+// RolePatch defines model for RolePatch.
+type RolePatch struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/RolePatch.json
+	Schema      *string   `json:"$schema,omitempty"`
+	Description *string   `json:"description,omitempty"`
+	DisplayName *string   `json:"displayName,omitempty"`
+	Name        *string   `json:"name,omitempty"`
+	Permissions *[]string `json:"permissions,omitempty"`
+}
+
 // RollbackInputBody defines model for RollbackInputBody.
 type RollbackInputBody struct {
 	// Schema A URL to the JSON Schema for this object.
 	//
 	// Example: https://example.com/schemas/RollbackInputBody.json
+	Schema    *string `json:"$schema,omitempty"`
+	RepoId    *string `json:"repoId,omitempty"`
+	ToVersion string  `json:"toVersion"`
+}
+
+// RollbackInputBody1 defines model for RollbackInputBody1.
+type RollbackInputBody1 struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/RollbackInputBody1.json
 	Schema    *string `json:"$schema,omitempty"`
 	ToVersion string  `json:"toVersion"`
 }
@@ -1733,6 +2709,24 @@ type RolloutTarget struct {
 	UpdatedAt      time.Time `json:"updatedAt"`
 }
 
+// RotateIdentityOutputBody defines model for RotateIdentityOutputBody.
+type RotateIdentityOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/RotateIdentityOutputBody.json
+	Schema      *string              `json:"$schema,omitempty"`
+	Credentials ExtensionCredentials `json:"credentials"`
+}
+
+// RotateProviderSecretInputBody defines model for RotateProviderSecretInputBody.
+type RotateProviderSecretInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/RotateProviderSecretInputBody.json
+	Schema       *string `json:"$schema,omitempty"`
+	ClientSecret string  `json:"clientSecret"`
+}
+
 // RotateSecretOutputBody defines model for RotateSecretOutputBody.
 type RotateSecretOutputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -1744,10 +2738,134 @@ type RotateSecretOutputBody struct {
 	Secret string `json:"secret"`
 }
 
+// RunView defines model for RunView.
+type RunView struct {
+	CreatedAt    time.Time   `json:"createdAt"`
+	CreatedBy    string      `json:"createdBy"`
+	DisplayName  string      `json:"displayName"`
+	Error        *string     `json:"error,omitempty"`
+	Id           string      `json:"id"`
+	Outputs      interface{} `json:"outputs,omitempty"`
+	Phase        string      `json:"phase"`
+	Steps        *[]StepView `json:"steps"`
+	TemplateName string      `json:"templateName"`
+	UpdatedAt    time.Time   `json:"updatedAt"`
+	Version      string      `json:"version"`
+}
+
+// ScaffoldOutputs defines model for ScaffoldOutputs.
+type ScaffoldOutputs struct {
+	CatalogItemId *string `json:"catalogItemId"`
+	PipelineUrl   *string `json:"pipelineUrl"`
+	RepoUrl       *string `json:"repoUrl"`
+}
+
+// ScaffoldView defines model for ScaffoldView.
+type ScaffoldView struct {
+	CreatedAt    time.Time       `json:"createdAt"`
+	Id           string          `json:"id"`
+	Message      *string         `json:"message"`
+	Name         string          `json:"name"`
+	Outputs      ScaffoldOutputs `json:"outputs"`
+	Phase        string          `json:"phase"`
+	TemplateId   string          `json:"templateId"`
+	TemplateName string          `json:"templateName"`
+	Tenant       string          `json:"tenant"`
+}
+
+// SecretRef defines model for SecretRef.
+type SecretRef struct {
+	Name      string `json:"name"`
+	Namespace string `json:"namespace"`
+}
+
+// SecretStore defines model for SecretStore.
+type SecretStore struct {
+	CreatedAt time.Time           `json:"createdAt"`
+	Id        string              `json:"id"`
+	Name      string              `json:"name"`
+	OrgId     string              `json:"orgId"`
+	Provider  SecretStoreProvider `json:"provider"`
+	Scope     string              `json:"scope"`
+	Targets   SecretStoreTargets  `json:"targets"`
+	UpdatedAt time.Time           `json:"updatedAt"`
+}
+
+// SecretStoreCondition defines model for SecretStoreCondition.
+type SecretStoreCondition struct {
+	ClusterId string  `json:"clusterId"`
+	Message   *string `json:"message,omitempty"`
+	Reason    string  `json:"reason"`
+	Status    string  `json:"status"`
+	Type      string  `json:"type"`
+}
+
+// SecretStoreProvider defines model for SecretStoreProvider.
+type SecretStoreProvider struct {
+	AwsSM   *AWSSMProvider   `json:"awsSM,omitempty"`
+	Azurekv *AzureKVProvider `json:"azurekv,omitempty"`
+	Gcpsm   *GCPSMProvider   `json:"gcpsm,omitempty"`
+	Vault   *VaultProvider   `json:"vault,omitempty"`
+}
+
+// SecretStoreStatus defines model for SecretStoreStatus.
+type SecretStoreStatus struct {
+	Conditions *[]SecretStoreCondition `json:"conditions,omitempty"`
+	Delivered  bool                    `json:"delivered"`
+}
+
+// SecretStoreTargets defines model for SecretStoreTargets.
+type SecretStoreTargets struct {
+	ClusterIds    *[]string `json:"clusterIds,omitempty"`
+	ClusterSetRef *string   `json:"clusterSetRef,omitempty"`
+}
+
+// SelfPermissionsOutputBody defines model for SelfPermissionsOutputBody.
+type SelfPermissionsOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/SelfPermissionsOutputBody.json
+	Schema      *string   `json:"$schema,omitempty"`
+	Permissions *[]string `json:"permissions"`
+}
+
 // ServiceScopes defines model for ServiceScopes.
 type ServiceScopes struct {
 	Audience string    `json:"audience"`
 	Scopes   *[]string `json:"scopes"`
+}
+
+// SessionInputBody defines model for SessionInputBody.
+type SessionInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/SessionInputBody.json
+	Schema *string `json:"$schema,omitempty"`
+
+	// ExpiresInSeconds override session TTL (capped); defaults to the token's exp claim or 8h
+	ExpiresInSeconds *int64 `json:"expiresInSeconds,omitempty"`
+
+	// Nonce client-generated replay marker
+	Nonce *string `json:"nonce,omitempty"`
+
+	// SessionMaterial third-party session credential; used for this call only, never echoed
+	SessionMaterial string `json:"sessionMaterial"`
+}
+
+// SessionOutputBody defines model for SessionOutputBody.
+type SessionOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/SessionOutputBody.json
+	Schema  *string       `json:"$schema,omitempty"`
+	Session SessionStruct `json:"session"`
+}
+
+// SessionStruct defines model for SessionStruct.
+type SessionStruct struct {
+	ExpiresAt   *time.Time `json:"expiresAt"`
+	ExtensionId string     `json:"extensionId"`
+	State       string     `json:"state"`
 }
 
 // SetChannelInputBody defines model for SetChannelInputBody.
@@ -1759,6 +2877,60 @@ type SetChannelInputBody struct {
 	DesiredAgentVersion string  `json:"desiredAgentVersion"`
 }
 
+// SetClusterFlagInputBody defines model for SetClusterFlagInputBody.
+type SetClusterFlagInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/SetClusterFlagInputBody.json
+	Schema *string `json:"$schema,omitempty"`
+	Value  bool    `json:"value"`
+}
+
+// SetFlagInputBody defines model for SetFlagInputBody.
+type SetFlagInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/SetFlagInputBody.json
+	Schema *string `json:"$schema,omitempty"`
+	Value  bool    `json:"value"`
+}
+
+// SourceDescriptor defines model for SourceDescriptor.
+type SourceDescriptor struct {
+	Crossplane *XPSource        `json:"crossplane,omitempty"`
+	Helm       *HelmSource      `json:"helm,omitempty"`
+	Kind       string           `json:"kind"`
+	Kro        *KROSource       `json:"kro,omitempty"`
+	Kustomize  *KustomizeSource `json:"kustomize,omitempty"`
+	Manifests  *ManifestSource  `json:"manifests,omitempty"`
+}
+
+// StatusOutputBody defines model for StatusOutputBody.
+type StatusOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/StatusOutputBody.json
+	Schema *string           `json:"$schema,omitempty"`
+	Status SecretStoreStatus `json:"status"`
+}
+
+// StepView defines model for StepView.
+type StepView struct {
+	Attempts int64   `json:"attempts"`
+	Error    *string `json:"error,omitempty"`
+	Name     string  `json:"name"`
+	State    string  `json:"state"`
+}
+
+// StoreOutputBody defines model for StoreOutputBody.
+type StoreOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/StoreOutputBody.json
+	Schema *string     `json:"$schema,omitempty"`
+	Store  SecretStore `json:"store"`
+}
+
 // SyncOutputBody defines model for SyncOutputBody.
 type SyncOutputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -1766,6 +2938,40 @@ type SyncOutputBody struct {
 	// Example: https://example.com/schemas/SyncOutputBody.json
 	Schema *string `json:"$schema,omitempty"`
 	Synced int64   `json:"synced"`
+}
+
+// Target defines model for Target.
+type Target struct {
+	Binding          Binding           `json:"binding"`
+	Capabilities     *[]string         `json:"capabilities"`
+	Config           interface{}       `json:"config"`
+	CreatedAt        time.Time         `json:"createdAt"`
+	EffectiveActions *[]string         `json:"effectiveActions,omitempty"`
+	Enabled          bool              `json:"enabled"`
+	Grants           *[]Grant          `json:"grants,omitempty"`
+	Id               string            `json:"id"`
+	IsDefault        bool              `json:"isDefault"`
+	Name             string            `json:"name"`
+	OrgId            string            `json:"orgId"`
+	Readiness        Readiness         `json:"readiness"`
+	ResourceRef      TargetResourceRef `json:"resourceRef"`
+	Revision         int64             `json:"revision"`
+	UpdatedAt        time.Time         `json:"updatedAt"`
+}
+
+// TargetOutputBody defines model for TargetOutputBody.
+type TargetOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/TargetOutputBody.json
+	Schema *string `json:"$schema,omitempty"`
+	Target Target  `json:"target"`
+}
+
+// TargetResourceRef defines model for TargetResourceRef.
+type TargetResourceRef struct {
+	Id   string `json:"id"`
+	Kind string `json:"kind"`
 }
 
 // TargetsOutputBody defines model for TargetsOutputBody.
@@ -1780,11 +2986,13 @@ type TargetsOutputBody struct {
 // Team defines model for Team.
 type Team struct {
 	CreatedAt         time.Time `json:"createdAt"`
+	DisplayName       string    `json:"displayName"`
 	Id                string    `json:"id"`
 	KeycloakGroupPath string    `json:"keycloakGroupPath"`
 	Name              string    `json:"name"`
 	OrgId             string    `json:"orgId"`
-	Role              string    `json:"role"`
+	RoleId            string    `json:"roleId"`
+	RoleName          string    `json:"roleName"`
 }
 
 // TeamOutputBody defines model for TeamOutputBody.
@@ -1798,16 +3006,50 @@ type TeamOutputBody struct {
 
 // TeamRoleChange defines model for TeamRoleChange.
 type TeamRoleChange struct {
-	Name    string `json:"name"`
-	NewRole string `json:"newRole"`
-	OldRole string `json:"oldRole"`
-	TeamId  string `json:"teamId"`
+	Name           string    `json:"name"`
+	NewPermissions *[]string `json:"newPermissions"`
+	NewRoleId      string    `json:"newRoleId"`
+	OldPermissions *[]string `json:"oldPermissions"`
+	OldRoleId      string    `json:"oldRoleId"`
+	TeamId         string    `json:"teamId"`
 }
 
 // TeamRoleMapping defines model for TeamRoleMapping.
 type TeamRoleMapping struct {
-	Role string `json:"role"`
-	Team string `json:"team"`
+	RoleId string `json:"roleId"`
+	Team   string `json:"team"`
+}
+
+// TemplateDetail defines model for TemplateDetail.
+type TemplateDetail struct {
+	Description string      `json:"description"`
+	DisplayName string      `json:"displayName"`
+	Id          string      `json:"id"`
+	Kind        *string     `json:"kind,omitempty"`
+	Name        string      `json:"name"`
+	Schema      interface{} `json:"schema,omitempty"`
+	Tags        *[]string   `json:"tags,omitempty"`
+	UiSchema    interface{} `json:"uiSchema,omitempty"`
+	Version     string      `json:"version"`
+}
+
+// TemplateSummary defines model for TemplateSummary.
+type TemplateSummary struct {
+	Description string    `json:"description"`
+	DisplayName string    `json:"displayName"`
+	Id          string    `json:"id"`
+	Kind        *string   `json:"kind,omitempty"`
+	Name        string    `json:"name"`
+	Tags        *[]string `json:"tags,omitempty"`
+	Version     string    `json:"version"`
+}
+
+// TenantCapabilities defines model for TenantCapabilities.
+type TenantCapabilities struct {
+	CanDeploy        bool `json:"canDeploy"`
+	CanManageMembers bool `json:"canManageMembers"`
+	CanManageRbac    bool `json:"canManageRbac"`
+	CanManageTeams   bool `json:"canManageTeams"`
 }
 
 // TenantDeletion defines model for TenantDeletion.
@@ -1826,12 +3068,31 @@ type TenantDeletion struct {
 
 // TenantGitConfig defines model for TenantGitConfig.
 type TenantGitConfig struct {
-	BaseBranch     string           `json:"baseBranch"`
-	CommitPolicy   string           `json:"commitPolicy"`
-	GithubApp      *GitHubAppConfig `json:"githubApp,omitempty"`
-	OrgId          string           `json:"orgId"`
-	Repo           string           `json:"repo"`
-	ScaffoldGitOrg *string          `json:"scaffoldGitOrg,omitempty"`
+	BaseBranch           string           `json:"baseBranch"`
+	CommitPolicy         string           `json:"commitPolicy"`
+	GithubApp            *GitHubAppConfig `json:"githubApp,omitempty"`
+	OrgId                string           `json:"orgId"`
+	Repo                 string           `json:"repo"`
+	ScaffoldGitOrg       *string          `json:"scaffoldGitOrg,omitempty"`
+	UserTemplateFallback *string          `json:"userTemplateFallback,omitempty"`
+}
+
+// TenantGitRepo defines model for TenantGitRepo.
+type TenantGitRepo struct {
+	BaseBranch   string           `json:"baseBranch"`
+	CommitPolicy string           `json:"commitPolicy"`
+	CreatedAt    time.Time        `json:"createdAt"`
+	GithubApp    *GitHubAppConfig `json:"githubApp,omitempty"`
+	Id           string           `json:"id"`
+	IsDefault    bool             `json:"isDefault"`
+	Name         string           `json:"name"`
+	OrgId        string           `json:"orgId"`
+	Provider     string           `json:"provider"`
+	Repo         string           `json:"repo"`
+	Scope        string           `json:"scope"`
+	TeamId       *string          `json:"teamId,omitempty"`
+	UpdatedAt    time.Time        `json:"updatedAt"`
+	WebhookUrl   *string          `json:"webhookUrl,omitempty"`
 }
 
 // TenantOutputBody defines model for TenantOutputBody.
@@ -1902,6 +3163,77 @@ type TokenOutputBody struct {
 	Token string `json:"token"`
 }
 
+// UiAuditEvent defines model for UiAuditEvent.
+type UiAuditEvent struct {
+	Action     string `json:"action"`
+	Actor      string `json:"actor"`
+	At         string `json:"at"`
+	Detail     string `json:"detail"`
+	Id         string `json:"id"`
+	ObjectName string `json:"objectName"`
+	ObjectType string `json:"objectType"`
+	Tenant     string `json:"tenant"`
+}
+
+// UiExtensionDescriptor defines model for UiExtensionDescriptor.
+type UiExtensionDescriptor struct {
+	Checksum           *string             `json:"checksum,omitempty"`
+	Description        *string             `json:"description,omitempty"`
+	Enabled            bool                `json:"enabled"`
+	RemoteEntry        *string             `json:"remoteEntry,omitempty"`
+	RemoteEntryOci     *string             `json:"remoteEntryOci,omitempty"`
+	RequiredPermission *string             `json:"requiredPermission,omitempty"`
+	Slots              *[]UiSlotDescriptor `json:"slots"`
+	Title              *string             `json:"title,omitempty"`
+}
+
+// UiExtensionOutputBody defines model for UiExtensionOutputBody.
+type UiExtensionOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/UiExtensionOutputBody.json
+	Schema    *string           `json:"$schema,omitempty"`
+	Extension UiExtensionRemote `json:"extension"`
+}
+
+// UiExtensionRemote defines model for UiExtensionRemote.
+type UiExtensionRemote struct {
+	Description        *string             `json:"description,omitempty"`
+	Enabled            bool                `json:"enabled"`
+	Name               string              `json:"name"`
+	RemoteEntryUrl     string              `json:"remoteEntryUrl"`
+	RequiredPermission *string             `json:"requiredPermission,omitempty"`
+	Slots              *[]UiSlotDescriptor `json:"slots"`
+	Title              *string             `json:"title,omitempty"`
+	Version            string              `json:"version"`
+}
+
+// UiSlotDescriptor defines model for UiSlotDescriptor.
+type UiSlotDescriptor struct {
+	Kind string `json:"kind"`
+	Name string `json:"name"`
+}
+
+// UnregisterOutputBody defines model for UnregisterOutputBody.
+type UnregisterOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/UnregisterOutputBody.json
+	Schema       *string `json:"$schema,omitempty"`
+	Mode         *string `json:"mode,omitempty"`
+	Unregistered bool    `json:"unregistered"`
+}
+
+// UpdateAddonInputBody defines model for UpdateAddonInputBody.
+type UpdateAddonInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/UpdateAddonInputBody.json
+	Schema       *string     `json:"$schema,omitempty"`
+	ChartVersion *string     `json:"chartVersion,omitempty"`
+	Values       interface{} `json:"values,omitempty"`
+}
+
 // UpdateBrokeredIdPInputBody defines model for UpdateBrokeredIdPInputBody.
 type UpdateBrokeredIdPInputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -1943,12 +3275,63 @@ type UpdateInputBody struct {
 	// Schema A URL to the JSON Schema for this object.
 	//
 	// Example: https://example.com/schemas/UpdateInputBody.json
+	Schema       *string                      `json:"$schema,omitempty"`
+	BaseBranch   *string                      `json:"baseBranch,omitempty"`
+	CommitPolicy *UpdateInputBodyCommitPolicy `json:"commitPolicy,omitempty"`
+
+	// IsDefault true promotes (demoting the old default); false is rejected
+	IsDefault *bool   `json:"isDefault,omitempty"`
+	Name      *string `json:"name,omitempty"`
+	TeamId    *string `json:"teamId,omitempty"`
+}
+
+// UpdateInputBodyCommitPolicy defines model for UpdateInputBody.CommitPolicy.
+type UpdateInputBodyCommitPolicy string
+
+// UpdateInputBody1 defines model for UpdateInputBody1.
+type UpdateInputBody1 struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/UpdateInputBody1.json
+	Schema    *string     `json:"$schema,omitempty"`
+	Config    interface{} `json:"config,omitempty"`
+	Enabled   *bool       `json:"enabled,omitempty"`
+	IsDefault *bool       `json:"isDefault,omitempty"`
+	Name      *string     `json:"name,omitempty"`
+	Revision  int64       `json:"revision"`
+}
+
+// UpdateInputBody2 defines model for UpdateInputBody2.
+type UpdateInputBody2 struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/UpdateInputBody2.json
 	Schema  *string   `json:"$schema,omitempty"`
 	Enabled *bool     `json:"enabled,omitempty"`
 	Events  *[]string `json:"events,omitempty"`
 	Name    *string   `json:"name,omitempty"`
 	Secret  *string   `json:"secret,omitempty"`
 	Url     *string   `json:"url,omitempty"`
+}
+
+// UpdateInputBody3 defines model for UpdateInputBody3.
+type UpdateInputBody3 struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/UpdateInputBody3.json
+	Schema   *string              `json:"$schema,omitempty"`
+	Provider *SecretStoreProvider `json:"provider,omitempty"`
+	Targets  *SecretStoreTargets  `json:"targets,omitempty"`
+}
+
+// UpdateInstanceInputBody defines model for UpdateInstanceInputBody.
+type UpdateInstanceInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/UpdateInstanceInputBody.json
+	Schema *string     `json:"$schema,omitempty"`
+	RepoId *string     `json:"repoId,omitempty"`
+	Spec   interface{} `json:"spec"`
 }
 
 // UpdatePolicyInputBody defines model for UpdatePolicyInputBody.
@@ -1958,7 +3341,24 @@ type UpdatePolicyInputBody struct {
 	// Example: https://example.com/schemas/UpdatePolicyInputBody.json
 	Schema  *string `json:"$schema,omitempty"`
 	Enabled bool    `json:"enabled"`
-	Source  string  `json:"source"`
+
+	// Name New policy name (empty keeps the current name; 409 on conflict)
+	Name   *string `json:"name,omitempty"`
+	Source string  `json:"source"`
+
+	// Target request | render (empty keeps the current target)
+	Target *string `json:"target,omitempty"`
+}
+
+// UpdateTeamInputBody defines model for UpdateTeamInputBody.
+type UpdateTeamInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/UpdateTeamInputBody.json
+	Schema *string `json:"$schema,omitempty"`
+
+	// DisplayName Human-friendly display name (name and Keycloak group path stay immutable)
+	DisplayName string `json:"displayName"`
 }
 
 // UpdateTenantInputBody defines model for UpdateTenantInputBody.
@@ -1976,7 +3376,15 @@ type UpgradeInputBody struct {
 	//
 	// Example: https://example.com/schemas/UpgradeInputBody.json
 	Schema    *string `json:"$schema,omitempty"`
+	RepoId    *string `json:"repoId,omitempty"`
 	ToVersion string  `json:"toVersion"`
+}
+
+// VaultProvider defines model for VaultProvider.
+type VaultProvider struct {
+	AuthSecretRef SecretRef `json:"authSecretRef"`
+	Path          *string   `json:"path,omitempty"`
+	Server        string    `json:"server"`
 }
 
 // VisibilityInputBody defines model for VisibilityInputBody.
@@ -1986,6 +3394,21 @@ type VisibilityInputBody struct {
 	// Example: https://example.com/schemas/VisibilityInputBody.json
 	Schema *string `json:"$schema,omitempty"`
 	Rules  *[]Item `json:"rules"`
+}
+
+// WebhookOutputBody defines model for WebhookOutputBody.
+type WebhookOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/WebhookOutputBody.json
+	Schema      *string `json:"$schema,omitempty"`
+	HookUrl     *string `json:"hookUrl,omitempty"`
+	Provisioned bool    `json:"provisioned"`
+}
+
+// XPSource defines model for XPSource.
+type XPSource struct {
+	Manifests interface{} `json:"manifests,omitempty"`
 }
 
 // InboxApprovalsParams defines parameters for InboxApprovals.
@@ -2003,11 +3426,67 @@ type ListApprovalsParams struct {
 	Requester *string `form:"requester,omitempty" json:"requester,omitempty"`
 }
 
+// ListAuditLogParams defines parameters for ListAuditLog.
+type ListAuditLogParams struct {
+	Actor      *string `form:"actor,omitempty" json:"actor,omitempty"`
+	Action     *string `form:"action,omitempty" json:"action,omitempty"`
+	ObjectType *string `form:"objectType,omitempty" json:"objectType,omitempty"`
+	From       *string `form:"from,omitempty" json:"from,omitempty"`
+	To         *string `form:"to,omitempty" json:"to,omitempty"`
+	Limit      *int64  `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// ListAuditEventsParams defines parameters for ListAuditEvents.
+type ListAuditEventsParams struct {
+	// Action Exact action filter, e.g. cluster.created
+	Action *string `form:"action,omitempty" json:"action,omitempty"`
+
+	// Actor Exact actor (subject) filter
+	Actor *string `form:"actor,omitempty" json:"actor,omitempty"`
+
+	// Limit Max events to return (default 100, max 500)
+	Limit *int64 `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
+// ExportAuditLogParams defines parameters for ExportAuditLog.
+type ExportAuditLogParams struct {
+	Actor      *string `form:"actor,omitempty" json:"actor,omitempty"`
+	Action     *string `form:"action,omitempty" json:"action,omitempty"`
+	ObjectType *string `form:"objectType,omitempty" json:"objectType,omitempty"`
+	From       *string `form:"from,omitempty" json:"from,omitempty"`
+	To         *string `form:"to,omitempty" json:"to,omitempty"`
+	Limit      *int64  `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
 // ListCatalogParams defines parameters for ListCatalog.
 type ListCatalogParams struct {
 	// Cluster Cluster ID; intersects discovered capabilities
 	Cluster *string `form:"cluster,omitempty" json:"cluster,omitempty"`
+
+	// Q Free-text search over name, display name, and description
+	Q *string `form:"q,omitempty" json:"q,omitempty"`
+
+	// Source Filter by item source
+	Source *ListCatalogParamsSource `form:"source,omitempty" json:"source,omitempty"`
+
+	// Category Filter by package category (discovered projections have no category)
+	Category *string `form:"category,omitempty" json:"category,omitempty"`
+
+	// Sort Sort order (whitelisted server-side)
+	Sort *ListCatalogParamsSort `form:"sort,omitempty" json:"sort,omitempty"`
+
+	// Limit Page size; 0 returns all matches
+	Limit *int64 `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Offset Page offset into the filtered, sorted result
+	Offset *int64 `form:"offset,omitempty" json:"offset,omitempty"`
 }
+
+// ListCatalogParamsSource defines parameters for ListCatalog.
+type ListCatalogParamsSource string
+
+// ListCatalogParamsSort defines parameters for ListCatalog.
+type ListCatalogParamsSort string
 
 // GetCatalogItemParams defines parameters for GetCatalogItem.
 type GetCatalogItemParams struct {
@@ -2027,10 +3506,13 @@ type RenderCloudAccountProviderConfigParams struct {
 
 // GetClusterKubeconfigParams defines parameters for GetClusterKubeconfig.
 type GetClusterKubeconfigParams struct {
-	Mode      *GetClusterKubeconfigParamsMode      `form:"mode,omitempty" json:"mode,omitempty"`
+	// Mode gateway points at inari-kubeproxy; direct needs a server URL
+	Mode *GetClusterKubeconfigParamsMode `form:"mode,omitempty" json:"mode,omitempty"`
+
+	// GrantType kubelogin login flow
 	GrantType *GetClusterKubeconfigParamsGrantType `form:"grantType,omitempty" json:"grantType,omitempty"`
 
-	// Server Apiserver URL for direct mode (adds a direct context).
+	// Server Apiserver URL for direct mode
 	Server *string `form:"server,omitempty" json:"server,omitempty"`
 }
 
@@ -2046,6 +3528,33 @@ type ListDriftParams struct {
 	Status    *string `form:"status,omitempty" json:"status,omitempty"`
 }
 
+// AuthorizeGitConnectionGetParams defines parameters for AuthorizeGitConnectionGet.
+type AuthorizeGitConnectionGetParams struct {
+	Accept *string `json:"Accept,omitempty"`
+}
+
+// AuthorizeGitConnectionParams defines parameters for AuthorizeGitConnection.
+type AuthorizeGitConnectionParams struct {
+	Accept *string `json:"Accept,omitempty"`
+}
+
+// GitConnectionCallbackParams defines parameters for GitConnectionCallback.
+type GitConnectionCallbackParams struct {
+	Code  *string `form:"code,omitempty" json:"code,omitempty"`
+	State *string `form:"state,omitempty" json:"state,omitempty"`
+}
+
+// UnregisterGitRepoParams defines parameters for UnregisterGitRepo.
+type UnregisterGitRepoParams struct {
+	Force *bool `form:"force,omitempty" json:"force,omitempty"`
+
+	// Mode required with force=true
+	Mode *UnregisterGitRepoParamsMode `form:"mode,omitempty" json:"mode,omitempty"`
+}
+
+// UnregisterGitRepoParamsMode defines parameters for UnregisterGitRepo.
+type UnregisterGitRepoParamsMode string
+
 // ListInstancesParams defines parameters for ListInstances.
 type ListInstancesParams struct {
 	Cluster   *string `form:"cluster,omitempty" json:"cluster,omitempty"`
@@ -2060,19 +3569,57 @@ type InstanceDiffParams struct {
 	To string `form:"to" json:"to"`
 }
 
+// ListOrgMembersParams defines parameters for ListOrgMembers.
+type ListOrgMembersParams struct {
+	// Q Case-insensitive email substring filter
+	Q *string `form:"q,omitempty" json:"q,omitempty"`
+}
+
 // DeletePolicyPackParams defines parameters for DeletePolicyPack.
 type DeletePolicyPackParams struct {
 	// Force cascade-unassign active assignments before deleting
 	Force *bool `form:"force,omitempty" json:"force,omitempty"`
 }
 
+// ListResourceTargetsParams defines parameters for ListResourceTargets.
+type ListResourceTargetsParams struct {
+	Capability         *string                          `form:"capability,omitempty" json:"capability,omitempty"`
+	Action             *ListResourceTargetsParamsAction `form:"action,omitempty" json:"action,omitempty"`
+	ResourceKind       *string                          `form:"resourceKind,omitempty" json:"resourceKind,omitempty"`
+	ResourceId         *string                          `form:"resourceId,omitempty" json:"resourceId,omitempty"`
+	IncludeUnavailable *bool                            `form:"includeUnavailable,omitempty" json:"includeUnavailable,omitempty"`
+}
+
+// ListResourceTargetsParamsAction defines parameters for ListResourceTargets.
+type ListResourceTargetsParamsAction string
+
 // ListRolloutTargetsParams defines parameters for ListRolloutTargets.
 type ListRolloutTargetsParams struct {
 	Stage *int64 `form:"stage,omitempty" json:"stage,omitempty"`
 }
 
+// ListMembersParams defines parameters for ListMembers.
+type ListMembersParams struct {
+	// Q Case-insensitive email substring filter
+	Q *string `form:"q,omitempty" json:"q,omitempty"`
+}
+
+// GitWebhookIngressJSONBody defines parameters for GitWebhookIngress.
+type GitWebhookIngressJSONBody = openapi_types.File
+
+// GitWebhookIngressParams defines parameters for GitWebhookIngress.
+type GitWebhookIngressParams struct {
+	XHubSignature256 *string `json:"X-Hub-Signature-256,omitempty"`
+	XGitHubEvent     *string `json:"X-GitHub-Event,omitempty"`
+	XGitlabToken     *string `json:"X-Gitlab-Token,omitempty"`
+	XGitlabEvent     *string `json:"X-Gitlab-Event,omitempty"`
+}
+
 // SetCatalogVisibilityJSONRequestBody defines body for SetCatalogVisibility for application/json ContentType.
 type SetCatalogVisibilityJSONRequestBody = VisibilityInputBody
+
+// SetPlatformFeatureFlagJSONRequestBody defines body for SetPlatformFeatureFlag for application/json ContentType.
+type SetPlatformFeatureFlagJSONRequestBody = SetFlagInputBody
 
 // CreateTenantJSONRequestBody defines body for CreateTenant for application/json ContentType.
 type CreateTenantJSONRequestBody = CreateTenantInputBody
@@ -2082,6 +3629,9 @@ type DeleteTenantJSONRequestBody = DeleteTenantInputBody
 
 // UpdateTenantJSONRequestBody defines body for UpdateTenant for application/json ContentType.
 type UpdateTenantJSONRequestBody = UpdateTenantInputBody
+
+// UpdateAddonJSONRequestBody defines body for UpdateAddon for application/json ContentType.
+type UpdateAddonJSONRequestBody = UpdateAddonInputBody
 
 // UpdateApprovalConfigJSONRequestBody defines body for UpdateApprovalConfig for application/json ContentType.
 type UpdateApprovalConfigJSONRequestBody = UpdateConfigInputBody
@@ -2108,7 +3658,7 @@ type SetCatalogOrgVisibilityJSONRequestBody = OrgVisibilityInputBody
 type PinCatalogVersionJSONRequestBody = PinInputBody
 
 // RegisterCloudAccountJSONRequestBody defines body for RegisterCloudAccount for application/json ContentType.
-type RegisterCloudAccountJSONRequestBody = RegisterInputBody
+type RegisterCloudAccountJSONRequestBody = RegisterInputBody1
 
 // CreateClusterSetJSONRequestBody defines body for CreateClusterSet for application/json ContentType.
 type CreateClusterSetJSONRequestBody = CreateClusterSetInputBody
@@ -2119,8 +3669,17 @@ type SetAgentChannelJSONRequestBody = SetChannelInputBody
 // CreateClusterJSONRequestBody defines body for CreateCluster for application/json ContentType.
 type CreateClusterJSONRequestBody = CreateClusterInputBody
 
+// AdoptAddonJSONRequestBody defines body for AdoptAddon for application/json ContentType.
+type AdoptAddonJSONRequestBody = AdoptInputBody
+
 // DecommissionClusterJSONRequestBody defines body for DecommissionCluster for application/json ContentType.
 type DecommissionClusterJSONRequestBody = DecommissionInputBody
+
+// SetClusterFeatureFlagJSONRequestBody defines body for SetClusterFeatureFlag for application/json ContentType.
+type SetClusterFeatureFlagJSONRequestBody = SetClusterFlagInputBody
+
+// RebindClusterBaselineJSONRequestBody defines body for RebindClusterBaseline for application/json ContentType.
+type RebindClusterBaselineJSONRequestBody = RebindBaselineInputBody
 
 // DeployCatalogItemJSONRequestBody defines body for DeployCatalogItem for application/json ContentType.
 type DeployCatalogItemJSONRequestBody = DeployInputBody
@@ -2132,10 +3691,25 @@ type RequestExemptionJSONRequestBody = RequestExemptionInputBody
 type DecideExemptionJSONRequestBody = DecideExemptionInputBody
 
 // RegisterExtensionJSONRequestBody defines body for RegisterExtension for application/json ContentType.
-type RegisterExtensionJSONRequestBody = RegisterInputBody1
+type RegisterExtensionJSONRequestBody = RegisterInputBody2
+
+// RegisterUiExtensionJSONRequestBody defines body for RegisterUiExtension for application/json ContentType.
+type RegisterUiExtensionJSONRequestBody = RegisterUiInputBody
+
+// PutExtensionSessionJSONRequestBody defines body for PutExtensionSession for application/json ContentType.
+type PutExtensionSessionJSONRequestBody = SessionInputBody
 
 // SetTenantGitConfigJSONRequestBody defines body for SetTenantGitConfig for application/json ContentType.
 type SetTenantGitConfigJSONRequestBody = GitConfigInputBody
+
+// AuthorizeGitConnectionJSONRequestBody defines body for AuthorizeGitConnection for application/json ContentType.
+type AuthorizeGitConnectionJSONRequestBody = AuthorizeInputBody
+
+// RegisterGitRepoJSONRequestBody defines body for RegisterGitRepo for application/json ContentType.
+type RegisterGitRepoJSONRequestBody = RegisterInputBody
+
+// UpdateGitRepoJSONRequestBody defines body for UpdateGitRepo for application/json ContentType.
+type UpdateGitRepoJSONRequestBody = UpdateInputBody
 
 // CreateIdentityClientJSONRequestBody defines body for CreateIdentityClient for application/json ContentType.
 type CreateIdentityClientJSONRequestBody = CreateIdentityClientInputBody
@@ -2146,11 +3720,26 @@ type UpdateIdentityClientJSONRequestBody = UpdateIdentityClientInputBody
 // PutIdentityClientScopesJSONRequestBody defines body for PutIdentityClientScopes for application/json ContentType.
 type PutIdentityClientScopesJSONRequestBody = PutClientScopesInputBody
 
+// PutIdentityProviderCompatJSONRequestBody defines body for PutIdentityProviderCompat for application/json ContentType.
+type PutIdentityProviderCompatJSONRequestBody = PutProviderCompatInputBody
+
+// PutProviderDomainsCompatJSONRequestBody defines body for PutProviderDomainsCompat for application/json ContentType.
+type PutProviderDomainsCompatJSONRequestBody = PutProviderDomainsInputBody
+
+// RotateProviderSecretCompatJSONRequestBody defines body for RotateProviderSecretCompat for application/json ContentType.
+type RotateProviderSecretCompatJSONRequestBody = RotateProviderSecretInputBody
+
 // CreateIdentityProviderJSONRequestBody defines body for CreateIdentityProvider for application/json ContentType.
 type CreateIdentityProviderJSONRequestBody = CreateBrokeredIdPInputBody
 
 // UpdateIdentityProviderJSONRequestBody defines body for UpdateIdentityProvider for application/json ContentType.
 type UpdateIdentityProviderJSONRequestBody = UpdateBrokeredIdPInputBody
+
+// UpdateInstanceJSONRequestBody defines body for UpdateInstance for application/json ContentType.
+type UpdateInstanceJSONRequestBody = UpdateInstanceInputBody
+
+// RollbackInstanceJSONRequestBody defines body for RollbackInstance for application/json ContentType.
+type RollbackInstanceJSONRequestBody = RollbackInputBody
 
 // UpgradeInstanceJSONRequestBody defines body for UpgradeInstance for application/json ContentType.
 type UpgradeInstanceJSONRequestBody = UpgradeInputBody
@@ -2159,10 +3748,10 @@ type UpgradeInstanceJSONRequestBody = UpgradeInputBody
 type SetMemberRoleJSONRequestBody = PutMemberInputBody
 
 // CreateNotificationEndpointJSONRequestBody defines body for CreateNotificationEndpoint for application/json ContentType.
-type CreateNotificationEndpointJSONRequestBody = CreateInputBody
+type CreateNotificationEndpointJSONRequestBody = CreateInputBody1
 
 // UpdateNotificationEndpointJSONRequestBody defines body for UpdateNotificationEndpoint for application/json ContentType.
-type UpdateNotificationEndpointJSONRequestBody = UpdateInputBody
+type UpdateNotificationEndpointJSONRequestBody = UpdateInputBody2
 
 // CreatePolicyJSONRequestBody defines body for CreatePolicy for application/json ContentType.
 type CreatePolicyJSONRequestBody = CreatePolicyInputBody
@@ -2182,20 +3771,53 @@ type AssignPolicyPackJSONRequestBody = AssignPackInputBody
 // PutRBACMappingsJSONRequestBody defines body for PutRBACMappings for application/json ContentType.
 type PutRBACMappingsJSONRequestBody = PutRBACMappingsInputBody
 
+// RegisterResourceTargetJSONRequestBody defines body for RegisterResourceTarget for application/json ContentType.
+type RegisterResourceTargetJSONRequestBody = CreateInputBody
+
+// UpdateResourceTargetJSONRequestBody defines body for UpdateResourceTarget for application/json ContentType.
+type UpdateResourceTargetJSONRequestBody = UpdateInputBody1
+
+// SetResourceTargetGrantJSONRequestBody defines body for SetResourceTargetGrant for application/json ContentType.
+type SetResourceTargetGrantJSONRequestBody = GrantInputBody
+
+// CreateRoleJSONRequestBody defines body for CreateRole for application/json ContentType.
+type CreateRoleJSONRequestBody = CreateRoleInputBody
+
+// UpdateRoleJSONRequestBody defines body for UpdateRole for application/json ContentType.
+type UpdateRoleJSONRequestBody = RolePatch
+
 // CreateRolloutJSONRequestBody defines body for CreateRollout for application/json ContentType.
 type CreateRolloutJSONRequestBody = CreateRolloutInputBody
 
 // RollbackRolloutJSONRequestBody defines body for RollbackRollout for application/json ContentType.
-type RollbackRolloutJSONRequestBody = RollbackInputBody
+type RollbackRolloutJSONRequestBody = RollbackInputBody1
+
+// CreateScaffoldJSONRequestBody defines body for CreateScaffold for application/json ContentType.
+type CreateScaffoldJSONRequestBody = CreateScaffoldInputBody
+
+// CreateSecretStoreJSONRequestBody defines body for CreateSecretStore for application/json ContentType.
+type CreateSecretStoreJSONRequestBody = CreateInputBody2
+
+// UpdateSecretStoreJSONRequestBody defines body for UpdateSecretStore for application/json ContentType.
+type UpdateSecretStoreJSONRequestBody = UpdateInputBody3
 
 // CreateTeamJSONRequestBody defines body for CreateTeam for application/json ContentType.
 type CreateTeamJSONRequestBody = CreateTeamInputBody
 
+// UpdateTeamJSONRequestBody defines body for UpdateTeam for application/json ContentType.
+type UpdateTeamJSONRequestBody = UpdateTeamInputBody
+
 // AddMemberJSONRequestBody defines body for AddMember for application/json ContentType.
 type AddMemberJSONRequestBody = AddMemberInputBody
 
+// CreateScaffoldRunJSONRequestBody defines body for CreateScaffoldRun for application/json ContentType.
+type CreateScaffoldRunJSONRequestBody = CreateRunInputBody
+
 // RequestTenantZoneJSONRequestBody defines body for RequestTenantZone for application/json ContentType.
 type RequestTenantZoneJSONRequestBody = RequestZoneInputBody
+
+// GitWebhookIngressJSONRequestBody defines body for GitWebhookIngress for application/json ContentType.
+type GitWebhookIngressJSONRequestBody = GitWebhookIngressJSONBody
 
 // RequestEditorFn is the function signature for the RequestEditor callback function
 type RequestEditorFn func(ctx context.Context, req *http.Request) error
@@ -2295,6 +3917,50 @@ type ClientInterface interface {
 	// Corresponds with GET /api/v1/approvals/inbox (the `InboxApprovals` operationId).
 	InboxApprovals(ctx context.Context, params *InboxApprovalsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetMyPermissions Platform-level permissions of the authenticated caller
+	//
+	// Corresponds with GET /api/v1/me/permissions (the `GetMyPermissions` operationId).
+	GetMyPermissions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListPlatformAdmins List platform admins (members of the Keycloak platform admin group)
+	//
+	// Corresponds with GET /api/v1/platform/admins (the `ListPlatformAdmins` operationId).
+	ListPlatformAdmins(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RevokePlatformAdmin Revoke platform admin (leaves the platform admin group; idempotent)
+	//
+	// Corresponds with DELETE /api/v1/platform/admins/{subject} (the `RevokePlatformAdmin` operationId).
+	RevokePlatformAdmin(ctx context.Context, subject string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GrantPlatformAdmin Grant platform admin (joins the platform admin group; org_creator tuple converges via PlatformGroupSync)
+	//
+	// Corresponds with PUT /api/v1/platform/admins/{subject} (the `GrantPlatformAdmin` operationId).
+	GrantPlatformAdmin(ctx context.Context, subject string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListPlatformFeatureFlags List the runtime feature-flag catalog with platform effective values
+	//
+	// Corresponds with GET /api/v1/platform/feature-flags (the `ListPlatformFeatureFlags` operationId).
+	ListPlatformFeatureFlags(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ClearPlatformFeatureFlag Revert a platform-scoped feature flag to its built-in default
+	//
+	// Corresponds with DELETE /api/v1/platform/feature-flags/{key} (the `ClearPlatformFeatureFlag` operationId).
+	ClearPlatformFeatureFlag(ctx context.Context, key string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetPlatformFeatureFlagWithBody Set a platform-scoped feature-flag value
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /api/v1/platform/feature-flags/{key} (the `SetPlatformFeatureFlag` operationId).
+	SetPlatformFeatureFlagWithBody(ctx context.Context, key string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetPlatformFeatureFlag Set a platform-scoped feature-flag value
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /api/v1/platform/feature-flags/{key} (the `SetPlatformFeatureFlag` operationId).
+	SetPlatformFeatureFlag(ctx context.Context, key string, body SetPlatformFeatureFlagJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListTenants List tenants visible to the caller (tenant switcher)
 	//
 	// Corresponds with GET /api/v1/tenants (the `ListTenants` operationId).
@@ -2346,6 +4012,30 @@ type ClientInterface interface {
 	//
 	// Corresponds with PATCH /api/v1/tenants/{org} (the `UpdateTenant` operationId).
 	UpdateTenant(ctx context.Context, org string, body UpdateTenantJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteAddon Orphan an addon: stop managing it (row removed; git files and the ArgoCD app keep running)
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/addons/{id} (the `DeleteAddon` operationId).
+	DeleteAddon(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateAddonWithBody Update a managed addon's chart version and/or values (commit per repo policy)
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/addons/{id} (the `UpdateAddon` operationId).
+	UpdateAddonWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateAddon Update a managed addon's chart version and/or values (commit per repo policy)
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/addons/{id} (the `UpdateAddon` operationId).
+	UpdateAddon(ctx context.Context, org string, id string, body UpdateAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// EnableAddonPrune Explicitly enable prune on an adopted addon (audit-logged, one-directional)
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/addons/{id}/enable-prune (the `EnableAddonPrune` operationId).
+	EnableAddonPrune(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListAgentChannels List agent channel pins
 	//
@@ -2399,6 +4089,26 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /api/v1/tenants/{org}/approvals/{id}/decide (the `DecideApproval` operationId).
 	DecideApproval(ctx context.Context, org string, id string, body DecideApprovalJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListAuditLog Org audit log in the console's shape (filterable by actor/action/objectType/from/to)
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/audit (the `ListAuditLog` operationId).
+	ListAuditLog(ctx context.Context, org string, params *ListAuditLogParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListAuditEvents List org audit events, newest first (filterable by action and actor)
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/audit-events (the `ListAuditEvents` operationId).
+	ListAuditEvents(ctx context.Context, org string, params *ListAuditEventsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ExportAuditLog Org audit log as CSV (same filters as the list)
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/audit/export (the `ExportAuditLog` operationId).
+	ExportAuditLog(ctx context.Context, org string, params *ExportAuditLogParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SelfExtensionPermissions List the caller's effective extension invoke permissions
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/authz/self/extensions (the `SelfExtensionPermissions` operationId).
+	SelfExtensionPermissions(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// BulkDecideApprovalsWithBody Bulk approve/reject approvals
 	//
@@ -2610,6 +4320,25 @@ type ClientInterface interface {
 	// Corresponds with POST /api/v1/tenants/{org}/clusters (the `CreateCluster` operationId).
 	CreateCluster(ctx context.Context, org string, body CreateClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListClusterAddons List discovered + managed addons for a cluster (team-filtered, with available versions)
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/clusters/{clusterId}/addons (the `ListClusterAddons` operationId).
+	ListClusterAddons(ctx context.Context, org string, clusterId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AdoptAddonWithBody Adopt a (discovered or declared) addon into GitOps management
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/clusters/{clusterId}/addons/{catalogItem}/adopt (the `AdoptAddon` operationId).
+	AdoptAddonWithBody(ctx context.Context, org string, clusterId string, catalogItem string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AdoptAddon Adopt a (discovered or declared) addon into GitOps management
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/clusters/{clusterId}/addons/{catalogItem}/adopt (the `AdoptAddon` operationId).
+	AdoptAddon(ctx context.Context, org string, clusterId string, catalogItem string, body AdoptAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// DeleteCluster Cancel a pending cluster registration (409 once registered)
 	//
 	// Corresponds with DELETE /api/v1/tenants/{org}/clusters/{id} (the `DeleteCluster` operationId).
@@ -2654,15 +4383,48 @@ type ClientInterface interface {
 	// Corresponds with POST /api/v1/tenants/{org}/clusters/{id}/decommission (the `DecommissionCluster` operationId).
 	DecommissionCluster(ctx context.Context, org string, id string, body DecommissionClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// RenderInstallManifest Render the agent install manifest embedding a fresh registration token
+	// ListClusterFeatureFlags List the feature-flag catalog with per-cluster effective values
 	//
-	// Corresponds with POST /api/v1/tenants/{org}/clusters/{id}/install-manifest (the `RenderInstallManifest` operationId).
-	RenderInstallManifest(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// Corresponds with GET /api/v1/tenants/{org}/clusters/{id}/feature-flags (the `ListClusterFeatureFlags` operationId).
+	ListClusterFeatureFlags(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ClearClusterFeatureFlag Revert a cluster-scoped feature-flag override to the platform default
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/clusters/{id}/feature-flags/{key} (the `ClearClusterFeatureFlag` operationId).
+	ClearClusterFeatureFlag(ctx context.Context, org string, id string, key string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetClusterFeatureFlagWithBody Set a cluster-scoped feature-flag override (tenant admin/operator)
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/clusters/{id}/feature-flags/{key} (the `SetClusterFeatureFlag` operationId).
+	SetClusterFeatureFlagWithBody(ctx context.Context, org string, id string, key string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetClusterFeatureFlag Set a cluster-scoped feature-flag override (tenant admin/operator)
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/clusters/{id}/feature-flags/{key} (the `SetClusterFeatureFlag` operationId).
+	SetClusterFeatureFlag(ctx context.Context, org string, id string, key string, body SetClusterFeatureFlagJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetClusterKubeconfig Render a secret-free kubeconfig (gateway or direct mode) for download
 	//
 	// Corresponds with GET /api/v1/tenants/{org}/clusters/{id}/kubeconfig (the `GetClusterKubeconfig` operationId).
 	GetClusterKubeconfig(ctx context.Context, org string, id string, params *GetClusterKubeconfigParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RebindClusterBaselineWithBody Rebind a cluster to a different baseline repo (Feature A)
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/clusters/{id}/rebind-baseline (the `RebindClusterBaseline` operationId).
+	RebindClusterBaselineWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RebindClusterBaseline Rebind a cluster to a different baseline repo (Feature A)
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/clusters/{id}/rebind-baseline (the `RebindClusterBaseline` operationId).
+	RebindClusterBaseline(ctx context.Context, org string, id string, body RebindClusterBaselineJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// RevokeCluster Revoke a cluster (disables its Keycloak client)
 	//
@@ -2770,6 +4532,30 @@ type ClientInterface interface {
 	// Corresponds with POST /api/v1/tenants/{org}/extensions (the `RegisterExtension` operationId).
 	RegisterExtension(ctx context.Context, org string, body RegisterExtensionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListUiExtensions List UI extensions (Module Federation remotes)
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/extensions/ui (the `ListUiExtensions` operationId).
+	ListUiExtensions(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RegisterUiExtensionWithBody Register or update a UI extension remote
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/extensions/ui (the `RegisterUiExtension` operationId).
+	RegisterUiExtensionWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RegisterUiExtension Register or update a UI extension remote
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/extensions/ui (the `RegisterUiExtension` operationId).
+	RegisterUiExtension(ctx context.Context, org string, body RegisterUiExtensionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnregisterUiExtension Unregister a UI extension remote
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/extensions/ui/{name} (the `UnregisterUiExtension` operationId).
+	UnregisterUiExtension(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// UnregisterExtension Unregister an extension
 	//
 	// Corresponds with DELETE /api/v1/tenants/{org}/extensions/{id} (the `UnregisterExtension` operationId).
@@ -2779,6 +4565,30 @@ type ClientInterface interface {
 	//
 	// Corresponds with GET /api/v1/tenants/{org}/extensions/{id} (the `GetExtension` operationId).
 	GetExtension(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RotateExtensionIdentity Rotate the extension's gateway identity secret (returned once; also lazily provisions identity for pre-ADR-0008 rows)
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/extensions/{id}/identity/rotate (the `RotateExtensionIdentity` operationId).
+	RotateExtensionIdentity(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteExtensionSession Drop the calling user's third-party session (logout/re-auth)
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/extensions/{id}/session (the `DeleteExtensionSession` operationId).
+	DeleteExtensionSession(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PutExtensionSessionWithBody Store bootstrapped third-party session material for the calling user (oidc-sso-session)
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/extensions/{id}/session (the `PutExtensionSession` operationId).
+	PutExtensionSessionWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PutExtensionSession Store bootstrapped third-party session material for the calling user (oidc-sso-session)
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/extensions/{id}/session (the `PutExtensionSession` operationId).
+	PutExtensionSession(ctx context.Context, org string, id string, body PutExtensionSessionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// VerifyExtension Run the SDK handshake and mark the extension ready
 	//
@@ -2803,6 +4613,88 @@ type ClientInterface interface {
 	//
 	// Corresponds with PUT /api/v1/tenants/{org}/git-config (the `SetTenantGitConfig` operationId).
 	SetTenantGitConfig(ctx context.Context, org string, body SetTenantGitConfigJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListGitConnections List the caller's own git connections (metadata only)
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/git-connections (the `ListGitConnections` operationId).
+	ListGitConnections(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DisconnectGitConnection Revoke the provider grant and delete the connection
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/git-connections/{provider} (the `DisconnectGitConnection` operationId).
+	DisconnectGitConnection(ctx context.Context, org string, provider string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AuthorizeGitConnectionGet Start the git OAuth flow (302 or JSON authorizeUrl, per Accept)
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/git-connections/{provider}/authorize (the `AuthorizeGitConnectionGet` operationId).
+	AuthorizeGitConnectionGet(ctx context.Context, org string, provider string, params *AuthorizeGitConnectionGetParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AuthorizeGitConnectionWithBody Start the git OAuth flow (302 to the provider consent URL; 200 {authorizeUrl} for JSON clients)
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/git-connections/{provider}/authorize (the `AuthorizeGitConnection` operationId).
+	AuthorizeGitConnectionWithBody(ctx context.Context, org string, provider string, params *AuthorizeGitConnectionParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AuthorizeGitConnection Start the git OAuth flow (302 to the provider consent URL; 200 {authorizeUrl} for JSON clients)
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/git-connections/{provider}/authorize (the `AuthorizeGitConnection` operationId).
+	AuthorizeGitConnection(ctx context.Context, org string, provider string, params *AuthorizeGitConnectionParams, body AuthorizeGitConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GitConnectionCallback OAuth callback (302 back to the UI)
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/git-connections/{provider}/callback (the `GitConnectionCallback` operationId).
+	GitConnectionCallback(ctx context.Context, org string, provider string, params *GitConnectionCallbackParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListGitRepos List the org's registered GitOps repos (team-filtered)
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/git-repos (the `ListGitRepos` operationId).
+	ListGitRepos(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RegisterGitRepoWithBody Register an existing git repo (validates the GitHub App is installed)
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/git-repos (the `RegisterGitRepo` operationId).
+	RegisterGitRepoWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RegisterGitRepo Register an existing git repo (validates the GitHub App is installed)
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/git-repos (the `RegisterGitRepo` operationId).
+	RegisterGitRepo(ctx context.Context, org string, body RegisterGitRepoJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UnregisterGitRepo Unregister a repo (guarded; force with mode=orphan|teardown)
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/git-repos/{id} (the `UnregisterGitRepo` operationId).
+	UnregisterGitRepo(ctx context.Context, org string, id string, params *UnregisterGitRepoParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetGitRepo Repo detail + provider health probe
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/git-repos/{id} (the `GetGitRepo` operationId).
+	GetGitRepo(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateGitRepoWithBody Update repo policy/branch/team or promote to the org default
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/git-repos/{id} (the `UpdateGitRepo` operationId).
+	UpdateGitRepoWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateGitRepo Update repo policy/branch/team or promote to the org default
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/git-repos/{id} (the `UpdateGitRepo` operationId).
+	UpdateGitRepo(ctx context.Context, org string, id string, body UpdateGitRepoJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// EnsureGitRepoWebhook (Re)provision the repo's webhook (rotates the secret)
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/git-repos/{id}/webhook (the `EnsureGitRepoWebhook` operationId).
+	EnsureGitRepoWebhook(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListIdentityClients List OIDC clients of a tenant (org admin only)
 	//
@@ -2866,6 +4758,58 @@ type ClientInterface interface {
 	// Corresponds with POST /api/v1/tenants/{org}/identity/clients/{clientId}/secret:rotate (the `RotateIdentityClientSecret` operationId).
 	RotateIdentityClientSecret(ctx context.Context, org string, clientId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DeleteIdentityProviderCompat Delete the tenant's single identity provider (UI contract; org admin only)
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/identity/provider (the `DeleteIdentityProviderCompat` operationId).
+	DeleteIdentityProviderCompat(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetIdentityProviderCompat Get the tenant's single identity provider, or null (UI contract; org admin only)
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/identity/provider (the `GetIdentityProviderCompat` operationId).
+	GetIdentityProviderCompat(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PutIdentityProviderCompatWithBody Create-or-replace the tenant's single identity provider (UI contract; org admin only)
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/identity/provider (the `PutIdentityProviderCompat` operationId).
+	PutIdentityProviderCompatWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PutIdentityProviderCompat Create-or-replace the tenant's single identity provider (UI contract; org admin only)
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/identity/provider (the `PutIdentityProviderCompat` operationId).
+	PutIdentityProviderCompat(ctx context.Context, org string, body PutIdentityProviderCompatJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PutProviderDomainsCompatWithBody Replace the provider's login-routing domain hints (UI contract; org admin only)
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/identity/provider/domains (the `PutProviderDomainsCompat` operationId).
+	PutProviderDomainsCompatWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PutProviderDomainsCompat Replace the provider's login-routing domain hints (UI contract; org admin only)
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/identity/provider/domains (the `PutProviderDomainsCompat` operationId).
+	PutProviderDomainsCompat(ctx context.Context, org string, body PutProviderDomainsCompatJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RotateProviderSecretCompatWithBody Rotate the provider's write-only client secret (UI contract; org admin only)
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/identity/provider/secret:rotate (the `RotateProviderSecretCompat` operationId).
+	RotateProviderSecretCompatWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RotateProviderSecretCompat Rotate the provider's write-only client secret (UI contract; org admin only)
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/identity/provider/secret:rotate (the `RotateProviderSecretCompat` operationId).
+	RotateProviderSecretCompat(ctx context.Context, org string, body RotateProviderSecretCompatJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListIdentityProviders List brokered identity providers of a tenant (org admin only; at most one in v1)
 	//
 	// Corresponds with GET /api/v1/tenants/{org}/identity/providers (the `ListIdentityProviders` operationId).
@@ -2919,15 +4863,48 @@ type ClientInterface interface {
 	// Corresponds with GET /api/v1/tenants/{org}/instances (the `ListInstances` operationId).
 	ListInstances(ctx context.Context, org string, params *ListInstancesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// DeleteInstance Undeploy an instance (delete desired state + inventory row)
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/instances/{id} (the `DeleteInstance` operationId).
+	DeleteInstance(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetInstance Get one resource instance with version badge
 	//
 	// Corresponds with GET /api/v1/tenants/{org}/instances/{id} (the `GetInstance` operationId).
 	GetInstance(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// UpdateInstanceWithBody Update an instance's spec (re-render at the current version)
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/instances/{id} (the `UpdateInstance` operationId).
+	UpdateInstanceWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateInstance Update an instance's spec (re-render at the current version)
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/instances/{id} (the `UpdateInstance` operationId).
+	UpdateInstance(ctx context.Context, org string, id string, body UpdateInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// InstanceDiff Diff preview data for an upgrade
 	//
 	// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/diff (the `InstanceDiff` operationId).
 	InstanceDiff(ctx context.Context, org string, id string, params *InstanceDiffParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RollbackInstanceWithBody Rollback an instance to an explicit earlier catalog version
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/rollback (the `RollbackInstance` operationId).
+	RollbackInstanceWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RollbackInstance Rollback an instance to an explicit earlier catalog version
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/rollback (the `RollbackInstance` operationId).
+	RollbackInstance(ctx context.Context, org string, id string, body RollbackInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpgradeInstanceWithBody One-click upgrade of an instance to a newer catalog version
 	//
@@ -2946,7 +4923,7 @@ type ClientInterface interface {
 	// ListOrgMembers Org-wide member view (highest role + teams)
 	//
 	// Corresponds with GET /api/v1/tenants/{org}/members (the `ListOrgMembers` operationId).
-	ListOrgMembers(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ListOrgMembers(ctx context.Context, org string, params *ListOrgMembersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// RemoveOrgMember Remove a user from the organization (org admin only)
 	//
@@ -3015,6 +4992,26 @@ type ClientInterface interface {
 	// Corresponds with POST /api/v1/tenants/{org}/notification-endpoints/{id}/test (the `TestNotificationEndpoint` operationId).
 	TestNotificationEndpoint(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetPermissionCatalog Static permission catalog for the role editor
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/permissions/catalog (the `GetPermissionCatalog` operationId).
+	GetPermissionCatalog(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListPlatformResources List tenant platform resources (keycloak realm/client, dns zone, namespace)
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/platform-resources (the `ListPlatformResources` operationId).
+	ListPlatformResources(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ReconcilePlatformResources Force re-reconciliation of tenant platform resources (ops)
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/platform-resources/reconcile (the `ReconcilePlatformResources` operationId).
+	ReconcilePlatformResources(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetPlatformResource Get one tenant platform resource
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/platform-resources/{id} (the `GetPlatformResource` operationId).
+	GetPlatformResource(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListPolicies List policies (org + platform-global)
 	//
 	// Corresponds with GET /api/v1/tenants/{org}/policies (the `ListPolicies` operationId).
@@ -3058,14 +5055,14 @@ type ClientInterface interface {
 	// Corresponds with GET /api/v1/tenants/{org}/policies/{id} (the `GetPolicy` operationId).
 	GetPolicy(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// UpdatePolicyWithBody Update a policy (bumps version)
+	// UpdatePolicyWithBody Update a policy (bumps version; exemptions bind the stable ID, so renames/edits keep them valid)
 	//
 	// Takes any type of body and a specified content type.
 	//
 	// Corresponds with PUT /api/v1/tenants/{org}/policies/{id} (the `UpdatePolicy` operationId).
 	UpdatePolicyWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// UpdatePolicy Update a policy (bumps version)
+	// UpdatePolicy Update a policy (bumps version; exemptions bind the stable ID, so renames/edits keep them valid)
 	//
 	// Takes a body of the `application/json` content type.
 	//
@@ -3130,19 +5127,129 @@ type ClientInterface interface {
 	// Corresponds with GET /api/v1/tenants/{org}/rbac (the `GetRBACMatrix` operationId).
 	GetRBACMatrix(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// PutRBACMappingsWithBody Declarative bulk set of team→role mappings, applied atomically (org admin only)
+	// PutRBACMappingsWithBody Declarative bulk set of team→role mappings, applied atomically (tenant.rbac.manage)
 	//
 	// Takes any type of body and a specified content type.
 	//
 	// Corresponds with PUT /api/v1/tenants/{org}/rbac/mappings (the `PutRBACMappings` operationId).
 	PutRBACMappingsWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// PutRBACMappings Declarative bulk set of team→role mappings, applied atomically (org admin only)
+	// PutRBACMappings Declarative bulk set of team→role mappings, applied atomically (tenant.rbac.manage)
 	//
 	// Takes a body of the `application/json` content type.
 	//
 	// Corresponds with PUT /api/v1/tenants/{org}/rbac/mappings (the `PutRBACMappings` operationId).
 	PutRBACMappings(ctx context.Context, org string, body PutRBACMappingsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListResourceTargetProviders List resource target provider config and UI schemas
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/resource-target-providers (the `ListResourceTargetProviders` operationId).
+	ListResourceTargetProviders(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListResourceTargets List caller-entitled shared resource targets
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/resource-targets (the `ListResourceTargets` operationId).
+	ListResourceTargets(ctx context.Context, org string, params *ListResourceTargetsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RegisterResourceTargetWithBody Adopt an existing inventory resource as a shared target
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/resource-targets (the `RegisterResourceTarget` operationId).
+	RegisterResourceTargetWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RegisterResourceTarget Adopt an existing inventory resource as a shared target
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/resource-targets (the `RegisterResourceTarget` operationId).
+	RegisterResourceTarget(ctx context.Context, org string, body RegisterResourceTargetJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteResourceTarget Delete a target overlay without deleting its resource
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/resource-targets/{id} (the `DeleteResourceTarget` operationId).
+	DeleteResourceTarget(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetResourceTarget Get a caller-visible resource target
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/resource-targets/{id} (the `GetResourceTarget` operationId).
+	GetResourceTarget(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateResourceTargetWithBody Update target policy with optimistic concurrency
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/resource-targets/{id} (the `UpdateResourceTarget` operationId).
+	UpdateResourceTargetWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateResourceTarget Update target policy with optimistic concurrency
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/resource-targets/{id} (the `UpdateResourceTarget` operationId).
+	UpdateResourceTarget(ctx context.Context, org string, id string, body UpdateResourceTargetJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RevokeResourceTargetGrant Revoke a team's target grant
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/resource-targets/{id}/grants/{teamId} (the `RevokeResourceTargetGrant` operationId).
+	RevokeResourceTargetGrant(ctx context.Context, org string, id string, teamId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetResourceTargetGrantWithBody Set a team's view, use, or provision grant
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/resource-targets/{id}/grants/{teamId} (the `SetResourceTargetGrant` operationId).
+	SetResourceTargetGrantWithBody(ctx context.Context, org string, id string, teamId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// SetResourceTargetGrant Set a team's view, use, or provision grant
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/resource-targets/{id}/grants/{teamId} (the `SetResourceTargetGrant` operationId).
+	SetResourceTargetGrant(ctx context.Context, org string, id string, teamId string, body SetResourceTargetGrantJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListRoles List org roles (built-in and custom)
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/roles (the `ListRoles` operationId).
+	ListRoles(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateRoleWithBody Create a custom org role (tenant.rbac.manage)
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/roles (the `CreateRole` operationId).
+	CreateRoleWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateRole Create a custom org role (tenant.rbac.manage)
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/roles (the `CreateRole` operationId).
+	CreateRole(ctx context.Context, org string, body CreateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteRole Delete a custom role (tenant.rbac.manage; built-ins are never deletable)
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/roles/{role} (the `DeleteRole` operationId).
+	DeleteRole(ctx context.Context, org string, role string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetRole Get one org role by name or ID
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/roles/{role} (the `GetRole` operationId).
+	GetRole(ctx context.Context, org string, role string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateRoleWithBody Edit a role (tenant.rbac.manage; built-in names are immutable; the tenant.admin guardrail applies)
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/roles/{role} (the `UpdateRole` operationId).
+	UpdateRoleWithBody(ctx context.Context, org string, role string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateRole Edit a role (tenant.rbac.manage; built-in names are immutable; the tenant.admin guardrail applies)
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/roles/{role} (the `UpdateRole` operationId).
+	UpdateRole(ctx context.Context, org string, role string, body UpdateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListRollouts List rollouts
 	//
@@ -3202,6 +5309,88 @@ type ClientInterface interface {
 	// Corresponds with GET /api/v1/tenants/{org}/rollouts/{id}/targets (the `ListRolloutTargets` operationId).
 	ListRolloutTargets(ctx context.Context, org string, id string, params *ListRolloutTargetsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetScaffoldRun Get a scaffold run with per-phase step states and outputs (UI polls this)
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/scaffold-runs/{runId} (the `GetScaffoldRun` operationId).
+	GetScaffoldRun(ctx context.Context, org string, runId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CancelScaffoldRun Cooperatively cancel a scaffold run (retains already-created outputs)
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/scaffold-runs/{runId}/cancel (the `CancelScaffoldRun` operationId).
+	CancelScaffoldRun(ctx context.Context, org string, runId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RetryScaffoldRun Resume a failed scaffold run from its first non-completed step
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/scaffold-runs/{runId}/retry (the `RetryScaffoldRun` operationId).
+	RetryScaffoldRun(ctx context.Context, org string, runId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateScaffoldWithBody Create a scaffold run (UI wizard contract)
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/scaffolds (the `CreateScaffold` operationId).
+	CreateScaffoldWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateScaffold Create a scaffold run (UI wizard contract)
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/scaffolds (the `CreateScaffold` operationId).
+	CreateScaffold(ctx context.Context, org string, body CreateScaffoldJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetScaffold Get a scaffold run (UI wizard polling contract)
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/scaffolds/{runId} (the `GetScaffold` operationId).
+	GetScaffold(ctx context.Context, org string, runId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListSecretStores List secret stores (own cluster-scoped plus platform stores)
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/secret-stores (the `ListSecretStores` operationId).
+	ListSecretStores(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateSecretStoreWithBody Register a secret store
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/secret-stores (the `CreateSecretStore` operationId).
+	CreateSecretStoreWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateSecretStore Register a secret store
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/secret-stores (the `CreateSecretStore` operationId).
+	CreateSecretStore(ctx context.Context, org string, body CreateSecretStoreJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteSecretStore Delete a secret store
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/secret-stores/{name} (the `DeleteSecretStore` operationId).
+	DeleteSecretStore(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSecretStore Get one secret store
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/secret-stores/{name} (the `GetSecretStore` operationId).
+	GetSecretStore(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateSecretStoreWithBody Update a secret store's targets/provider
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/secret-stores/{name} (the `UpdateSecretStore` operationId).
+	UpdateSecretStoreWithBody(ctx context.Context, org string, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateSecretStore Update a secret store's targets/provider
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/secret-stores/{name} (the `UpdateSecretStore` operationId).
+	UpdateSecretStore(ctx context.Context, org string, name string, body UpdateSecretStoreJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetSecretStoreStatus Delivery status projection for one secret store
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/secret-stores/{name}/status (the `GetSecretStoreStatus` operationId).
+	GetSecretStoreStatus(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListTeams List teams of a tenant
 	//
 	// Corresponds with GET /api/v1/tenants/{org}/teams (the `ListTeams` operationId).
@@ -3226,10 +5415,24 @@ type ClientInterface interface {
 	// Corresponds with DELETE /api/v1/tenants/{org}/teams/{team} (the `DeleteTeam` operationId).
 	DeleteTeam(ctx context.Context, org string, team string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// UpdateTeamWithBody Update a team's display name (org admin only; name and Keycloak group path are immutable, default teams are protected — ADR-0007)
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/teams/{team} (the `UpdateTeam` operationId).
+	UpdateTeamWithBody(ctx context.Context, org string, team string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateTeam Update a team's display name (org admin only; name and Keycloak group path are immutable, default teams are protected — ADR-0007)
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/teams/{team} (the `UpdateTeam` operationId).
+	UpdateTeam(ctx context.Context, org string, team string, body UpdateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListMembers List members of a team
 	//
 	// Corresponds with GET /api/v1/tenants/{org}/teams/{team}/members (the `ListMembers` operationId).
-	ListMembers(ctx context.Context, org string, team string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ListMembers(ctx context.Context, org string, team string, params *ListMembersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// AddMemberWithBody Add a user to a team (platform-engineer/admin only)
 	//
@@ -3249,6 +5452,30 @@ type ClientInterface interface {
 	//
 	// Corresponds with DELETE /api/v1/tenants/{org}/teams/{team}/members/{subject} (the `RemoveMember` operationId).
 	RemoveMember(ctx context.Context, org string, team string, subject string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListTemplates List software templates visible to the tenant at their effective versions
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/templates (the `ListTemplates` operationId).
+	ListTemplates(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetTemplate Get a template with its values schema and optional uiSchema
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/templates/{name} (the `GetTemplate` operationId).
+	GetTemplate(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateScaffoldRunWithBody Create a scaffold run (idempotent: identical resubmits return the existing run)
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/templates/{name}/runs (the `CreateScaffoldRun` operationId).
+	CreateScaffoldRunWithBody(ctx context.Context, org string, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateScaffoldRun Create a scaffold run (idempotent: identical resubmits return the existing run)
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/templates/{name}/runs (the `CreateScaffoldRun` operationId).
+	CreateScaffoldRun(ctx context.Context, org string, name string, body CreateScaffoldRunJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListTenantZones List tenant zones owned by this org
 	//
@@ -3283,6 +5510,20 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /api/v1/tenants/{org}/zones/{id}/resume (the `ResumeTenantZone` operationId).
 	ResumeTenantZone(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GitWebhookIngressWithBody Git provider webhook ingress (per-repo HMAC-authenticated)
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/webhooks/git/{provider} (the `GitWebhookIngress` operationId).
+	GitWebhookIngressWithBody(ctx context.Context, provider string, params *GitWebhookIngressParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GitWebhookIngress Git provider webhook ingress (per-repo HMAC-authenticated)
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/webhooks/git/{provider} (the `GitWebhookIngress` operationId).
+	GitWebhookIngress(ctx context.Context, provider string, params *GitWebhookIngressParams, body GitWebhookIngressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetHealth Liveness probe
 	//
@@ -3349,6 +5590,130 @@ func (c *Client) SetCatalogVisibility(ctx context.Context, item string, body Set
 // Corresponds with GET /api/v1/approvals/inbox (the `InboxApprovals` operationId).
 func (c *Client) InboxApprovals(ctx context.Context, params *InboxApprovalsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewInboxApprovalsRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetMyPermissions Platform-level permissions of the authenticated caller
+//
+// Corresponds with GET /api/v1/me/permissions (the `GetMyPermissions` operationId).
+func (c *Client) GetMyPermissions(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetMyPermissionsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListPlatformAdmins List platform admins (members of the Keycloak platform admin group)
+//
+// Corresponds with GET /api/v1/platform/admins (the `ListPlatformAdmins` operationId).
+func (c *Client) ListPlatformAdmins(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListPlatformAdminsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RevokePlatformAdmin Revoke platform admin (leaves the platform admin group; idempotent)
+//
+// Corresponds with DELETE /api/v1/platform/admins/{subject} (the `RevokePlatformAdmin` operationId).
+func (c *Client) RevokePlatformAdmin(ctx context.Context, subject string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRevokePlatformAdminRequest(c.Server, subject)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GrantPlatformAdmin Grant platform admin (joins the platform admin group; org_creator tuple converges via PlatformGroupSync)
+//
+// Corresponds with PUT /api/v1/platform/admins/{subject} (the `GrantPlatformAdmin` operationId).
+func (c *Client) GrantPlatformAdmin(ctx context.Context, subject string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGrantPlatformAdminRequest(c.Server, subject)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListPlatformFeatureFlags List the runtime feature-flag catalog with platform effective values
+//
+// Corresponds with GET /api/v1/platform/feature-flags (the `ListPlatformFeatureFlags` operationId).
+func (c *Client) ListPlatformFeatureFlags(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListPlatformFeatureFlagsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ClearPlatformFeatureFlag Revert a platform-scoped feature flag to its built-in default
+//
+// Corresponds with DELETE /api/v1/platform/feature-flags/{key} (the `ClearPlatformFeatureFlag` operationId).
+func (c *Client) ClearPlatformFeatureFlag(ctx context.Context, key string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewClearPlatformFeatureFlagRequest(c.Server, key)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetPlatformFeatureFlagWithBody Set a platform-scoped feature-flag value
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /api/v1/platform/feature-flags/{key} (the `SetPlatformFeatureFlag` operationId).
+func (c *Client) SetPlatformFeatureFlagWithBody(ctx context.Context, key string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetPlatformFeatureFlagRequestWithBody(c.Server, key, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetPlatformFeatureFlag Set a platform-scoped feature-flag value
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /api/v1/platform/feature-flags/{key} (the `SetPlatformFeatureFlag` operationId).
+func (c *Client) SetPlatformFeatureFlag(ctx context.Context, key string, body SetPlatformFeatureFlagJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetPlatformFeatureFlagRequest(c.Server, key, body)
 	if err != nil {
 		return nil, err
 	}
@@ -3481,6 +5846,70 @@ func (c *Client) UpdateTenantWithBody(ctx context.Context, org string, contentTy
 // Corresponds with PATCH /api/v1/tenants/{org} (the `UpdateTenant` operationId).
 func (c *Client) UpdateTenant(ctx context.Context, org string, body UpdateTenantJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateTenantRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteAddon Orphan an addon: stop managing it (row removed; git files and the ArgoCD app keep running)
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/addons/{id} (the `DeleteAddon` operationId).
+func (c *Client) DeleteAddon(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteAddonRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateAddonWithBody Update a managed addon's chart version and/or values (commit per repo policy)
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/addons/{id} (the `UpdateAddon` operationId).
+func (c *Client) UpdateAddonWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAddonRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateAddon Update a managed addon's chart version and/or values (commit per repo policy)
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/addons/{id} (the `UpdateAddon` operationId).
+func (c *Client) UpdateAddon(ctx context.Context, org string, id string, body UpdateAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateAddonRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// EnableAddonPrune Explicitly enable prune on an adopted addon (audit-logged, one-directional)
+//
+// Corresponds with POST /api/v1/tenants/{org}/addons/{id}/enable-prune (the `EnableAddonPrune` operationId).
+func (c *Client) EnableAddonPrune(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEnableAddonPruneRequest(c.Server, org, id)
 	if err != nil {
 		return nil, err
 	}
@@ -3624,6 +6053,66 @@ func (c *Client) DecideApprovalWithBody(ctx context.Context, org string, id stri
 // Corresponds with POST /api/v1/tenants/{org}/approvals/{id}/decide (the `DecideApproval` operationId).
 func (c *Client) DecideApproval(ctx context.Context, org string, id string, body DecideApprovalJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDecideApprovalRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListAuditLog Org audit log in the console's shape (filterable by actor/action/objectType/from/to)
+//
+// Corresponds with GET /api/v1/tenants/{org}/audit (the `ListAuditLog` operationId).
+func (c *Client) ListAuditLog(ctx context.Context, org string, params *ListAuditLogParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAuditLogRequest(c.Server, org, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListAuditEvents List org audit events, newest first (filterable by action and actor)
+//
+// Corresponds with GET /api/v1/tenants/{org}/audit-events (the `ListAuditEvents` operationId).
+func (c *Client) ListAuditEvents(ctx context.Context, org string, params *ListAuditEventsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListAuditEventsRequest(c.Server, org, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ExportAuditLog Org audit log as CSV (same filters as the list)
+//
+// Corresponds with GET /api/v1/tenants/{org}/audit/export (the `ExportAuditLog` operationId).
+func (c *Client) ExportAuditLog(ctx context.Context, org string, params *ExportAuditLogParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewExportAuditLogRequest(c.Server, org, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SelfExtensionPermissions List the caller's effective extension invoke permissions
+//
+// Corresponds with GET /api/v1/tenants/{org}/authz/self/extensions (the `SelfExtensionPermissions` operationId).
+func (c *Client) SelfExtensionPermissions(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSelfExtensionPermissionsRequest(c.Server, org)
 	if err != nil {
 		return nil, err
 	}
@@ -4184,6 +6673,55 @@ func (c *Client) CreateCluster(ctx context.Context, org string, body CreateClust
 	return c.Client.Do(req)
 }
 
+// ListClusterAddons List discovered + managed addons for a cluster (team-filtered, with available versions)
+//
+// Corresponds with GET /api/v1/tenants/{org}/clusters/{clusterId}/addons (the `ListClusterAddons` operationId).
+func (c *Client) ListClusterAddons(ctx context.Context, org string, clusterId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListClusterAddonsRequest(c.Server, org, clusterId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// AdoptAddonWithBody Adopt a (discovered or declared) addon into GitOps management
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/clusters/{clusterId}/addons/{catalogItem}/adopt (the `AdoptAddon` operationId).
+func (c *Client) AdoptAddonWithBody(ctx context.Context, org string, clusterId string, catalogItem string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAdoptAddonRequestWithBody(c.Server, org, clusterId, catalogItem, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// AdoptAddon Adopt a (discovered or declared) addon into GitOps management
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/clusters/{clusterId}/addons/{catalogItem}/adopt (the `AdoptAddon` operationId).
+func (c *Client) AdoptAddon(ctx context.Context, org string, clusterId string, catalogItem string, body AdoptAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAdoptAddonRequest(c.Server, org, clusterId, catalogItem, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // DeleteCluster Cancel a pending cluster registration (409 once registered)
 //
 // Corresponds with DELETE /api/v1/tenants/{org}/clusters/{id} (the `DeleteCluster` operationId).
@@ -4308,11 +6846,60 @@ func (c *Client) DecommissionCluster(ctx context.Context, org string, id string,
 	return c.Client.Do(req)
 }
 
-// RenderInstallManifest Render the agent install manifest embedding a fresh registration token
+// ListClusterFeatureFlags List the feature-flag catalog with per-cluster effective values
 //
-// Corresponds with POST /api/v1/tenants/{org}/clusters/{id}/install-manifest (the `RenderInstallManifest` operationId).
-func (c *Client) RenderInstallManifest(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewRenderInstallManifestRequest(c.Server, org, id)
+// Corresponds with GET /api/v1/tenants/{org}/clusters/{id}/feature-flags (the `ListClusterFeatureFlags` operationId).
+func (c *Client) ListClusterFeatureFlags(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListClusterFeatureFlagsRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ClearClusterFeatureFlag Revert a cluster-scoped feature-flag override to the platform default
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/clusters/{id}/feature-flags/{key} (the `ClearClusterFeatureFlag` operationId).
+func (c *Client) ClearClusterFeatureFlag(ctx context.Context, org string, id string, key string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewClearClusterFeatureFlagRequest(c.Server, org, id, key)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetClusterFeatureFlagWithBody Set a cluster-scoped feature-flag override (tenant admin/operator)
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /api/v1/tenants/{org}/clusters/{id}/feature-flags/{key} (the `SetClusterFeatureFlag` operationId).
+func (c *Client) SetClusterFeatureFlagWithBody(ctx context.Context, org string, id string, key string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetClusterFeatureFlagRequestWithBody(c.Server, org, id, key, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetClusterFeatureFlag Set a cluster-scoped feature-flag override (tenant admin/operator)
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /api/v1/tenants/{org}/clusters/{id}/feature-flags/{key} (the `SetClusterFeatureFlag` operationId).
+func (c *Client) SetClusterFeatureFlag(ctx context.Context, org string, id string, key string, body SetClusterFeatureFlagJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetClusterFeatureFlagRequest(c.Server, org, id, key, body)
 	if err != nil {
 		return nil, err
 	}
@@ -4328,6 +6915,40 @@ func (c *Client) RenderInstallManifest(ctx context.Context, org string, id strin
 // Corresponds with GET /api/v1/tenants/{org}/clusters/{id}/kubeconfig (the `GetClusterKubeconfig` operationId).
 func (c *Client) GetClusterKubeconfig(ctx context.Context, org string, id string, params *GetClusterKubeconfigParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetClusterKubeconfigRequest(c.Server, org, id, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RebindClusterBaselineWithBody Rebind a cluster to a different baseline repo (Feature A)
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/clusters/{id}/rebind-baseline (the `RebindClusterBaseline` operationId).
+func (c *Client) RebindClusterBaselineWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRebindClusterBaselineRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RebindClusterBaseline Rebind a cluster to a different baseline repo (Feature A)
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/clusters/{id}/rebind-baseline (the `RebindClusterBaseline` operationId).
+func (c *Client) RebindClusterBaseline(ctx context.Context, org string, id string, body RebindClusterBaselineJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRebindClusterBaselineRequest(c.Server, org, id, body)
 	if err != nil {
 		return nil, err
 	}
@@ -4624,6 +7245,70 @@ func (c *Client) RegisterExtension(ctx context.Context, org string, body Registe
 	return c.Client.Do(req)
 }
 
+// ListUiExtensions List UI extensions (Module Federation remotes)
+//
+// Corresponds with GET /api/v1/tenants/{org}/extensions/ui (the `ListUiExtensions` operationId).
+func (c *Client) ListUiExtensions(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListUiExtensionsRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RegisterUiExtensionWithBody Register or update a UI extension remote
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/extensions/ui (the `RegisterUiExtension` operationId).
+func (c *Client) RegisterUiExtensionWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRegisterUiExtensionRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RegisterUiExtension Register or update a UI extension remote
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/extensions/ui (the `RegisterUiExtension` operationId).
+func (c *Client) RegisterUiExtension(ctx context.Context, org string, body RegisterUiExtensionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRegisterUiExtensionRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UnregisterUiExtension Unregister a UI extension remote
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/extensions/ui/{name} (the `UnregisterUiExtension` operationId).
+func (c *Client) UnregisterUiExtension(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnregisterUiExtensionRequest(c.Server, org, name)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // UnregisterExtension Unregister an extension
 //
 // Corresponds with DELETE /api/v1/tenants/{org}/extensions/{id} (the `UnregisterExtension` operationId).
@@ -4644,6 +7329,70 @@ func (c *Client) UnregisterExtension(ctx context.Context, org string, id string,
 // Corresponds with GET /api/v1/tenants/{org}/extensions/{id} (the `GetExtension` operationId).
 func (c *Client) GetExtension(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetExtensionRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RotateExtensionIdentity Rotate the extension's gateway identity secret (returned once; also lazily provisions identity for pre-ADR-0008 rows)
+//
+// Corresponds with POST /api/v1/tenants/{org}/extensions/{id}/identity/rotate (the `RotateExtensionIdentity` operationId).
+func (c *Client) RotateExtensionIdentity(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRotateExtensionIdentityRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteExtensionSession Drop the calling user's third-party session (logout/re-auth)
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/extensions/{id}/session (the `DeleteExtensionSession` operationId).
+func (c *Client) DeleteExtensionSession(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteExtensionSessionRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PutExtensionSessionWithBody Store bootstrapped third-party session material for the calling user (oidc-sso-session)
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/extensions/{id}/session (the `PutExtensionSession` operationId).
+func (c *Client) PutExtensionSessionWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutExtensionSessionRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PutExtensionSession Store bootstrapped third-party session material for the calling user (oidc-sso-session)
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/extensions/{id}/session (the `PutExtensionSession` operationId).
+func (c *Client) PutExtensionSession(ctx context.Context, org string, id string, body PutExtensionSessionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutExtensionSessionRequest(c.Server, org, id, body)
 	if err != nil {
 		return nil, err
 	}
@@ -4708,6 +7457,228 @@ func (c *Client) SetTenantGitConfigWithBody(ctx context.Context, org string, con
 // Corresponds with PUT /api/v1/tenants/{org}/git-config (the `SetTenantGitConfig` operationId).
 func (c *Client) SetTenantGitConfig(ctx context.Context, org string, body SetTenantGitConfigJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSetTenantGitConfigRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListGitConnections List the caller's own git connections (metadata only)
+//
+// Corresponds with GET /api/v1/tenants/{org}/git-connections (the `ListGitConnections` operationId).
+func (c *Client) ListGitConnections(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListGitConnectionsRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DisconnectGitConnection Revoke the provider grant and delete the connection
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/git-connections/{provider} (the `DisconnectGitConnection` operationId).
+func (c *Client) DisconnectGitConnection(ctx context.Context, org string, provider string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDisconnectGitConnectionRequest(c.Server, org, provider)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// AuthorizeGitConnectionGet Start the git OAuth flow (302 or JSON authorizeUrl, per Accept)
+//
+// Corresponds with GET /api/v1/tenants/{org}/git-connections/{provider}/authorize (the `AuthorizeGitConnectionGet` operationId).
+func (c *Client) AuthorizeGitConnectionGet(ctx context.Context, org string, provider string, params *AuthorizeGitConnectionGetParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthorizeGitConnectionGetRequest(c.Server, org, provider, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// AuthorizeGitConnectionWithBody Start the git OAuth flow (302 to the provider consent URL; 200 {authorizeUrl} for JSON clients)
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/git-connections/{provider}/authorize (the `AuthorizeGitConnection` operationId).
+func (c *Client) AuthorizeGitConnectionWithBody(ctx context.Context, org string, provider string, params *AuthorizeGitConnectionParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthorizeGitConnectionRequestWithBody(c.Server, org, provider, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// AuthorizeGitConnection Start the git OAuth flow (302 to the provider consent URL; 200 {authorizeUrl} for JSON clients)
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/git-connections/{provider}/authorize (the `AuthorizeGitConnection` operationId).
+func (c *Client) AuthorizeGitConnection(ctx context.Context, org string, provider string, params *AuthorizeGitConnectionParams, body AuthorizeGitConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAuthorizeGitConnectionRequest(c.Server, org, provider, params, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GitConnectionCallback OAuth callback (302 back to the UI)
+//
+// Corresponds with GET /api/v1/tenants/{org}/git-connections/{provider}/callback (the `GitConnectionCallback` operationId).
+func (c *Client) GitConnectionCallback(ctx context.Context, org string, provider string, params *GitConnectionCallbackParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGitConnectionCallbackRequest(c.Server, org, provider, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListGitRepos List the org's registered GitOps repos (team-filtered)
+//
+// Corresponds with GET /api/v1/tenants/{org}/git-repos (the `ListGitRepos` operationId).
+func (c *Client) ListGitRepos(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListGitReposRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RegisterGitRepoWithBody Register an existing git repo (validates the GitHub App is installed)
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/git-repos (the `RegisterGitRepo` operationId).
+func (c *Client) RegisterGitRepoWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRegisterGitRepoRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RegisterGitRepo Register an existing git repo (validates the GitHub App is installed)
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/git-repos (the `RegisterGitRepo` operationId).
+func (c *Client) RegisterGitRepo(ctx context.Context, org string, body RegisterGitRepoJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRegisterGitRepoRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UnregisterGitRepo Unregister a repo (guarded; force with mode=orphan|teardown)
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/git-repos/{id} (the `UnregisterGitRepo` operationId).
+func (c *Client) UnregisterGitRepo(ctx context.Context, org string, id string, params *UnregisterGitRepoParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUnregisterGitRepoRequest(c.Server, org, id, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetGitRepo Repo detail + provider health probe
+//
+// Corresponds with GET /api/v1/tenants/{org}/git-repos/{id} (the `GetGitRepo` operationId).
+func (c *Client) GetGitRepo(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetGitRepoRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateGitRepoWithBody Update repo policy/branch/team or promote to the org default
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/git-repos/{id} (the `UpdateGitRepo` operationId).
+func (c *Client) UpdateGitRepoWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateGitRepoRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateGitRepo Update repo policy/branch/team or promote to the org default
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/git-repos/{id} (the `UpdateGitRepo` operationId).
+func (c *Client) UpdateGitRepo(ctx context.Context, org string, id string, body UpdateGitRepoJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateGitRepoRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// EnsureGitRepoWebhook (Re)provision the repo's webhook (rotates the secret)
+//
+// Corresponds with POST /api/v1/tenants/{org}/git-repos/{id}/webhook (the `EnsureGitRepoWebhook` operationId).
+func (c *Client) EnsureGitRepoWebhook(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewEnsureGitRepoWebhookRequest(c.Server, org, id)
 	if err != nil {
 		return nil, err
 	}
@@ -4880,6 +7851,138 @@ func (c *Client) RotateIdentityClientSecret(ctx context.Context, org string, cli
 	return c.Client.Do(req)
 }
 
+// DeleteIdentityProviderCompat Delete the tenant's single identity provider (UI contract; org admin only)
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/identity/provider (the `DeleteIdentityProviderCompat` operationId).
+func (c *Client) DeleteIdentityProviderCompat(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteIdentityProviderCompatRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetIdentityProviderCompat Get the tenant's single identity provider, or null (UI contract; org admin only)
+//
+// Corresponds with GET /api/v1/tenants/{org}/identity/provider (the `GetIdentityProviderCompat` operationId).
+func (c *Client) GetIdentityProviderCompat(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetIdentityProviderCompatRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PutIdentityProviderCompatWithBody Create-or-replace the tenant's single identity provider (UI contract; org admin only)
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /api/v1/tenants/{org}/identity/provider (the `PutIdentityProviderCompat` operationId).
+func (c *Client) PutIdentityProviderCompatWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutIdentityProviderCompatRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PutIdentityProviderCompat Create-or-replace the tenant's single identity provider (UI contract; org admin only)
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /api/v1/tenants/{org}/identity/provider (the `PutIdentityProviderCompat` operationId).
+func (c *Client) PutIdentityProviderCompat(ctx context.Context, org string, body PutIdentityProviderCompatJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutIdentityProviderCompatRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PutProviderDomainsCompatWithBody Replace the provider's login-routing domain hints (UI contract; org admin only)
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /api/v1/tenants/{org}/identity/provider/domains (the `PutProviderDomainsCompat` operationId).
+func (c *Client) PutProviderDomainsCompatWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutProviderDomainsCompatRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PutProviderDomainsCompat Replace the provider's login-routing domain hints (UI contract; org admin only)
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /api/v1/tenants/{org}/identity/provider/domains (the `PutProviderDomainsCompat` operationId).
+func (c *Client) PutProviderDomainsCompat(ctx context.Context, org string, body PutProviderDomainsCompatJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutProviderDomainsCompatRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RotateProviderSecretCompatWithBody Rotate the provider's write-only client secret (UI contract; org admin only)
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/identity/provider/secret:rotate (the `RotateProviderSecretCompat` operationId).
+func (c *Client) RotateProviderSecretCompatWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRotateProviderSecretCompatRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RotateProviderSecretCompat Rotate the provider's write-only client secret (UI contract; org admin only)
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/identity/provider/secret:rotate (the `RotateProviderSecretCompat` operationId).
+func (c *Client) RotateProviderSecretCompat(ctx context.Context, org string, body RotateProviderSecretCompatJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRotateProviderSecretCompatRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // ListIdentityProviders List brokered identity providers of a tenant (org admin only; at most one in v1)
 //
 // Corresponds with GET /api/v1/tenants/{org}/identity/providers (the `ListIdentityProviders` operationId).
@@ -5023,6 +8126,21 @@ func (c *Client) ListInstances(ctx context.Context, org string, params *ListInst
 	return c.Client.Do(req)
 }
 
+// DeleteInstance Undeploy an instance (delete desired state + inventory row)
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/instances/{id} (the `DeleteInstance` operationId).
+func (c *Client) DeleteInstance(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteInstanceRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // GetInstance Get one resource instance with version badge
 //
 // Corresponds with GET /api/v1/tenants/{org}/instances/{id} (the `GetInstance` operationId).
@@ -5038,11 +8156,79 @@ func (c *Client) GetInstance(ctx context.Context, org string, id string, reqEdit
 	return c.Client.Do(req)
 }
 
+// UpdateInstanceWithBody Update an instance's spec (re-render at the current version)
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/instances/{id} (the `UpdateInstance` operationId).
+func (c *Client) UpdateInstanceWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateInstanceRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateInstance Update an instance's spec (re-render at the current version)
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/instances/{id} (the `UpdateInstance` operationId).
+func (c *Client) UpdateInstance(ctx context.Context, org string, id string, body UpdateInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateInstanceRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // InstanceDiff Diff preview data for an upgrade
 //
 // Corresponds with GET /api/v1/tenants/{org}/instances/{id}/diff (the `InstanceDiff` operationId).
 func (c *Client) InstanceDiff(ctx context.Context, org string, id string, params *InstanceDiffParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewInstanceDiffRequest(c.Server, org, id, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RollbackInstanceWithBody Rollback an instance to an explicit earlier catalog version
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/rollback (the `RollbackInstance` operationId).
+func (c *Client) RollbackInstanceWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRollbackInstanceRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RollbackInstance Rollback an instance to an explicit earlier catalog version
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/rollback (the `RollbackInstance` operationId).
+func (c *Client) RollbackInstance(ctx context.Context, org string, id string, body RollbackInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRollbackInstanceRequest(c.Server, org, id, body)
 	if err != nil {
 		return nil, err
 	}
@@ -5090,8 +8276,8 @@ func (c *Client) UpgradeInstance(ctx context.Context, org string, id string, bod
 // ListOrgMembers Org-wide member view (highest role + teams)
 //
 // Corresponds with GET /api/v1/tenants/{org}/members (the `ListOrgMembers` operationId).
-func (c *Client) ListOrgMembers(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewListOrgMembersRequest(c.Server, org)
+func (c *Client) ListOrgMembers(ctx context.Context, org string, params *ListOrgMembersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListOrgMembersRequest(c.Server, org, params)
 	if err != nil {
 		return nil, err
 	}
@@ -5279,6 +8465,66 @@ func (c *Client) TestNotificationEndpoint(ctx context.Context, org string, id st
 	return c.Client.Do(req)
 }
 
+// GetPermissionCatalog Static permission catalog for the role editor
+//
+// Corresponds with GET /api/v1/tenants/{org}/permissions/catalog (the `GetPermissionCatalog` operationId).
+func (c *Client) GetPermissionCatalog(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPermissionCatalogRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListPlatformResources List tenant platform resources (keycloak realm/client, dns zone, namespace)
+//
+// Corresponds with GET /api/v1/tenants/{org}/platform-resources (the `ListPlatformResources` operationId).
+func (c *Client) ListPlatformResources(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListPlatformResourcesRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ReconcilePlatformResources Force re-reconciliation of tenant platform resources (ops)
+//
+// Corresponds with POST /api/v1/tenants/{org}/platform-resources/reconcile (the `ReconcilePlatformResources` operationId).
+func (c *Client) ReconcilePlatformResources(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReconcilePlatformResourcesRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetPlatformResource Get one tenant platform resource
+//
+// Corresponds with GET /api/v1/tenants/{org}/platform-resources/{id} (the `GetPlatformResource` operationId).
+func (c *Client) GetPlatformResource(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPlatformResourceRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // ListPolicies List policies (org + platform-global)
 //
 // Corresponds with GET /api/v1/tenants/{org}/policies (the `ListPolicies` operationId).
@@ -5392,7 +8638,7 @@ func (c *Client) GetPolicy(ctx context.Context, org string, id string, reqEditor
 	return c.Client.Do(req)
 }
 
-// UpdatePolicyWithBody Update a policy (bumps version)
+// UpdatePolicyWithBody Update a policy (bumps version; exemptions bind the stable ID, so renames/edits keep them valid)
 //
 // Takes any type of body and a specified content type.
 //
@@ -5409,7 +8655,7 @@ func (c *Client) UpdatePolicyWithBody(ctx context.Context, org string, id string
 	return c.Client.Do(req)
 }
 
-// UpdatePolicy Update a policy (bumps version)
+// UpdatePolicy Update a policy (bumps version; exemptions bind the stable ID, so renames/edits keep them valid)
 //
 // Takes a body of the `application/json` content type.
 //
@@ -5584,7 +8830,7 @@ func (c *Client) GetRBACMatrix(ctx context.Context, org string, reqEditors ...Re
 	return c.Client.Do(req)
 }
 
-// PutRBACMappingsWithBody Declarative bulk set of team→role mappings, applied atomically (org admin only)
+// PutRBACMappingsWithBody Declarative bulk set of team→role mappings, applied atomically (tenant.rbac.manage)
 //
 // Takes any type of body and a specified content type.
 //
@@ -5601,13 +8847,303 @@ func (c *Client) PutRBACMappingsWithBody(ctx context.Context, org string, conten
 	return c.Client.Do(req)
 }
 
-// PutRBACMappings Declarative bulk set of team→role mappings, applied atomically (org admin only)
+// PutRBACMappings Declarative bulk set of team→role mappings, applied atomically (tenant.rbac.manage)
 //
 // Takes a body of the `application/json` content type.
 //
 // Corresponds with PUT /api/v1/tenants/{org}/rbac/mappings (the `PutRBACMappings` operationId).
 func (c *Client) PutRBACMappings(ctx context.Context, org string, body PutRBACMappingsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPutRBACMappingsRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListResourceTargetProviders List resource target provider config and UI schemas
+//
+// Corresponds with GET /api/v1/tenants/{org}/resource-target-providers (the `ListResourceTargetProviders` operationId).
+func (c *Client) ListResourceTargetProviders(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListResourceTargetProvidersRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListResourceTargets List caller-entitled shared resource targets
+//
+// Corresponds with GET /api/v1/tenants/{org}/resource-targets (the `ListResourceTargets` operationId).
+func (c *Client) ListResourceTargets(ctx context.Context, org string, params *ListResourceTargetsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListResourceTargetsRequest(c.Server, org, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RegisterResourceTargetWithBody Adopt an existing inventory resource as a shared target
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/resource-targets (the `RegisterResourceTarget` operationId).
+func (c *Client) RegisterResourceTargetWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRegisterResourceTargetRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RegisterResourceTarget Adopt an existing inventory resource as a shared target
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/resource-targets (the `RegisterResourceTarget` operationId).
+func (c *Client) RegisterResourceTarget(ctx context.Context, org string, body RegisterResourceTargetJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRegisterResourceTargetRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteResourceTarget Delete a target overlay without deleting its resource
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/resource-targets/{id} (the `DeleteResourceTarget` operationId).
+func (c *Client) DeleteResourceTarget(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteResourceTargetRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetResourceTarget Get a caller-visible resource target
+//
+// Corresponds with GET /api/v1/tenants/{org}/resource-targets/{id} (the `GetResourceTarget` operationId).
+func (c *Client) GetResourceTarget(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetResourceTargetRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateResourceTargetWithBody Update target policy with optimistic concurrency
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/resource-targets/{id} (the `UpdateResourceTarget` operationId).
+func (c *Client) UpdateResourceTargetWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateResourceTargetRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateResourceTarget Update target policy with optimistic concurrency
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/resource-targets/{id} (the `UpdateResourceTarget` operationId).
+func (c *Client) UpdateResourceTarget(ctx context.Context, org string, id string, body UpdateResourceTargetJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateResourceTargetRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RevokeResourceTargetGrant Revoke a team's target grant
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/resource-targets/{id}/grants/{teamId} (the `RevokeResourceTargetGrant` operationId).
+func (c *Client) RevokeResourceTargetGrant(ctx context.Context, org string, id string, teamId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRevokeResourceTargetGrantRequest(c.Server, org, id, teamId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetResourceTargetGrantWithBody Set a team's view, use, or provision grant
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /api/v1/tenants/{org}/resource-targets/{id}/grants/{teamId} (the `SetResourceTargetGrant` operationId).
+func (c *Client) SetResourceTargetGrantWithBody(ctx context.Context, org string, id string, teamId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetResourceTargetGrantRequestWithBody(c.Server, org, id, teamId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// SetResourceTargetGrant Set a team's view, use, or provision grant
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /api/v1/tenants/{org}/resource-targets/{id}/grants/{teamId} (the `SetResourceTargetGrant` operationId).
+func (c *Client) SetResourceTargetGrant(ctx context.Context, org string, id string, teamId string, body SetResourceTargetGrantJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewSetResourceTargetGrantRequest(c.Server, org, id, teamId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListRoles List org roles (built-in and custom)
+//
+// Corresponds with GET /api/v1/tenants/{org}/roles (the `ListRoles` operationId).
+func (c *Client) ListRoles(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListRolesRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateRoleWithBody Create a custom org role (tenant.rbac.manage)
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/roles (the `CreateRole` operationId).
+func (c *Client) CreateRoleWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateRoleRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateRole Create a custom org role (tenant.rbac.manage)
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/roles (the `CreateRole` operationId).
+func (c *Client) CreateRole(ctx context.Context, org string, body CreateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateRoleRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteRole Delete a custom role (tenant.rbac.manage; built-ins are never deletable)
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/roles/{role} (the `DeleteRole` operationId).
+func (c *Client) DeleteRole(ctx context.Context, org string, role string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteRoleRequest(c.Server, org, role)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetRole Get one org role by name or ID
+//
+// Corresponds with GET /api/v1/tenants/{org}/roles/{role} (the `GetRole` operationId).
+func (c *Client) GetRole(ctx context.Context, org string, role string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetRoleRequest(c.Server, org, role)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateRoleWithBody Edit a role (tenant.rbac.manage; built-in names are immutable; the tenant.admin guardrail applies)
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/roles/{role} (the `UpdateRole` operationId).
+func (c *Client) UpdateRoleWithBody(ctx context.Context, org string, role string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateRoleRequestWithBody(c.Server, org, role, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateRole Edit a role (tenant.rbac.manage; built-in names are immutable; the tenant.admin guardrail applies)
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/roles/{role} (the `UpdateRole` operationId).
+func (c *Client) UpdateRole(ctx context.Context, org string, role string, body UpdateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateRoleRequest(c.Server, org, role, body)
 	if err != nil {
 		return nil, err
 	}
@@ -5776,6 +9312,228 @@ func (c *Client) ListRolloutTargets(ctx context.Context, org string, id string, 
 	return c.Client.Do(req)
 }
 
+// GetScaffoldRun Get a scaffold run with per-phase step states and outputs (UI polls this)
+//
+// Corresponds with GET /api/v1/tenants/{org}/scaffold-runs/{runId} (the `GetScaffoldRun` operationId).
+func (c *Client) GetScaffoldRun(ctx context.Context, org string, runId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetScaffoldRunRequest(c.Server, org, runId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CancelScaffoldRun Cooperatively cancel a scaffold run (retains already-created outputs)
+//
+// Corresponds with POST /api/v1/tenants/{org}/scaffold-runs/{runId}/cancel (the `CancelScaffoldRun` operationId).
+func (c *Client) CancelScaffoldRun(ctx context.Context, org string, runId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCancelScaffoldRunRequest(c.Server, org, runId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RetryScaffoldRun Resume a failed scaffold run from its first non-completed step
+//
+// Corresponds with POST /api/v1/tenants/{org}/scaffold-runs/{runId}/retry (the `RetryScaffoldRun` operationId).
+func (c *Client) RetryScaffoldRun(ctx context.Context, org string, runId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRetryScaffoldRunRequest(c.Server, org, runId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateScaffoldWithBody Create a scaffold run (UI wizard contract)
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/scaffolds (the `CreateScaffold` operationId).
+func (c *Client) CreateScaffoldWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateScaffoldRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateScaffold Create a scaffold run (UI wizard contract)
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/scaffolds (the `CreateScaffold` operationId).
+func (c *Client) CreateScaffold(ctx context.Context, org string, body CreateScaffoldJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateScaffoldRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetScaffold Get a scaffold run (UI wizard polling contract)
+//
+// Corresponds with GET /api/v1/tenants/{org}/scaffolds/{runId} (the `GetScaffold` operationId).
+func (c *Client) GetScaffold(ctx context.Context, org string, runId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetScaffoldRequest(c.Server, org, runId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListSecretStores List secret stores (own cluster-scoped plus platform stores)
+//
+// Corresponds with GET /api/v1/tenants/{org}/secret-stores (the `ListSecretStores` operationId).
+func (c *Client) ListSecretStores(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListSecretStoresRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateSecretStoreWithBody Register a secret store
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/secret-stores (the `CreateSecretStore` operationId).
+func (c *Client) CreateSecretStoreWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSecretStoreRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateSecretStore Register a secret store
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/secret-stores (the `CreateSecretStore` operationId).
+func (c *Client) CreateSecretStore(ctx context.Context, org string, body CreateSecretStoreJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateSecretStoreRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DeleteSecretStore Delete a secret store
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/secret-stores/{name} (the `DeleteSecretStore` operationId).
+func (c *Client) DeleteSecretStore(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteSecretStoreRequest(c.Server, org, name)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetSecretStore Get one secret store
+//
+// Corresponds with GET /api/v1/tenants/{org}/secret-stores/{name} (the `GetSecretStore` operationId).
+func (c *Client) GetSecretStore(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSecretStoreRequest(c.Server, org, name)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateSecretStoreWithBody Update a secret store's targets/provider
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/secret-stores/{name} (the `UpdateSecretStore` operationId).
+func (c *Client) UpdateSecretStoreWithBody(ctx context.Context, org string, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSecretStoreRequestWithBody(c.Server, org, name, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateSecretStore Update a secret store's targets/provider
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/secret-stores/{name} (the `UpdateSecretStore` operationId).
+func (c *Client) UpdateSecretStore(ctx context.Context, org string, name string, body UpdateSecretStoreJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateSecretStoreRequest(c.Server, org, name, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetSecretStoreStatus Delivery status projection for one secret store
+//
+// Corresponds with GET /api/v1/tenants/{org}/secret-stores/{name}/status (the `GetSecretStoreStatus` operationId).
+func (c *Client) GetSecretStoreStatus(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetSecretStoreStatusRequest(c.Server, org, name)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // ListTeams List teams of a tenant
 //
 // Corresponds with GET /api/v1/tenants/{org}/teams (the `ListTeams` operationId).
@@ -5840,11 +9598,45 @@ func (c *Client) DeleteTeam(ctx context.Context, org string, team string, reqEdi
 	return c.Client.Do(req)
 }
 
+// UpdateTeamWithBody Update a team's display name (org admin only; name and Keycloak group path are immutable, default teams are protected — ADR-0007)
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /api/v1/tenants/{org}/teams/{team} (the `UpdateTeam` operationId).
+func (c *Client) UpdateTeamWithBody(ctx context.Context, org string, team string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateTeamRequestWithBody(c.Server, org, team, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// UpdateTeam Update a team's display name (org admin only; name and Keycloak group path are immutable, default teams are protected — ADR-0007)
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /api/v1/tenants/{org}/teams/{team} (the `UpdateTeam` operationId).
+func (c *Client) UpdateTeam(ctx context.Context, org string, team string, body UpdateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateTeamRequest(c.Server, org, team, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // ListMembers List members of a team
 //
 // Corresponds with GET /api/v1/tenants/{org}/teams/{team}/members (the `ListMembers` operationId).
-func (c *Client) ListMembers(ctx context.Context, org string, team string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewListMembersRequest(c.Server, org, team)
+func (c *Client) ListMembers(ctx context.Context, org string, team string, params *ListMembersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListMembersRequest(c.Server, org, team, params)
 	if err != nil {
 		return nil, err
 	}
@@ -5894,6 +9686,70 @@ func (c *Client) AddMember(ctx context.Context, org string, team string, body Ad
 // Corresponds with DELETE /api/v1/tenants/{org}/teams/{team}/members/{subject} (the `RemoveMember` operationId).
 func (c *Client) RemoveMember(ctx context.Context, org string, team string, subject string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewRemoveMemberRequest(c.Server, org, team, subject)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListTemplates List software templates visible to the tenant at their effective versions
+//
+// Corresponds with GET /api/v1/tenants/{org}/templates (the `ListTemplates` operationId).
+func (c *Client) ListTemplates(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListTemplatesRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetTemplate Get a template with its values schema and optional uiSchema
+//
+// Corresponds with GET /api/v1/tenants/{org}/templates/{name} (the `GetTemplate` operationId).
+func (c *Client) GetTemplate(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetTemplateRequest(c.Server, org, name)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateScaffoldRunWithBody Create a scaffold run (idempotent: identical resubmits return the existing run)
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/templates/{name}/runs (the `CreateScaffoldRun` operationId).
+func (c *Client) CreateScaffoldRunWithBody(ctx context.Context, org string, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateScaffoldRunRequestWithBody(c.Server, org, name, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateScaffoldRun Create a scaffold run (idempotent: identical resubmits return the existing run)
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/templates/{name}/runs (the `CreateScaffoldRun` operationId).
+func (c *Client) CreateScaffoldRun(ctx context.Context, org string, name string, body CreateScaffoldRunJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateScaffoldRunRequest(c.Server, org, name, body)
 	if err != nil {
 		return nil, err
 	}
@@ -5988,6 +9844,40 @@ func (c *Client) DecommissionTenantZone(ctx context.Context, org string, id stri
 // Corresponds with POST /api/v1/tenants/{org}/zones/{id}/resume (the `ResumeTenantZone` operationId).
 func (c *Client) ResumeTenantZone(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewResumeTenantZoneRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GitWebhookIngressWithBody Git provider webhook ingress (per-repo HMAC-authenticated)
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/webhooks/git/{provider} (the `GitWebhookIngress` operationId).
+func (c *Client) GitWebhookIngressWithBody(ctx context.Context, provider string, params *GitWebhookIngressParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGitWebhookIngressRequestWithBody(c.Server, provider, params, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GitWebhookIngress Git provider webhook ingress (per-repo HMAC-authenticated)
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/webhooks/git/{provider} (the `GitWebhookIngress` operationId).
+func (c *Client) GitWebhookIngress(ctx context.Context, provider string, params *GitWebhookIngressParams, body GitWebhookIngressJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGitWebhookIngressRequest(c.Server, provider, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -6152,6 +10042,236 @@ func NewInboxApprovalsRequest(server string, params *InboxApprovalsParams) (*htt
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewGetMyPermissionsRequest constructs an http.Request for the GetMyPermissions method
+func NewGetMyPermissionsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/me/permissions")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListPlatformAdminsRequest constructs an http.Request for the ListPlatformAdmins method
+func NewListPlatformAdminsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/platform/admins")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRevokePlatformAdminRequest constructs an http.Request for the RevokePlatformAdmin method
+func NewRevokePlatformAdminRequest(server string, subject string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "subject", subject, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/platform/admins/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGrantPlatformAdminRequest constructs an http.Request for the GrantPlatformAdmin method
+func NewGrantPlatformAdminRequest(server string, subject string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "subject", subject, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/platform/admins/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListPlatformFeatureFlagsRequest constructs an http.Request for the ListPlatformFeatureFlags method
+func NewListPlatformFeatureFlagsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/platform/feature-flags")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewClearPlatformFeatureFlagRequest constructs an http.Request for the ClearPlatformFeatureFlag method
+func NewClearPlatformFeatureFlagRequest(server string, key string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "key", key, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/platform/feature-flags/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSetPlatformFeatureFlagRequest calls the generic SetPlatformFeatureFlag builder with application/json body
+func NewSetPlatformFeatureFlagRequest(server string, key string, body SetPlatformFeatureFlagJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetPlatformFeatureFlagRequestWithBody(server, key, "application/json", bodyReader)
+}
+
+// NewSetPlatformFeatureFlagRequestWithBody constructs an http.Request for the SetPlatformFeatureFlag method, with any body, and a specified content type
+func NewSetPlatformFeatureFlagRequestWithBody(server string, key string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "key", key, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/platform/feature-flags/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -6347,6 +10467,142 @@ func NewUpdateTenantRequestWithBody(server string, org string, contentType strin
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteAddonRequest constructs an http.Request for the DeleteAddon method
+func NewDeleteAddonRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/addons/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateAddonRequest calls the generic UpdateAddon builder with application/json body
+func NewUpdateAddonRequest(server string, org string, id string, body UpdateAddonJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateAddonRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewUpdateAddonRequestWithBody constructs an http.Request for the UpdateAddon method, with any body, and a specified content type
+func NewUpdateAddonRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/addons/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewEnableAddonPruneRequest constructs an http.Request for the EnableAddonPrune method
+func NewEnableAddonPruneRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/addons/%s/enable-prune", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -6675,6 +10931,367 @@ func NewDecideApprovalRequestWithBody(server string, org string, id string, cont
 	return req, nil
 }
 
+// NewListAuditLogRequest constructs an http.Request for the ListAuditLog method
+func NewListAuditLogRequest(server string, org string, params *ListAuditLogParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/audit", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Actor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "actor", *params.Actor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Action != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "action", *params.Action, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ObjectType != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "objectType", *params.ObjectType, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.From != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "from", *params.From, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.To != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "to", *params.To, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int64"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListAuditEventsRequest constructs an http.Request for the ListAuditEvents method
+func NewListAuditEventsRequest(server string, org string, params *ListAuditEventsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/audit-events", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Action != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "action", *params.Action, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Actor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "actor", *params.Actor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int64"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewExportAuditLogRequest constructs an http.Request for the ExportAuditLog method
+func NewExportAuditLogRequest(server string, org string, params *ExportAuditLogParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/audit/export", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Actor != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "actor", *params.Actor, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Action != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "action", *params.Action, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ObjectType != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "objectType", *params.ObjectType, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.From != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "from", *params.From, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.To != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "to", *params.To, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int64"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSelfExtensionPermissionsRequest constructs an http.Request for the SelfExtensionPermissions method
+func NewSelfExtensionPermissionsRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/authz/self/extensions", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewBulkDecideApprovalsRequest calls the generic BulkDecideApprovals builder with application/json body
 func NewBulkDecideApprovalsRequest(server string, org string, body BulkDecideApprovalsJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -6901,6 +11518,78 @@ func NewListCatalogRequest(server string, org string, params *ListCatalogParams)
 		if params.Cluster != nil {
 
 			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "cluster", *params.Cluster, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Q != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "q", *params.Q, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Source != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "source", *params.Source, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Category != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "category", *params.Category, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Sort != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "sort", *params.Sort, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int64"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Offset != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "offset", *params.Offset, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int64"}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -7816,6 +12505,108 @@ func NewCreateClusterRequestWithBody(server string, org string, contentType stri
 	return req, nil
 }
 
+// NewListClusterAddonsRequest constructs an http.Request for the ListClusterAddons method
+func NewListClusterAddonsRequest(server string, org string, clusterId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "clusterId", clusterId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters/%s/addons", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAdoptAddonRequest calls the generic AdoptAddon builder with application/json body
+func NewAdoptAddonRequest(server string, org string, clusterId string, catalogItem string, body AdoptAddonJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAdoptAddonRequestWithBody(server, org, clusterId, catalogItem, "application/json", bodyReader)
+}
+
+// NewAdoptAddonRequestWithBody constructs an http.Request for the AdoptAddon method, with any body, and a specified content type
+func NewAdoptAddonRequestWithBody(server string, org string, clusterId string, catalogItem string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "clusterId", clusterId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithOptions("simple", false, "catalogItem", catalogItem, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters/%s/addons/%s/adopt", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewDeleteClusterRequest constructs an http.Request for the DeleteCluster method
 func NewDeleteClusterRequest(server string, org string, id string) (*http.Request, error) {
 	var err error
@@ -8116,8 +12907,8 @@ func NewDecommissionClusterRequestWithBody(server string, org string, id string,
 	return req, nil
 }
 
-// NewRenderInstallManifestRequest constructs an http.Request for the RenderInstallManifest method
-func NewRenderInstallManifestRequest(server string, org string, id string) (*http.Request, error) {
+// NewListClusterFeatureFlagsRequest constructs an http.Request for the ListClusterFeatureFlags method
+func NewListClusterFeatureFlagsRequest(server string, org string, id string) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -8139,7 +12930,7 @@ func NewRenderInstallManifestRequest(server string, org string, id string) (*htt
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters/%s/install-manifest", pathParam0, pathParam1)
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters/%s/feature-flags", pathParam0, pathParam1)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -8149,10 +12940,119 @@ func NewRenderInstallManifestRequest(server string, org string, id string) (*htt
 		return nil, err
 	}
 
-	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewClearClusterFeatureFlagRequest constructs an http.Request for the ClearClusterFeatureFlag method
+func NewClearClusterFeatureFlagRequest(server string, org string, id string, key string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithOptions("simple", false, "key", key, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters/%s/feature-flags/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSetClusterFeatureFlagRequest calls the generic SetClusterFeatureFlag builder with application/json body
+func NewSetClusterFeatureFlagRequest(server string, org string, id string, key string, body SetClusterFeatureFlagJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetClusterFeatureFlagRequestWithBody(server, org, id, key, "application/json", bodyReader)
+}
+
+// NewSetClusterFeatureFlagRequestWithBody constructs an http.Request for the SetClusterFeatureFlag method, with any body, and a specified content type
+func NewSetClusterFeatureFlagRequestWithBody(server string, org string, id string, key string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithOptions("simple", false, "key", key, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters/%s/feature-flags/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -8201,7 +13101,7 @@ func NewGetClusterKubeconfigRequest(server string, org string, id string, params
 
 		if params.Mode != nil {
 
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "mode", *params.Mode, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "mode", *params.Mode, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -8213,7 +13113,7 @@ func NewGetClusterKubeconfigRequest(server string, org string, id string, params
 
 		if params.GrantType != nil {
 
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "grantType", *params.GrantType, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "grantType", *params.GrantType, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -8225,7 +13125,7 @@ func NewGetClusterKubeconfigRequest(server string, org string, id string, params
 
 		if params.Server != nil {
 
-			if queryFrag, err := runtime.StyleParamWithOptions("form", true, "server", *params.Server, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "server", *params.Server, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
 				return nil, err
 			} else {
 				for _, qp := range strings.Split(queryFrag, "&") {
@@ -8245,6 +13145,60 @@ func NewGetClusterKubeconfigRequest(server string, org string, id string, params
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewRebindClusterBaselineRequest calls the generic RebindClusterBaseline builder with application/json body
+func NewRebindClusterBaselineRequest(server string, org string, id string, body RebindClusterBaselineJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRebindClusterBaselineRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewRebindClusterBaselineRequestWithBody constructs an http.Request for the RebindClusterBaseline method, with any body, and a specified content type
+func NewRebindClusterBaselineRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/clusters/%s/rebind-baseline", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -8865,6 +13819,128 @@ func NewRegisterExtensionRequestWithBody(server string, org string, contentType 
 	return req, nil
 }
 
+// NewListUiExtensionsRequest constructs an http.Request for the ListUiExtensions method
+func NewListUiExtensionsRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/extensions/ui", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRegisterUiExtensionRequest calls the generic RegisterUiExtension builder with application/json body
+func NewRegisterUiExtensionRequest(server string, org string, body RegisterUiExtensionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRegisterUiExtensionRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewRegisterUiExtensionRequestWithBody constructs an http.Request for the RegisterUiExtension method, with any body, and a specified content type
+func NewRegisterUiExtensionRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/extensions/ui", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUnregisterUiExtensionRequest constructs an http.Request for the UnregisterUiExtension method
+func NewUnregisterUiExtensionRequest(server string, org string, name string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/extensions/ui/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewUnregisterExtensionRequest constructs an http.Request for the UnregisterExtension method
 func NewUnregisterExtensionRequest(server string, org string, id string) (*http.Request, error) {
 	var err error
@@ -8943,6 +14019,142 @@ func NewGetExtensionRequest(server string, org string, id string) (*http.Request
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewRotateExtensionIdentityRequest constructs an http.Request for the RotateExtensionIdentity method
+func NewRotateExtensionIdentityRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/extensions/%s/identity/rotate", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDeleteExtensionSessionRequest constructs an http.Request for the DeleteExtensionSession method
+func NewDeleteExtensionSessionRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/extensions/%s/session", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPutExtensionSessionRequest calls the generic PutExtensionSession builder with application/json body
+func NewPutExtensionSessionRequest(server string, org string, id string, body PutExtensionSessionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPutExtensionSessionRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewPutExtensionSessionRequestWithBody constructs an http.Request for the PutExtensionSession method, with any body, and a specified content type
+func NewPutExtensionSessionRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/extensions/%s/session", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -9065,6 +14277,583 @@ func NewSetTenantGitConfigRequestWithBody(server string, org string, contentType
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListGitConnectionsRequest constructs an http.Request for the ListGitConnections method
+func NewListGitConnectionsRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/git-connections", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewDisconnectGitConnectionRequest constructs an http.Request for the DisconnectGitConnection method
+func NewDisconnectGitConnectionRequest(server string, org string, provider string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "provider", provider, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/git-connections/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewAuthorizeGitConnectionGetRequest constructs an http.Request for the AuthorizeGitConnectionGet method
+func NewAuthorizeGitConnectionGetRequest(server string, org string, provider string, params *AuthorizeGitConnectionGetParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "provider", provider, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/git-connections/%s/authorize", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+
+		if params.Accept != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Accept", *params.Accept, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Accept", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewAuthorizeGitConnectionRequest calls the generic AuthorizeGitConnection builder with application/json body
+func NewAuthorizeGitConnectionRequest(server string, org string, provider string, params *AuthorizeGitConnectionParams, body AuthorizeGitConnectionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAuthorizeGitConnectionRequestWithBody(server, org, provider, params, "application/json", bodyReader)
+}
+
+// NewAuthorizeGitConnectionRequestWithBody constructs an http.Request for the AuthorizeGitConnection method, with any body, and a specified content type
+func NewAuthorizeGitConnectionRequestWithBody(server string, org string, provider string, params *AuthorizeGitConnectionParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "provider", provider, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/git-connections/%s/authorize", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.Accept != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "Accept", *params.Accept, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("Accept", headerParam0)
+		}
+
+	}
+
+	return req, nil
+}
+
+// NewGitConnectionCallbackRequest constructs an http.Request for the GitConnectionCallback method
+func NewGitConnectionCallbackRequest(server string, org string, provider string, params *GitConnectionCallbackParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "provider", provider, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/git-connections/%s/callback", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Code != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "code", *params.Code, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.State != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "state", *params.State, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListGitReposRequest constructs an http.Request for the ListGitRepos method
+func NewListGitReposRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/git-repos", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRegisterGitRepoRequest calls the generic RegisterGitRepo builder with application/json body
+func NewRegisterGitRepoRequest(server string, org string, body RegisterGitRepoJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRegisterGitRepoRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewRegisterGitRepoRequestWithBody constructs an http.Request for the RegisterGitRepo method, with any body, and a specified content type
+func NewRegisterGitRepoRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/git-repos", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewUnregisterGitRepoRequest constructs an http.Request for the UnregisterGitRepo method
+func NewUnregisterGitRepoRequest(server string, org string, id string, params *UnregisterGitRepoParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/git-repos/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Force != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "force", *params.Force, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Mode != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "mode", *params.Mode, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetGitRepoRequest constructs an http.Request for the GetGitRepo method
+func NewGetGitRepoRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/git-repos/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateGitRepoRequest calls the generic UpdateGitRepo builder with application/json body
+func NewUpdateGitRepoRequest(server string, org string, id string, body UpdateGitRepoJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateGitRepoRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewUpdateGitRepoRequestWithBody constructs an http.Request for the UpdateGitRepo method, with any body, and a specified content type
+func NewUpdateGitRepoRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/git-repos/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewEnsureGitRepoWebhookRequest constructs an http.Request for the EnsureGitRepoWebhook method
+func NewEnsureGitRepoWebhookRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/git-repos/%s/webhook", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -9377,6 +15166,215 @@ func NewRotateIdentityClientSecretRequest(server string, org string, clientId st
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewDeleteIdentityProviderCompatRequest constructs an http.Request for the DeleteIdentityProviderCompat method
+func NewDeleteIdentityProviderCompatRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/identity/provider", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetIdentityProviderCompatRequest constructs an http.Request for the GetIdentityProviderCompat method
+func NewGetIdentityProviderCompatRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/identity/provider", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPutIdentityProviderCompatRequest calls the generic PutIdentityProviderCompat builder with application/json body
+func NewPutIdentityProviderCompatRequest(server string, org string, body PutIdentityProviderCompatJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPutIdentityProviderCompatRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewPutIdentityProviderCompatRequestWithBody constructs an http.Request for the PutIdentityProviderCompat method, with any body, and a specified content type
+func NewPutIdentityProviderCompatRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/identity/provider", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewPutProviderDomainsCompatRequest calls the generic PutProviderDomainsCompat builder with application/json body
+func NewPutProviderDomainsCompatRequest(server string, org string, body PutProviderDomainsCompatJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPutProviderDomainsCompatRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewPutProviderDomainsCompatRequestWithBody constructs an http.Request for the PutProviderDomainsCompat method, with any body, and a specified content type
+func NewPutProviderDomainsCompatRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/identity/provider/domains", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewRotateProviderSecretCompatRequest calls the generic RotateProviderSecretCompat builder with application/json body
+func NewRotateProviderSecretCompatRequest(server string, org string, body RotateProviderSecretCompatJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRotateProviderSecretCompatRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewRotateProviderSecretCompatRequestWithBody constructs an http.Request for the RotateProviderSecretCompat method, with any body, and a specified content type
+func NewRotateProviderSecretCompatRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/identity/provider/secret:rotate", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -9729,6 +15727,47 @@ func NewListInstancesRequest(server string, org string, params *ListInstancesPar
 	return req, nil
 }
 
+// NewDeleteInstanceRequest constructs an http.Request for the DeleteInstance method
+func NewDeleteInstanceRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewGetInstanceRequest constructs an http.Request for the GetInstance method
 func NewGetInstanceRequest(server string, org string, id string) (*http.Request, error) {
 	var err error
@@ -9766,6 +15805,60 @@ func NewGetInstanceRequest(server string, org string, id string) (*http.Request,
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewUpdateInstanceRequest calls the generic UpdateInstance builder with application/json body
+func NewUpdateInstanceRequest(server string, org string, id string, body UpdateInstanceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateInstanceRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewUpdateInstanceRequestWithBody constructs an http.Request for the UpdateInstance method, with any body, and a specified content type
+func NewUpdateInstanceRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -9834,6 +15927,60 @@ func NewInstanceDiffRequest(server string, org string, id string, params *Instan
 	return req, nil
 }
 
+// NewRollbackInstanceRequest calls the generic RollbackInstance builder with application/json body
+func NewRollbackInstanceRequest(server string, org string, id string, body RollbackInstanceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRollbackInstanceRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewRollbackInstanceRequestWithBody constructs an http.Request for the RollbackInstance method, with any body, and a specified content type
+func NewRollbackInstanceRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s/rollback", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewUpgradeInstanceRequest calls the generic UpgradeInstance builder with application/json body
 func NewUpgradeInstanceRequest(server string, org string, id string, body UpgradeInstanceJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -9889,7 +16036,7 @@ func NewUpgradeInstanceRequestWithBody(server string, org string, id string, con
 }
 
 // NewListOrgMembersRequest constructs an http.Request for the ListOrgMembers method
-func NewListOrgMembersRequest(server string, org string) (*http.Request, error) {
+func NewListOrgMembersRequest(server string, org string, params *ListOrgMembersParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -9912,6 +16059,33 @@ func NewListOrgMembersRequest(server string, org string) (*http.Request, error) 
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Q != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "q", *params.Q, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
 	}
 
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
@@ -10268,6 +16442,149 @@ func NewTestNotificationEndpointRequest(server string, org string, id string) (*
 	}
 
 	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetPermissionCatalogRequest constructs an http.Request for the GetPermissionCatalog method
+func NewGetPermissionCatalogRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/permissions/catalog", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListPlatformResourcesRequest constructs an http.Request for the ListPlatformResources method
+func NewListPlatformResourcesRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/platform-resources", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewReconcilePlatformResourcesRequest constructs an http.Request for the ReconcilePlatformResources method
+func NewReconcilePlatformResourcesRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/platform-resources/reconcile", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetPlatformResourceRequest constructs an http.Request for the GetPlatformResource method
+func NewGetPlatformResourceRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/platform-resources/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -10953,6 +17270,658 @@ func NewPutRBACMappingsRequestWithBody(server string, org string, contentType st
 	return req, nil
 }
 
+// NewListResourceTargetProvidersRequest constructs an http.Request for the ListResourceTargetProviders method
+func NewListResourceTargetProvidersRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/resource-target-providers", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListResourceTargetsRequest constructs an http.Request for the ListResourceTargets method
+func NewListResourceTargetsRequest(server string, org string, params *ListResourceTargetsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/resource-targets", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Capability != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "capability", *params.Capability, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.Action != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "action", *params.Action, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ResourceKind != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "resourceKind", *params.ResourceKind, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.ResourceId != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "resourceId", *params.ResourceId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if params.IncludeUnavailable != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "includeUnavailable", *params.IncludeUnavailable, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "boolean", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRegisterResourceTargetRequest calls the generic RegisterResourceTarget builder with application/json body
+func NewRegisterResourceTargetRequest(server string, org string, body RegisterResourceTargetJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewRegisterResourceTargetRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewRegisterResourceTargetRequestWithBody constructs an http.Request for the RegisterResourceTarget method, with any body, and a specified content type
+func NewRegisterResourceTargetRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/resource-targets", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteResourceTargetRequest constructs an http.Request for the DeleteResourceTarget method
+func NewDeleteResourceTargetRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/resource-targets/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetResourceTargetRequest constructs an http.Request for the GetResourceTarget method
+func NewGetResourceTargetRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/resource-targets/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateResourceTargetRequest calls the generic UpdateResourceTarget builder with application/json body
+func NewUpdateResourceTargetRequest(server string, org string, id string, body UpdateResourceTargetJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateResourceTargetRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewUpdateResourceTargetRequestWithBody constructs an http.Request for the UpdateResourceTarget method, with any body, and a specified content type
+func NewUpdateResourceTargetRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/resource-targets/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewRevokeResourceTargetGrantRequest constructs an http.Request for the RevokeResourceTargetGrant method
+func NewRevokeResourceTargetGrantRequest(server string, org string, id string, teamId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithOptions("simple", false, "teamId", teamId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/resource-targets/%s/grants/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewSetResourceTargetGrantRequest calls the generic SetResourceTargetGrant builder with application/json body
+func NewSetResourceTargetGrantRequest(server string, org string, id string, teamId string, body SetResourceTargetGrantJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewSetResourceTargetGrantRequestWithBody(server, org, id, teamId, "application/json", bodyReader)
+}
+
+// NewSetResourceTargetGrantRequestWithBody constructs an http.Request for the SetResourceTargetGrant method, with any body, and a specified content type
+func NewSetResourceTargetGrantRequestWithBody(server string, org string, id string, teamId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithOptions("simple", false, "teamId", teamId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/resource-targets/%s/grants/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListRolesRequest constructs an http.Request for the ListRoles method
+func NewListRolesRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/roles", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateRoleRequest calls the generic CreateRole builder with application/json body
+func NewCreateRoleRequest(server string, org string, body CreateRoleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateRoleRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewCreateRoleRequestWithBody constructs an http.Request for the CreateRole method, with any body, and a specified content type
+func NewCreateRoleRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/roles", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteRoleRequest constructs an http.Request for the DeleteRole method
+func NewDeleteRoleRequest(server string, org string, role string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "role", role, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/roles/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetRoleRequest constructs an http.Request for the GetRole method
+func NewGetRoleRequest(server string, org string, role string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "role", role, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/roles/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateRoleRequest calls the generic UpdateRole builder with application/json body
+func NewUpdateRoleRequest(server string, org string, role string, body UpdateRoleJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateRoleRequestWithBody(server, org, role, "application/json", bodyReader)
+}
+
+// NewUpdateRoleRequestWithBody constructs an http.Request for the UpdateRole method, with any body, and a specified content type
+func NewUpdateRoleRequestWithBody(server string, org string, role string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "role", role, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/roles/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListRolloutsRequest constructs an http.Request for the ListRollouts method
 func NewListRolloutsRequest(server string, org string) (*http.Request, error) {
 	var err error
@@ -11320,6 +18289,475 @@ func NewListRolloutTargetsRequest(server string, org string, id string, params *
 	return req, nil
 }
 
+// NewGetScaffoldRunRequest constructs an http.Request for the GetScaffoldRun method
+func NewGetScaffoldRunRequest(server string, org string, runId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "runId", runId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/scaffold-runs/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCancelScaffoldRunRequest constructs an http.Request for the CancelScaffoldRun method
+func NewCancelScaffoldRunRequest(server string, org string, runId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "runId", runId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/scaffold-runs/%s/cancel", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRetryScaffoldRunRequest constructs an http.Request for the RetryScaffoldRun method
+func NewRetryScaffoldRunRequest(server string, org string, runId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "runId", runId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/scaffold-runs/%s/retry", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateScaffoldRequest calls the generic CreateScaffold builder with application/json body
+func NewCreateScaffoldRequest(server string, org string, body CreateScaffoldJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateScaffoldRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewCreateScaffoldRequestWithBody constructs an http.Request for the CreateScaffold method, with any body, and a specified content type
+func NewCreateScaffoldRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/scaffolds", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetScaffoldRequest constructs an http.Request for the GetScaffold method
+func NewGetScaffoldRequest(server string, org string, runId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "runId", runId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/scaffolds/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListSecretStoresRequest constructs an http.Request for the ListSecretStores method
+func NewListSecretStoresRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/secret-stores", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateSecretStoreRequest calls the generic CreateSecretStore builder with application/json body
+func NewCreateSecretStoreRequest(server string, org string, body CreateSecretStoreJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateSecretStoreRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewCreateSecretStoreRequestWithBody constructs an http.Request for the CreateSecretStore method, with any body, and a specified content type
+func NewCreateSecretStoreRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/secret-stores", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteSecretStoreRequest constructs an http.Request for the DeleteSecretStore method
+func NewDeleteSecretStoreRequest(server string, org string, name string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/secret-stores/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetSecretStoreRequest constructs an http.Request for the GetSecretStore method
+func NewGetSecretStoreRequest(server string, org string, name string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/secret-stores/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateSecretStoreRequest calls the generic UpdateSecretStore builder with application/json body
+func NewUpdateSecretStoreRequest(server string, org string, name string, body UpdateSecretStoreJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateSecretStoreRequestWithBody(server, org, name, "application/json", bodyReader)
+}
+
+// NewUpdateSecretStoreRequestWithBody constructs an http.Request for the UpdateSecretStore method, with any body, and a specified content type
+func NewUpdateSecretStoreRequestWithBody(server string, org string, name string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/secret-stores/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPatch, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetSecretStoreStatusRequest constructs an http.Request for the GetSecretStoreStatus method
+func NewGetSecretStoreStatusRequest(server string, org string, name string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/secret-stores/%s/status", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
 // NewListTeamsRequest constructs an http.Request for the ListTeams method
 func NewListTeamsRequest(server string, org string) (*http.Request, error) {
 	var err error
@@ -11442,8 +18880,62 @@ func NewDeleteTeamRequest(server string, org string, team string) (*http.Request
 	return req, nil
 }
 
+// NewUpdateTeamRequest calls the generic UpdateTeam builder with application/json body
+func NewUpdateTeamRequest(server string, org string, team string, body UpdateTeamJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateTeamRequestWithBody(server, org, team, "application/json", bodyReader)
+}
+
+// NewUpdateTeamRequestWithBody constructs an http.Request for the UpdateTeam method, with any body, and a specified content type
+func NewUpdateTeamRequestWithBody(server string, org string, team string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "team", team, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/teams/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListMembersRequest constructs an http.Request for the ListMembers method
-func NewListMembersRequest(server string, org string, team string) (*http.Request, error) {
+func NewListMembersRequest(server string, org string, team string, params *ListMembersParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -11473,6 +18965,33 @@ func NewListMembersRequest(server string, org string, team string) (*http.Reques
 	queryURL, err := serverURL.Parse(operationPath)
 	if err != nil {
 		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Q != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "q", *params.Q, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
 	}
 
 	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
@@ -11581,6 +19100,135 @@ func NewRemoveMemberRequest(server string, org string, team string, subject stri
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewListTemplatesRequest constructs an http.Request for the ListTemplates method
+func NewListTemplatesRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/templates", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetTemplateRequest constructs an http.Request for the GetTemplate method
+func NewGetTemplateRequest(server string, org string, name string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/templates/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateScaffoldRunRequest calls the generic CreateScaffoldRun builder with application/json body
+func NewCreateScaffoldRunRequest(server string, org string, name string, body CreateScaffoldRunJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateScaffoldRunRequestWithBody(server, org, name, "application/json", bodyReader)
+}
+
+// NewCreateScaffoldRunRequestWithBody constructs an http.Request for the CreateScaffoldRun method, with any body, and a specified content type
+func NewCreateScaffoldRunRequestWithBody(server string, org string, name string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "name", name, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/templates/%s/runs", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -11789,6 +19437,101 @@ func NewResumeTenantZoneRequest(server string, org string, id string) (*http.Req
 	return req, nil
 }
 
+// NewGitWebhookIngressRequest calls the generic GitWebhookIngress builder with application/json body
+func NewGitWebhookIngressRequest(server string, provider string, params *GitWebhookIngressParams, body GitWebhookIngressJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewGitWebhookIngressRequestWithBody(server, provider, params, "application/json", bodyReader)
+}
+
+// NewGitWebhookIngressRequestWithBody constructs an http.Request for the GitWebhookIngress method, with any body, and a specified content type
+func NewGitWebhookIngressRequestWithBody(server string, provider string, params *GitWebhookIngressParams, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "provider", provider, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/webhooks/git/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	if params != nil {
+
+		if params.XHubSignature256 != nil {
+			var headerParam0 string
+
+			headerParam0, err = runtime.StyleParamWithOptions("simple", false, "X-Hub-Signature-256", *params.XHubSignature256, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("X-Hub-Signature-256", headerParam0)
+		}
+
+		if params.XGitHubEvent != nil {
+			var headerParam1 string
+
+			headerParam1, err = runtime.StyleParamWithOptions("simple", false, "X-GitHub-Event", *params.XGitHubEvent, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("X-GitHub-Event", headerParam1)
+		}
+
+		if params.XGitlabToken != nil {
+			var headerParam2 string
+
+			headerParam2, err = runtime.StyleParamWithOptions("simple", false, "X-Gitlab-Token", *params.XGitlabToken, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("X-Gitlab-Token", headerParam2)
+		}
+
+		if params.XGitlabEvent != nil {
+			var headerParam3 string
+
+			headerParam3, err = runtime.StyleParamWithOptions("simple", false, "X-Gitlab-Event", *params.XGitlabEvent, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationHeader, Type: "string", Format: ""})
+			if err != nil {
+				return nil, err
+			}
+
+			req.Header.Set("X-Gitlab-Event", headerParam3)
+		}
+
+	}
+
+	return req, nil
+}
+
 // NewGetHealthRequest constructs an http.Request for the GetHealth method
 func NewGetHealthRequest(server string) (*http.Request, error) {
 	var err error
@@ -11915,6 +19658,62 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /api/v1/approvals/inbox (the `InboxApprovals` operationId).
 	InboxApprovalsWithResponse(ctx context.Context, params *InboxApprovalsParams, reqEditors ...RequestEditorFn) (*InboxApprovalsResponse, error)
 
+	// GetMyPermissionsWithResponse Platform-level permissions of the authenticated caller
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/me/permissions (the `GetMyPermissions` operationId).
+	GetMyPermissionsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetMyPermissionsResponse, error)
+
+	// ListPlatformAdminsWithResponse List platform admins (members of the Keycloak platform admin group)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/platform/admins (the `ListPlatformAdmins` operationId).
+	ListPlatformAdminsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListPlatformAdminsResponse, error)
+
+	// RevokePlatformAdminWithResponse Revoke platform admin (leaves the platform admin group; idempotent)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /api/v1/platform/admins/{subject} (the `RevokePlatformAdmin` operationId).
+	RevokePlatformAdminWithResponse(ctx context.Context, subject string, reqEditors ...RequestEditorFn) (*RevokePlatformAdminResponse, error)
+
+	// GrantPlatformAdminWithResponse Grant platform admin (joins the platform admin group; org_creator tuple converges via PlatformGroupSync)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/platform/admins/{subject} (the `GrantPlatformAdmin` operationId).
+	GrantPlatformAdminWithResponse(ctx context.Context, subject string, reqEditors ...RequestEditorFn) (*GrantPlatformAdminResponse, error)
+
+	// ListPlatformFeatureFlagsWithResponse List the runtime feature-flag catalog with platform effective values
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/platform/feature-flags (the `ListPlatformFeatureFlags` operationId).
+	ListPlatformFeatureFlagsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListPlatformFeatureFlagsResponse, error)
+
+	// ClearPlatformFeatureFlagWithResponse Revert a platform-scoped feature flag to its built-in default
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /api/v1/platform/feature-flags/{key} (the `ClearPlatformFeatureFlag` operationId).
+	ClearPlatformFeatureFlagWithResponse(ctx context.Context, key string, reqEditors ...RequestEditorFn) (*ClearPlatformFeatureFlagResponse, error)
+
+	// SetPlatformFeatureFlagWithBodyWithResponse Set a platform-scoped feature-flag value
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/platform/feature-flags/{key} (the `SetPlatformFeatureFlag` operationId).
+	SetPlatformFeatureFlagWithBodyWithResponse(ctx context.Context, key string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetPlatformFeatureFlagResponse, error)
+
+	// SetPlatformFeatureFlagWithResponse Set a platform-scoped feature-flag value
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/platform/feature-flags/{key} (the `SetPlatformFeatureFlag` operationId).
+	SetPlatformFeatureFlagWithResponse(ctx context.Context, key string, body SetPlatformFeatureFlagJSONRequestBody, reqEditors ...RequestEditorFn) (*SetPlatformFeatureFlagResponse, error)
+
 	// ListTenantsWithResponse List tenants visible to the caller (tenant switcher)
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -11970,6 +19769,34 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with PATCH /api/v1/tenants/{org} (the `UpdateTenant` operationId).
 	UpdateTenantWithResponse(ctx context.Context, org string, body UpdateTenantJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateTenantResponse, error)
+
+	// DeleteAddonWithResponse Orphan an addon: stop managing it (row removed; git files and the ArgoCD app keep running)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/addons/{id} (the `DeleteAddon` operationId).
+	DeleteAddonWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DeleteAddonResponse, error)
+
+	// UpdateAddonWithBodyWithResponse Update a managed addon's chart version and/or values (commit per repo policy)
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/addons/{id} (the `UpdateAddon` operationId).
+	UpdateAddonWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAddonResponse, error)
+
+	// UpdateAddonWithResponse Update a managed addon's chart version and/or values (commit per repo policy)
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/addons/{id} (the `UpdateAddon` operationId).
+	UpdateAddonWithResponse(ctx context.Context, org string, id string, body UpdateAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAddonResponse, error)
+
+	// EnableAddonPruneWithResponse Explicitly enable prune on an adopted addon (audit-logged, one-directional)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/addons/{id}/enable-prune (the `EnableAddonPrune` operationId).
+	EnableAddonPruneWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*EnableAddonPruneResponse, error)
 
 	// ListAgentChannelsWithResponse List agent channel pins
 	//
@@ -12033,6 +19860,34 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /api/v1/tenants/{org}/approvals/{id}/decide (the `DecideApproval` operationId).
 	DecideApprovalWithResponse(ctx context.Context, org string, id string, body DecideApprovalJSONRequestBody, reqEditors ...RequestEditorFn) (*DecideApprovalResponse, error)
+
+	// ListAuditLogWithResponse Org audit log in the console's shape (filterable by actor/action/objectType/from/to)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/audit (the `ListAuditLog` operationId).
+	ListAuditLogWithResponse(ctx context.Context, org string, params *ListAuditLogParams, reqEditors ...RequestEditorFn) (*ListAuditLogResponse, error)
+
+	// ListAuditEventsWithResponse List org audit events, newest first (filterable by action and actor)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/audit-events (the `ListAuditEvents` operationId).
+	ListAuditEventsWithResponse(ctx context.Context, org string, params *ListAuditEventsParams, reqEditors ...RequestEditorFn) (*ListAuditEventsResponse, error)
+
+	// ExportAuditLogWithResponse Org audit log as CSV (same filters as the list)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/audit/export (the `ExportAuditLog` operationId).
+	ExportAuditLogWithResponse(ctx context.Context, org string, params *ExportAuditLogParams, reqEditors ...RequestEditorFn) (*ExportAuditLogResponse, error)
+
+	// SelfExtensionPermissionsWithResponse List the caller's effective extension invoke permissions
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/authz/self/extensions (the `SelfExtensionPermissions` operationId).
+	SelfExtensionPermissionsWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*SelfExtensionPermissionsResponse, error)
 
 	// BulkDecideApprovalsWithBodyWithResponse Bulk approve/reject approvals
 	//
@@ -12272,6 +20127,27 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /api/v1/tenants/{org}/clusters (the `CreateCluster` operationId).
 	CreateClusterWithResponse(ctx context.Context, org string, body CreateClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateClusterResponse, error)
 
+	// ListClusterAddonsWithResponse List discovered + managed addons for a cluster (team-filtered, with available versions)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/clusters/{clusterId}/addons (the `ListClusterAddons` operationId).
+	ListClusterAddonsWithResponse(ctx context.Context, org string, clusterId string, reqEditors ...RequestEditorFn) (*ListClusterAddonsResponse, error)
+
+	// AdoptAddonWithBodyWithResponse Adopt a (discovered or declared) addon into GitOps management
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/clusters/{clusterId}/addons/{catalogItem}/adopt (the `AdoptAddon` operationId).
+	AdoptAddonWithBodyWithResponse(ctx context.Context, org string, clusterId string, catalogItem string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AdoptAddonResponse, error)
+
+	// AdoptAddonWithResponse Adopt a (discovered or declared) addon into GitOps management
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/clusters/{clusterId}/addons/{catalogItem}/adopt (the `AdoptAddon` operationId).
+	AdoptAddonWithResponse(ctx context.Context, org string, clusterId string, catalogItem string, body AdoptAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*AdoptAddonResponse, error)
+
 	// DeleteClusterWithResponse Cancel a pending cluster registration (409 once registered)
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -12328,12 +20204,33 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /api/v1/tenants/{org}/clusters/{id}/decommission (the `DecommissionCluster` operationId).
 	DecommissionClusterWithResponse(ctx context.Context, org string, id string, body DecommissionClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*DecommissionClusterResponse, error)
 
-	// RenderInstallManifestWithResponse Render the agent install manifest embedding a fresh registration token
+	// ListClusterFeatureFlagsWithResponse List the feature-flag catalog with per-cluster effective values
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
-	// Corresponds with POST /api/v1/tenants/{org}/clusters/{id}/install-manifest (the `RenderInstallManifest` operationId).
-	RenderInstallManifestWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*RenderInstallManifestResponse, error)
+	// Corresponds with GET /api/v1/tenants/{org}/clusters/{id}/feature-flags (the `ListClusterFeatureFlags` operationId).
+	ListClusterFeatureFlagsWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*ListClusterFeatureFlagsResponse, error)
+
+	// ClearClusterFeatureFlagWithResponse Revert a cluster-scoped feature-flag override to the platform default
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/clusters/{id}/feature-flags/{key} (the `ClearClusterFeatureFlag` operationId).
+	ClearClusterFeatureFlagWithResponse(ctx context.Context, org string, id string, key string, reqEditors ...RequestEditorFn) (*ClearClusterFeatureFlagResponse, error)
+
+	// SetClusterFeatureFlagWithBodyWithResponse Set a cluster-scoped feature-flag override (tenant admin/operator)
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/clusters/{id}/feature-flags/{key} (the `SetClusterFeatureFlag` operationId).
+	SetClusterFeatureFlagWithBodyWithResponse(ctx context.Context, org string, id string, key string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetClusterFeatureFlagResponse, error)
+
+	// SetClusterFeatureFlagWithResponse Set a cluster-scoped feature-flag override (tenant admin/operator)
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/clusters/{id}/feature-flags/{key} (the `SetClusterFeatureFlag` operationId).
+	SetClusterFeatureFlagWithResponse(ctx context.Context, org string, id string, key string, body SetClusterFeatureFlagJSONRequestBody, reqEditors ...RequestEditorFn) (*SetClusterFeatureFlagResponse, error)
 
 	// GetClusterKubeconfigWithResponse Render a secret-free kubeconfig (gateway or direct mode) for download
 	//
@@ -12341,6 +20238,20 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /api/v1/tenants/{org}/clusters/{id}/kubeconfig (the `GetClusterKubeconfig` operationId).
 	GetClusterKubeconfigWithResponse(ctx context.Context, org string, id string, params *GetClusterKubeconfigParams, reqEditors ...RequestEditorFn) (*GetClusterKubeconfigResponse, error)
+
+	// RebindClusterBaselineWithBodyWithResponse Rebind a cluster to a different baseline repo (Feature A)
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/clusters/{id}/rebind-baseline (the `RebindClusterBaseline` operationId).
+	RebindClusterBaselineWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RebindClusterBaselineResponse, error)
+
+	// RebindClusterBaselineWithResponse Rebind a cluster to a different baseline repo (Feature A)
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/clusters/{id}/rebind-baseline (the `RebindClusterBaseline` operationId).
+	RebindClusterBaselineWithResponse(ctx context.Context, org string, id string, body RebindClusterBaselineJSONRequestBody, reqEditors ...RequestEditorFn) (*RebindClusterBaselineResponse, error)
 
 	// RevokeClusterWithResponse Revoke a cluster (disables its Keycloak client)
 	//
@@ -12468,6 +20379,34 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /api/v1/tenants/{org}/extensions (the `RegisterExtension` operationId).
 	RegisterExtensionWithResponse(ctx context.Context, org string, body RegisterExtensionJSONRequestBody, reqEditors ...RequestEditorFn) (*RegisterExtensionResponse, error)
 
+	// ListUiExtensionsWithResponse List UI extensions (Module Federation remotes)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/extensions/ui (the `ListUiExtensions` operationId).
+	ListUiExtensionsWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListUiExtensionsResponse, error)
+
+	// RegisterUiExtensionWithBodyWithResponse Register or update a UI extension remote
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/extensions/ui (the `RegisterUiExtension` operationId).
+	RegisterUiExtensionWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RegisterUiExtensionResponse, error)
+
+	// RegisterUiExtensionWithResponse Register or update a UI extension remote
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/extensions/ui (the `RegisterUiExtension` operationId).
+	RegisterUiExtensionWithResponse(ctx context.Context, org string, body RegisterUiExtensionJSONRequestBody, reqEditors ...RequestEditorFn) (*RegisterUiExtensionResponse, error)
+
+	// UnregisterUiExtensionWithResponse Unregister a UI extension remote
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/extensions/ui/{name} (the `UnregisterUiExtension` operationId).
+	UnregisterUiExtensionWithResponse(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*UnregisterUiExtensionResponse, error)
+
 	// UnregisterExtensionWithResponse Unregister an extension
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -12481,6 +20420,34 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with GET /api/v1/tenants/{org}/extensions/{id} (the `GetExtension` operationId).
 	GetExtensionWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetExtensionResponse, error)
+
+	// RotateExtensionIdentityWithResponse Rotate the extension's gateway identity secret (returned once; also lazily provisions identity for pre-ADR-0008 rows)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/extensions/{id}/identity/rotate (the `RotateExtensionIdentity` operationId).
+	RotateExtensionIdentityWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*RotateExtensionIdentityResponse, error)
+
+	// DeleteExtensionSessionWithResponse Drop the calling user's third-party session (logout/re-auth)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/extensions/{id}/session (the `DeleteExtensionSession` operationId).
+	DeleteExtensionSessionWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DeleteExtensionSessionResponse, error)
+
+	// PutExtensionSessionWithBodyWithResponse Store bootstrapped third-party session material for the calling user (oidc-sso-session)
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/extensions/{id}/session (the `PutExtensionSession` operationId).
+	PutExtensionSessionWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutExtensionSessionResponse, error)
+
+	// PutExtensionSessionWithResponse Store bootstrapped third-party session material for the calling user (oidc-sso-session)
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/extensions/{id}/session (the `PutExtensionSession` operationId).
+	PutExtensionSessionWithResponse(ctx context.Context, org string, id string, body PutExtensionSessionJSONRequestBody, reqEditors ...RequestEditorFn) (*PutExtensionSessionResponse, error)
 
 	// VerifyExtensionWithResponse Run the SDK handshake and mark the extension ready
 	//
@@ -12509,6 +20476,104 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with PUT /api/v1/tenants/{org}/git-config (the `SetTenantGitConfig` operationId).
 	SetTenantGitConfigWithResponse(ctx context.Context, org string, body SetTenantGitConfigJSONRequestBody, reqEditors ...RequestEditorFn) (*SetTenantGitConfigResponse, error)
+
+	// ListGitConnectionsWithResponse List the caller's own git connections (metadata only)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/git-connections (the `ListGitConnections` operationId).
+	ListGitConnectionsWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListGitConnectionsResponse, error)
+
+	// DisconnectGitConnectionWithResponse Revoke the provider grant and delete the connection
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/git-connections/{provider} (the `DisconnectGitConnection` operationId).
+	DisconnectGitConnectionWithResponse(ctx context.Context, org string, provider string, reqEditors ...RequestEditorFn) (*DisconnectGitConnectionResponse, error)
+
+	// AuthorizeGitConnectionGetWithResponse Start the git OAuth flow (302 or JSON authorizeUrl, per Accept)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/git-connections/{provider}/authorize (the `AuthorizeGitConnectionGet` operationId).
+	AuthorizeGitConnectionGetWithResponse(ctx context.Context, org string, provider string, params *AuthorizeGitConnectionGetParams, reqEditors ...RequestEditorFn) (*AuthorizeGitConnectionGetResponse, error)
+
+	// AuthorizeGitConnectionWithBodyWithResponse Start the git OAuth flow (302 to the provider consent URL; 200 {authorizeUrl} for JSON clients)
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/git-connections/{provider}/authorize (the `AuthorizeGitConnection` operationId).
+	AuthorizeGitConnectionWithBodyWithResponse(ctx context.Context, org string, provider string, params *AuthorizeGitConnectionParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthorizeGitConnectionResponse, error)
+
+	// AuthorizeGitConnectionWithResponse Start the git OAuth flow (302 to the provider consent URL; 200 {authorizeUrl} for JSON clients)
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/git-connections/{provider}/authorize (the `AuthorizeGitConnection` operationId).
+	AuthorizeGitConnectionWithResponse(ctx context.Context, org string, provider string, params *AuthorizeGitConnectionParams, body AuthorizeGitConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthorizeGitConnectionResponse, error)
+
+	// GitConnectionCallbackWithResponse OAuth callback (302 back to the UI)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/git-connections/{provider}/callback (the `GitConnectionCallback` operationId).
+	GitConnectionCallbackWithResponse(ctx context.Context, org string, provider string, params *GitConnectionCallbackParams, reqEditors ...RequestEditorFn) (*GitConnectionCallbackResponse, error)
+
+	// ListGitReposWithResponse List the org's registered GitOps repos (team-filtered)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/git-repos (the `ListGitRepos` operationId).
+	ListGitReposWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListGitReposResponse, error)
+
+	// RegisterGitRepoWithBodyWithResponse Register an existing git repo (validates the GitHub App is installed)
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/git-repos (the `RegisterGitRepo` operationId).
+	RegisterGitRepoWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RegisterGitRepoResponse, error)
+
+	// RegisterGitRepoWithResponse Register an existing git repo (validates the GitHub App is installed)
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/git-repos (the `RegisterGitRepo` operationId).
+	RegisterGitRepoWithResponse(ctx context.Context, org string, body RegisterGitRepoJSONRequestBody, reqEditors ...RequestEditorFn) (*RegisterGitRepoResponse, error)
+
+	// UnregisterGitRepoWithResponse Unregister a repo (guarded; force with mode=orphan|teardown)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/git-repos/{id} (the `UnregisterGitRepo` operationId).
+	UnregisterGitRepoWithResponse(ctx context.Context, org string, id string, params *UnregisterGitRepoParams, reqEditors ...RequestEditorFn) (*UnregisterGitRepoResponse, error)
+
+	// GetGitRepoWithResponse Repo detail + provider health probe
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/git-repos/{id} (the `GetGitRepo` operationId).
+	GetGitRepoWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetGitRepoResponse, error)
+
+	// UpdateGitRepoWithBodyWithResponse Update repo policy/branch/team or promote to the org default
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/git-repos/{id} (the `UpdateGitRepo` operationId).
+	UpdateGitRepoWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGitRepoResponse, error)
+
+	// UpdateGitRepoWithResponse Update repo policy/branch/team or promote to the org default
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/git-repos/{id} (the `UpdateGitRepo` operationId).
+	UpdateGitRepoWithResponse(ctx context.Context, org string, id string, body UpdateGitRepoJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGitRepoResponse, error)
+
+	// EnsureGitRepoWebhookWithResponse (Re)provision the repo's webhook (rotates the secret)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/git-repos/{id}/webhook (the `EnsureGitRepoWebhook` operationId).
+	EnsureGitRepoWebhookWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*EnsureGitRepoWebhookResponse, error)
 
 	// ListIdentityClientsWithResponse List OIDC clients of a tenant (org admin only)
 	//
@@ -12580,6 +20645,62 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /api/v1/tenants/{org}/identity/clients/{clientId}/secret:rotate (the `RotateIdentityClientSecret` operationId).
 	RotateIdentityClientSecretWithResponse(ctx context.Context, org string, clientId string, reqEditors ...RequestEditorFn) (*RotateIdentityClientSecretResponse, error)
 
+	// DeleteIdentityProviderCompatWithResponse Delete the tenant's single identity provider (UI contract; org admin only)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/identity/provider (the `DeleteIdentityProviderCompat` operationId).
+	DeleteIdentityProviderCompatWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*DeleteIdentityProviderCompatResponse, error)
+
+	// GetIdentityProviderCompatWithResponse Get the tenant's single identity provider, or null (UI contract; org admin only)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/identity/provider (the `GetIdentityProviderCompat` operationId).
+	GetIdentityProviderCompatWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*GetIdentityProviderCompatResponse, error)
+
+	// PutIdentityProviderCompatWithBodyWithResponse Create-or-replace the tenant's single identity provider (UI contract; org admin only)
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/identity/provider (the `PutIdentityProviderCompat` operationId).
+	PutIdentityProviderCompatWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutIdentityProviderCompatResponse, error)
+
+	// PutIdentityProviderCompatWithResponse Create-or-replace the tenant's single identity provider (UI contract; org admin only)
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/identity/provider (the `PutIdentityProviderCompat` operationId).
+	PutIdentityProviderCompatWithResponse(ctx context.Context, org string, body PutIdentityProviderCompatJSONRequestBody, reqEditors ...RequestEditorFn) (*PutIdentityProviderCompatResponse, error)
+
+	// PutProviderDomainsCompatWithBodyWithResponse Replace the provider's login-routing domain hints (UI contract; org admin only)
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/identity/provider/domains (the `PutProviderDomainsCompat` operationId).
+	PutProviderDomainsCompatWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutProviderDomainsCompatResponse, error)
+
+	// PutProviderDomainsCompatWithResponse Replace the provider's login-routing domain hints (UI contract; org admin only)
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/identity/provider/domains (the `PutProviderDomainsCompat` operationId).
+	PutProviderDomainsCompatWithResponse(ctx context.Context, org string, body PutProviderDomainsCompatJSONRequestBody, reqEditors ...RequestEditorFn) (*PutProviderDomainsCompatResponse, error)
+
+	// RotateProviderSecretCompatWithBodyWithResponse Rotate the provider's write-only client secret (UI contract; org admin only)
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/identity/provider/secret:rotate (the `RotateProviderSecretCompat` operationId).
+	RotateProviderSecretCompatWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RotateProviderSecretCompatResponse, error)
+
+	// RotateProviderSecretCompatWithResponse Rotate the provider's write-only client secret (UI contract; org admin only)
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/identity/provider/secret:rotate (the `RotateProviderSecretCompat` operationId).
+	RotateProviderSecretCompatWithResponse(ctx context.Context, org string, body RotateProviderSecretCompatJSONRequestBody, reqEditors ...RequestEditorFn) (*RotateProviderSecretCompatResponse, error)
+
 	// ListIdentityProvidersWithResponse List brokered identity providers of a tenant (org admin only; at most one in v1)
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -12643,6 +20764,13 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /api/v1/tenants/{org}/instances (the `ListInstances` operationId).
 	ListInstancesWithResponse(ctx context.Context, org string, params *ListInstancesParams, reqEditors ...RequestEditorFn) (*ListInstancesResponse, error)
 
+	// DeleteInstanceWithResponse Undeploy an instance (delete desired state + inventory row)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/instances/{id} (the `DeleteInstance` operationId).
+	DeleteInstanceWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DeleteInstanceResponse, error)
+
 	// GetInstanceWithResponse Get one resource instance with version badge
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -12650,12 +20778,40 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /api/v1/tenants/{org}/instances/{id} (the `GetInstance` operationId).
 	GetInstanceWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetInstanceResponse, error)
 
+	// UpdateInstanceWithBodyWithResponse Update an instance's spec (re-render at the current version)
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/instances/{id} (the `UpdateInstance` operationId).
+	UpdateInstanceWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateInstanceResponse, error)
+
+	// UpdateInstanceWithResponse Update an instance's spec (re-render at the current version)
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/instances/{id} (the `UpdateInstance` operationId).
+	UpdateInstanceWithResponse(ctx context.Context, org string, id string, body UpdateInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateInstanceResponse, error)
+
 	// InstanceDiffWithResponse Diff preview data for an upgrade
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/diff (the `InstanceDiff` operationId).
 	InstanceDiffWithResponse(ctx context.Context, org string, id string, params *InstanceDiffParams, reqEditors ...RequestEditorFn) (*InstanceDiffResponse, error)
+
+	// RollbackInstanceWithBodyWithResponse Rollback an instance to an explicit earlier catalog version
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/rollback (the `RollbackInstance` operationId).
+	RollbackInstanceWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RollbackInstanceResponse, error)
+
+	// RollbackInstanceWithResponse Rollback an instance to an explicit earlier catalog version
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/rollback (the `RollbackInstance` operationId).
+	RollbackInstanceWithResponse(ctx context.Context, org string, id string, body RollbackInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*RollbackInstanceResponse, error)
 
 	// UpgradeInstanceWithBodyWithResponse One-click upgrade of an instance to a newer catalog version
 	//
@@ -12676,7 +20832,7 @@ type ClientWithResponsesInterface interface {
 	// Returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with GET /api/v1/tenants/{org}/members (the `ListOrgMembers` operationId).
-	ListOrgMembersWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListOrgMembersResponse, error)
+	ListOrgMembersWithResponse(ctx context.Context, org string, params *ListOrgMembersParams, reqEditors ...RequestEditorFn) (*ListOrgMembersResponse, error)
 
 	// RemoveOrgMemberWithResponse Remove a user from the organization (org admin only)
 	//
@@ -12755,6 +20911,34 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with POST /api/v1/tenants/{org}/notification-endpoints/{id}/test (the `TestNotificationEndpoint` operationId).
 	TestNotificationEndpointWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*TestNotificationEndpointResponse, error)
 
+	// GetPermissionCatalogWithResponse Static permission catalog for the role editor
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/permissions/catalog (the `GetPermissionCatalog` operationId).
+	GetPermissionCatalogWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*GetPermissionCatalogResponse, error)
+
+	// ListPlatformResourcesWithResponse List tenant platform resources (keycloak realm/client, dns zone, namespace)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/platform-resources (the `ListPlatformResources` operationId).
+	ListPlatformResourcesWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListPlatformResourcesResponse, error)
+
+	// ReconcilePlatformResourcesWithResponse Force re-reconciliation of tenant platform resources (ops)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/platform-resources/reconcile (the `ReconcilePlatformResources` operationId).
+	ReconcilePlatformResourcesWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ReconcilePlatformResourcesResponse, error)
+
+	// GetPlatformResourceWithResponse Get one tenant platform resource
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/platform-resources/{id} (the `GetPlatformResource` operationId).
+	GetPlatformResourceWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetPlatformResourceResponse, error)
+
 	// ListPoliciesWithResponse List policies (org + platform-global)
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -12804,14 +20988,14 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /api/v1/tenants/{org}/policies/{id} (the `GetPolicy` operationId).
 	GetPolicyWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetPolicyResponse, error)
 
-	// UpdatePolicyWithBodyWithResponse Update a policy (bumps version)
+	// UpdatePolicyWithBodyWithResponse Update a policy (bumps version; exemptions bind the stable ID, so renames/edits keep them valid)
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with PUT /api/v1/tenants/{org}/policies/{id} (the `UpdatePolicy` operationId).
 	UpdatePolicyWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePolicyResponse, error)
 
-	// UpdatePolicyWithResponse Update a policy (bumps version)
+	// UpdatePolicyWithResponse Update a policy (bumps version; exemptions bind the stable ID, so renames/edits keep them valid)
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
@@ -12888,19 +21072,145 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /api/v1/tenants/{org}/rbac (the `GetRBACMatrix` operationId).
 	GetRBACMatrixWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*GetRBACMatrixResponse, error)
 
-	// PutRBACMappingsWithBodyWithResponse Declarative bulk set of team→role mappings, applied atomically (org admin only)
+	// PutRBACMappingsWithBodyWithResponse Declarative bulk set of team→role mappings, applied atomically (tenant.rbac.manage)
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with PUT /api/v1/tenants/{org}/rbac/mappings (the `PutRBACMappings` operationId).
 	PutRBACMappingsWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutRBACMappingsResponse, error)
 
-	// PutRBACMappingsWithResponse Declarative bulk set of team→role mappings, applied atomically (org admin only)
+	// PutRBACMappingsWithResponse Declarative bulk set of team→role mappings, applied atomically (tenant.rbac.manage)
 	//
 	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with PUT /api/v1/tenants/{org}/rbac/mappings (the `PutRBACMappings` operationId).
 	PutRBACMappingsWithResponse(ctx context.Context, org string, body PutRBACMappingsJSONRequestBody, reqEditors ...RequestEditorFn) (*PutRBACMappingsResponse, error)
+
+	// ListResourceTargetProvidersWithResponse List resource target provider config and UI schemas
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/resource-target-providers (the `ListResourceTargetProviders` operationId).
+	ListResourceTargetProvidersWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListResourceTargetProvidersResponse, error)
+
+	// ListResourceTargetsWithResponse List caller-entitled shared resource targets
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/resource-targets (the `ListResourceTargets` operationId).
+	ListResourceTargetsWithResponse(ctx context.Context, org string, params *ListResourceTargetsParams, reqEditors ...RequestEditorFn) (*ListResourceTargetsResponse, error)
+
+	// RegisterResourceTargetWithBodyWithResponse Adopt an existing inventory resource as a shared target
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/resource-targets (the `RegisterResourceTarget` operationId).
+	RegisterResourceTargetWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RegisterResourceTargetResponse, error)
+
+	// RegisterResourceTargetWithResponse Adopt an existing inventory resource as a shared target
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/resource-targets (the `RegisterResourceTarget` operationId).
+	RegisterResourceTargetWithResponse(ctx context.Context, org string, body RegisterResourceTargetJSONRequestBody, reqEditors ...RequestEditorFn) (*RegisterResourceTargetResponse, error)
+
+	// DeleteResourceTargetWithResponse Delete a target overlay without deleting its resource
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/resource-targets/{id} (the `DeleteResourceTarget` operationId).
+	DeleteResourceTargetWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DeleteResourceTargetResponse, error)
+
+	// GetResourceTargetWithResponse Get a caller-visible resource target
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/resource-targets/{id} (the `GetResourceTarget` operationId).
+	GetResourceTargetWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetResourceTargetResponse, error)
+
+	// UpdateResourceTargetWithBodyWithResponse Update target policy with optimistic concurrency
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/resource-targets/{id} (the `UpdateResourceTarget` operationId).
+	UpdateResourceTargetWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateResourceTargetResponse, error)
+
+	// UpdateResourceTargetWithResponse Update target policy with optimistic concurrency
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/resource-targets/{id} (the `UpdateResourceTarget` operationId).
+	UpdateResourceTargetWithResponse(ctx context.Context, org string, id string, body UpdateResourceTargetJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateResourceTargetResponse, error)
+
+	// RevokeResourceTargetGrantWithResponse Revoke a team's target grant
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/resource-targets/{id}/grants/{teamId} (the `RevokeResourceTargetGrant` operationId).
+	RevokeResourceTargetGrantWithResponse(ctx context.Context, org string, id string, teamId string, reqEditors ...RequestEditorFn) (*RevokeResourceTargetGrantResponse, error)
+
+	// SetResourceTargetGrantWithBodyWithResponse Set a team's view, use, or provision grant
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/resource-targets/{id}/grants/{teamId} (the `SetResourceTargetGrant` operationId).
+	SetResourceTargetGrantWithBodyWithResponse(ctx context.Context, org string, id string, teamId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetResourceTargetGrantResponse, error)
+
+	// SetResourceTargetGrantWithResponse Set a team's view, use, or provision grant
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/resource-targets/{id}/grants/{teamId} (the `SetResourceTargetGrant` operationId).
+	SetResourceTargetGrantWithResponse(ctx context.Context, org string, id string, teamId string, body SetResourceTargetGrantJSONRequestBody, reqEditors ...RequestEditorFn) (*SetResourceTargetGrantResponse, error)
+
+	// ListRolesWithResponse List org roles (built-in and custom)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/roles (the `ListRoles` operationId).
+	ListRolesWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListRolesResponse, error)
+
+	// CreateRoleWithBodyWithResponse Create a custom org role (tenant.rbac.manage)
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/roles (the `CreateRole` operationId).
+	CreateRoleWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateRoleResponse, error)
+
+	// CreateRoleWithResponse Create a custom org role (tenant.rbac.manage)
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/roles (the `CreateRole` operationId).
+	CreateRoleWithResponse(ctx context.Context, org string, body CreateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateRoleResponse, error)
+
+	// DeleteRoleWithResponse Delete a custom role (tenant.rbac.manage; built-ins are never deletable)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/roles/{role} (the `DeleteRole` operationId).
+	DeleteRoleWithResponse(ctx context.Context, org string, role string, reqEditors ...RequestEditorFn) (*DeleteRoleResponse, error)
+
+	// GetRoleWithResponse Get one org role by name or ID
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/roles/{role} (the `GetRole` operationId).
+	GetRoleWithResponse(ctx context.Context, org string, role string, reqEditors ...RequestEditorFn) (*GetRoleResponse, error)
+
+	// UpdateRoleWithBodyWithResponse Edit a role (tenant.rbac.manage; built-in names are immutable; the tenant.admin guardrail applies)
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/roles/{role} (the `UpdateRole` operationId).
+	UpdateRoleWithBodyWithResponse(ctx context.Context, org string, role string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateRoleResponse, error)
+
+	// UpdateRoleWithResponse Edit a role (tenant.rbac.manage; built-in names are immutable; the tenant.admin guardrail applies)
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/roles/{role} (the `UpdateRole` operationId).
+	UpdateRoleWithResponse(ctx context.Context, org string, role string, body UpdateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateRoleResponse, error)
 
 	// ListRolloutsWithResponse List rollouts
 	//
@@ -12972,6 +21282,104 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /api/v1/tenants/{org}/rollouts/{id}/targets (the `ListRolloutTargets` operationId).
 	ListRolloutTargetsWithResponse(ctx context.Context, org string, id string, params *ListRolloutTargetsParams, reqEditors ...RequestEditorFn) (*ListRolloutTargetsResponse, error)
 
+	// GetScaffoldRunWithResponse Get a scaffold run with per-phase step states and outputs (UI polls this)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/scaffold-runs/{runId} (the `GetScaffoldRun` operationId).
+	GetScaffoldRunWithResponse(ctx context.Context, org string, runId string, reqEditors ...RequestEditorFn) (*GetScaffoldRunResponse, error)
+
+	// CancelScaffoldRunWithResponse Cooperatively cancel a scaffold run (retains already-created outputs)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/scaffold-runs/{runId}/cancel (the `CancelScaffoldRun` operationId).
+	CancelScaffoldRunWithResponse(ctx context.Context, org string, runId string, reqEditors ...RequestEditorFn) (*CancelScaffoldRunResponse, error)
+
+	// RetryScaffoldRunWithResponse Resume a failed scaffold run from its first non-completed step
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/scaffold-runs/{runId}/retry (the `RetryScaffoldRun` operationId).
+	RetryScaffoldRunWithResponse(ctx context.Context, org string, runId string, reqEditors ...RequestEditorFn) (*RetryScaffoldRunResponse, error)
+
+	// CreateScaffoldWithBodyWithResponse Create a scaffold run (UI wizard contract)
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/scaffolds (the `CreateScaffold` operationId).
+	CreateScaffoldWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateScaffoldResponse, error)
+
+	// CreateScaffoldWithResponse Create a scaffold run (UI wizard contract)
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/scaffolds (the `CreateScaffold` operationId).
+	CreateScaffoldWithResponse(ctx context.Context, org string, body CreateScaffoldJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateScaffoldResponse, error)
+
+	// GetScaffoldWithResponse Get a scaffold run (UI wizard polling contract)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/scaffolds/{runId} (the `GetScaffold` operationId).
+	GetScaffoldWithResponse(ctx context.Context, org string, runId string, reqEditors ...RequestEditorFn) (*GetScaffoldResponse, error)
+
+	// ListSecretStoresWithResponse List secret stores (own cluster-scoped plus platform stores)
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/secret-stores (the `ListSecretStores` operationId).
+	ListSecretStoresWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListSecretStoresResponse, error)
+
+	// CreateSecretStoreWithBodyWithResponse Register a secret store
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/secret-stores (the `CreateSecretStore` operationId).
+	CreateSecretStoreWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSecretStoreResponse, error)
+
+	// CreateSecretStoreWithResponse Register a secret store
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/secret-stores (the `CreateSecretStore` operationId).
+	CreateSecretStoreWithResponse(ctx context.Context, org string, body CreateSecretStoreJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSecretStoreResponse, error)
+
+	// DeleteSecretStoreWithResponse Delete a secret store
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/secret-stores/{name} (the `DeleteSecretStore` operationId).
+	DeleteSecretStoreWithResponse(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*DeleteSecretStoreResponse, error)
+
+	// GetSecretStoreWithResponse Get one secret store
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/secret-stores/{name} (the `GetSecretStore` operationId).
+	GetSecretStoreWithResponse(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*GetSecretStoreResponse, error)
+
+	// UpdateSecretStoreWithBodyWithResponse Update a secret store's targets/provider
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/secret-stores/{name} (the `UpdateSecretStore` operationId).
+	UpdateSecretStoreWithBodyWithResponse(ctx context.Context, org string, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSecretStoreResponse, error)
+
+	// UpdateSecretStoreWithResponse Update a secret store's targets/provider
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PATCH /api/v1/tenants/{org}/secret-stores/{name} (the `UpdateSecretStore` operationId).
+	UpdateSecretStoreWithResponse(ctx context.Context, org string, name string, body UpdateSecretStoreJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSecretStoreResponse, error)
+
+	// GetSecretStoreStatusWithResponse Delivery status projection for one secret store
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/secret-stores/{name}/status (the `GetSecretStoreStatus` operationId).
+	GetSecretStoreStatusWithResponse(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*GetSecretStoreStatusResponse, error)
+
 	// ListTeamsWithResponse List teams of a tenant
 	//
 	// Returns a wrapper object for the known response body format(s).
@@ -13000,12 +21408,26 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with DELETE /api/v1/tenants/{org}/teams/{team} (the `DeleteTeam` operationId).
 	DeleteTeamWithResponse(ctx context.Context, org string, team string, reqEditors ...RequestEditorFn) (*DeleteTeamResponse, error)
 
+	// UpdateTeamWithBodyWithResponse Update a team's display name (org admin only; name and Keycloak group path are immutable, default teams are protected — ADR-0007)
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/teams/{team} (the `UpdateTeam` operationId).
+	UpdateTeamWithBodyWithResponse(ctx context.Context, org string, team string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateTeamResponse, error)
+
+	// UpdateTeamWithResponse Update a team's display name (org admin only; name and Keycloak group path are immutable, default teams are protected — ADR-0007)
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/teams/{team} (the `UpdateTeam` operationId).
+	UpdateTeamWithResponse(ctx context.Context, org string, team string, body UpdateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateTeamResponse, error)
+
 	// ListMembersWithResponse List members of a team
 	//
 	// Returns a wrapper object for the known response body format(s).
 	//
 	// Corresponds with GET /api/v1/tenants/{org}/teams/{team}/members (the `ListMembers` operationId).
-	ListMembersWithResponse(ctx context.Context, org string, team string, reqEditors ...RequestEditorFn) (*ListMembersResponse, error)
+	ListMembersWithResponse(ctx context.Context, org string, team string, params *ListMembersParams, reqEditors ...RequestEditorFn) (*ListMembersResponse, error)
 
 	// AddMemberWithBodyWithResponse Add a user to a team (platform-engineer/admin only)
 	//
@@ -13027,6 +21449,34 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with DELETE /api/v1/tenants/{org}/teams/{team}/members/{subject} (the `RemoveMember` operationId).
 	RemoveMemberWithResponse(ctx context.Context, org string, team string, subject string, reqEditors ...RequestEditorFn) (*RemoveMemberResponse, error)
+
+	// ListTemplatesWithResponse List software templates visible to the tenant at their effective versions
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/templates (the `ListTemplates` operationId).
+	ListTemplatesWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListTemplatesResponse, error)
+
+	// GetTemplateWithResponse Get a template with its values schema and optional uiSchema
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/templates/{name} (the `GetTemplate` operationId).
+	GetTemplateWithResponse(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*GetTemplateResponse, error)
+
+	// CreateScaffoldRunWithBodyWithResponse Create a scaffold run (idempotent: identical resubmits return the existing run)
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/templates/{name}/runs (the `CreateScaffoldRun` operationId).
+	CreateScaffoldRunWithBodyWithResponse(ctx context.Context, org string, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateScaffoldRunResponse, error)
+
+	// CreateScaffoldRunWithResponse Create a scaffold run (idempotent: identical resubmits return the existing run)
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/templates/{name}/runs (the `CreateScaffoldRun` operationId).
+	CreateScaffoldRunWithResponse(ctx context.Context, org string, name string, body CreateScaffoldRunJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateScaffoldRunResponse, error)
 
 	// ListTenantZonesWithResponse List tenant zones owned by this org
 	//
@@ -13069,6 +21519,20 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /api/v1/tenants/{org}/zones/{id}/resume (the `ResumeTenantZone` operationId).
 	ResumeTenantZoneWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*ResumeTenantZoneResponse, error)
+
+	// GitWebhookIngressWithBodyWithResponse Git provider webhook ingress (per-repo HMAC-authenticated)
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/webhooks/git/{provider} (the `GitWebhookIngress` operationId).
+	GitWebhookIngressWithBodyWithResponse(ctx context.Context, provider string, params *GitWebhookIngressParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GitWebhookIngressResponse, error)
+
+	// GitWebhookIngressWithResponse Git provider webhook ingress (per-repo HMAC-authenticated)
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/webhooks/git/{provider} (the `GitWebhookIngress` operationId).
+	GitWebhookIngressWithResponse(ctx context.Context, provider string, params *GitWebhookIngressParams, body GitWebhookIngressJSONRequestBody, reqEditors ...RequestEditorFn) (*GitWebhookIngressResponse, error)
 
 	// GetHealthWithResponse Liveness probe
 	//
@@ -13216,6 +21680,314 @@ func (r InboxApprovalsResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r InboxApprovalsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetMyPermissionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *MyPermissionsOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetMyPermissionsResponse) GetJSON200() *MyPermissionsOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GetMyPermissionsResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GetMyPermissionsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetMyPermissionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetMyPermissionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetMyPermissionsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListPlatformAdminsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ListPlatformAdminsOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListPlatformAdminsResponse) GetJSON200() *ListPlatformAdminsOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ListPlatformAdminsResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ListPlatformAdminsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListPlatformAdminsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListPlatformAdminsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListPlatformAdminsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RevokePlatformAdminResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r RevokePlatformAdminResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r RevokePlatformAdminResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RevokePlatformAdminResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RevokePlatformAdminResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RevokePlatformAdminResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GrantPlatformAdminResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GrantPlatformAdminResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GrantPlatformAdminResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GrantPlatformAdminResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GrantPlatformAdminResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GrantPlatformAdminResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListPlatformFeatureFlagsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ListFlagsOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListPlatformFeatureFlagsResponse) GetJSON200() *ListFlagsOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ListPlatformFeatureFlagsResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ListPlatformFeatureFlagsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListPlatformFeatureFlagsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListPlatformFeatureFlagsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListPlatformFeatureFlagsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ClearPlatformFeatureFlagResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ClearPlatformFeatureFlagResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ClearPlatformFeatureFlagResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ClearPlatformFeatureFlagResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ClearPlatformFeatureFlagResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ClearPlatformFeatureFlagResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SetPlatformFeatureFlagResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r SetPlatformFeatureFlagResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r SetPlatformFeatureFlagResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r SetPlatformFeatureFlagResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetPlatformFeatureFlagResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SetPlatformFeatureFlagResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -13456,6 +22228,143 @@ func (r UpdateTenantResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r UpdateTenantResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteAddonResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r DeleteAddonResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteAddonResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteAddonResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteAddonResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteAddonResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateAddonResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *AdoptOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateAddonResponse) GetJSON200() *AdoptOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r UpdateAddonResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateAddonResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateAddonResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateAddonResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateAddonResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type EnableAddonPruneResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *AdoptOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r EnableAddonPruneResponse) GetJSON200() *AdoptOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r EnableAddonPruneResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r EnableAddonPruneResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r EnableAddonPruneResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r EnableAddonPruneResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r EnableAddonPruneResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -13792,6 +22701,205 @@ func (r DecideApprovalResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r DecideApprovalResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListAuditLogResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ListAuditUIOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListAuditLogResponse) GetJSON200() *ListAuditUIOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ListAuditLogResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ListAuditLogResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListAuditLogResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListAuditLogResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListAuditLogResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListAuditEventsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ListEventsOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListAuditEventsResponse) GetJSON200() *ListEventsOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ListAuditEventsResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ListAuditEventsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListAuditEventsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListAuditEventsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListAuditEventsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+// ExportAuditLogResponse200Headers the declared response headers of an HTTP 200 response for ExportAuditLog
+type ExportAuditLogResponse200Headers struct {
+	ContentType *string
+}
+
+type ExportAuditLogResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *[]byte
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+	// Headers200 the parsed response headers for an HTTP 200 response
+	Headers200 *ExportAuditLogResponse200Headers
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ExportAuditLogResponse) GetJSON200() *[]byte {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ExportAuditLogResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ExportAuditLogResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ExportAuditLogResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ExportAuditLogResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ExportAuditLogResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SelfExtensionPermissionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SelfPermissionsOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r SelfExtensionPermissionsResponse) GetJSON200() *SelfPermissionsOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r SelfExtensionPermissionsResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r SelfExtensionPermissionsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r SelfExtensionPermissionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SelfExtensionPermissionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SelfExtensionPermissionsResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -14922,6 +24030,102 @@ func (r CreateClusterResponse) ContentType() string {
 	return ""
 }
 
+type ListClusterAddonsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ListAddonsOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListClusterAddonsResponse) GetJSON200() *ListAddonsOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ListClusterAddonsResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ListClusterAddonsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListClusterAddonsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListClusterAddonsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListClusterAddonsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type AdoptAddonResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *AdoptOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r AdoptAddonResponse) GetJSON200() *AdoptOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r AdoptAddonResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r AdoptAddonResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r AdoptAddonResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AdoptAddonResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r AdoptAddonResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type DeleteClusterResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -15251,39 +24455,32 @@ func (r DecommissionClusterResponse) ContentType() string {
 	return ""
 }
 
-// RenderInstallManifestResponse200Headers the declared response headers of an HTTP 200 response for RenderInstallManifest
-type RenderInstallManifestResponse200Headers struct {
-	ContentType *string
-}
-
-type RenderInstallManifestResponse struct {
+type ListClusterFeatureFlagsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	// JSON200 the response for an HTTP 200 `application/json` response
-	JSON200 *[]byte
+	JSON200 *ListFlagsOutputBody
 	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
 	ApplicationproblemJSONDefault *ErrorModel
-	// Headers200 the parsed response headers for an HTTP 200 response
-	Headers200 *RenderInstallManifestResponse200Headers
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
-func (r RenderInstallManifestResponse) GetJSON200() *[]byte {
+func (r ListClusterFeatureFlagsResponse) GetJSON200() *ListFlagsOutputBody {
 	return r.JSON200
 }
 
 // GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
-func (r RenderInstallManifestResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+func (r ListClusterFeatureFlagsResponse) GetApplicationproblemJSONDefault() *ErrorModel {
 	return r.ApplicationproblemJSONDefault
 }
 
 // GetBody returns the raw response body bytes
-func (r RenderInstallManifestResponse) GetBody() []byte {
+func (r ListClusterFeatureFlagsResponse) GetBody() []byte {
 	return r.Body
 }
 
 // Status returns HTTPResponse.Status
-func (r RenderInstallManifestResponse) Status() string {
+func (r ListClusterFeatureFlagsResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -15291,7 +24488,7 @@ func (r RenderInstallManifestResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r RenderInstallManifestResponse) StatusCode() int {
+func (r ListClusterFeatureFlagsResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -15299,25 +24496,114 @@ func (r RenderInstallManifestResponse) StatusCode() int {
 }
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
-func (r RenderInstallManifestResponse) ContentType() string {
+func (r ListClusterFeatureFlagsResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
 	return ""
 }
 
-type GetClusterKubeconfigResponse struct {
+type ClearClusterFeatureFlagResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	// YAML200 the response for an HTTP 200 `application/yaml` response
-	YAML200 *string
 	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
 	ApplicationproblemJSONDefault *ErrorModel
 }
 
-// GetYAML200 returns the response for an HTTP 200 `application/yaml` response
-func (r GetClusterKubeconfigResponse) GetYAML200() *string {
-	return r.YAML200
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ClearClusterFeatureFlagResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ClearClusterFeatureFlagResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ClearClusterFeatureFlagResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ClearClusterFeatureFlagResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ClearClusterFeatureFlagResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SetClusterFeatureFlagResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r SetClusterFeatureFlagResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r SetClusterFeatureFlagResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r SetClusterFeatureFlagResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetClusterFeatureFlagResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SetClusterFeatureFlagResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+// GetClusterKubeconfigResponse200Headers the declared response headers of an HTTP 200 response for GetClusterKubeconfig
+type GetClusterKubeconfigResponse200Headers struct {
+	ContentType *string
+}
+
+type GetClusterKubeconfigResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *[]byte
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+	// Headers200 the parsed response headers for an HTTP 200 response
+	Headers200 *GetClusterKubeconfigResponse200Headers
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetClusterKubeconfigResponse) GetJSON200() *[]byte {
+	return r.JSON200
 }
 
 // GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
@@ -15348,6 +24634,54 @@ func (r GetClusterKubeconfigResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetClusterKubeconfigResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RebindClusterBaselineResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ClusterOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r RebindClusterBaselineResponse) GetJSON200() *ClusterOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r RebindClusterBaselineResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r RebindClusterBaselineResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RebindClusterBaselineResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RebindClusterBaselineResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RebindClusterBaselineResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -15920,13 +25254,13 @@ type ListExtensionsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	// JSON200 the response for an HTTP 200 `application/json` response
-	JSON200 *ListOutputBody3
+	JSON200 *ListOutputBody7
 	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
 	ApplicationproblemJSONDefault *ErrorModel
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
-func (r ListExtensionsResponse) GetJSON200() *ListOutputBody3 {
+func (r ListExtensionsResponse) GetJSON200() *ListOutputBody7 {
 	return r.JSON200
 }
 
@@ -16006,6 +25340,143 @@ func (r RegisterExtensionResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r RegisterExtensionResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListUiExtensionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ListUiOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListUiExtensionsResponse) GetJSON200() *ListUiOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ListUiExtensionsResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ListUiExtensionsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListUiExtensionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListUiExtensionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListUiExtensionsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RegisterUiExtensionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *UiExtensionOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r RegisterUiExtensionResponse) GetJSON200() *UiExtensionOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r RegisterUiExtensionResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r RegisterUiExtensionResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RegisterUiExtensionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RegisterUiExtensionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RegisterUiExtensionResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UnregisterUiExtensionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r UnregisterUiExtensionResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r UnregisterUiExtensionResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UnregisterUiExtensionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnregisterUiExtensionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UnregisterUiExtensionResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -16095,6 +25566,143 @@ func (r GetExtensionResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r GetExtensionResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RotateExtensionIdentityResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *RotateIdentityOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r RotateExtensionIdentityResponse) GetJSON200() *RotateIdentityOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r RotateExtensionIdentityResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r RotateExtensionIdentityResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RotateExtensionIdentityResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RotateExtensionIdentityResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RotateExtensionIdentityResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteExtensionSessionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r DeleteExtensionSessionResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteExtensionSessionResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteExtensionSessionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteExtensionSessionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteExtensionSessionResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PutExtensionSessionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SessionOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PutExtensionSessionResponse) GetJSON200() *SessionOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r PutExtensionSessionResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r PutExtensionSessionResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PutExtensionSessionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PutExtensionSessionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PutExtensionSessionResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -16232,6 +25840,548 @@ func (r SetTenantGitConfigResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r SetTenantGitConfigResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListGitConnectionsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ListConnectionsOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListGitConnectionsResponse) GetJSON200() *ListConnectionsOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ListGitConnectionsResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ListGitConnectionsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListGitConnectionsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListGitConnectionsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListGitConnectionsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DisconnectGitConnectionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r DisconnectGitConnectionResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r DisconnectGitConnectionResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DisconnectGitConnectionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DisconnectGitConnectionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DisconnectGitConnectionResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+// AuthorizeGitConnectionGetResponse200Headers the declared response headers of an HTTP 200 response for AuthorizeGitConnectionGet
+type AuthorizeGitConnectionGetResponse200Headers struct {
+	Location *string
+}
+
+type AuthorizeGitConnectionGetResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *AuthorizeURLBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+	// Headers200 the parsed response headers for an HTTP 200 response
+	Headers200 *AuthorizeGitConnectionGetResponse200Headers
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r AuthorizeGitConnectionGetResponse) GetJSON200() *AuthorizeURLBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r AuthorizeGitConnectionGetResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r AuthorizeGitConnectionGetResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r AuthorizeGitConnectionGetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AuthorizeGitConnectionGetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r AuthorizeGitConnectionGetResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+// AuthorizeGitConnectionResponse200Headers the declared response headers of an HTTP 200 response for AuthorizeGitConnection
+type AuthorizeGitConnectionResponse200Headers struct {
+	Location *string
+}
+
+type AuthorizeGitConnectionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *AuthorizeURLBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+	// Headers200 the parsed response headers for an HTTP 200 response
+	Headers200 *AuthorizeGitConnectionResponse200Headers
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r AuthorizeGitConnectionResponse) GetJSON200() *AuthorizeURLBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r AuthorizeGitConnectionResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r AuthorizeGitConnectionResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r AuthorizeGitConnectionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AuthorizeGitConnectionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r AuthorizeGitConnectionResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+// GitConnectionCallbackResponse200Headers the declared response headers of an HTTP 200 response for GitConnectionCallback
+type GitConnectionCallbackResponse200Headers struct {
+	Location *string
+}
+
+type GitConnectionCallbackResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *AuthorizeURLBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+	// Headers200 the parsed response headers for an HTTP 200 response
+	Headers200 *GitConnectionCallbackResponse200Headers
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GitConnectionCallbackResponse) GetJSON200() *AuthorizeURLBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GitConnectionCallbackResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GitConnectionCallbackResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GitConnectionCallbackResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GitConnectionCallbackResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GitConnectionCallbackResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListGitReposResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ListOutputBody3
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListGitReposResponse) GetJSON200() *ListOutputBody3 {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ListGitReposResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ListGitReposResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListGitReposResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListGitReposResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListGitReposResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RegisterGitRepoResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *RepoOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r RegisterGitRepoResponse) GetJSON200() *RepoOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r RegisterGitRepoResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r RegisterGitRepoResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RegisterGitRepoResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RegisterGitRepoResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RegisterGitRepoResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UnregisterGitRepoResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *UnregisterOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UnregisterGitRepoResponse) GetJSON200() *UnregisterOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r UnregisterGitRepoResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r UnregisterGitRepoResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UnregisterGitRepoResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UnregisterGitRepoResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UnregisterGitRepoResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetGitRepoResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *RepoOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetGitRepoResponse) GetJSON200() *RepoOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GetGitRepoResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GetGitRepoResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetGitRepoResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetGitRepoResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetGitRepoResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateGitRepoResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *RepoOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateGitRepoResponse) GetJSON200() *RepoOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r UpdateGitRepoResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateGitRepoResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateGitRepoResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateGitRepoResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateGitRepoResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type EnsureGitRepoWebhookResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *WebhookOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r EnsureGitRepoWebhookResponse) GetJSON200() *WebhookOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r EnsureGitRepoWebhookResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r EnsureGitRepoWebhookResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r EnsureGitRepoWebhookResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r EnsureGitRepoWebhookResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r EnsureGitRepoWebhookResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -16567,6 +26717,232 @@ func (r RotateIdentityClientSecretResponse) ContentType() string {
 	return ""
 }
 
+type DeleteIdentityProviderCompatResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r DeleteIdentityProviderCompatResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteIdentityProviderCompatResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteIdentityProviderCompatResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteIdentityProviderCompatResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteIdentityProviderCompatResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetIdentityProviderCompatResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ProviderCompatOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetIdentityProviderCompatResponse) GetJSON200() *ProviderCompatOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GetIdentityProviderCompatResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GetIdentityProviderCompatResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetIdentityProviderCompatResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetIdentityProviderCompatResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetIdentityProviderCompatResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PutIdentityProviderCompatResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ProviderCompatOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PutIdentityProviderCompatResponse) GetJSON200() *ProviderCompatOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r PutIdentityProviderCompatResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r PutIdentityProviderCompatResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PutIdentityProviderCompatResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PutIdentityProviderCompatResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PutIdentityProviderCompatResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PutProviderDomainsCompatResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ProviderCompatOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PutProviderDomainsCompatResponse) GetJSON200() *ProviderCompatOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r PutProviderDomainsCompatResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r PutProviderDomainsCompatResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PutProviderDomainsCompatResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PutProviderDomainsCompatResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PutProviderDomainsCompatResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RotateProviderSecretCompatResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r RotateProviderSecretCompatResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r RotateProviderSecretCompatResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RotateProviderSecretCompatResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RotateProviderSecretCompatResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RotateProviderSecretCompatResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type ListIdentityProvidersResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -16896,6 +27272,54 @@ func (r ListInstancesResponse) ContentType() string {
 	return ""
 }
 
+type DeleteInstanceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DeployOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r DeleteInstanceResponse) GetJSON200() *DeployOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r DeleteInstanceResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteInstanceResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteInstanceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteInstanceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteInstanceResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetInstanceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -16944,6 +27368,54 @@ func (r GetInstanceResponse) ContentType() string {
 	return ""
 }
 
+type UpdateInstanceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DeployOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateInstanceResponse) GetJSON200() *DeployOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r UpdateInstanceResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateInstanceResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateInstanceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateInstanceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateInstanceResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type InstanceDiffResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -16986,6 +27458,54 @@ func (r InstanceDiffResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r InstanceDiffResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RollbackInstanceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DeployOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r RollbackInstanceResponse) GetJSON200() *DeployOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r RollbackInstanceResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r RollbackInstanceResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RollbackInstanceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RollbackInstanceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RollbackInstanceResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -17174,13 +27694,13 @@ type ListNotificationEndpointsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
 	// JSON200 the response for an HTTP 200 `application/json` response
-	JSON200 *ListOutputBody2
+	JSON200 *ListOutputBody5
 	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
 	ApplicationproblemJSONDefault *ErrorModel
 }
 
 // GetJSON200 returns the response for an HTTP 200 `application/json` response
-func (r ListNotificationEndpointsResponse) GetJSON200() *ListOutputBody2 {
+func (r ListNotificationEndpointsResponse) GetJSON200() *ListOutputBody5 {
 	return r.JSON200
 }
 
@@ -17445,6 +27965,198 @@ func (r TestNotificationEndpointResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r TestNotificationEndpointResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetPermissionCatalogResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PermissionCatalogOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetPermissionCatalogResponse) GetJSON200() *PermissionCatalogOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GetPermissionCatalogResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GetPermissionCatalogResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPermissionCatalogResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPermissionCatalogResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetPermissionCatalogResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListPlatformResourcesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ListOutputBody2
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListPlatformResourcesResponse) GetJSON200() *ListOutputBody2 {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ListPlatformResourcesResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ListPlatformResourcesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListPlatformResourcesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListPlatformResourcesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListPlatformResourcesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ReconcilePlatformResourcesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ReconcileOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ReconcilePlatformResourcesResponse) GetJSON200() *ReconcileOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ReconcilePlatformResourcesResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ReconcilePlatformResourcesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ReconcilePlatformResourcesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ReconcilePlatformResourcesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ReconcilePlatformResourcesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetPlatformResourceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *GetOutputBody1
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetPlatformResourceResponse) GetJSON200() *GetOutputBody1 {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GetPlatformResourceResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GetPlatformResourceResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPlatformResourceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPlatformResourceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetPlatformResourceResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -18150,6 +28862,623 @@ func (r PutRBACMappingsResponse) ContentType() string {
 	return ""
 }
 
+type ListResourceTargetProvidersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ProvidersOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListResourceTargetProvidersResponse) GetJSON200() *ProvidersOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ListResourceTargetProvidersResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ListResourceTargetProvidersResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListResourceTargetProvidersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListResourceTargetProvidersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListResourceTargetProvidersResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListResourceTargetsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ListOutputBody4
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListResourceTargetsResponse) GetJSON200() *ListOutputBody4 {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ListResourceTargetsResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ListResourceTargetsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListResourceTargetsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListResourceTargetsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListResourceTargetsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RegisterResourceTargetResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *TargetOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r RegisterResourceTargetResponse) GetJSON200() *TargetOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r RegisterResourceTargetResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r RegisterResourceTargetResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RegisterResourceTargetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RegisterResourceTargetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RegisterResourceTargetResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteResourceTargetResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DeleteOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r DeleteResourceTargetResponse) GetJSON200() *DeleteOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r DeleteResourceTargetResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteResourceTargetResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteResourceTargetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteResourceTargetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteResourceTargetResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetResourceTargetResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *TargetOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetResourceTargetResponse) GetJSON200() *TargetOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GetResourceTargetResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GetResourceTargetResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetResourceTargetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetResourceTargetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetResourceTargetResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateResourceTargetResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *TargetOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateResourceTargetResponse) GetJSON200() *TargetOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r UpdateResourceTargetResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateResourceTargetResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateResourceTargetResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateResourceTargetResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateResourceTargetResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RevokeResourceTargetGrantResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *DeleteOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r RevokeResourceTargetGrantResponse) GetJSON200() *DeleteOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r RevokeResourceTargetGrantResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r RevokeResourceTargetGrantResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RevokeResourceTargetGrantResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RevokeResourceTargetGrantResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RevokeResourceTargetGrantResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type SetResourceTargetGrantResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *GrantOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r SetResourceTargetGrantResponse) GetJSON200() *GrantOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r SetResourceTargetGrantResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r SetResourceTargetGrantResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r SetResourceTargetGrantResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r SetResourceTargetGrantResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r SetResourceTargetGrantResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListRolesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ListRolesOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListRolesResponse) GetJSON200() *ListRolesOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ListRolesResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ListRolesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListRolesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListRolesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListRolesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateRoleResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *RoleOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r CreateRoleResponse) GetJSON200() *RoleOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r CreateRoleResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r CreateRoleResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateRoleResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateRoleResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateRoleResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteRoleResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r DeleteRoleResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteRoleResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteRoleResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteRoleResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteRoleResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetRoleResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *RoleOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetRoleResponse) GetJSON200() *RoleOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GetRoleResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GetRoleResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetRoleResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetRoleResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetRoleResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateRoleResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *RoleOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateRoleResponse) GetJSON200() *RoleOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r UpdateRoleResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateRoleResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateRoleResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateRoleResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateRoleResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type ListRolloutsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -18534,6 +29863,520 @@ func (r ListRolloutTargetsResponse) ContentType() string {
 	return ""
 }
 
+type GetScaffoldRunResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *GetRunOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetScaffoldRunResponse) GetJSON200() *GetRunOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GetScaffoldRunResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GetScaffoldRunResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetScaffoldRunResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetScaffoldRunResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetScaffoldRunResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CancelScaffoldRunResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r CancelScaffoldRunResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r CancelScaffoldRunResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CancelScaffoldRunResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CancelScaffoldRunResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CancelScaffoldRunResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RetryScaffoldRunResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *RetryRunOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r RetryScaffoldRunResponse) GetJSON200() *RetryRunOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r RetryScaffoldRunResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r RetryScaffoldRunResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RetryScaffoldRunResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RetryScaffoldRunResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RetryScaffoldRunResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateScaffoldResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *CreateScaffoldOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r CreateScaffoldResponse) GetJSON200() *CreateScaffoldOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r CreateScaffoldResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r CreateScaffoldResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateScaffoldResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateScaffoldResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateScaffoldResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetScaffoldResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *GetScaffoldOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetScaffoldResponse) GetJSON200() *GetScaffoldOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GetScaffoldResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GetScaffoldResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetScaffoldResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetScaffoldResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetScaffoldResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListSecretStoresResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ListOutputBody6
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListSecretStoresResponse) GetJSON200() *ListOutputBody6 {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ListSecretStoresResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ListSecretStoresResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListSecretStoresResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListSecretStoresResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListSecretStoresResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateSecretStoreResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *StoreOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r CreateSecretStoreResponse) GetJSON200() *StoreOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r CreateSecretStoreResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r CreateSecretStoreResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateSecretStoreResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateSecretStoreResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateSecretStoreResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DeleteSecretStoreResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r DeleteSecretStoreResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r DeleteSecretStoreResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteSecretStoreResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteSecretStoreResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DeleteSecretStoreResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetSecretStoreResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *StoreOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetSecretStoreResponse) GetJSON200() *StoreOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GetSecretStoreResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GetSecretStoreResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSecretStoreResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSecretStoreResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetSecretStoreResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type UpdateSecretStoreResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *StoreOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateSecretStoreResponse) GetJSON200() *StoreOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r UpdateSecretStoreResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateSecretStoreResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateSecretStoreResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateSecretStoreResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateSecretStoreResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetSecretStoreStatusResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *StatusOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetSecretStoreStatusResponse) GetJSON200() *StatusOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GetSecretStoreStatusResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GetSecretStoreStatusResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetSecretStoreStatusResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetSecretStoreStatusResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetSecretStoreStatusResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type ListTeamsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -18671,6 +30514,54 @@ func (r DeleteTeamResponse) ContentType() string {
 	return ""
 }
 
+type UpdateTeamResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *TeamOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r UpdateTeamResponse) GetJSON200() *TeamOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r UpdateTeamResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r UpdateTeamResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateTeamResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateTeamResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r UpdateTeamResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type ListMembersResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -18795,6 +30686,150 @@ func (r RemoveMemberResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r RemoveMemberResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListTemplatesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ListTemplatesOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListTemplatesResponse) GetJSON200() *ListTemplatesOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ListTemplatesResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ListTemplatesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListTemplatesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListTemplatesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListTemplatesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetTemplateResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *GetTemplateOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetTemplateResponse) GetJSON200() *GetTemplateOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GetTemplateResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GetTemplateResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetTemplateResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetTemplateResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetTemplateResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateScaffoldRunResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *CreateRunOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r CreateScaffoldRunResponse) GetJSON200() *CreateRunOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r CreateScaffoldRunResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r CreateScaffoldRunResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateScaffoldRunResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateScaffoldRunResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateScaffoldRunResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -19034,6 +31069,54 @@ func (r ResumeTenantZoneResponse) ContentType() string {
 	return ""
 }
 
+type GitWebhookIngressResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *ReceiveOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GitWebhookIngressResponse) GetJSON200() *ReceiveOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GitWebhookIngressResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GitWebhookIngressResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GitWebhookIngressResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GitWebhookIngressResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GitWebhookIngressResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type GetHealthResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -19175,6 +31258,110 @@ func (c *ClientWithResponses) InboxApprovalsWithResponse(ctx context.Context, pa
 	return ParseInboxApprovalsResponse(rsp)
 }
 
+// GetMyPermissionsWithResponse Platform-level permissions of the authenticated caller
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/me/permissions (the `GetMyPermissions` operationId).
+func (c *ClientWithResponses) GetMyPermissionsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetMyPermissionsResponse, error) {
+	rsp, err := c.GetMyPermissions(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetMyPermissionsResponse(rsp)
+}
+
+// ListPlatformAdminsWithResponse List platform admins (members of the Keycloak platform admin group)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/platform/admins (the `ListPlatformAdmins` operationId).
+func (c *ClientWithResponses) ListPlatformAdminsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListPlatformAdminsResponse, error) {
+	rsp, err := c.ListPlatformAdmins(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListPlatformAdminsResponse(rsp)
+}
+
+// RevokePlatformAdminWithResponse Revoke platform admin (leaves the platform admin group; idempotent)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /api/v1/platform/admins/{subject} (the `RevokePlatformAdmin` operationId).
+func (c *ClientWithResponses) RevokePlatformAdminWithResponse(ctx context.Context, subject string, reqEditors ...RequestEditorFn) (*RevokePlatformAdminResponse, error) {
+	rsp, err := c.RevokePlatformAdmin(ctx, subject, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRevokePlatformAdminResponse(rsp)
+}
+
+// GrantPlatformAdminWithResponse Grant platform admin (joins the platform admin group; org_creator tuple converges via PlatformGroupSync)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/platform/admins/{subject} (the `GrantPlatformAdmin` operationId).
+func (c *ClientWithResponses) GrantPlatformAdminWithResponse(ctx context.Context, subject string, reqEditors ...RequestEditorFn) (*GrantPlatformAdminResponse, error) {
+	rsp, err := c.GrantPlatformAdmin(ctx, subject, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGrantPlatformAdminResponse(rsp)
+}
+
+// ListPlatformFeatureFlagsWithResponse List the runtime feature-flag catalog with platform effective values
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/platform/feature-flags (the `ListPlatformFeatureFlags` operationId).
+func (c *ClientWithResponses) ListPlatformFeatureFlagsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*ListPlatformFeatureFlagsResponse, error) {
+	rsp, err := c.ListPlatformFeatureFlags(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListPlatformFeatureFlagsResponse(rsp)
+}
+
+// ClearPlatformFeatureFlagWithResponse Revert a platform-scoped feature flag to its built-in default
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /api/v1/platform/feature-flags/{key} (the `ClearPlatformFeatureFlag` operationId).
+func (c *ClientWithResponses) ClearPlatformFeatureFlagWithResponse(ctx context.Context, key string, reqEditors ...RequestEditorFn) (*ClearPlatformFeatureFlagResponse, error) {
+	rsp, err := c.ClearPlatformFeatureFlag(ctx, key, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseClearPlatformFeatureFlagResponse(rsp)
+}
+
+// SetPlatformFeatureFlagWithBodyWithResponse Set a platform-scoped feature-flag value
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/platform/feature-flags/{key} (the `SetPlatformFeatureFlag` operationId).
+func (c *ClientWithResponses) SetPlatformFeatureFlagWithBodyWithResponse(ctx context.Context, key string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetPlatformFeatureFlagResponse, error) {
+	rsp, err := c.SetPlatformFeatureFlagWithBody(ctx, key, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetPlatformFeatureFlagResponse(rsp)
+}
+
+// SetPlatformFeatureFlagWithResponse Set a platform-scoped feature-flag value
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/platform/feature-flags/{key} (the `SetPlatformFeatureFlag` operationId).
+func (c *ClientWithResponses) SetPlatformFeatureFlagWithResponse(ctx context.Context, key string, body SetPlatformFeatureFlagJSONRequestBody, reqEditors ...RequestEditorFn) (*SetPlatformFeatureFlagResponse, error) {
+	rsp, err := c.SetPlatformFeatureFlag(ctx, key, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetPlatformFeatureFlagResponse(rsp)
+}
+
 // ListTenantsWithResponse List tenants visible to the caller (tenant switcher)
 //
 // Returns a wrapper object for the known response body format(s).
@@ -19277,6 +31464,58 @@ func (c *ClientWithResponses) UpdateTenantWithResponse(ctx context.Context, org 
 		return nil, err
 	}
 	return ParseUpdateTenantResponse(rsp)
+}
+
+// DeleteAddonWithResponse Orphan an addon: stop managing it (row removed; git files and the ArgoCD app keep running)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/addons/{id} (the `DeleteAddon` operationId).
+func (c *ClientWithResponses) DeleteAddonWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DeleteAddonResponse, error) {
+	rsp, err := c.DeleteAddon(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteAddonResponse(rsp)
+}
+
+// UpdateAddonWithBodyWithResponse Update a managed addon's chart version and/or values (commit per repo policy)
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/addons/{id} (the `UpdateAddon` operationId).
+func (c *ClientWithResponses) UpdateAddonWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateAddonResponse, error) {
+	rsp, err := c.UpdateAddonWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAddonResponse(rsp)
+}
+
+// UpdateAddonWithResponse Update a managed addon's chart version and/or values (commit per repo policy)
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/addons/{id} (the `UpdateAddon` operationId).
+func (c *ClientWithResponses) UpdateAddonWithResponse(ctx context.Context, org string, id string, body UpdateAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateAddonResponse, error) {
+	rsp, err := c.UpdateAddon(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateAddonResponse(rsp)
+}
+
+// EnableAddonPruneWithResponse Explicitly enable prune on an adopted addon (audit-logged, one-directional)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/addons/{id}/enable-prune (the `EnableAddonPrune` operationId).
+func (c *ClientWithResponses) EnableAddonPruneWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*EnableAddonPruneResponse, error) {
+	rsp, err := c.EnableAddonPrune(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEnableAddonPruneResponse(rsp)
 }
 
 // ListAgentChannelsWithResponse List agent channel pins
@@ -19394,6 +31633,58 @@ func (c *ClientWithResponses) DecideApprovalWithResponse(ctx context.Context, or
 		return nil, err
 	}
 	return ParseDecideApprovalResponse(rsp)
+}
+
+// ListAuditLogWithResponse Org audit log in the console's shape (filterable by actor/action/objectType/from/to)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/audit (the `ListAuditLog` operationId).
+func (c *ClientWithResponses) ListAuditLogWithResponse(ctx context.Context, org string, params *ListAuditLogParams, reqEditors ...RequestEditorFn) (*ListAuditLogResponse, error) {
+	rsp, err := c.ListAuditLog(ctx, org, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListAuditLogResponse(rsp)
+}
+
+// ListAuditEventsWithResponse List org audit events, newest first (filterable by action and actor)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/audit-events (the `ListAuditEvents` operationId).
+func (c *ClientWithResponses) ListAuditEventsWithResponse(ctx context.Context, org string, params *ListAuditEventsParams, reqEditors ...RequestEditorFn) (*ListAuditEventsResponse, error) {
+	rsp, err := c.ListAuditEvents(ctx, org, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListAuditEventsResponse(rsp)
+}
+
+// ExportAuditLogWithResponse Org audit log as CSV (same filters as the list)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/audit/export (the `ExportAuditLog` operationId).
+func (c *ClientWithResponses) ExportAuditLogWithResponse(ctx context.Context, org string, params *ExportAuditLogParams, reqEditors ...RequestEditorFn) (*ExportAuditLogResponse, error) {
+	rsp, err := c.ExportAuditLog(ctx, org, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseExportAuditLogResponse(rsp)
+}
+
+// SelfExtensionPermissionsWithResponse List the caller's effective extension invoke permissions
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/authz/self/extensions (the `SelfExtensionPermissions` operationId).
+func (c *ClientWithResponses) SelfExtensionPermissionsWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*SelfExtensionPermissionsResponse, error) {
+	rsp, err := c.SelfExtensionPermissions(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSelfExtensionPermissionsResponse(rsp)
 }
 
 // BulkDecideApprovalsWithBodyWithResponse Bulk approve/reject approvals
@@ -19838,6 +32129,45 @@ func (c *ClientWithResponses) CreateClusterWithResponse(ctx context.Context, org
 	return ParseCreateClusterResponse(rsp)
 }
 
+// ListClusterAddonsWithResponse List discovered + managed addons for a cluster (team-filtered, with available versions)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/clusters/{clusterId}/addons (the `ListClusterAddons` operationId).
+func (c *ClientWithResponses) ListClusterAddonsWithResponse(ctx context.Context, org string, clusterId string, reqEditors ...RequestEditorFn) (*ListClusterAddonsResponse, error) {
+	rsp, err := c.ListClusterAddons(ctx, org, clusterId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListClusterAddonsResponse(rsp)
+}
+
+// AdoptAddonWithBodyWithResponse Adopt a (discovered or declared) addon into GitOps management
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/clusters/{clusterId}/addons/{catalogItem}/adopt (the `AdoptAddon` operationId).
+func (c *ClientWithResponses) AdoptAddonWithBodyWithResponse(ctx context.Context, org string, clusterId string, catalogItem string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AdoptAddonResponse, error) {
+	rsp, err := c.AdoptAddonWithBody(ctx, org, clusterId, catalogItem, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAdoptAddonResponse(rsp)
+}
+
+// AdoptAddonWithResponse Adopt a (discovered or declared) addon into GitOps management
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/clusters/{clusterId}/addons/{catalogItem}/adopt (the `AdoptAddon` operationId).
+func (c *ClientWithResponses) AdoptAddonWithResponse(ctx context.Context, org string, clusterId string, catalogItem string, body AdoptAddonJSONRequestBody, reqEditors ...RequestEditorFn) (*AdoptAddonResponse, error) {
+	rsp, err := c.AdoptAddon(ctx, org, clusterId, catalogItem, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAdoptAddonResponse(rsp)
+}
+
 // DeleteClusterWithResponse Cancel a pending cluster registration (409 once registered)
 //
 // Returns a wrapper object for the known response body format(s).
@@ -19942,17 +32272,56 @@ func (c *ClientWithResponses) DecommissionClusterWithResponse(ctx context.Contex
 	return ParseDecommissionClusterResponse(rsp)
 }
 
-// RenderInstallManifestWithResponse Render the agent install manifest embedding a fresh registration token
+// ListClusterFeatureFlagsWithResponse List the feature-flag catalog with per-cluster effective values
 //
 // Returns a wrapper object for the known response body format(s).
 //
-// Corresponds with POST /api/v1/tenants/{org}/clusters/{id}/install-manifest (the `RenderInstallManifest` operationId).
-func (c *ClientWithResponses) RenderInstallManifestWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*RenderInstallManifestResponse, error) {
-	rsp, err := c.RenderInstallManifest(ctx, org, id, reqEditors...)
+// Corresponds with GET /api/v1/tenants/{org}/clusters/{id}/feature-flags (the `ListClusterFeatureFlags` operationId).
+func (c *ClientWithResponses) ListClusterFeatureFlagsWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*ListClusterFeatureFlagsResponse, error) {
+	rsp, err := c.ListClusterFeatureFlags(ctx, org, id, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseRenderInstallManifestResponse(rsp)
+	return ParseListClusterFeatureFlagsResponse(rsp)
+}
+
+// ClearClusterFeatureFlagWithResponse Revert a cluster-scoped feature-flag override to the platform default
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/clusters/{id}/feature-flags/{key} (the `ClearClusterFeatureFlag` operationId).
+func (c *ClientWithResponses) ClearClusterFeatureFlagWithResponse(ctx context.Context, org string, id string, key string, reqEditors ...RequestEditorFn) (*ClearClusterFeatureFlagResponse, error) {
+	rsp, err := c.ClearClusterFeatureFlag(ctx, org, id, key, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseClearClusterFeatureFlagResponse(rsp)
+}
+
+// SetClusterFeatureFlagWithBodyWithResponse Set a cluster-scoped feature-flag override (tenant admin/operator)
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/tenants/{org}/clusters/{id}/feature-flags/{key} (the `SetClusterFeatureFlag` operationId).
+func (c *ClientWithResponses) SetClusterFeatureFlagWithBodyWithResponse(ctx context.Context, org string, id string, key string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetClusterFeatureFlagResponse, error) {
+	rsp, err := c.SetClusterFeatureFlagWithBody(ctx, org, id, key, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetClusterFeatureFlagResponse(rsp)
+}
+
+// SetClusterFeatureFlagWithResponse Set a cluster-scoped feature-flag override (tenant admin/operator)
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/tenants/{org}/clusters/{id}/feature-flags/{key} (the `SetClusterFeatureFlag` operationId).
+func (c *ClientWithResponses) SetClusterFeatureFlagWithResponse(ctx context.Context, org string, id string, key string, body SetClusterFeatureFlagJSONRequestBody, reqEditors ...RequestEditorFn) (*SetClusterFeatureFlagResponse, error) {
+	rsp, err := c.SetClusterFeatureFlag(ctx, org, id, key, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetClusterFeatureFlagResponse(rsp)
 }
 
 // GetClusterKubeconfigWithResponse Render a secret-free kubeconfig (gateway or direct mode) for download
@@ -19966,6 +32335,32 @@ func (c *ClientWithResponses) GetClusterKubeconfigWithResponse(ctx context.Conte
 		return nil, err
 	}
 	return ParseGetClusterKubeconfigResponse(rsp)
+}
+
+// RebindClusterBaselineWithBodyWithResponse Rebind a cluster to a different baseline repo (Feature A)
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/clusters/{id}/rebind-baseline (the `RebindClusterBaseline` operationId).
+func (c *ClientWithResponses) RebindClusterBaselineWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RebindClusterBaselineResponse, error) {
+	rsp, err := c.RebindClusterBaselineWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRebindClusterBaselineResponse(rsp)
+}
+
+// RebindClusterBaselineWithResponse Rebind a cluster to a different baseline repo (Feature A)
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/clusters/{id}/rebind-baseline (the `RebindClusterBaseline` operationId).
+func (c *ClientWithResponses) RebindClusterBaselineWithResponse(ctx context.Context, org string, id string, body RebindClusterBaselineJSONRequestBody, reqEditors ...RequestEditorFn) (*RebindClusterBaselineResponse, error) {
+	rsp, err := c.RebindClusterBaseline(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRebindClusterBaselineResponse(rsp)
 }
 
 // RevokeClusterWithResponse Revoke a cluster (disables its Keycloak client)
@@ -20202,6 +32597,58 @@ func (c *ClientWithResponses) RegisterExtensionWithResponse(ctx context.Context,
 	return ParseRegisterExtensionResponse(rsp)
 }
 
+// ListUiExtensionsWithResponse List UI extensions (Module Federation remotes)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/extensions/ui (the `ListUiExtensions` operationId).
+func (c *ClientWithResponses) ListUiExtensionsWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListUiExtensionsResponse, error) {
+	rsp, err := c.ListUiExtensions(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListUiExtensionsResponse(rsp)
+}
+
+// RegisterUiExtensionWithBodyWithResponse Register or update a UI extension remote
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/extensions/ui (the `RegisterUiExtension` operationId).
+func (c *ClientWithResponses) RegisterUiExtensionWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RegisterUiExtensionResponse, error) {
+	rsp, err := c.RegisterUiExtensionWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRegisterUiExtensionResponse(rsp)
+}
+
+// RegisterUiExtensionWithResponse Register or update a UI extension remote
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/extensions/ui (the `RegisterUiExtension` operationId).
+func (c *ClientWithResponses) RegisterUiExtensionWithResponse(ctx context.Context, org string, body RegisterUiExtensionJSONRequestBody, reqEditors ...RequestEditorFn) (*RegisterUiExtensionResponse, error) {
+	rsp, err := c.RegisterUiExtension(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRegisterUiExtensionResponse(rsp)
+}
+
+// UnregisterUiExtensionWithResponse Unregister a UI extension remote
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/extensions/ui/{name} (the `UnregisterUiExtension` operationId).
+func (c *ClientWithResponses) UnregisterUiExtensionWithResponse(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*UnregisterUiExtensionResponse, error) {
+	rsp, err := c.UnregisterUiExtension(ctx, org, name, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnregisterUiExtensionResponse(rsp)
+}
+
 // UnregisterExtensionWithResponse Unregister an extension
 //
 // Returns a wrapper object for the known response body format(s).
@@ -20226,6 +32673,58 @@ func (c *ClientWithResponses) GetExtensionWithResponse(ctx context.Context, org 
 		return nil, err
 	}
 	return ParseGetExtensionResponse(rsp)
+}
+
+// RotateExtensionIdentityWithResponse Rotate the extension's gateway identity secret (returned once; also lazily provisions identity for pre-ADR-0008 rows)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/extensions/{id}/identity/rotate (the `RotateExtensionIdentity` operationId).
+func (c *ClientWithResponses) RotateExtensionIdentityWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*RotateExtensionIdentityResponse, error) {
+	rsp, err := c.RotateExtensionIdentity(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRotateExtensionIdentityResponse(rsp)
+}
+
+// DeleteExtensionSessionWithResponse Drop the calling user's third-party session (logout/re-auth)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/extensions/{id}/session (the `DeleteExtensionSession` operationId).
+func (c *ClientWithResponses) DeleteExtensionSessionWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DeleteExtensionSessionResponse, error) {
+	rsp, err := c.DeleteExtensionSession(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteExtensionSessionResponse(rsp)
+}
+
+// PutExtensionSessionWithBodyWithResponse Store bootstrapped third-party session material for the calling user (oidc-sso-session)
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/extensions/{id}/session (the `PutExtensionSession` operationId).
+func (c *ClientWithResponses) PutExtensionSessionWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutExtensionSessionResponse, error) {
+	rsp, err := c.PutExtensionSessionWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutExtensionSessionResponse(rsp)
+}
+
+// PutExtensionSessionWithResponse Store bootstrapped third-party session material for the calling user (oidc-sso-session)
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/extensions/{id}/session (the `PutExtensionSession` operationId).
+func (c *ClientWithResponses) PutExtensionSessionWithResponse(ctx context.Context, org string, id string, body PutExtensionSessionJSONRequestBody, reqEditors ...RequestEditorFn) (*PutExtensionSessionResponse, error) {
+	rsp, err := c.PutExtensionSession(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutExtensionSessionResponse(rsp)
 }
 
 // VerifyExtensionWithResponse Run the SDK handshake and mark the extension ready
@@ -20278,6 +32777,188 @@ func (c *ClientWithResponses) SetTenantGitConfigWithResponse(ctx context.Context
 		return nil, err
 	}
 	return ParseSetTenantGitConfigResponse(rsp)
+}
+
+// ListGitConnectionsWithResponse List the caller's own git connections (metadata only)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/git-connections (the `ListGitConnections` operationId).
+func (c *ClientWithResponses) ListGitConnectionsWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListGitConnectionsResponse, error) {
+	rsp, err := c.ListGitConnections(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListGitConnectionsResponse(rsp)
+}
+
+// DisconnectGitConnectionWithResponse Revoke the provider grant and delete the connection
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/git-connections/{provider} (the `DisconnectGitConnection` operationId).
+func (c *ClientWithResponses) DisconnectGitConnectionWithResponse(ctx context.Context, org string, provider string, reqEditors ...RequestEditorFn) (*DisconnectGitConnectionResponse, error) {
+	rsp, err := c.DisconnectGitConnection(ctx, org, provider, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDisconnectGitConnectionResponse(rsp)
+}
+
+// AuthorizeGitConnectionGetWithResponse Start the git OAuth flow (302 or JSON authorizeUrl, per Accept)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/git-connections/{provider}/authorize (the `AuthorizeGitConnectionGet` operationId).
+func (c *ClientWithResponses) AuthorizeGitConnectionGetWithResponse(ctx context.Context, org string, provider string, params *AuthorizeGitConnectionGetParams, reqEditors ...RequestEditorFn) (*AuthorizeGitConnectionGetResponse, error) {
+	rsp, err := c.AuthorizeGitConnectionGet(ctx, org, provider, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthorizeGitConnectionGetResponse(rsp)
+}
+
+// AuthorizeGitConnectionWithBodyWithResponse Start the git OAuth flow (302 to the provider consent URL; 200 {authorizeUrl} for JSON clients)
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/git-connections/{provider}/authorize (the `AuthorizeGitConnection` operationId).
+func (c *ClientWithResponses) AuthorizeGitConnectionWithBodyWithResponse(ctx context.Context, org string, provider string, params *AuthorizeGitConnectionParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AuthorizeGitConnectionResponse, error) {
+	rsp, err := c.AuthorizeGitConnectionWithBody(ctx, org, provider, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthorizeGitConnectionResponse(rsp)
+}
+
+// AuthorizeGitConnectionWithResponse Start the git OAuth flow (302 to the provider consent URL; 200 {authorizeUrl} for JSON clients)
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/git-connections/{provider}/authorize (the `AuthorizeGitConnection` operationId).
+func (c *ClientWithResponses) AuthorizeGitConnectionWithResponse(ctx context.Context, org string, provider string, params *AuthorizeGitConnectionParams, body AuthorizeGitConnectionJSONRequestBody, reqEditors ...RequestEditorFn) (*AuthorizeGitConnectionResponse, error) {
+	rsp, err := c.AuthorizeGitConnection(ctx, org, provider, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAuthorizeGitConnectionResponse(rsp)
+}
+
+// GitConnectionCallbackWithResponse OAuth callback (302 back to the UI)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/git-connections/{provider}/callback (the `GitConnectionCallback` operationId).
+func (c *ClientWithResponses) GitConnectionCallbackWithResponse(ctx context.Context, org string, provider string, params *GitConnectionCallbackParams, reqEditors ...RequestEditorFn) (*GitConnectionCallbackResponse, error) {
+	rsp, err := c.GitConnectionCallback(ctx, org, provider, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGitConnectionCallbackResponse(rsp)
+}
+
+// ListGitReposWithResponse List the org's registered GitOps repos (team-filtered)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/git-repos (the `ListGitRepos` operationId).
+func (c *ClientWithResponses) ListGitReposWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListGitReposResponse, error) {
+	rsp, err := c.ListGitRepos(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListGitReposResponse(rsp)
+}
+
+// RegisterGitRepoWithBodyWithResponse Register an existing git repo (validates the GitHub App is installed)
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/git-repos (the `RegisterGitRepo` operationId).
+func (c *ClientWithResponses) RegisterGitRepoWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RegisterGitRepoResponse, error) {
+	rsp, err := c.RegisterGitRepoWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRegisterGitRepoResponse(rsp)
+}
+
+// RegisterGitRepoWithResponse Register an existing git repo (validates the GitHub App is installed)
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/git-repos (the `RegisterGitRepo` operationId).
+func (c *ClientWithResponses) RegisterGitRepoWithResponse(ctx context.Context, org string, body RegisterGitRepoJSONRequestBody, reqEditors ...RequestEditorFn) (*RegisterGitRepoResponse, error) {
+	rsp, err := c.RegisterGitRepo(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRegisterGitRepoResponse(rsp)
+}
+
+// UnregisterGitRepoWithResponse Unregister a repo (guarded; force with mode=orphan|teardown)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/git-repos/{id} (the `UnregisterGitRepo` operationId).
+func (c *ClientWithResponses) UnregisterGitRepoWithResponse(ctx context.Context, org string, id string, params *UnregisterGitRepoParams, reqEditors ...RequestEditorFn) (*UnregisterGitRepoResponse, error) {
+	rsp, err := c.UnregisterGitRepo(ctx, org, id, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUnregisterGitRepoResponse(rsp)
+}
+
+// GetGitRepoWithResponse Repo detail + provider health probe
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/git-repos/{id} (the `GetGitRepo` operationId).
+func (c *ClientWithResponses) GetGitRepoWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetGitRepoResponse, error) {
+	rsp, err := c.GetGitRepo(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetGitRepoResponse(rsp)
+}
+
+// UpdateGitRepoWithBodyWithResponse Update repo policy/branch/team or promote to the org default
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/git-repos/{id} (the `UpdateGitRepo` operationId).
+func (c *ClientWithResponses) UpdateGitRepoWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateGitRepoResponse, error) {
+	rsp, err := c.UpdateGitRepoWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateGitRepoResponse(rsp)
+}
+
+// UpdateGitRepoWithResponse Update repo policy/branch/team or promote to the org default
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/git-repos/{id} (the `UpdateGitRepo` operationId).
+func (c *ClientWithResponses) UpdateGitRepoWithResponse(ctx context.Context, org string, id string, body UpdateGitRepoJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateGitRepoResponse, error) {
+	rsp, err := c.UpdateGitRepo(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateGitRepoResponse(rsp)
+}
+
+// EnsureGitRepoWebhookWithResponse (Re)provision the repo's webhook (rotates the secret)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/git-repos/{id}/webhook (the `EnsureGitRepoWebhook` operationId).
+func (c *ClientWithResponses) EnsureGitRepoWebhookWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*EnsureGitRepoWebhookResponse, error) {
+	rsp, err := c.EnsureGitRepoWebhook(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseEnsureGitRepoWebhookResponse(rsp)
 }
 
 // ListIdentityClientsWithResponse List OIDC clients of a tenant (org admin only)
@@ -20410,6 +33091,110 @@ func (c *ClientWithResponses) RotateIdentityClientSecretWithResponse(ctx context
 	return ParseRotateIdentityClientSecretResponse(rsp)
 }
 
+// DeleteIdentityProviderCompatWithResponse Delete the tenant's single identity provider (UI contract; org admin only)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/identity/provider (the `DeleteIdentityProviderCompat` operationId).
+func (c *ClientWithResponses) DeleteIdentityProviderCompatWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*DeleteIdentityProviderCompatResponse, error) {
+	rsp, err := c.DeleteIdentityProviderCompat(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteIdentityProviderCompatResponse(rsp)
+}
+
+// GetIdentityProviderCompatWithResponse Get the tenant's single identity provider, or null (UI contract; org admin only)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/identity/provider (the `GetIdentityProviderCompat` operationId).
+func (c *ClientWithResponses) GetIdentityProviderCompatWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*GetIdentityProviderCompatResponse, error) {
+	rsp, err := c.GetIdentityProviderCompat(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetIdentityProviderCompatResponse(rsp)
+}
+
+// PutIdentityProviderCompatWithBodyWithResponse Create-or-replace the tenant's single identity provider (UI contract; org admin only)
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/tenants/{org}/identity/provider (the `PutIdentityProviderCompat` operationId).
+func (c *ClientWithResponses) PutIdentityProviderCompatWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutIdentityProviderCompatResponse, error) {
+	rsp, err := c.PutIdentityProviderCompatWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutIdentityProviderCompatResponse(rsp)
+}
+
+// PutIdentityProviderCompatWithResponse Create-or-replace the tenant's single identity provider (UI contract; org admin only)
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/tenants/{org}/identity/provider (the `PutIdentityProviderCompat` operationId).
+func (c *ClientWithResponses) PutIdentityProviderCompatWithResponse(ctx context.Context, org string, body PutIdentityProviderCompatJSONRequestBody, reqEditors ...RequestEditorFn) (*PutIdentityProviderCompatResponse, error) {
+	rsp, err := c.PutIdentityProviderCompat(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutIdentityProviderCompatResponse(rsp)
+}
+
+// PutProviderDomainsCompatWithBodyWithResponse Replace the provider's login-routing domain hints (UI contract; org admin only)
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/tenants/{org}/identity/provider/domains (the `PutProviderDomainsCompat` operationId).
+func (c *ClientWithResponses) PutProviderDomainsCompatWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutProviderDomainsCompatResponse, error) {
+	rsp, err := c.PutProviderDomainsCompatWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutProviderDomainsCompatResponse(rsp)
+}
+
+// PutProviderDomainsCompatWithResponse Replace the provider's login-routing domain hints (UI contract; org admin only)
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/tenants/{org}/identity/provider/domains (the `PutProviderDomainsCompat` operationId).
+func (c *ClientWithResponses) PutProviderDomainsCompatWithResponse(ctx context.Context, org string, body PutProviderDomainsCompatJSONRequestBody, reqEditors ...RequestEditorFn) (*PutProviderDomainsCompatResponse, error) {
+	rsp, err := c.PutProviderDomainsCompat(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutProviderDomainsCompatResponse(rsp)
+}
+
+// RotateProviderSecretCompatWithBodyWithResponse Rotate the provider's write-only client secret (UI contract; org admin only)
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/identity/provider/secret:rotate (the `RotateProviderSecretCompat` operationId).
+func (c *ClientWithResponses) RotateProviderSecretCompatWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RotateProviderSecretCompatResponse, error) {
+	rsp, err := c.RotateProviderSecretCompatWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRotateProviderSecretCompatResponse(rsp)
+}
+
+// RotateProviderSecretCompatWithResponse Rotate the provider's write-only client secret (UI contract; org admin only)
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/identity/provider/secret:rotate (the `RotateProviderSecretCompat` operationId).
+func (c *ClientWithResponses) RotateProviderSecretCompatWithResponse(ctx context.Context, org string, body RotateProviderSecretCompatJSONRequestBody, reqEditors ...RequestEditorFn) (*RotateProviderSecretCompatResponse, error) {
+	rsp, err := c.RotateProviderSecretCompat(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRotateProviderSecretCompatResponse(rsp)
+}
+
 // ListIdentityProvidersWithResponse List brokered identity providers of a tenant (org admin only; at most one in v1)
 //
 // Returns a wrapper object for the known response body format(s).
@@ -20527,6 +33312,19 @@ func (c *ClientWithResponses) ListInstancesWithResponse(ctx context.Context, org
 	return ParseListInstancesResponse(rsp)
 }
 
+// DeleteInstanceWithResponse Undeploy an instance (delete desired state + inventory row)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/instances/{id} (the `DeleteInstance` operationId).
+func (c *ClientWithResponses) DeleteInstanceWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DeleteInstanceResponse, error) {
+	rsp, err := c.DeleteInstance(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteInstanceResponse(rsp)
+}
+
 // GetInstanceWithResponse Get one resource instance with version badge
 //
 // Returns a wrapper object for the known response body format(s).
@@ -20540,6 +33338,32 @@ func (c *ClientWithResponses) GetInstanceWithResponse(ctx context.Context, org s
 	return ParseGetInstanceResponse(rsp)
 }
 
+// UpdateInstanceWithBodyWithResponse Update an instance's spec (re-render at the current version)
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/instances/{id} (the `UpdateInstance` operationId).
+func (c *ClientWithResponses) UpdateInstanceWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateInstanceResponse, error) {
+	rsp, err := c.UpdateInstanceWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateInstanceResponse(rsp)
+}
+
+// UpdateInstanceWithResponse Update an instance's spec (re-render at the current version)
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/instances/{id} (the `UpdateInstance` operationId).
+func (c *ClientWithResponses) UpdateInstanceWithResponse(ctx context.Context, org string, id string, body UpdateInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateInstanceResponse, error) {
+	rsp, err := c.UpdateInstance(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateInstanceResponse(rsp)
+}
+
 // InstanceDiffWithResponse Diff preview data for an upgrade
 //
 // Returns a wrapper object for the known response body format(s).
@@ -20551,6 +33375,32 @@ func (c *ClientWithResponses) InstanceDiffWithResponse(ctx context.Context, org 
 		return nil, err
 	}
 	return ParseInstanceDiffResponse(rsp)
+}
+
+// RollbackInstanceWithBodyWithResponse Rollback an instance to an explicit earlier catalog version
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/rollback (the `RollbackInstance` operationId).
+func (c *ClientWithResponses) RollbackInstanceWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RollbackInstanceResponse, error) {
+	rsp, err := c.RollbackInstanceWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRollbackInstanceResponse(rsp)
+}
+
+// RollbackInstanceWithResponse Rollback an instance to an explicit earlier catalog version
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/rollback (the `RollbackInstance` operationId).
+func (c *ClientWithResponses) RollbackInstanceWithResponse(ctx context.Context, org string, id string, body RollbackInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*RollbackInstanceResponse, error) {
+	rsp, err := c.RollbackInstance(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRollbackInstanceResponse(rsp)
 }
 
 // UpgradeInstanceWithBodyWithResponse One-click upgrade of an instance to a newer catalog version
@@ -20584,8 +33434,8 @@ func (c *ClientWithResponses) UpgradeInstanceWithResponse(ctx context.Context, o
 // Returns a wrapper object for the known response body format(s).
 //
 // Corresponds with GET /api/v1/tenants/{org}/members (the `ListOrgMembers` operationId).
-func (c *ClientWithResponses) ListOrgMembersWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListOrgMembersResponse, error) {
-	rsp, err := c.ListOrgMembers(ctx, org, reqEditors...)
+func (c *ClientWithResponses) ListOrgMembersWithResponse(ctx context.Context, org string, params *ListOrgMembersParams, reqEditors ...RequestEditorFn) (*ListOrgMembersResponse, error) {
+	rsp, err := c.ListOrgMembers(ctx, org, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -20735,6 +33585,58 @@ func (c *ClientWithResponses) TestNotificationEndpointWithResponse(ctx context.C
 	return ParseTestNotificationEndpointResponse(rsp)
 }
 
+// GetPermissionCatalogWithResponse Static permission catalog for the role editor
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/permissions/catalog (the `GetPermissionCatalog` operationId).
+func (c *ClientWithResponses) GetPermissionCatalogWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*GetPermissionCatalogResponse, error) {
+	rsp, err := c.GetPermissionCatalog(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPermissionCatalogResponse(rsp)
+}
+
+// ListPlatformResourcesWithResponse List tenant platform resources (keycloak realm/client, dns zone, namespace)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/platform-resources (the `ListPlatformResources` operationId).
+func (c *ClientWithResponses) ListPlatformResourcesWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListPlatformResourcesResponse, error) {
+	rsp, err := c.ListPlatformResources(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListPlatformResourcesResponse(rsp)
+}
+
+// ReconcilePlatformResourcesWithResponse Force re-reconciliation of tenant platform resources (ops)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/platform-resources/reconcile (the `ReconcilePlatformResources` operationId).
+func (c *ClientWithResponses) ReconcilePlatformResourcesWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ReconcilePlatformResourcesResponse, error) {
+	rsp, err := c.ReconcilePlatformResources(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReconcilePlatformResourcesResponse(rsp)
+}
+
+// GetPlatformResourceWithResponse Get one tenant platform resource
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/platform-resources/{id} (the `GetPlatformResource` operationId).
+func (c *ClientWithResponses) GetPlatformResourceWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetPlatformResourceResponse, error) {
+	rsp, err := c.GetPlatformResource(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPlatformResourceResponse(rsp)
+}
+
 // ListPoliciesWithResponse List policies (org + platform-global)
 //
 // Returns a wrapper object for the known response body format(s).
@@ -20826,7 +33728,7 @@ func (c *ClientWithResponses) GetPolicyWithResponse(ctx context.Context, org str
 	return ParseGetPolicyResponse(rsp)
 }
 
-// UpdatePolicyWithBodyWithResponse Update a policy (bumps version)
+// UpdatePolicyWithBodyWithResponse Update a policy (bumps version; exemptions bind the stable ID, so renames/edits keep them valid)
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -20839,7 +33741,7 @@ func (c *ClientWithResponses) UpdatePolicyWithBodyWithResponse(ctx context.Conte
 	return ParseUpdatePolicyResponse(rsp)
 }
 
-// UpdatePolicyWithResponse Update a policy (bumps version)
+// UpdatePolicyWithResponse Update a policy (bumps version; exemptions bind the stable ID, so renames/edits keep them valid)
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -20982,7 +33884,7 @@ func (c *ClientWithResponses) GetRBACMatrixWithResponse(ctx context.Context, org
 	return ParseGetRBACMatrixResponse(rsp)
 }
 
-// PutRBACMappingsWithBodyWithResponse Declarative bulk set of team→role mappings, applied atomically (org admin only)
+// PutRBACMappingsWithBodyWithResponse Declarative bulk set of team→role mappings, applied atomically (tenant.rbac.manage)
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
 //
@@ -20995,7 +33897,7 @@ func (c *ClientWithResponses) PutRBACMappingsWithBodyWithResponse(ctx context.Co
 	return ParsePutRBACMappingsResponse(rsp)
 }
 
-// PutRBACMappingsWithResponse Declarative bulk set of team→role mappings, applied atomically (org admin only)
+// PutRBACMappingsWithResponse Declarative bulk set of team→role mappings, applied atomically (tenant.rbac.manage)
 //
 // Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
 //
@@ -21006,6 +33908,240 @@ func (c *ClientWithResponses) PutRBACMappingsWithResponse(ctx context.Context, o
 		return nil, err
 	}
 	return ParsePutRBACMappingsResponse(rsp)
+}
+
+// ListResourceTargetProvidersWithResponse List resource target provider config and UI schemas
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/resource-target-providers (the `ListResourceTargetProviders` operationId).
+func (c *ClientWithResponses) ListResourceTargetProvidersWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListResourceTargetProvidersResponse, error) {
+	rsp, err := c.ListResourceTargetProviders(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListResourceTargetProvidersResponse(rsp)
+}
+
+// ListResourceTargetsWithResponse List caller-entitled shared resource targets
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/resource-targets (the `ListResourceTargets` operationId).
+func (c *ClientWithResponses) ListResourceTargetsWithResponse(ctx context.Context, org string, params *ListResourceTargetsParams, reqEditors ...RequestEditorFn) (*ListResourceTargetsResponse, error) {
+	rsp, err := c.ListResourceTargets(ctx, org, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListResourceTargetsResponse(rsp)
+}
+
+// RegisterResourceTargetWithBodyWithResponse Adopt an existing inventory resource as a shared target
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/resource-targets (the `RegisterResourceTarget` operationId).
+func (c *ClientWithResponses) RegisterResourceTargetWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*RegisterResourceTargetResponse, error) {
+	rsp, err := c.RegisterResourceTargetWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRegisterResourceTargetResponse(rsp)
+}
+
+// RegisterResourceTargetWithResponse Adopt an existing inventory resource as a shared target
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/resource-targets (the `RegisterResourceTarget` operationId).
+func (c *ClientWithResponses) RegisterResourceTargetWithResponse(ctx context.Context, org string, body RegisterResourceTargetJSONRequestBody, reqEditors ...RequestEditorFn) (*RegisterResourceTargetResponse, error) {
+	rsp, err := c.RegisterResourceTarget(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRegisterResourceTargetResponse(rsp)
+}
+
+// DeleteResourceTargetWithResponse Delete a target overlay without deleting its resource
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/resource-targets/{id} (the `DeleteResourceTarget` operationId).
+func (c *ClientWithResponses) DeleteResourceTargetWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DeleteResourceTargetResponse, error) {
+	rsp, err := c.DeleteResourceTarget(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteResourceTargetResponse(rsp)
+}
+
+// GetResourceTargetWithResponse Get a caller-visible resource target
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/resource-targets/{id} (the `GetResourceTarget` operationId).
+func (c *ClientWithResponses) GetResourceTargetWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetResourceTargetResponse, error) {
+	rsp, err := c.GetResourceTarget(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetResourceTargetResponse(rsp)
+}
+
+// UpdateResourceTargetWithBodyWithResponse Update target policy with optimistic concurrency
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/resource-targets/{id} (the `UpdateResourceTarget` operationId).
+func (c *ClientWithResponses) UpdateResourceTargetWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateResourceTargetResponse, error) {
+	rsp, err := c.UpdateResourceTargetWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateResourceTargetResponse(rsp)
+}
+
+// UpdateResourceTargetWithResponse Update target policy with optimistic concurrency
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/resource-targets/{id} (the `UpdateResourceTarget` operationId).
+func (c *ClientWithResponses) UpdateResourceTargetWithResponse(ctx context.Context, org string, id string, body UpdateResourceTargetJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateResourceTargetResponse, error) {
+	rsp, err := c.UpdateResourceTarget(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateResourceTargetResponse(rsp)
+}
+
+// RevokeResourceTargetGrantWithResponse Revoke a team's target grant
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/resource-targets/{id}/grants/{teamId} (the `RevokeResourceTargetGrant` operationId).
+func (c *ClientWithResponses) RevokeResourceTargetGrantWithResponse(ctx context.Context, org string, id string, teamId string, reqEditors ...RequestEditorFn) (*RevokeResourceTargetGrantResponse, error) {
+	rsp, err := c.RevokeResourceTargetGrant(ctx, org, id, teamId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRevokeResourceTargetGrantResponse(rsp)
+}
+
+// SetResourceTargetGrantWithBodyWithResponse Set a team's view, use, or provision grant
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/tenants/{org}/resource-targets/{id}/grants/{teamId} (the `SetResourceTargetGrant` operationId).
+func (c *ClientWithResponses) SetResourceTargetGrantWithBodyWithResponse(ctx context.Context, org string, id string, teamId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SetResourceTargetGrantResponse, error) {
+	rsp, err := c.SetResourceTargetGrantWithBody(ctx, org, id, teamId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetResourceTargetGrantResponse(rsp)
+}
+
+// SetResourceTargetGrantWithResponse Set a team's view, use, or provision grant
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/tenants/{org}/resource-targets/{id}/grants/{teamId} (the `SetResourceTargetGrant` operationId).
+func (c *ClientWithResponses) SetResourceTargetGrantWithResponse(ctx context.Context, org string, id string, teamId string, body SetResourceTargetGrantJSONRequestBody, reqEditors ...RequestEditorFn) (*SetResourceTargetGrantResponse, error) {
+	rsp, err := c.SetResourceTargetGrant(ctx, org, id, teamId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseSetResourceTargetGrantResponse(rsp)
+}
+
+// ListRolesWithResponse List org roles (built-in and custom)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/roles (the `ListRoles` operationId).
+func (c *ClientWithResponses) ListRolesWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListRolesResponse, error) {
+	rsp, err := c.ListRoles(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListRolesResponse(rsp)
+}
+
+// CreateRoleWithBodyWithResponse Create a custom org role (tenant.rbac.manage)
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/roles (the `CreateRole` operationId).
+func (c *ClientWithResponses) CreateRoleWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateRoleResponse, error) {
+	rsp, err := c.CreateRoleWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateRoleResponse(rsp)
+}
+
+// CreateRoleWithResponse Create a custom org role (tenant.rbac.manage)
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/roles (the `CreateRole` operationId).
+func (c *ClientWithResponses) CreateRoleWithResponse(ctx context.Context, org string, body CreateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateRoleResponse, error) {
+	rsp, err := c.CreateRole(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateRoleResponse(rsp)
+}
+
+// DeleteRoleWithResponse Delete a custom role (tenant.rbac.manage; built-ins are never deletable)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/roles/{role} (the `DeleteRole` operationId).
+func (c *ClientWithResponses) DeleteRoleWithResponse(ctx context.Context, org string, role string, reqEditors ...RequestEditorFn) (*DeleteRoleResponse, error) {
+	rsp, err := c.DeleteRole(ctx, org, role, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteRoleResponse(rsp)
+}
+
+// GetRoleWithResponse Get one org role by name or ID
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/roles/{role} (the `GetRole` operationId).
+func (c *ClientWithResponses) GetRoleWithResponse(ctx context.Context, org string, role string, reqEditors ...RequestEditorFn) (*GetRoleResponse, error) {
+	rsp, err := c.GetRole(ctx, org, role, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetRoleResponse(rsp)
+}
+
+// UpdateRoleWithBodyWithResponse Edit a role (tenant.rbac.manage; built-in names are immutable; the tenant.admin guardrail applies)
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/roles/{role} (the `UpdateRole` operationId).
+func (c *ClientWithResponses) UpdateRoleWithBodyWithResponse(ctx context.Context, org string, role string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateRoleResponse, error) {
+	rsp, err := c.UpdateRoleWithBody(ctx, org, role, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateRoleResponse(rsp)
+}
+
+// UpdateRoleWithResponse Edit a role (tenant.rbac.manage; built-in names are immutable; the tenant.admin guardrail applies)
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/roles/{role} (the `UpdateRole` operationId).
+func (c *ClientWithResponses) UpdateRoleWithResponse(ctx context.Context, org string, role string, body UpdateRoleJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateRoleResponse, error) {
+	rsp, err := c.UpdateRole(ctx, org, role, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateRoleResponse(rsp)
 }
 
 // ListRolloutsWithResponse List rollouts
@@ -21138,6 +34274,188 @@ func (c *ClientWithResponses) ListRolloutTargetsWithResponse(ctx context.Context
 	return ParseListRolloutTargetsResponse(rsp)
 }
 
+// GetScaffoldRunWithResponse Get a scaffold run with per-phase step states and outputs (UI polls this)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/scaffold-runs/{runId} (the `GetScaffoldRun` operationId).
+func (c *ClientWithResponses) GetScaffoldRunWithResponse(ctx context.Context, org string, runId string, reqEditors ...RequestEditorFn) (*GetScaffoldRunResponse, error) {
+	rsp, err := c.GetScaffoldRun(ctx, org, runId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetScaffoldRunResponse(rsp)
+}
+
+// CancelScaffoldRunWithResponse Cooperatively cancel a scaffold run (retains already-created outputs)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/scaffold-runs/{runId}/cancel (the `CancelScaffoldRun` operationId).
+func (c *ClientWithResponses) CancelScaffoldRunWithResponse(ctx context.Context, org string, runId string, reqEditors ...RequestEditorFn) (*CancelScaffoldRunResponse, error) {
+	rsp, err := c.CancelScaffoldRun(ctx, org, runId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCancelScaffoldRunResponse(rsp)
+}
+
+// RetryScaffoldRunWithResponse Resume a failed scaffold run from its first non-completed step
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/scaffold-runs/{runId}/retry (the `RetryScaffoldRun` operationId).
+func (c *ClientWithResponses) RetryScaffoldRunWithResponse(ctx context.Context, org string, runId string, reqEditors ...RequestEditorFn) (*RetryScaffoldRunResponse, error) {
+	rsp, err := c.RetryScaffoldRun(ctx, org, runId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRetryScaffoldRunResponse(rsp)
+}
+
+// CreateScaffoldWithBodyWithResponse Create a scaffold run (UI wizard contract)
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/scaffolds (the `CreateScaffold` operationId).
+func (c *ClientWithResponses) CreateScaffoldWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateScaffoldResponse, error) {
+	rsp, err := c.CreateScaffoldWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateScaffoldResponse(rsp)
+}
+
+// CreateScaffoldWithResponse Create a scaffold run (UI wizard contract)
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/scaffolds (the `CreateScaffold` operationId).
+func (c *ClientWithResponses) CreateScaffoldWithResponse(ctx context.Context, org string, body CreateScaffoldJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateScaffoldResponse, error) {
+	rsp, err := c.CreateScaffold(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateScaffoldResponse(rsp)
+}
+
+// GetScaffoldWithResponse Get a scaffold run (UI wizard polling contract)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/scaffolds/{runId} (the `GetScaffold` operationId).
+func (c *ClientWithResponses) GetScaffoldWithResponse(ctx context.Context, org string, runId string, reqEditors ...RequestEditorFn) (*GetScaffoldResponse, error) {
+	rsp, err := c.GetScaffold(ctx, org, runId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetScaffoldResponse(rsp)
+}
+
+// ListSecretStoresWithResponse List secret stores (own cluster-scoped plus platform stores)
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/secret-stores (the `ListSecretStores` operationId).
+func (c *ClientWithResponses) ListSecretStoresWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListSecretStoresResponse, error) {
+	rsp, err := c.ListSecretStores(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListSecretStoresResponse(rsp)
+}
+
+// CreateSecretStoreWithBodyWithResponse Register a secret store
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/secret-stores (the `CreateSecretStore` operationId).
+func (c *ClientWithResponses) CreateSecretStoreWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateSecretStoreResponse, error) {
+	rsp, err := c.CreateSecretStoreWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSecretStoreResponse(rsp)
+}
+
+// CreateSecretStoreWithResponse Register a secret store
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/secret-stores (the `CreateSecretStore` operationId).
+func (c *ClientWithResponses) CreateSecretStoreWithResponse(ctx context.Context, org string, body CreateSecretStoreJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSecretStoreResponse, error) {
+	rsp, err := c.CreateSecretStore(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateSecretStoreResponse(rsp)
+}
+
+// DeleteSecretStoreWithResponse Delete a secret store
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/secret-stores/{name} (the `DeleteSecretStore` operationId).
+func (c *ClientWithResponses) DeleteSecretStoreWithResponse(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*DeleteSecretStoreResponse, error) {
+	rsp, err := c.DeleteSecretStore(ctx, org, name, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteSecretStoreResponse(rsp)
+}
+
+// GetSecretStoreWithResponse Get one secret store
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/secret-stores/{name} (the `GetSecretStore` operationId).
+func (c *ClientWithResponses) GetSecretStoreWithResponse(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*GetSecretStoreResponse, error) {
+	rsp, err := c.GetSecretStore(ctx, org, name, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSecretStoreResponse(rsp)
+}
+
+// UpdateSecretStoreWithBodyWithResponse Update a secret store's targets/provider
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/secret-stores/{name} (the `UpdateSecretStore` operationId).
+func (c *ClientWithResponses) UpdateSecretStoreWithBodyWithResponse(ctx context.Context, org string, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateSecretStoreResponse, error) {
+	rsp, err := c.UpdateSecretStoreWithBody(ctx, org, name, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSecretStoreResponse(rsp)
+}
+
+// UpdateSecretStoreWithResponse Update a secret store's targets/provider
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PATCH /api/v1/tenants/{org}/secret-stores/{name} (the `UpdateSecretStore` operationId).
+func (c *ClientWithResponses) UpdateSecretStoreWithResponse(ctx context.Context, org string, name string, body UpdateSecretStoreJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateSecretStoreResponse, error) {
+	rsp, err := c.UpdateSecretStore(ctx, org, name, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateSecretStoreResponse(rsp)
+}
+
+// GetSecretStoreStatusWithResponse Delivery status projection for one secret store
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/secret-stores/{name}/status (the `GetSecretStoreStatus` operationId).
+func (c *ClientWithResponses) GetSecretStoreStatusWithResponse(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*GetSecretStoreStatusResponse, error) {
+	rsp, err := c.GetSecretStoreStatus(ctx, org, name, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetSecretStoreStatusResponse(rsp)
+}
+
 // ListTeamsWithResponse List teams of a tenant
 //
 // Returns a wrapper object for the known response body format(s).
@@ -21190,13 +34508,39 @@ func (c *ClientWithResponses) DeleteTeamWithResponse(ctx context.Context, org st
 	return ParseDeleteTeamResponse(rsp)
 }
 
+// UpdateTeamWithBodyWithResponse Update a team's display name (org admin only; name and Keycloak group path are immutable, default teams are protected — ADR-0007)
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/tenants/{org}/teams/{team} (the `UpdateTeam` operationId).
+func (c *ClientWithResponses) UpdateTeamWithBodyWithResponse(ctx context.Context, org string, team string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateTeamResponse, error) {
+	rsp, err := c.UpdateTeamWithBody(ctx, org, team, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateTeamResponse(rsp)
+}
+
+// UpdateTeamWithResponse Update a team's display name (org admin only; name and Keycloak group path are immutable, default teams are protected — ADR-0007)
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/tenants/{org}/teams/{team} (the `UpdateTeam` operationId).
+func (c *ClientWithResponses) UpdateTeamWithResponse(ctx context.Context, org string, team string, body UpdateTeamJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateTeamResponse, error) {
+	rsp, err := c.UpdateTeam(ctx, org, team, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateTeamResponse(rsp)
+}
+
 // ListMembersWithResponse List members of a team
 //
 // Returns a wrapper object for the known response body format(s).
 //
 // Corresponds with GET /api/v1/tenants/{org}/teams/{team}/members (the `ListMembers` operationId).
-func (c *ClientWithResponses) ListMembersWithResponse(ctx context.Context, org string, team string, reqEditors ...RequestEditorFn) (*ListMembersResponse, error) {
-	rsp, err := c.ListMembers(ctx, org, team, reqEditors...)
+func (c *ClientWithResponses) ListMembersWithResponse(ctx context.Context, org string, team string, params *ListMembersParams, reqEditors ...RequestEditorFn) (*ListMembersResponse, error) {
+	rsp, err := c.ListMembers(ctx, org, team, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -21240,6 +34584,58 @@ func (c *ClientWithResponses) RemoveMemberWithResponse(ctx context.Context, org 
 		return nil, err
 	}
 	return ParseRemoveMemberResponse(rsp)
+}
+
+// ListTemplatesWithResponse List software templates visible to the tenant at their effective versions
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/templates (the `ListTemplates` operationId).
+func (c *ClientWithResponses) ListTemplatesWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListTemplatesResponse, error) {
+	rsp, err := c.ListTemplates(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListTemplatesResponse(rsp)
+}
+
+// GetTemplateWithResponse Get a template with its values schema and optional uiSchema
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/templates/{name} (the `GetTemplate` operationId).
+func (c *ClientWithResponses) GetTemplateWithResponse(ctx context.Context, org string, name string, reqEditors ...RequestEditorFn) (*GetTemplateResponse, error) {
+	rsp, err := c.GetTemplate(ctx, org, name, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetTemplateResponse(rsp)
+}
+
+// CreateScaffoldRunWithBodyWithResponse Create a scaffold run (idempotent: identical resubmits return the existing run)
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/templates/{name}/runs (the `CreateScaffoldRun` operationId).
+func (c *ClientWithResponses) CreateScaffoldRunWithBodyWithResponse(ctx context.Context, org string, name string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateScaffoldRunResponse, error) {
+	rsp, err := c.CreateScaffoldRunWithBody(ctx, org, name, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateScaffoldRunResponse(rsp)
+}
+
+// CreateScaffoldRunWithResponse Create a scaffold run (idempotent: identical resubmits return the existing run)
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/templates/{name}/runs (the `CreateScaffoldRun` operationId).
+func (c *ClientWithResponses) CreateScaffoldRunWithResponse(ctx context.Context, org string, name string, body CreateScaffoldRunJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateScaffoldRunResponse, error) {
+	rsp, err := c.CreateScaffoldRun(ctx, org, name, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateScaffoldRunResponse(rsp)
 }
 
 // ListTenantZonesWithResponse List tenant zones owned by this org
@@ -21318,6 +34714,32 @@ func (c *ClientWithResponses) ResumeTenantZoneWithResponse(ctx context.Context, 
 		return nil, err
 	}
 	return ParseResumeTenantZoneResponse(rsp)
+}
+
+// GitWebhookIngressWithBodyWithResponse Git provider webhook ingress (per-repo HMAC-authenticated)
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/webhooks/git/{provider} (the `GitWebhookIngress` operationId).
+func (c *ClientWithResponses) GitWebhookIngressWithBodyWithResponse(ctx context.Context, provider string, params *GitWebhookIngressParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*GitWebhookIngressResponse, error) {
+	rsp, err := c.GitWebhookIngressWithBody(ctx, provider, params, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGitWebhookIngressResponse(rsp)
+}
+
+// GitWebhookIngressWithResponse Git provider webhook ingress (per-repo HMAC-authenticated)
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/webhooks/git/{provider} (the `GitWebhookIngress` operationId).
+func (c *ClientWithResponses) GitWebhookIngressWithResponse(ctx context.Context, provider string, params *GitWebhookIngressParams, body GitWebhookIngressJSONRequestBody, reqEditors ...RequestEditorFn) (*GitWebhookIngressResponse, error) {
+	rsp, err := c.GitWebhookIngress(ctx, provider, params, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGitWebhookIngressResponse(rsp)
 }
 
 // GetHealthWithResponse Liveness probe
@@ -21428,6 +34850,221 @@ func ParseInboxApprovalsResponse(rsp *http.Response) (*InboxApprovalsResponse, e
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetMyPermissionsResponse parses an HTTP response from a GetMyPermissionsWithResponse call
+func ParseGetMyPermissionsResponse(rsp *http.Response) (*GetMyPermissionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetMyPermissionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest MyPermissionsOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListPlatformAdminsResponse parses an HTTP response from a ListPlatformAdminsWithResponse call
+func ParseListPlatformAdminsResponse(rsp *http.Response) (*ListPlatformAdminsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListPlatformAdminsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListPlatformAdminsOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRevokePlatformAdminResponse parses an HTTP response from a RevokePlatformAdminWithResponse call
+func ParseRevokePlatformAdminResponse(rsp *http.Response) (*RevokePlatformAdminResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RevokePlatformAdminResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGrantPlatformAdminResponse parses an HTTP response from a GrantPlatformAdminWithResponse call
+func ParseGrantPlatformAdminResponse(rsp *http.Response) (*GrantPlatformAdminResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GrantPlatformAdminResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListPlatformFeatureFlagsResponse parses an HTTP response from a ListPlatformFeatureFlagsWithResponse call
+func ParseListPlatformFeatureFlagsResponse(rsp *http.Response) (*ListPlatformFeatureFlagsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListPlatformFeatureFlagsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListFlagsOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseClearPlatformFeatureFlagResponse parses an HTTP response from a ClearPlatformFeatureFlagWithResponse call
+func ParseClearPlatformFeatureFlagResponse(rsp *http.Response) (*ClearPlatformFeatureFlagResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ClearPlatformFeatureFlagResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetPlatformFeatureFlagResponse parses an HTTP response from a SetPlatformFeatureFlagWithResponse call
+func ParseSetPlatformFeatureFlagResponse(rsp *http.Response) (*SetPlatformFeatureFlagResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetPlatformFeatureFlagResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
 		var dest ErrorModel
@@ -21589,6 +35226,101 @@ func ParseUpdateTenantResponse(rsp *http.Response) (*UpdateTenantResponse, error
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest TenantOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteAddonResponse parses an HTTP response from a DeleteAddonWithResponse call
+func ParseDeleteAddonResponse(rsp *http.Response) (*DeleteAddonResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteAddonResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateAddonResponse parses an HTTP response from a UpdateAddonWithResponse call
+func ParseUpdateAddonResponse(rsp *http.Response) (*UpdateAddonResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateAddonResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AdoptOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseEnableAddonPruneResponse parses an HTTP response from a EnableAddonPruneWithResponse call
+func ParseEnableAddonPruneResponse(rsp *http.Response) (*EnableAddonPruneResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &EnableAddonPruneResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AdoptOutputBody
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -21820,6 +35552,151 @@ func ParseDecideApprovalResponse(rsp *http.Response) (*DecideApprovalResponse, e
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest DecideOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListAuditLogResponse parses an HTTP response from a ListAuditLogWithResponse call
+func ParseListAuditLogResponse(rsp *http.Response) (*ListAuditLogResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListAuditLogResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListAuditUIOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListAuditEventsResponse parses an HTTP response from a ListAuditEventsWithResponse call
+func ParseListAuditEventsResponse(rsp *http.Response) (*ListAuditEventsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListAuditEventsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListEventsOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseExportAuditLogResponse parses an HTTP response from a ExportAuditLogWithResponse call
+func ParseExportAuditLogResponse(rsp *http.Response) (*ExportAuditLogResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ExportAuditLogResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []byte
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	switch {
+	case rsp.StatusCode == 200:
+		var headers ExportAuditLogResponse200Headers
+		if values := rsp.Header.Values("Content-Type"); len(values) > 0 {
+			var value string
+			if err := runtime.BindStyledParameterWithOptions("simple", "Content-Type", values[0], &value, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			}
+			headers.ContentType = &value
+		}
+		response.Headers200 = &headers
+	}
+
+	return response, nil
+}
+
+// ParseSelfExtensionPermissionsResponse parses an HTTP response from a SelfExtensionPermissionsWithResponse call
+func ParseSelfExtensionPermissionsResponse(rsp *http.Response) (*SelfExtensionPermissionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SelfExtensionPermissionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SelfPermissionsOutputBody
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -22622,6 +36499,72 @@ func ParseCreateClusterResponse(rsp *http.Response) (*CreateClusterResponse, err
 	return response, nil
 }
 
+// ParseListClusterAddonsResponse parses an HTTP response from a ListClusterAddonsWithResponse call
+func ParseListClusterAddonsResponse(rsp *http.Response) (*ListClusterAddonsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListClusterAddonsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListAddonsOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAdoptAddonResponse parses an HTTP response from a AdoptAddonWithResponse call
+func ParseAdoptAddonResponse(rsp *http.Response) (*AdoptAddonResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AdoptAddonResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AdoptOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseDeleteClusterResponse parses an HTTP response from a DeleteClusterWithResponse call
 func ParseDeleteClusterResponse(rsp *http.Response) (*DeleteClusterResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -22849,15 +36792,106 @@ func ParseDecommissionClusterResponse(rsp *http.Response) (*DecommissionClusterR
 	return response, nil
 }
 
-// ParseRenderInstallManifestResponse parses an HTTP response from a RenderInstallManifestWithResponse call
-func ParseRenderInstallManifestResponse(rsp *http.Response) (*RenderInstallManifestResponse, error) {
+// ParseListClusterFeatureFlagsResponse parses an HTTP response from a ListClusterFeatureFlagsWithResponse call
+func ParseListClusterFeatureFlagsResponse(rsp *http.Response) (*ListClusterFeatureFlagsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &RenderInstallManifestResponse{
+	response := &ListClusterFeatureFlagsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListFlagsOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseClearClusterFeatureFlagResponse parses an HTTP response from a ClearClusterFeatureFlagWithResponse call
+func ParseClearClusterFeatureFlagResponse(rsp *http.Response) (*ClearClusterFeatureFlagResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ClearClusterFeatureFlagResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetClusterFeatureFlagResponse parses an HTTP response from a SetClusterFeatureFlagWithResponse call
+func ParseSetClusterFeatureFlagResponse(rsp *http.Response) (*SetClusterFeatureFlagResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetClusterFeatureFlagResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetClusterKubeconfigResponse parses an HTTP response from a GetClusterKubeconfigWithResponse call
+func ParseGetClusterKubeconfigResponse(rsp *http.Response) (*GetClusterKubeconfigResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetClusterKubeconfigResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -22881,7 +36915,7 @@ func ParseRenderInstallManifestResponse(rsp *http.Response) (*RenderInstallManif
 
 	switch {
 	case rsp.StatusCode == 200:
-		var headers RenderInstallManifestResponse200Headers
+		var headers GetClusterKubeconfigResponse200Headers
 		if values := rsp.Header.Values("Content-Type"); len(values) > 0 {
 			var value string
 			if err := runtime.BindStyledParameterWithOptions("simple", "Content-Type", values[0], &value, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""}); err != nil {
@@ -22895,26 +36929,26 @@ func ParseRenderInstallManifestResponse(rsp *http.Response) (*RenderInstallManif
 	return response, nil
 }
 
-// ParseGetClusterKubeconfigResponse parses an HTTP response from a GetClusterKubeconfigWithResponse call
-func ParseGetClusterKubeconfigResponse(rsp *http.Response) (*GetClusterKubeconfigResponse, error) {
+// ParseRebindClusterBaselineResponse parses an HTTP response from a RebindClusterBaselineWithResponse call
+func ParseRebindClusterBaselineResponse(rsp *http.Response) (*RebindClusterBaselineResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &GetClusterKubeconfigResponse{
+	response := &RebindClusterBaselineResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
 
 	switch {
-	case strings.Contains(rsp.Header.Get("Content-Type"), "yaml") && rsp.StatusCode == 200:
-		var dest string
-		if err := yaml.Unmarshal(bodyBytes, &dest); err != nil {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ClusterOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
-		response.YAML200 = &dest
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
 		var dest ErrorModel
@@ -23331,7 +37365,7 @@ func ParseListExtensionsResponse(rsp *http.Response) (*ListExtensionsResponse, e
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ListOutputBody3
+		var dest ListOutputBody7
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -23369,6 +37403,101 @@ func ParseRegisterExtensionResponse(rsp *http.Response) (*RegisterExtensionRespo
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListUiExtensionsResponse parses an HTTP response from a ListUiExtensionsWithResponse call
+func ParseListUiExtensionsResponse(rsp *http.Response) (*ListUiExtensionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListUiExtensionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListUiOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRegisterUiExtensionResponse parses an HTTP response from a RegisterUiExtensionWithResponse call
+func ParseRegisterUiExtensionResponse(rsp *http.Response) (*RegisterUiExtensionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RegisterUiExtensionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UiExtensionOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnregisterUiExtensionResponse parses an HTTP response from a UnregisterUiExtensionWithResponse call
+func ParseUnregisterUiExtensionResponse(rsp *http.Response) (*UnregisterUiExtensionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnregisterUiExtensionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
 		var dest ErrorModel
@@ -23427,6 +37556,101 @@ func ParseGetExtensionResponse(rsp *http.Response) (*GetExtensionResponse, error
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest ExtensionOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRotateExtensionIdentityResponse parses an HTTP response from a RotateExtensionIdentityWithResponse call
+func ParseRotateExtensionIdentityResponse(rsp *http.Response) (*RotateExtensionIdentityResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RotateExtensionIdentityResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RotateIdentityOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteExtensionSessionResponse parses an HTTP response from a DeleteExtensionSessionWithResponse call
+func ParseDeleteExtensionSessionResponse(rsp *http.Response) (*DeleteExtensionSessionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteExtensionSessionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePutExtensionSessionResponse parses an HTTP response from a PutExtensionSessionWithResponse call
+func ParsePutExtensionSessionResponse(rsp *http.Response) (*PutExtensionSessionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PutExtensionSessionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SessionOutputBody
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -23526,6 +37750,404 @@ func ParseSetTenantGitConfigResponse(rsp *http.Response) (*SetTenantGitConfigRes
 	switch {
 	case rsp.StatusCode == 204:
 		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListGitConnectionsResponse parses an HTTP response from a ListGitConnectionsWithResponse call
+func ParseListGitConnectionsResponse(rsp *http.Response) (*ListGitConnectionsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListGitConnectionsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListConnectionsOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDisconnectGitConnectionResponse parses an HTTP response from a DisconnectGitConnectionWithResponse call
+func ParseDisconnectGitConnectionResponse(rsp *http.Response) (*DisconnectGitConnectionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DisconnectGitConnectionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAuthorizeGitConnectionGetResponse parses an HTTP response from a AuthorizeGitConnectionGetWithResponse call
+func ParseAuthorizeGitConnectionGetResponse(rsp *http.Response) (*AuthorizeGitConnectionGetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AuthorizeGitConnectionGetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AuthorizeURLBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	switch {
+	case rsp.StatusCode == 200:
+		var headers AuthorizeGitConnectionGetResponse200Headers
+		if values := rsp.Header.Values("Location"); len(values) > 0 {
+			var value string
+			if err := runtime.BindStyledParameterWithOptions("simple", "Location", values[0], &value, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			}
+			headers.Location = &value
+		}
+		response.Headers200 = &headers
+	}
+
+	return response, nil
+}
+
+// ParseAuthorizeGitConnectionResponse parses an HTTP response from a AuthorizeGitConnectionWithResponse call
+func ParseAuthorizeGitConnectionResponse(rsp *http.Response) (*AuthorizeGitConnectionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AuthorizeGitConnectionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AuthorizeURLBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	switch {
+	case rsp.StatusCode == 200:
+		var headers AuthorizeGitConnectionResponse200Headers
+		if values := rsp.Header.Values("Location"); len(values) > 0 {
+			var value string
+			if err := runtime.BindStyledParameterWithOptions("simple", "Location", values[0], &value, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			}
+			headers.Location = &value
+		}
+		response.Headers200 = &headers
+	}
+
+	return response, nil
+}
+
+// ParseGitConnectionCallbackResponse parses an HTTP response from a GitConnectionCallbackWithResponse call
+func ParseGitConnectionCallbackResponse(rsp *http.Response) (*GitConnectionCallbackResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GitConnectionCallbackResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest AuthorizeURLBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	switch {
+	case rsp.StatusCode == 200:
+		var headers GitConnectionCallbackResponse200Headers
+		if values := rsp.Header.Values("Location"); len(values) > 0 {
+			var value string
+			if err := runtime.BindStyledParameterWithOptions("simple", "Location", values[0], &value, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""}); err != nil {
+				return nil, err
+			}
+			headers.Location = &value
+		}
+		response.Headers200 = &headers
+	}
+
+	return response, nil
+}
+
+// ParseListGitReposResponse parses an HTTP response from a ListGitReposWithResponse call
+func ParseListGitReposResponse(rsp *http.Response) (*ListGitReposResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListGitReposResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListOutputBody3
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRegisterGitRepoResponse parses an HTTP response from a RegisterGitRepoWithResponse call
+func ParseRegisterGitRepoResponse(rsp *http.Response) (*RegisterGitRepoResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RegisterGitRepoResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RepoOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUnregisterGitRepoResponse parses an HTTP response from a UnregisterGitRepoWithResponse call
+func ParseUnregisterGitRepoResponse(rsp *http.Response) (*UnregisterGitRepoResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UnregisterGitRepoResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest UnregisterOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetGitRepoResponse parses an HTTP response from a GetGitRepoWithResponse call
+func ParseGetGitRepoResponse(rsp *http.Response) (*GetGitRepoResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetGitRepoResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RepoOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateGitRepoResponse parses an HTTP response from a UpdateGitRepoWithResponse call
+func ParseUpdateGitRepoResponse(rsp *http.Response) (*UpdateGitRepoResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateGitRepoResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RepoOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseEnsureGitRepoWebhookResponse parses an HTTP response from a EnsureGitRepoWebhookWithResponse call
+func ParseEnsureGitRepoWebhookResponse(rsp *http.Response) (*EnsureGitRepoWebhookResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &EnsureGitRepoWebhookResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest WebhookOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
 		var dest ErrorModel
@@ -23766,6 +38388,163 @@ func ParseRotateIdentityClientSecretResponse(rsp *http.Response) (*RotateIdentit
 	return response, nil
 }
 
+// ParseDeleteIdentityProviderCompatResponse parses an HTTP response from a DeleteIdentityProviderCompatWithResponse call
+func ParseDeleteIdentityProviderCompatResponse(rsp *http.Response) (*DeleteIdentityProviderCompatResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteIdentityProviderCompatResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetIdentityProviderCompatResponse parses an HTTP response from a GetIdentityProviderCompatWithResponse call
+func ParseGetIdentityProviderCompatResponse(rsp *http.Response) (*GetIdentityProviderCompatResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetIdentityProviderCompatResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ProviderCompatOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePutIdentityProviderCompatResponse parses an HTTP response from a PutIdentityProviderCompatWithResponse call
+func ParsePutIdentityProviderCompatResponse(rsp *http.Response) (*PutIdentityProviderCompatResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PutIdentityProviderCompatResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ProviderCompatOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePutProviderDomainsCompatResponse parses an HTTP response from a PutProviderDomainsCompatWithResponse call
+func ParsePutProviderDomainsCompatResponse(rsp *http.Response) (*PutProviderDomainsCompatResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PutProviderDomainsCompatResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ProviderCompatOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRotateProviderSecretCompatResponse parses an HTTP response from a RotateProviderSecretCompatWithResponse call
+func ParseRotateProviderSecretCompatResponse(rsp *http.Response) (*RotateProviderSecretCompatResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RotateProviderSecretCompatResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListIdentityProvidersResponse parses an HTTP response from a ListIdentityProvidersWithResponse call
 func ParseListIdentityProvidersResponse(rsp *http.Response) (*ListIdentityProvidersResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -23993,6 +38772,39 @@ func ParseListInstancesResponse(rsp *http.Response) (*ListInstancesResponse, err
 	return response, nil
 }
 
+// ParseDeleteInstanceResponse parses an HTTP response from a DeleteInstanceWithResponse call
+func ParseDeleteInstanceResponse(rsp *http.Response) (*DeleteInstanceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteInstanceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DeployOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetInstanceResponse parses an HTTP response from a GetInstanceWithResponse call
 func ParseGetInstanceResponse(rsp *http.Response) (*GetInstanceResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -24026,6 +38838,39 @@ func ParseGetInstanceResponse(rsp *http.Response) (*GetInstanceResponse, error) 
 	return response, nil
 }
 
+// ParseUpdateInstanceResponse parses an HTTP response from a UpdateInstanceWithResponse call
+func ParseUpdateInstanceResponse(rsp *http.Response) (*UpdateInstanceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateInstanceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DeployOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseInstanceDiffResponse parses an HTTP response from a InstanceDiffWithResponse call
 func ParseInstanceDiffResponse(rsp *http.Response) (*InstanceDiffResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -24042,6 +38887,39 @@ func ParseInstanceDiffResponse(rsp *http.Response) (*InstanceDiffResponse, error
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest DiffOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRollbackInstanceResponse parses an HTTP response from a RollbackInstanceWithResponse call
+func ParseRollbackInstanceResponse(rsp *http.Response) (*RollbackInstanceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RollbackInstanceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DeployOutputBody
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -24198,7 +39076,7 @@ func ParseListNotificationEndpointsResponse(rsp *http.Response) (*ListNotificati
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest ListOutputBody2
+		var dest ListOutputBody5
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -24360,6 +39238,138 @@ func ParseTestNotificationEndpointResponse(rsp *http.Response) (*TestNotificatio
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest TestOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetPermissionCatalogResponse parses an HTTP response from a GetPermissionCatalogWithResponse call
+func ParseGetPermissionCatalogResponse(rsp *http.Response) (*GetPermissionCatalogResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPermissionCatalogResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PermissionCatalogOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListPlatformResourcesResponse parses an HTTP response from a ListPlatformResourcesWithResponse call
+func ParseListPlatformResourcesResponse(rsp *http.Response) (*ListPlatformResourcesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListPlatformResourcesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListOutputBody2
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseReconcilePlatformResourcesResponse parses an HTTP response from a ReconcilePlatformResourcesWithResponse call
+func ParseReconcilePlatformResourcesResponse(rsp *http.Response) (*ReconcilePlatformResourcesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ReconcilePlatformResourcesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ReconcileOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetPlatformResourceResponse parses an HTTP response from a GetPlatformResourceWithResponse call
+func ParseGetPlatformResourceResponse(rsp *http.Response) (*GetPlatformResourceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPlatformResourceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetOutputBody1
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -24860,6 +39870,431 @@ func ParsePutRBACMappingsResponse(rsp *http.Response) (*PutRBACMappingsResponse,
 	return response, nil
 }
 
+// ParseListResourceTargetProvidersResponse parses an HTTP response from a ListResourceTargetProvidersWithResponse call
+func ParseListResourceTargetProvidersResponse(rsp *http.Response) (*ListResourceTargetProvidersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListResourceTargetProvidersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ProvidersOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListResourceTargetsResponse parses an HTTP response from a ListResourceTargetsWithResponse call
+func ParseListResourceTargetsResponse(rsp *http.Response) (*ListResourceTargetsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListResourceTargetsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListOutputBody4
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRegisterResourceTargetResponse parses an HTTP response from a RegisterResourceTargetWithResponse call
+func ParseRegisterResourceTargetResponse(rsp *http.Response) (*RegisterResourceTargetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RegisterResourceTargetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest TargetOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteResourceTargetResponse parses an HTTP response from a DeleteResourceTargetWithResponse call
+func ParseDeleteResourceTargetResponse(rsp *http.Response) (*DeleteResourceTargetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteResourceTargetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DeleteOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetResourceTargetResponse parses an HTTP response from a GetResourceTargetWithResponse call
+func ParseGetResourceTargetResponse(rsp *http.Response) (*GetResourceTargetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetResourceTargetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest TargetOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateResourceTargetResponse parses an HTTP response from a UpdateResourceTargetWithResponse call
+func ParseUpdateResourceTargetResponse(rsp *http.Response) (*UpdateResourceTargetResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateResourceTargetResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest TargetOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRevokeResourceTargetGrantResponse parses an HTTP response from a RevokeResourceTargetGrantWithResponse call
+func ParseRevokeResourceTargetGrantResponse(rsp *http.Response) (*RevokeResourceTargetGrantResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RevokeResourceTargetGrantResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest DeleteOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseSetResourceTargetGrantResponse parses an HTTP response from a SetResourceTargetGrantWithResponse call
+func ParseSetResourceTargetGrantResponse(rsp *http.Response) (*SetResourceTargetGrantResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &SetResourceTargetGrantResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GrantOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListRolesResponse parses an HTTP response from a ListRolesWithResponse call
+func ParseListRolesResponse(rsp *http.Response) (*ListRolesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListRolesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListRolesOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateRoleResponse parses an HTTP response from a CreateRoleWithResponse call
+func ParseCreateRoleResponse(rsp *http.Response) (*CreateRoleResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateRoleResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RoleOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteRoleResponse parses an HTTP response from a DeleteRoleWithResponse call
+func ParseDeleteRoleResponse(rsp *http.Response) (*DeleteRoleResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteRoleResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetRoleResponse parses an HTTP response from a GetRoleWithResponse call
+func ParseGetRoleResponse(rsp *http.Response) (*GetRoleResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetRoleResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RoleOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateRoleResponse parses an HTTP response from a UpdateRoleWithResponse call
+func ParseUpdateRoleResponse(rsp *http.Response) (*UpdateRoleResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateRoleResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RoleOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListRolloutsResponse parses an HTTP response from a ListRolloutsWithResponse call
 func ParseListRolloutsResponse(rsp *http.Response) (*ListRolloutsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -25124,6 +40559,361 @@ func ParseListRolloutTargetsResponse(rsp *http.Response) (*ListRolloutTargetsRes
 	return response, nil
 }
 
+// ParseGetScaffoldRunResponse parses an HTTP response from a GetScaffoldRunWithResponse call
+func ParseGetScaffoldRunResponse(rsp *http.Response) (*GetScaffoldRunResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetScaffoldRunResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetRunOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCancelScaffoldRunResponse parses an HTTP response from a CancelScaffoldRunWithResponse call
+func ParseCancelScaffoldRunResponse(rsp *http.Response) (*CancelScaffoldRunResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CancelScaffoldRunResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRetryScaffoldRunResponse parses an HTTP response from a RetryScaffoldRunWithResponse call
+func ParseRetryScaffoldRunResponse(rsp *http.Response) (*RetryScaffoldRunResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RetryScaffoldRunResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RetryRunOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateScaffoldResponse parses an HTTP response from a CreateScaffoldWithResponse call
+func ParseCreateScaffoldResponse(rsp *http.Response) (*CreateScaffoldResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateScaffoldResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CreateScaffoldOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetScaffoldResponse parses an HTTP response from a GetScaffoldWithResponse call
+func ParseGetScaffoldResponse(rsp *http.Response) (*GetScaffoldResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetScaffoldResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetScaffoldOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListSecretStoresResponse parses an HTTP response from a ListSecretStoresWithResponse call
+func ParseListSecretStoresResponse(rsp *http.Response) (*ListSecretStoresResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListSecretStoresResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListOutputBody6
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateSecretStoreResponse parses an HTTP response from a CreateSecretStoreWithResponse call
+func ParseCreateSecretStoreResponse(rsp *http.Response) (*CreateSecretStoreResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateSecretStoreResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest StoreOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteSecretStoreResponse parses an HTTP response from a DeleteSecretStoreWithResponse call
+func ParseDeleteSecretStoreResponse(rsp *http.Response) (*DeleteSecretStoreResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteSecretStoreResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case rsp.StatusCode == 204:
+		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSecretStoreResponse parses an HTTP response from a GetSecretStoreWithResponse call
+func ParseGetSecretStoreResponse(rsp *http.Response) (*GetSecretStoreResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSecretStoreResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest StoreOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateSecretStoreResponse parses an HTTP response from a UpdateSecretStoreWithResponse call
+func ParseUpdateSecretStoreResponse(rsp *http.Response) (*UpdateSecretStoreResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateSecretStoreResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest StoreOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetSecretStoreStatusResponse parses an HTTP response from a GetSecretStoreStatusWithResponse call
+func ParseGetSecretStoreStatusResponse(rsp *http.Response) (*GetSecretStoreStatusResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetSecretStoreStatusResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest StatusOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListTeamsResponse parses an HTTP response from a ListTeamsWithResponse call
 func ParseListTeamsResponse(rsp *http.Response) (*ListTeamsResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -25219,6 +41009,39 @@ func ParseDeleteTeamResponse(rsp *http.Response) (*DeleteTeamResponse, error) {
 	return response, nil
 }
 
+// ParseUpdateTeamResponse parses an HTTP response from a UpdateTeamWithResponse call
+func ParseUpdateTeamResponse(rsp *http.Response) (*UpdateTeamResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateTeamResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest TeamOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListMembersResponse parses an HTTP response from a ListMembersWithResponse call
 func ParseListMembersResponse(rsp *http.Response) (*ListMembersResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -25297,6 +41120,105 @@ func ParseRemoveMemberResponse(rsp *http.Response) (*RemoveMemberResponse, error
 	switch {
 	case rsp.StatusCode == 204:
 		break // No content-type
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListTemplatesResponse parses an HTTP response from a ListTemplatesWithResponse call
+func ParseListTemplatesResponse(rsp *http.Response) (*ListTemplatesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListTemplatesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ListTemplatesOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetTemplateResponse parses an HTTP response from a GetTemplateWithResponse call
+func ParseGetTemplateResponse(rsp *http.Response) (*GetTemplateResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetTemplateResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest GetTemplateOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateScaffoldRunResponse parses an HTTP response from a CreateScaffoldRunWithResponse call
+func ParseCreateScaffoldRunResponse(rsp *http.Response) (*CreateScaffoldRunResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateScaffoldRunResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest CreateRunOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
 
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
 		var dest ErrorModel
@@ -25471,6 +41393,39 @@ func ParseResumeTenantZoneResponse(rsp *http.Response) (*ResumeTenantZoneRespons
 	return response, nil
 }
 
+// ParseGitWebhookIngressResponse parses an HTTP response from a GitWebhookIngressWithResponse call
+func ParseGitWebhookIngressResponse(rsp *http.Response) (*GitWebhookIngressResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GitWebhookIngressResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest ReceiveOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseGetHealthResponse parses an HTTP response from a GetHealthWithResponse call
 func ParseGetHealthResponse(rsp *http.Response) (*GetHealthResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -25541,6 +41496,27 @@ type ServerInterface interface {
 	// InboxApprovals List pending approvals across all orgs the caller belongs to
 	// (GET /api/v1/approvals/inbox)
 	InboxApprovals(w http.ResponseWriter, r *http.Request, params InboxApprovalsParams)
+	// GetMyPermissions Platform-level permissions of the authenticated caller
+	// (GET /api/v1/me/permissions)
+	GetMyPermissions(w http.ResponseWriter, r *http.Request)
+	// ListPlatformAdmins List platform admins (members of the Keycloak platform admin group)
+	// (GET /api/v1/platform/admins)
+	ListPlatformAdmins(w http.ResponseWriter, r *http.Request)
+	// RevokePlatformAdmin Revoke platform admin (leaves the platform admin group; idempotent)
+	// (DELETE /api/v1/platform/admins/{subject})
+	RevokePlatformAdmin(w http.ResponseWriter, r *http.Request, subject string)
+	// GrantPlatformAdmin Grant platform admin (joins the platform admin group; org_creator tuple converges via PlatformGroupSync)
+	// (PUT /api/v1/platform/admins/{subject})
+	GrantPlatformAdmin(w http.ResponseWriter, r *http.Request, subject string)
+	// ListPlatformFeatureFlags List the runtime feature-flag catalog with platform effective values
+	// (GET /api/v1/platform/feature-flags)
+	ListPlatformFeatureFlags(w http.ResponseWriter, r *http.Request)
+	// ClearPlatformFeatureFlag Revert a platform-scoped feature flag to its built-in default
+	// (DELETE /api/v1/platform/feature-flags/{key})
+	ClearPlatformFeatureFlag(w http.ResponseWriter, r *http.Request, key string)
+	// SetPlatformFeatureFlag Set a platform-scoped feature-flag value
+	// (PUT /api/v1/platform/feature-flags/{key})
+	SetPlatformFeatureFlag(w http.ResponseWriter, r *http.Request, key string)
 	// ListTenants List tenants visible to the caller (tenant switcher)
 	// (GET /api/v1/tenants)
 	ListTenants(w http.ResponseWriter, r *http.Request)
@@ -25556,6 +41532,15 @@ type ServerInterface interface {
 	// UpdateTenant Update the tenant profile (org admin only)
 	// (PATCH /api/v1/tenants/{org})
 	UpdateTenant(w http.ResponseWriter, r *http.Request, org string)
+	// DeleteAddon Orphan an addon: stop managing it (row removed; git files and the ArgoCD app keep running)
+	// (DELETE /api/v1/tenants/{org}/addons/{id})
+	DeleteAddon(w http.ResponseWriter, r *http.Request, org string, id string)
+	// UpdateAddon Update a managed addon's chart version and/or values (commit per repo policy)
+	// (PATCH /api/v1/tenants/{org}/addons/{id})
+	UpdateAddon(w http.ResponseWriter, r *http.Request, org string, id string)
+	// EnableAddonPrune Explicitly enable prune on an adopted addon (audit-logged, one-directional)
+	// (POST /api/v1/tenants/{org}/addons/{id}/enable-prune)
+	EnableAddonPrune(w http.ResponseWriter, r *http.Request, org string, id string)
 	// ListAgentChannels List agent channel pins
 	// (GET /api/v1/tenants/{org}/agent-channels)
 	ListAgentChannels(w http.ResponseWriter, r *http.Request, org string)
@@ -25577,6 +41562,18 @@ type ServerInterface interface {
 	// DecideApproval Approve or reject a pending approval request
 	// (POST /api/v1/tenants/{org}/approvals/{id}/decide)
 	DecideApproval(w http.ResponseWriter, r *http.Request, org string, id string)
+	// ListAuditLog Org audit log in the console's shape (filterable by actor/action/objectType/from/to)
+	// (GET /api/v1/tenants/{org}/audit)
+	ListAuditLog(w http.ResponseWriter, r *http.Request, org string, params ListAuditLogParams)
+	// ListAuditEvents List org audit events, newest first (filterable by action and actor)
+	// (GET /api/v1/tenants/{org}/audit-events)
+	ListAuditEvents(w http.ResponseWriter, r *http.Request, org string, params ListAuditEventsParams)
+	// ExportAuditLog Org audit log as CSV (same filters as the list)
+	// (GET /api/v1/tenants/{org}/audit/export)
+	ExportAuditLog(w http.ResponseWriter, r *http.Request, org string, params ExportAuditLogParams)
+	// SelfExtensionPermissions List the caller's effective extension invoke permissions
+	// (GET /api/v1/tenants/{org}/authz/self/extensions)
+	SelfExtensionPermissions(w http.ResponseWriter, r *http.Request, org string)
 	// BulkDecideApprovals Bulk approve/reject approvals
 	// (POST /api/v1/tenants/{org}/bulk/approvals:decide)
 	BulkDecideApprovals(w http.ResponseWriter, r *http.Request, org string)
@@ -25649,6 +41646,12 @@ type ServerInterface interface {
 	// CreateCluster Register a new cluster record
 	// (POST /api/v1/tenants/{org}/clusters)
 	CreateCluster(w http.ResponseWriter, r *http.Request, org string)
+	// ListClusterAddons List discovered + managed addons for a cluster (team-filtered, with available versions)
+	// (GET /api/v1/tenants/{org}/clusters/{clusterId}/addons)
+	ListClusterAddons(w http.ResponseWriter, r *http.Request, org string, clusterId string)
+	// AdoptAddon Adopt a (discovered or declared) addon into GitOps management
+	// (POST /api/v1/tenants/{org}/clusters/{clusterId}/addons/{catalogItem}/adopt)
+	AdoptAddon(w http.ResponseWriter, r *http.Request, org string, clusterId string, catalogItem string)
 	// DeleteCluster Cancel a pending cluster registration (409 once registered)
 	// (DELETE /api/v1/tenants/{org}/clusters/{id})
 	DeleteCluster(w http.ResponseWriter, r *http.Request, org string, id string)
@@ -25670,12 +41673,21 @@ type ServerInterface interface {
 	// DecommissionCluster Decommission a cluster (ownership-checked drain, identity revocation, archived audit)
 	// (POST /api/v1/tenants/{org}/clusters/{id}/decommission)
 	DecommissionCluster(w http.ResponseWriter, r *http.Request, org string, id string)
-	// RenderInstallManifest Render the agent install manifest embedding a fresh registration token
-	// (POST /api/v1/tenants/{org}/clusters/{id}/install-manifest)
-	RenderInstallManifest(w http.ResponseWriter, r *http.Request, org string, id string)
+	// ListClusterFeatureFlags List the feature-flag catalog with per-cluster effective values
+	// (GET /api/v1/tenants/{org}/clusters/{id}/feature-flags)
+	ListClusterFeatureFlags(w http.ResponseWriter, r *http.Request, org string, id string)
+	// ClearClusterFeatureFlag Revert a cluster-scoped feature-flag override to the platform default
+	// (DELETE /api/v1/tenants/{org}/clusters/{id}/feature-flags/{key})
+	ClearClusterFeatureFlag(w http.ResponseWriter, r *http.Request, org string, id string, key string)
+	// SetClusterFeatureFlag Set a cluster-scoped feature-flag override (tenant admin/operator)
+	// (PUT /api/v1/tenants/{org}/clusters/{id}/feature-flags/{key})
+	SetClusterFeatureFlag(w http.ResponseWriter, r *http.Request, org string, id string, key string)
 	// GetClusterKubeconfig Render a secret-free kubeconfig (gateway or direct mode) for download
 	// (GET /api/v1/tenants/{org}/clusters/{id}/kubeconfig)
 	GetClusterKubeconfig(w http.ResponseWriter, r *http.Request, org string, id string, params GetClusterKubeconfigParams)
+	// RebindClusterBaseline Rebind a cluster to a different baseline repo (Feature A)
+	// (POST /api/v1/tenants/{org}/clusters/{id}/rebind-baseline)
+	RebindClusterBaseline(w http.ResponseWriter, r *http.Request, org string, id string)
 	// RevokeCluster Revoke a cluster (disables its Keycloak client)
 	// (POST /api/v1/tenants/{org}/clusters/{id}/revoke)
 	RevokeCluster(w http.ResponseWriter, r *http.Request, org string, id string)
@@ -25718,12 +41730,30 @@ type ServerInterface interface {
 	// RegisterExtension Register a backend extension (pending until handshake verifies)
 	// (POST /api/v1/tenants/{org}/extensions)
 	RegisterExtension(w http.ResponseWriter, r *http.Request, org string)
+	// ListUiExtensions List UI extensions (Module Federation remotes)
+	// (GET /api/v1/tenants/{org}/extensions/ui)
+	ListUiExtensions(w http.ResponseWriter, r *http.Request, org string)
+	// RegisterUiExtension Register or update a UI extension remote
+	// (POST /api/v1/tenants/{org}/extensions/ui)
+	RegisterUiExtension(w http.ResponseWriter, r *http.Request, org string)
+	// UnregisterUiExtension Unregister a UI extension remote
+	// (DELETE /api/v1/tenants/{org}/extensions/ui/{name})
+	UnregisterUiExtension(w http.ResponseWriter, r *http.Request, org string, name string)
 	// UnregisterExtension Unregister an extension
 	// (DELETE /api/v1/tenants/{org}/extensions/{id})
 	UnregisterExtension(w http.ResponseWriter, r *http.Request, org string, id string)
 	// GetExtension Get an extension
 	// (GET /api/v1/tenants/{org}/extensions/{id})
 	GetExtension(w http.ResponseWriter, r *http.Request, org string, id string)
+	// RotateExtensionIdentity Rotate the extension's gateway identity secret (returned once; also lazily provisions identity for pre-ADR-0008 rows)
+	// (POST /api/v1/tenants/{org}/extensions/{id}/identity/rotate)
+	RotateExtensionIdentity(w http.ResponseWriter, r *http.Request, org string, id string)
+	// DeleteExtensionSession Drop the calling user's third-party session (logout/re-auth)
+	// (DELETE /api/v1/tenants/{org}/extensions/{id}/session)
+	DeleteExtensionSession(w http.ResponseWriter, r *http.Request, org string, id string)
+	// PutExtensionSession Store bootstrapped third-party session material for the calling user (oidc-sso-session)
+	// (POST /api/v1/tenants/{org}/extensions/{id}/session)
+	PutExtensionSession(w http.ResponseWriter, r *http.Request, org string, id string)
 	// VerifyExtension Run the SDK handshake and mark the extension ready
 	// (POST /api/v1/tenants/{org}/extensions/{id}/verify)
 	VerifyExtension(w http.ResponseWriter, r *http.Request, org string, id string)
@@ -25733,6 +41763,39 @@ type ServerInterface interface {
 	// SetTenantGitConfig Set the tenant state repo + commit policy (platform engineer)
 	// (PUT /api/v1/tenants/{org}/git-config)
 	SetTenantGitConfig(w http.ResponseWriter, r *http.Request, org string)
+	// ListGitConnections List the caller's own git connections (metadata only)
+	// (GET /api/v1/tenants/{org}/git-connections)
+	ListGitConnections(w http.ResponseWriter, r *http.Request, org string)
+	// DisconnectGitConnection Revoke the provider grant and delete the connection
+	// (DELETE /api/v1/tenants/{org}/git-connections/{provider})
+	DisconnectGitConnection(w http.ResponseWriter, r *http.Request, org string, provider string)
+	// AuthorizeGitConnectionGet Start the git OAuth flow (302 or JSON authorizeUrl, per Accept)
+	// (GET /api/v1/tenants/{org}/git-connections/{provider}/authorize)
+	AuthorizeGitConnectionGet(w http.ResponseWriter, r *http.Request, org string, provider string, params AuthorizeGitConnectionGetParams)
+	// AuthorizeGitConnection Start the git OAuth flow (302 to the provider consent URL; 200 {authorizeUrl} for JSON clients)
+	// (POST /api/v1/tenants/{org}/git-connections/{provider}/authorize)
+	AuthorizeGitConnection(w http.ResponseWriter, r *http.Request, org string, provider string, params AuthorizeGitConnectionParams)
+	// GitConnectionCallback OAuth callback (302 back to the UI)
+	// (GET /api/v1/tenants/{org}/git-connections/{provider}/callback)
+	GitConnectionCallback(w http.ResponseWriter, r *http.Request, org string, provider string, params GitConnectionCallbackParams)
+	// ListGitRepos List the org's registered GitOps repos (team-filtered)
+	// (GET /api/v1/tenants/{org}/git-repos)
+	ListGitRepos(w http.ResponseWriter, r *http.Request, org string)
+	// RegisterGitRepo Register an existing git repo (validates the GitHub App is installed)
+	// (POST /api/v1/tenants/{org}/git-repos)
+	RegisterGitRepo(w http.ResponseWriter, r *http.Request, org string)
+	// UnregisterGitRepo Unregister a repo (guarded; force with mode=orphan|teardown)
+	// (DELETE /api/v1/tenants/{org}/git-repos/{id})
+	UnregisterGitRepo(w http.ResponseWriter, r *http.Request, org string, id string, params UnregisterGitRepoParams)
+	// GetGitRepo Repo detail + provider health probe
+	// (GET /api/v1/tenants/{org}/git-repos/{id})
+	GetGitRepo(w http.ResponseWriter, r *http.Request, org string, id string)
+	// UpdateGitRepo Update repo policy/branch/team or promote to the org default
+	// (PATCH /api/v1/tenants/{org}/git-repos/{id})
+	UpdateGitRepo(w http.ResponseWriter, r *http.Request, org string, id string)
+	// EnsureGitRepoWebhook (Re)provision the repo's webhook (rotates the secret)
+	// (POST /api/v1/tenants/{org}/git-repos/{id}/webhook)
+	EnsureGitRepoWebhook(w http.ResponseWriter, r *http.Request, org string, id string)
 	// ListIdentityClients List OIDC clients of a tenant (org admin only)
 	// (GET /api/v1/tenants/{org}/identity/clients)
 	ListIdentityClients(w http.ResponseWriter, r *http.Request, org string)
@@ -25754,6 +41817,21 @@ type ServerInterface interface {
 	// RotateIdentityClientSecret Rotate the client secret; the new value is returned exactly once (org admin only)
 	// (POST /api/v1/tenants/{org}/identity/clients/{clientId}/secret:rotate)
 	RotateIdentityClientSecret(w http.ResponseWriter, r *http.Request, org string, clientId string)
+	// DeleteIdentityProviderCompat Delete the tenant's single identity provider (UI contract; org admin only)
+	// (DELETE /api/v1/tenants/{org}/identity/provider)
+	DeleteIdentityProviderCompat(w http.ResponseWriter, r *http.Request, org string)
+	// GetIdentityProviderCompat Get the tenant's single identity provider, or null (UI contract; org admin only)
+	// (GET /api/v1/tenants/{org}/identity/provider)
+	GetIdentityProviderCompat(w http.ResponseWriter, r *http.Request, org string)
+	// PutIdentityProviderCompat Create-or-replace the tenant's single identity provider (UI contract; org admin only)
+	// (PUT /api/v1/tenants/{org}/identity/provider)
+	PutIdentityProviderCompat(w http.ResponseWriter, r *http.Request, org string)
+	// PutProviderDomainsCompat Replace the provider's login-routing domain hints (UI contract; org admin only)
+	// (PUT /api/v1/tenants/{org}/identity/provider/domains)
+	PutProviderDomainsCompat(w http.ResponseWriter, r *http.Request, org string)
+	// RotateProviderSecretCompat Rotate the provider's write-only client secret (UI contract; org admin only)
+	// (POST /api/v1/tenants/{org}/identity/provider/secret:rotate)
+	RotateProviderSecretCompat(w http.ResponseWriter, r *http.Request, org string)
 	// ListIdentityProviders List brokered identity providers of a tenant (org admin only; at most one in v1)
 	// (GET /api/v1/tenants/{org}/identity/providers)
 	ListIdentityProviders(w http.ResponseWriter, r *http.Request, org string)
@@ -25775,18 +41853,27 @@ type ServerInterface interface {
 	// ListInstances List resource instances (filterable by cluster, item, health, owner team)
 	// (GET /api/v1/tenants/{org}/instances)
 	ListInstances(w http.ResponseWriter, r *http.Request, org string, params ListInstancesParams)
+	// DeleteInstance Undeploy an instance (delete desired state + inventory row)
+	// (DELETE /api/v1/tenants/{org}/instances/{id})
+	DeleteInstance(w http.ResponseWriter, r *http.Request, org string, id string)
 	// GetInstance Get one resource instance with version badge
 	// (GET /api/v1/tenants/{org}/instances/{id})
 	GetInstance(w http.ResponseWriter, r *http.Request, org string, id string)
+	// UpdateInstance Update an instance's spec (re-render at the current version)
+	// (PATCH /api/v1/tenants/{org}/instances/{id})
+	UpdateInstance(w http.ResponseWriter, r *http.Request, org string, id string)
 	// InstanceDiff Diff preview data for an upgrade
 	// (GET /api/v1/tenants/{org}/instances/{id}/diff)
 	InstanceDiff(w http.ResponseWriter, r *http.Request, org string, id string, params InstanceDiffParams)
+	// RollbackInstance Rollback an instance to an explicit earlier catalog version
+	// (POST /api/v1/tenants/{org}/instances/{id}/rollback)
+	RollbackInstance(w http.ResponseWriter, r *http.Request, org string, id string)
 	// UpgradeInstance One-click upgrade of an instance to a newer catalog version
 	// (POST /api/v1/tenants/{org}/instances/{id}/upgrade)
 	UpgradeInstance(w http.ResponseWriter, r *http.Request, org string, id string)
 	// ListOrgMembers Org-wide member view (highest role + teams)
 	// (GET /api/v1/tenants/{org}/members)
-	ListOrgMembers(w http.ResponseWriter, r *http.Request, org string)
+	ListOrgMembers(w http.ResponseWriter, r *http.Request, org string, params ListOrgMembersParams)
 	// RemoveOrgMember Remove a user from the organization (org admin only)
 	// (DELETE /api/v1/tenants/{org}/members/{subject})
 	RemoveOrgMember(w http.ResponseWriter, r *http.Request, org string, subject string)
@@ -25811,6 +41898,18 @@ type ServerInterface interface {
 	// TestNotificationEndpoint Send a test notification to an endpoint
 	// (POST /api/v1/tenants/{org}/notification-endpoints/{id}/test)
 	TestNotificationEndpoint(w http.ResponseWriter, r *http.Request, org string, id string)
+	// GetPermissionCatalog Static permission catalog for the role editor
+	// (GET /api/v1/tenants/{org}/permissions/catalog)
+	GetPermissionCatalog(w http.ResponseWriter, r *http.Request, org string)
+	// ListPlatformResources List tenant platform resources (keycloak realm/client, dns zone, namespace)
+	// (GET /api/v1/tenants/{org}/platform-resources)
+	ListPlatformResources(w http.ResponseWriter, r *http.Request, org string)
+	// ReconcilePlatformResources Force re-reconciliation of tenant platform resources (ops)
+	// (POST /api/v1/tenants/{org}/platform-resources/reconcile)
+	ReconcilePlatformResources(w http.ResponseWriter, r *http.Request, org string)
+	// GetPlatformResource Get one tenant platform resource
+	// (GET /api/v1/tenants/{org}/platform-resources/{id})
+	GetPlatformResource(w http.ResponseWriter, r *http.Request, org string, id string)
 	// ListPolicies List policies (org + platform-global)
 	// (GET /api/v1/tenants/{org}/policies)
 	ListPolicies(w http.ResponseWriter, r *http.Request, org string)
@@ -25826,7 +41925,7 @@ type ServerInterface interface {
 	// GetPolicy Get a policy
 	// (GET /api/v1/tenants/{org}/policies/{id})
 	GetPolicy(w http.ResponseWriter, r *http.Request, org string, id string)
-	// UpdatePolicy Update a policy (bumps version)
+	// UpdatePolicy Update a policy (bumps version; exemptions bind the stable ID, so renames/edits keep them valid)
 	// (PUT /api/v1/tenants/{org}/policies/{id})
 	UpdatePolicy(w http.ResponseWriter, r *http.Request, org string, id string)
 	// ListPolicyPacks List policy packs (org + platform-global)
@@ -25853,9 +41952,48 @@ type ServerInterface interface {
 	// GetRBACMatrix RBAC matrix: tenant Keycloak groups × cluster roles with current mappings
 	// (GET /api/v1/tenants/{org}/rbac)
 	GetRBACMatrix(w http.ResponseWriter, r *http.Request, org string)
-	// PutRBACMappings Declarative bulk set of team→role mappings, applied atomically (org admin only)
+	// PutRBACMappings Declarative bulk set of team→role mappings, applied atomically (tenant.rbac.manage)
 	// (PUT /api/v1/tenants/{org}/rbac/mappings)
 	PutRBACMappings(w http.ResponseWriter, r *http.Request, org string)
+	// ListResourceTargetProviders List resource target provider config and UI schemas
+	// (GET /api/v1/tenants/{org}/resource-target-providers)
+	ListResourceTargetProviders(w http.ResponseWriter, r *http.Request, org string)
+	// ListResourceTargets List caller-entitled shared resource targets
+	// (GET /api/v1/tenants/{org}/resource-targets)
+	ListResourceTargets(w http.ResponseWriter, r *http.Request, org string, params ListResourceTargetsParams)
+	// RegisterResourceTarget Adopt an existing inventory resource as a shared target
+	// (POST /api/v1/tenants/{org}/resource-targets)
+	RegisterResourceTarget(w http.ResponseWriter, r *http.Request, org string)
+	// DeleteResourceTarget Delete a target overlay without deleting its resource
+	// (DELETE /api/v1/tenants/{org}/resource-targets/{id})
+	DeleteResourceTarget(w http.ResponseWriter, r *http.Request, org string, id string)
+	// GetResourceTarget Get a caller-visible resource target
+	// (GET /api/v1/tenants/{org}/resource-targets/{id})
+	GetResourceTarget(w http.ResponseWriter, r *http.Request, org string, id string)
+	// UpdateResourceTarget Update target policy with optimistic concurrency
+	// (PATCH /api/v1/tenants/{org}/resource-targets/{id})
+	UpdateResourceTarget(w http.ResponseWriter, r *http.Request, org string, id string)
+	// RevokeResourceTargetGrant Revoke a team's target grant
+	// (DELETE /api/v1/tenants/{org}/resource-targets/{id}/grants/{teamId})
+	RevokeResourceTargetGrant(w http.ResponseWriter, r *http.Request, org string, id string, teamId string)
+	// SetResourceTargetGrant Set a team's view, use, or provision grant
+	// (PUT /api/v1/tenants/{org}/resource-targets/{id}/grants/{teamId})
+	SetResourceTargetGrant(w http.ResponseWriter, r *http.Request, org string, id string, teamId string)
+	// ListRoles List org roles (built-in and custom)
+	// (GET /api/v1/tenants/{org}/roles)
+	ListRoles(w http.ResponseWriter, r *http.Request, org string)
+	// CreateRole Create a custom org role (tenant.rbac.manage)
+	// (POST /api/v1/tenants/{org}/roles)
+	CreateRole(w http.ResponseWriter, r *http.Request, org string)
+	// DeleteRole Delete a custom role (tenant.rbac.manage; built-ins are never deletable)
+	// (DELETE /api/v1/tenants/{org}/roles/{role})
+	DeleteRole(w http.ResponseWriter, r *http.Request, org string, role string)
+	// GetRole Get one org role by name or ID
+	// (GET /api/v1/tenants/{org}/roles/{role})
+	GetRole(w http.ResponseWriter, r *http.Request, org string, role string)
+	// UpdateRole Edit a role (tenant.rbac.manage; built-in names are immutable; the tenant.admin guardrail applies)
+	// (PATCH /api/v1/tenants/{org}/roles/{role})
+	UpdateRole(w http.ResponseWriter, r *http.Request, org string, role string)
 	// ListRollouts List rollouts
 	// (GET /api/v1/tenants/{org}/rollouts)
 	ListRollouts(w http.ResponseWriter, r *http.Request, org string)
@@ -25880,6 +42018,39 @@ type ServerInterface interface {
 	// ListRolloutTargets List rollout target status for a stage
 	// (GET /api/v1/tenants/{org}/rollouts/{id}/targets)
 	ListRolloutTargets(w http.ResponseWriter, r *http.Request, org string, id string, params ListRolloutTargetsParams)
+	// GetScaffoldRun Get a scaffold run with per-phase step states and outputs (UI polls this)
+	// (GET /api/v1/tenants/{org}/scaffold-runs/{runId})
+	GetScaffoldRun(w http.ResponseWriter, r *http.Request, org string, runId string)
+	// CancelScaffoldRun Cooperatively cancel a scaffold run (retains already-created outputs)
+	// (POST /api/v1/tenants/{org}/scaffold-runs/{runId}/cancel)
+	CancelScaffoldRun(w http.ResponseWriter, r *http.Request, org string, runId string)
+	// RetryScaffoldRun Resume a failed scaffold run from its first non-completed step
+	// (POST /api/v1/tenants/{org}/scaffold-runs/{runId}/retry)
+	RetryScaffoldRun(w http.ResponseWriter, r *http.Request, org string, runId string)
+	// CreateScaffold Create a scaffold run (UI wizard contract)
+	// (POST /api/v1/tenants/{org}/scaffolds)
+	CreateScaffold(w http.ResponseWriter, r *http.Request, org string)
+	// GetScaffold Get a scaffold run (UI wizard polling contract)
+	// (GET /api/v1/tenants/{org}/scaffolds/{runId})
+	GetScaffold(w http.ResponseWriter, r *http.Request, org string, runId string)
+	// ListSecretStores List secret stores (own cluster-scoped plus platform stores)
+	// (GET /api/v1/tenants/{org}/secret-stores)
+	ListSecretStores(w http.ResponseWriter, r *http.Request, org string)
+	// CreateSecretStore Register a secret store
+	// (POST /api/v1/tenants/{org}/secret-stores)
+	CreateSecretStore(w http.ResponseWriter, r *http.Request, org string)
+	// DeleteSecretStore Delete a secret store
+	// (DELETE /api/v1/tenants/{org}/secret-stores/{name})
+	DeleteSecretStore(w http.ResponseWriter, r *http.Request, org string, name string)
+	// GetSecretStore Get one secret store
+	// (GET /api/v1/tenants/{org}/secret-stores/{name})
+	GetSecretStore(w http.ResponseWriter, r *http.Request, org string, name string)
+	// UpdateSecretStore Update a secret store's targets/provider
+	// (PATCH /api/v1/tenants/{org}/secret-stores/{name})
+	UpdateSecretStore(w http.ResponseWriter, r *http.Request, org string, name string)
+	// GetSecretStoreStatus Delivery status projection for one secret store
+	// (GET /api/v1/tenants/{org}/secret-stores/{name}/status)
+	GetSecretStoreStatus(w http.ResponseWriter, r *http.Request, org string, name string)
 	// ListTeams List teams of a tenant
 	// (GET /api/v1/tenants/{org}/teams)
 	ListTeams(w http.ResponseWriter, r *http.Request, org string)
@@ -25889,15 +42060,27 @@ type ServerInterface interface {
 	// DeleteTeam Delete a team (org admin only; default teams are protected)
 	// (DELETE /api/v1/tenants/{org}/teams/{team})
 	DeleteTeam(w http.ResponseWriter, r *http.Request, org string, team string)
+	// UpdateTeam Update a team's display name (org admin only; name and Keycloak group path are immutable, default teams are protected — ADR-0007)
+	// (PUT /api/v1/tenants/{org}/teams/{team})
+	UpdateTeam(w http.ResponseWriter, r *http.Request, org string, team string)
 	// ListMembers List members of a team
 	// (GET /api/v1/tenants/{org}/teams/{team}/members)
-	ListMembers(w http.ResponseWriter, r *http.Request, org string, team string)
+	ListMembers(w http.ResponseWriter, r *http.Request, org string, team string, params ListMembersParams)
 	// AddMember Add a user to a team (platform-engineer/admin only)
 	// (POST /api/v1/tenants/{org}/teams/{team}/members)
 	AddMember(w http.ResponseWriter, r *http.Request, org string, team string)
 	// RemoveMember Remove a user from a team (platform-engineer/admin only)
 	// (DELETE /api/v1/tenants/{org}/teams/{team}/members/{subject})
 	RemoveMember(w http.ResponseWriter, r *http.Request, org string, team string, subject string)
+	// ListTemplates List software templates visible to the tenant at their effective versions
+	// (GET /api/v1/tenants/{org}/templates)
+	ListTemplates(w http.ResponseWriter, r *http.Request, org string)
+	// GetTemplate Get a template with its values schema and optional uiSchema
+	// (GET /api/v1/tenants/{org}/templates/{name})
+	GetTemplate(w http.ResponseWriter, r *http.Request, org string, name string)
+	// CreateScaffoldRun Create a scaffold run (idempotent: identical resubmits return the existing run)
+	// (POST /api/v1/tenants/{org}/templates/{name}/runs)
+	CreateScaffoldRun(w http.ResponseWriter, r *http.Request, org string, name string)
 	// ListTenantZones List tenant zones owned by this org
 	// (GET /api/v1/tenants/{org}/zones)
 	ListTenantZones(w http.ResponseWriter, r *http.Request, org string)
@@ -25913,6 +42096,9 @@ type ServerInterface interface {
 	// ResumeTenantZone Resume a zone after manual intervention (§10)
 	// (POST /api/v1/tenants/{org}/zones/{id}/resume)
 	ResumeTenantZone(w http.ResponseWriter, r *http.Request, org string, id string)
+	// GitWebhookIngress Git provider webhook ingress (per-repo HMAC-authenticated)
+	// (POST /api/v1/webhooks/git/{provider})
+	GitWebhookIngress(w http.ResponseWriter, r *http.Request, provider string, params GitWebhookIngressParams)
 	// GetHealth Liveness probe
 	// (GET /healthz)
 	GetHealth(w http.ResponseWriter, r *http.Request)
@@ -25994,6 +42180,152 @@ func (siw *ServerInterfaceWrapper) InboxApprovals(w http.ResponseWriter, r *http
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.InboxApprovals(w, r, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetMyPermissions operation middleware
+func (siw *ServerInterfaceWrapper) GetMyPermissions(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetMyPermissions(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListPlatformAdmins operation middleware
+func (siw *ServerInterfaceWrapper) ListPlatformAdmins(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListPlatformAdmins(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RevokePlatformAdmin operation middleware
+func (siw *ServerInterfaceWrapper) RevokePlatformAdmin(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "subject" -------------
+	var subject string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "subject", r.PathValue("subject"), &subject, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "subject", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RevokePlatformAdmin(w, r, subject)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GrantPlatformAdmin operation middleware
+func (siw *ServerInterfaceWrapper) GrantPlatformAdmin(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "subject" -------------
+	var subject string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "subject", r.PathValue("subject"), &subject, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "subject", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GrantPlatformAdmin(w, r, subject)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListPlatformFeatureFlags operation middleware
+func (siw *ServerInterfaceWrapper) ListPlatformFeatureFlags(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListPlatformFeatureFlags(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ClearPlatformFeatureFlag operation middleware
+func (siw *ServerInterfaceWrapper) ClearPlatformFeatureFlag(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "key" -------------
+	var key string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "key", r.PathValue("key"), &key, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "key", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ClearPlatformFeatureFlag(w, r, key)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SetPlatformFeatureFlag operation middleware
+func (siw *ServerInterfaceWrapper) SetPlatformFeatureFlag(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "key" -------------
+	var key string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "key", r.PathValue("key"), &key, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "key", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetPlatformFeatureFlag(w, r, key)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -26100,6 +42432,111 @@ func (siw *ServerInterfaceWrapper) UpdateTenant(w http.ResponseWriter, r *http.R
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.UpdateTenant(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteAddon operation middleware
+func (siw *ServerInterfaceWrapper) DeleteAddon(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteAddon(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateAddon operation middleware
+func (siw *ServerInterfaceWrapper) UpdateAddon(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateAddon(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// EnableAddonPrune operation middleware
+func (siw *ServerInterfaceWrapper) EnableAddonPrune(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.EnableAddonPrune(w, r, org, id)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -26347,6 +42784,314 @@ func (siw *ServerInterfaceWrapper) DecideApproval(w http.ResponseWriter, r *http
 	handler.ServeHTTP(w, r)
 }
 
+// ListAuditLog operation middleware
+func (siw *ServerInterfaceWrapper) ListAuditLog(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListAuditLogParams
+
+	// ------------- Optional query parameter "actor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "actor", r.URL.Query(), &params.Actor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "actor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "actor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "action" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "action", r.URL.Query(), &params.Action, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "action"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "action", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "objectType" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "objectType", r.URL.Query(), &params.ObjectType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "objectType"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "objectType", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListAuditLog(w, r, org, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListAuditEvents operation middleware
+func (siw *ServerInterfaceWrapper) ListAuditEvents(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListAuditEventsParams
+
+	// ------------- Optional query parameter "action" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "action", r.URL.Query(), &params.Action, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "action"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "action", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "actor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "actor", r.URL.Query(), &params.Actor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "actor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "actor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListAuditEvents(w, r, org, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ExportAuditLog operation middleware
+func (siw *ServerInterfaceWrapper) ExportAuditLog(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ExportAuditLogParams
+
+	// ------------- Optional query parameter "actor" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "actor", r.URL.Query(), &params.Actor, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "actor"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "actor", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "action" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "action", r.URL.Query(), &params.Action, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "action"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "action", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "objectType" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "objectType", r.URL.Query(), &params.ObjectType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "objectType"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "objectType", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "from" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "from", r.URL.Query(), &params.From, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "from"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "from", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "to" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "to", r.URL.Query(), &params.To, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "to"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "to", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ExportAuditLog(w, r, org, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SelfExtensionPermissions operation middleware
+func (siw *ServerInterfaceWrapper) SelfExtensionPermissions(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SelfExtensionPermissions(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // BulkDecideApprovals operation middleware
 func (siw *ServerInterfaceWrapper) BulkDecideApprovals(w http.ResponseWriter, r *http.Request) {
 
@@ -26478,6 +43223,84 @@ func (siw *ServerInterfaceWrapper) ListCatalog(w http.ResponseWriter, r *http.Re
 			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "cluster"})
 		} else {
 			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "cluster", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "q" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "q", r.URL.Query(), &params.Q, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "q"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "q", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "source" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "source", r.URL.Query(), &params.Source, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "source"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "source", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "category" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "category", r.URL.Query(), &params.Category, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "category"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "category", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "sort" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "sort", r.URL.Query(), &params.Sort, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "sort"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "sort", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "offset" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "offset", r.URL.Query(), &params.Offset, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "offset"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "offset", Err: err})
 		}
 		return
 	}
@@ -27152,6 +43975,85 @@ func (siw *ServerInterfaceWrapper) CreateCluster(w http.ResponseWriter, r *http.
 	handler.ServeHTTP(w, r)
 }
 
+// ListClusterAddons operation middleware
+func (siw *ServerInterfaceWrapper) ListClusterAddons(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "clusterId" -------------
+	var clusterId string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "clusterId", r.PathValue("clusterId"), &clusterId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "clusterId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListClusterAddons(w, r, org, clusterId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AdoptAddon operation middleware
+func (siw *ServerInterfaceWrapper) AdoptAddon(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "clusterId" -------------
+	var clusterId string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "clusterId", r.PathValue("clusterId"), &clusterId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "clusterId", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "catalogItem" -------------
+	var catalogItem string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "catalogItem", r.PathValue("catalogItem"), &catalogItem, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "catalogItem", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AdoptAddon(w, r, org, clusterId, catalogItem)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // DeleteCluster operation middleware
 func (siw *ServerInterfaceWrapper) DeleteCluster(w http.ResponseWriter, r *http.Request) {
 
@@ -27397,8 +44299,8 @@ func (siw *ServerInterfaceWrapper) DecommissionCluster(w http.ResponseWriter, r 
 	handler.ServeHTTP(w, r)
 }
 
-// RenderInstallManifest operation middleware
-func (siw *ServerInterfaceWrapper) RenderInstallManifest(w http.ResponseWriter, r *http.Request) {
+// ListClusterFeatureFlags operation middleware
+func (siw *ServerInterfaceWrapper) ListClusterFeatureFlags(w http.ResponseWriter, r *http.Request) {
 
 	var err error
 	_ = err
@@ -27422,7 +44324,95 @@ func (siw *ServerInterfaceWrapper) RenderInstallManifest(w http.ResponseWriter, 
 	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.RenderInstallManifest(w, r, org, id)
+		siw.Handler.ListClusterFeatureFlags(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ClearClusterFeatureFlag operation middleware
+func (siw *ServerInterfaceWrapper) ClearClusterFeatureFlag(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "key" -------------
+	var key string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "key", r.PathValue("key"), &key, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "key", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ClearClusterFeatureFlag(w, r, org, id, key)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SetClusterFeatureFlag operation middleware
+func (siw *ServerInterfaceWrapper) SetClusterFeatureFlag(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "key" -------------
+	var key string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "key", r.PathValue("key"), &key, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "key", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetClusterFeatureFlag(w, r, org, id, key)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -27461,7 +44451,7 @@ func (siw *ServerInterfaceWrapper) GetClusterKubeconfig(w http.ResponseWriter, r
 
 	// ------------- Optional query parameter "mode" -------------
 
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "mode", r.URL.Query(), &params.Mode, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "mode", r.URL.Query(), &params.Mode, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
 	if err != nil {
 		var requiredError *runtime.RequiredParameterError
 		if errors.As(err, &requiredError) {
@@ -27474,7 +44464,7 @@ func (siw *ServerInterfaceWrapper) GetClusterKubeconfig(w http.ResponseWriter, r
 
 	// ------------- Optional query parameter "grantType" -------------
 
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "grantType", r.URL.Query(), &params.GrantType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "grantType", r.URL.Query(), &params.GrantType, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
 	if err != nil {
 		var requiredError *runtime.RequiredParameterError
 		if errors.As(err, &requiredError) {
@@ -27487,7 +44477,7 @@ func (siw *ServerInterfaceWrapper) GetClusterKubeconfig(w http.ResponseWriter, r
 
 	// ------------- Optional query parameter "server" -------------
 
-	err = runtime.BindQueryParameterWithOptions("form", true, false, "server", r.URL.Query(), &params.Server, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "server", r.URL.Query(), &params.Server, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
 	if err != nil {
 		var requiredError *runtime.RequiredParameterError
 		if errors.As(err, &requiredError) {
@@ -27500,6 +44490,41 @@ func (siw *ServerInterfaceWrapper) GetClusterKubeconfig(w http.ResponseWriter, r
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetClusterKubeconfig(w, r, org, id, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RebindClusterBaseline operation middleware
+func (siw *ServerInterfaceWrapper) RebindClusterBaseline(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RebindClusterBaseline(w, r, org, id)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -27965,6 +44990,93 @@ func (siw *ServerInterfaceWrapper) RegisterExtension(w http.ResponseWriter, r *h
 	handler.ServeHTTP(w, r)
 }
 
+// ListUiExtensions operation middleware
+func (siw *ServerInterfaceWrapper) ListUiExtensions(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListUiExtensions(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RegisterUiExtension operation middleware
+func (siw *ServerInterfaceWrapper) RegisterUiExtension(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RegisterUiExtension(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UnregisterUiExtension operation middleware
+func (siw *ServerInterfaceWrapper) UnregisterUiExtension(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "name" -------------
+	var name string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "name", r.PathValue("name"), &name, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "name", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UnregisterUiExtension(w, r, org, name)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // UnregisterExtension operation middleware
 func (siw *ServerInterfaceWrapper) UnregisterExtension(w http.ResponseWriter, r *http.Request) {
 
@@ -28026,6 +45138,111 @@ func (siw *ServerInterfaceWrapper) GetExtension(w http.ResponseWriter, r *http.R
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetExtension(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RotateExtensionIdentity operation middleware
+func (siw *ServerInterfaceWrapper) RotateExtensionIdentity(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RotateExtensionIdentity(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteExtensionSession operation middleware
+func (siw *ServerInterfaceWrapper) DeleteExtensionSession(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteExtensionSession(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PutExtensionSession operation middleware
+func (siw *ServerInterfaceWrapper) PutExtensionSession(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutExtensionSession(w, r, org, id)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -28113,6 +45330,470 @@ func (siw *ServerInterfaceWrapper) SetTenantGitConfig(w http.ResponseWriter, r *
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.SetTenantGitConfig(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListGitConnections operation middleware
+func (siw *ServerInterfaceWrapper) ListGitConnections(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListGitConnections(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DisconnectGitConnection operation middleware
+func (siw *ServerInterfaceWrapper) DisconnectGitConnection(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "provider" -------------
+	var provider string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "provider", r.PathValue("provider"), &provider, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "provider", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DisconnectGitConnection(w, r, org, provider)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AuthorizeGitConnectionGet operation middleware
+func (siw *ServerInterfaceWrapper) AuthorizeGitConnectionGet(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "provider" -------------
+	var provider string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "provider", r.PathValue("provider"), &provider, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "provider", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params AuthorizeGitConnectionGetParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Accept" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Accept")]; found {
+		var Accept string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Accept", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Accept", valueList[0], &Accept, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Accept", Err: err})
+			return
+		}
+
+		params.Accept = &Accept
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AuthorizeGitConnectionGet(w, r, org, provider, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AuthorizeGitConnection operation middleware
+func (siw *ServerInterfaceWrapper) AuthorizeGitConnection(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "provider" -------------
+	var provider string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "provider", r.PathValue("provider"), &provider, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "provider", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params AuthorizeGitConnectionParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "Accept" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Accept")]; found {
+		var Accept string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "Accept", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Accept", valueList[0], &Accept, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "Accept", Err: err})
+			return
+		}
+
+		params.Accept = &Accept
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AuthorizeGitConnection(w, r, org, provider, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GitConnectionCallback operation middleware
+func (siw *ServerInterfaceWrapper) GitConnectionCallback(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "provider" -------------
+	var provider string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "provider", r.PathValue("provider"), &provider, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "provider", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GitConnectionCallbackParams
+
+	// ------------- Optional query parameter "code" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "code", r.URL.Query(), &params.Code, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "code"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "code", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "state" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "state", r.URL.Query(), &params.State, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "state"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "state", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GitConnectionCallback(w, r, org, provider, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListGitRepos operation middleware
+func (siw *ServerInterfaceWrapper) ListGitRepos(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListGitRepos(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RegisterGitRepo operation middleware
+func (siw *ServerInterfaceWrapper) RegisterGitRepo(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RegisterGitRepo(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UnregisterGitRepo operation middleware
+func (siw *ServerInterfaceWrapper) UnregisterGitRepo(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params UnregisterGitRepoParams
+
+	// ------------- Optional query parameter "force" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "force", r.URL.Query(), &params.Force, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "force"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "force", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "mode" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "mode", r.URL.Query(), &params.Mode, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "mode"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "mode", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UnregisterGitRepo(w, r, org, id, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetGitRepo operation middleware
+func (siw *ServerInterfaceWrapper) GetGitRepo(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetGitRepo(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateGitRepo operation middleware
+func (siw *ServerInterfaceWrapper) UpdateGitRepo(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateGitRepo(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// EnsureGitRepoWebhook operation middleware
+func (siw *ServerInterfaceWrapper) EnsureGitRepoWebhook(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.EnsureGitRepoWebhook(w, r, org, id)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -28340,6 +46021,136 @@ func (siw *ServerInterfaceWrapper) RotateIdentityClientSecret(w http.ResponseWri
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.RotateIdentityClientSecret(w, r, org, clientId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteIdentityProviderCompat operation middleware
+func (siw *ServerInterfaceWrapper) DeleteIdentityProviderCompat(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteIdentityProviderCompat(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetIdentityProviderCompat operation middleware
+func (siw *ServerInterfaceWrapper) GetIdentityProviderCompat(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetIdentityProviderCompat(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PutIdentityProviderCompat operation middleware
+func (siw *ServerInterfaceWrapper) PutIdentityProviderCompat(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutIdentityProviderCompat(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PutProviderDomainsCompat operation middleware
+func (siw *ServerInterfaceWrapper) PutProviderDomainsCompat(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutProviderDomainsCompat(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RotateProviderSecretCompat operation middleware
+func (siw *ServerInterfaceWrapper) RotateProviderSecretCompat(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RotateProviderSecretCompat(w, r, org)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -28613,6 +46424,41 @@ func (siw *ServerInterfaceWrapper) ListInstances(w http.ResponseWriter, r *http.
 	handler.ServeHTTP(w, r)
 }
 
+// DeleteInstance operation middleware
+func (siw *ServerInterfaceWrapper) DeleteInstance(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteInstance(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetInstance operation middleware
 func (siw *ServerInterfaceWrapper) GetInstance(w http.ResponseWriter, r *http.Request) {
 
@@ -28639,6 +46485,41 @@ func (siw *ServerInterfaceWrapper) GetInstance(w http.ResponseWriter, r *http.Re
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetInstance(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateInstance operation middleware
+func (siw *ServerInterfaceWrapper) UpdateInstance(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateInstance(w, r, org, id)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -28699,6 +46580,41 @@ func (siw *ServerInterfaceWrapper) InstanceDiff(w http.ResponseWriter, r *http.R
 	handler.ServeHTTP(w, r)
 }
 
+// RollbackInstance operation middleware
+func (siw *ServerInterfaceWrapper) RollbackInstance(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RollbackInstance(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // UpgradeInstance operation middleware
 func (siw *ServerInterfaceWrapper) UpgradeInstance(w http.ResponseWriter, r *http.Request) {
 
@@ -28749,8 +46665,24 @@ func (siw *ServerInterfaceWrapper) ListOrgMembers(w http.ResponseWriter, r *http
 		return
 	}
 
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListOrgMembersParams
+
+	// ------------- Optional query parameter "q" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "q", r.URL.Query(), &params.Q, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "q"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "q", Err: err})
+		}
+		return
+	}
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListOrgMembers(w, r, org)
+		siw.Handler.ListOrgMembers(w, r, org, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -29013,6 +46945,119 @@ func (siw *ServerInterfaceWrapper) TestNotificationEndpoint(w http.ResponseWrite
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.TestNotificationEndpoint(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPermissionCatalog operation middleware
+func (siw *ServerInterfaceWrapper) GetPermissionCatalog(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPermissionCatalog(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListPlatformResources operation middleware
+func (siw *ServerInterfaceWrapper) ListPlatformResources(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListPlatformResources(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ReconcilePlatformResources operation middleware
+func (siw *ServerInterfaceWrapper) ReconcilePlatformResources(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ReconcilePlatformResources(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetPlatformResource operation middleware
+func (siw *ServerInterfaceWrapper) GetPlatformResource(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetPlatformResource(w, r, org, id)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -29509,6 +47554,502 @@ func (siw *ServerInterfaceWrapper) PutRBACMappings(w http.ResponseWriter, r *htt
 	handler.ServeHTTP(w, r)
 }
 
+// ListResourceTargetProviders operation middleware
+func (siw *ServerInterfaceWrapper) ListResourceTargetProviders(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListResourceTargetProviders(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListResourceTargets operation middleware
+func (siw *ServerInterfaceWrapper) ListResourceTargets(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListResourceTargetsParams
+
+	// ------------- Optional query parameter "capability" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "capability", r.URL.Query(), &params.Capability, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "capability"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "capability", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "action" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "action", r.URL.Query(), &params.Action, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "action"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "action", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "resourceKind" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "resourceKind", r.URL.Query(), &params.ResourceKind, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "resourceKind"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "resourceKind", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "resourceId" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "resourceId", r.URL.Query(), &params.ResourceId, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "resourceId"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "resourceId", Err: err})
+		}
+		return
+	}
+
+	// ------------- Optional query parameter "includeUnavailable" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "includeUnavailable", r.URL.Query(), &params.IncludeUnavailable, runtime.BindQueryParameterOptions{Type: "boolean", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "includeUnavailable"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "includeUnavailable", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListResourceTargets(w, r, org, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RegisterResourceTarget operation middleware
+func (siw *ServerInterfaceWrapper) RegisterResourceTarget(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RegisterResourceTarget(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteResourceTarget operation middleware
+func (siw *ServerInterfaceWrapper) DeleteResourceTarget(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteResourceTarget(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetResourceTarget operation middleware
+func (siw *ServerInterfaceWrapper) GetResourceTarget(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetResourceTarget(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateResourceTarget operation middleware
+func (siw *ServerInterfaceWrapper) UpdateResourceTarget(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateResourceTarget(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RevokeResourceTargetGrant operation middleware
+func (siw *ServerInterfaceWrapper) RevokeResourceTargetGrant(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "teamId" -------------
+	var teamId string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "teamId", r.PathValue("teamId"), &teamId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "teamId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RevokeResourceTargetGrant(w, r, org, id, teamId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// SetResourceTargetGrant operation middleware
+func (siw *ServerInterfaceWrapper) SetResourceTargetGrant(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "teamId" -------------
+	var teamId string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "teamId", r.PathValue("teamId"), &teamId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "teamId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.SetResourceTargetGrant(w, r, org, id, teamId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListRoles operation middleware
+func (siw *ServerInterfaceWrapper) ListRoles(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListRoles(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateRole operation middleware
+func (siw *ServerInterfaceWrapper) CreateRole(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateRole(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteRole operation middleware
+func (siw *ServerInterfaceWrapper) DeleteRole(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "role" -------------
+	var role string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "role", r.PathValue("role"), &role, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "role", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteRole(w, r, org, role)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetRole operation middleware
+func (siw *ServerInterfaceWrapper) GetRole(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "role" -------------
+	var role string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "role", r.PathValue("role"), &role, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "role", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetRole(w, r, org, role)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateRole operation middleware
+func (siw *ServerInterfaceWrapper) UpdateRole(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "role" -------------
+	var role string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "role", r.PathValue("role"), &role, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "role", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateRole(w, r, org, role)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListRollouts operation middleware
 func (siw *ServerInterfaceWrapper) ListRollouts(w http.ResponseWriter, r *http.Request) {
 
@@ -29787,6 +48328,364 @@ func (siw *ServerInterfaceWrapper) ListRolloutTargets(w http.ResponseWriter, r *
 	handler.ServeHTTP(w, r)
 }
 
+// GetScaffoldRun operation middleware
+func (siw *ServerInterfaceWrapper) GetScaffoldRun(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "runId" -------------
+	var runId string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "runId", r.PathValue("runId"), &runId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "runId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetScaffoldRun(w, r, org, runId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CancelScaffoldRun operation middleware
+func (siw *ServerInterfaceWrapper) CancelScaffoldRun(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "runId" -------------
+	var runId string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "runId", r.PathValue("runId"), &runId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "runId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CancelScaffoldRun(w, r, org, runId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RetryScaffoldRun operation middleware
+func (siw *ServerInterfaceWrapper) RetryScaffoldRun(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "runId" -------------
+	var runId string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "runId", r.PathValue("runId"), &runId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "runId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RetryScaffoldRun(w, r, org, runId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateScaffold operation middleware
+func (siw *ServerInterfaceWrapper) CreateScaffold(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateScaffold(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetScaffold operation middleware
+func (siw *ServerInterfaceWrapper) GetScaffold(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "runId" -------------
+	var runId string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "runId", r.PathValue("runId"), &runId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "runId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetScaffold(w, r, org, runId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListSecretStores operation middleware
+func (siw *ServerInterfaceWrapper) ListSecretStores(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListSecretStores(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateSecretStore operation middleware
+func (siw *ServerInterfaceWrapper) CreateSecretStore(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateSecretStore(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DeleteSecretStore operation middleware
+func (siw *ServerInterfaceWrapper) DeleteSecretStore(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "name" -------------
+	var name string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "name", r.PathValue("name"), &name, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "name", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DeleteSecretStore(w, r, org, name)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetSecretStore operation middleware
+func (siw *ServerInterfaceWrapper) GetSecretStore(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "name" -------------
+	var name string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "name", r.PathValue("name"), &name, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "name", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSecretStore(w, r, org, name)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateSecretStore operation middleware
+func (siw *ServerInterfaceWrapper) UpdateSecretStore(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "name" -------------
+	var name string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "name", r.PathValue("name"), &name, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "name", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateSecretStore(w, r, org, name)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetSecretStoreStatus operation middleware
+func (siw *ServerInterfaceWrapper) GetSecretStoreStatus(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "name" -------------
+	var name string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "name", r.PathValue("name"), &name, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "name", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetSecretStoreStatus(w, r, org, name)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListTeams operation middleware
 func (siw *ServerInterfaceWrapper) ListTeams(w http.ResponseWriter, r *http.Request) {
 
@@ -29874,6 +48773,41 @@ func (siw *ServerInterfaceWrapper) DeleteTeam(w http.ResponseWriter, r *http.Req
 	handler.ServeHTTP(w, r)
 }
 
+// UpdateTeam operation middleware
+func (siw *ServerInterfaceWrapper) UpdateTeam(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "team" -------------
+	var team string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "team", r.PathValue("team"), &team, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "team", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateTeam(w, r, org, team)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListMembers operation middleware
 func (siw *ServerInterfaceWrapper) ListMembers(w http.ResponseWriter, r *http.Request) {
 
@@ -29898,8 +48832,24 @@ func (siw *ServerInterfaceWrapper) ListMembers(w http.ResponseWriter, r *http.Re
 		return
 	}
 
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListMembersParams
+
+	// ------------- Optional query parameter "q" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "q", r.URL.Query(), &params.Q, runtime.BindQueryParameterOptions{Type: "string", Format: ""})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "q"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "q", Err: err})
+		}
+		return
+	}
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListMembers(w, r, org, team)
+		siw.Handler.ListMembers(w, r, org, team, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -29979,6 +48929,102 @@ func (siw *ServerInterfaceWrapper) RemoveMember(w http.ResponseWriter, r *http.R
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.RemoveMember(w, r, org, team, subject)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListTemplates operation middleware
+func (siw *ServerInterfaceWrapper) ListTemplates(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListTemplates(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetTemplate operation middleware
+func (siw *ServerInterfaceWrapper) GetTemplate(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "name" -------------
+	var name string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "name", r.PathValue("name"), &name, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "name", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetTemplate(w, r, org, name)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateScaffoldRun operation middleware
+func (siw *ServerInterfaceWrapper) CreateScaffoldRun(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "name" -------------
+	var name string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "name", r.PathValue("name"), &name, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "name", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateScaffoldRun(w, r, org, name)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -30145,6 +49191,113 @@ func (siw *ServerInterfaceWrapper) ResumeTenantZone(w http.ResponseWriter, r *ht
 	handler.ServeHTTP(w, r)
 }
 
+// GitWebhookIngress operation middleware
+func (siw *ServerInterfaceWrapper) GitWebhookIngress(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "provider" -------------
+	var provider string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "provider", r.PathValue("provider"), &provider, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "provider", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GitWebhookIngressParams
+
+	headers := r.Header
+
+	// ------------- Optional header parameter "X-Hub-Signature-256" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("X-Hub-Signature-256")]; found {
+		var XHubSignature256 string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Hub-Signature-256", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "X-Hub-Signature-256", valueList[0], &XHubSignature256, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Hub-Signature-256", Err: err})
+			return
+		}
+
+		params.XHubSignature256 = &XHubSignature256
+
+	}
+
+	// ------------- Optional header parameter "X-GitHub-Event" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("X-GitHub-Event")]; found {
+		var XGitHubEvent string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-GitHub-Event", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "X-GitHub-Event", valueList[0], &XGitHubEvent, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-GitHub-Event", Err: err})
+			return
+		}
+
+		params.XGitHubEvent = &XGitHubEvent
+
+	}
+
+	// ------------- Optional header parameter "X-Gitlab-Token" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("X-Gitlab-Token")]; found {
+		var XGitlabToken string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Gitlab-Token", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "X-Gitlab-Token", valueList[0], &XGitlabToken, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Gitlab-Token", Err: err})
+			return
+		}
+
+		params.XGitlabToken = &XGitlabToken
+
+	}
+
+	// ------------- Optional header parameter "X-Gitlab-Event" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("X-Gitlab-Event")]; found {
+		var XGitlabEvent string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandlerFunc(w, r, &TooManyValuesForParamError{ParamName: "X-Gitlab-Event", Count: n})
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "X-Gitlab-Event", valueList[0], &XGitlabEvent, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false, Type: "string", Format: ""})
+		if err != nil {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "X-Gitlab-Event", Err: err})
+			return
+		}
+
+		params.XGitlabEvent = &XGitlabEvent
+
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GitWebhookIngress(w, r, provider, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // GetHealth operation middleware
 func (siw *ServerInterfaceWrapper) GetHealth(w http.ResponseWriter, r *http.Request) {
 
@@ -30298,11 +49451,21 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/admin/catalog/sync", wrapper.SyncCatalog)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/api/v1/admin/catalog/{item}/visibility", wrapper.SetCatalogVisibility)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/approvals/inbox", wrapper.InboxApprovals)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/me/permissions", wrapper.GetMyPermissions)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/platform/admins", wrapper.ListPlatformAdmins)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/platform/admins/{subject}", wrapper.RevokePlatformAdmin)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/api/v1/platform/admins/{subject}", wrapper.GrantPlatformAdmin)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/platform/feature-flags", wrapper.ListPlatformFeatureFlags)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/platform/feature-flags/{key}", wrapper.ClearPlatformFeatureFlag)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/api/v1/platform/feature-flags/{key}", wrapper.SetPlatformFeatureFlag)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants", wrapper.ListTenants)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants", wrapper.CreateTenant)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}", wrapper.DeleteTenant)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}", wrapper.GetTenant)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/api/v1/tenants/{org}", wrapper.UpdateTenant)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/addons/{id}", wrapper.DeleteAddon)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/api/v1/tenants/{org}/addons/{id}", wrapper.UpdateAddon)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/addons/{id}/enable-prune", wrapper.EnableAddonPrune)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/agent-channels", wrapper.ListAgentChannels)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/approval-config", wrapper.GetApprovalConfig)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/api/v1/tenants/{org}/approval-config", wrapper.UpdateApprovalConfig)
@@ -30310,6 +49473,10 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/approvals/{id}", wrapper.GetApproval)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/approvals/{id}/cancel", wrapper.CancelApproval)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/approvals/{id}/decide", wrapper.DecideApproval)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/audit", wrapper.ListAuditLog)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/audit-events", wrapper.ListAuditEvents)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/audit/export", wrapper.ExportAuditLog)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/authz/self/extensions", wrapper.SelfExtensionPermissions)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/bulk/approvals:decide", wrapper.BulkDecideApprovals)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/bulk/catalog:pin", wrapper.BulkPinCatalog)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/bulk/clusters:query", wrapper.BulkQueryClusters)
@@ -30334,14 +49501,20 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/cluster-sets/{id}/members", wrapper.ListClusterSetMembers)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters", wrapper.ListClusters)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters", wrapper.CreateCluster)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{clusterId}/addons", wrapper.ListClusterAddons)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{clusterId}/addons/{catalogItem}/adopt", wrapper.AdoptAddon)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}", wrapper.DeleteCluster)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}", wrapper.GetCluster)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/access-info", wrapper.GetClusterAccessInfo)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/approve", wrapper.ApproveCluster)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/capabilities", wrapper.ListCapabilities)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/cordon", wrapper.CordonCluster)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/decommission", wrapper.DecommissionCluster)
-	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/install-manifest", wrapper.RenderInstallManifest)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/feature-flags", wrapper.ListClusterFeatureFlags)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/feature-flags/{key}", wrapper.ClearClusterFeatureFlag)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/feature-flags/{key}", wrapper.SetClusterFeatureFlag)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/kubeconfig", wrapper.GetClusterKubeconfig)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/rebind-baseline", wrapper.RebindClusterBaseline)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/revoke", wrapper.RevokeCluster)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/tokens", wrapper.ListRegistrationTokens)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/tokens", wrapper.IssueRegistrationToken)
@@ -30356,11 +49529,28 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/exemptions/{id}/decide", wrapper.DecideExemption)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/extensions", wrapper.ListExtensions)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/extensions", wrapper.RegisterExtension)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/extensions/ui", wrapper.ListUiExtensions)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/extensions/ui", wrapper.RegisterUiExtension)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/extensions/ui/{name}", wrapper.UnregisterUiExtension)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/extensions/{id}", wrapper.UnregisterExtension)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/extensions/{id}", wrapper.GetExtension)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/extensions/{id}/identity/rotate", wrapper.RotateExtensionIdentity)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/extensions/{id}/session", wrapper.DeleteExtensionSession)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/extensions/{id}/session", wrapper.PutExtensionSession)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/extensions/{id}/verify", wrapper.VerifyExtension)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/git-config", wrapper.GetTenantGitConfig)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/api/v1/tenants/{org}/git-config", wrapper.SetTenantGitConfig)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/git-connections", wrapper.ListGitConnections)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/git-connections/{provider}", wrapper.DisconnectGitConnection)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/git-connections/{provider}/authorize", wrapper.AuthorizeGitConnectionGet)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/git-connections/{provider}/authorize", wrapper.AuthorizeGitConnection)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/git-connections/{provider}/callback", wrapper.GitConnectionCallback)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/git-repos", wrapper.ListGitRepos)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/git-repos", wrapper.RegisterGitRepo)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/git-repos/{id}", wrapper.UnregisterGitRepo)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/git-repos/{id}", wrapper.GetGitRepo)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/api/v1/tenants/{org}/git-repos/{id}", wrapper.UpdateGitRepo)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/git-repos/{id}/webhook", wrapper.EnsureGitRepoWebhook)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/identity/clients", wrapper.ListIdentityClients)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/identity/clients", wrapper.CreateIdentityClient)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/identity/clients/{clientId}", wrapper.DisableIdentityClient)
@@ -30368,6 +49558,11 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/api/v1/tenants/{org}/identity/clients/{clientId}", wrapper.UpdateIdentityClient)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/api/v1/tenants/{org}/identity/clients/{clientId}/scopes", wrapper.PutIdentityClientScopes)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/identity/clients/{clientId}/secret:rotate", wrapper.RotateIdentityClientSecret)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/identity/provider", wrapper.DeleteIdentityProviderCompat)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/identity/provider", wrapper.GetIdentityProviderCompat)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/api/v1/tenants/{org}/identity/provider", wrapper.PutIdentityProviderCompat)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/api/v1/tenants/{org}/identity/provider/domains", wrapper.PutProviderDomainsCompat)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/identity/provider/secret:rotate", wrapper.RotateProviderSecretCompat)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/identity/providers", wrapper.ListIdentityProviders)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/identity/providers", wrapper.CreateIdentityProvider)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/identity/providers/{alias}", wrapper.DeleteIdentityProvider)
@@ -30375,8 +49570,11 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/api/v1/tenants/{org}/identity/providers/{alias}", wrapper.UpdateIdentityProvider)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/identity/scopes", wrapper.ListIdentityScopes)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/instances", wrapper.ListInstances)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}", wrapper.DeleteInstance)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}", wrapper.GetInstance)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}", wrapper.UpdateInstance)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/diff", wrapper.InstanceDiff)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/rollback", wrapper.RollbackInstance)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/upgrade", wrapper.UpgradeInstance)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/members", wrapper.ListOrgMembers)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/members/{subject}", wrapper.RemoveOrgMember)
@@ -30387,6 +49585,10 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/notification-endpoints/{id}", wrapper.GetNotificationEndpoint)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/api/v1/tenants/{org}/notification-endpoints/{id}", wrapper.UpdateNotificationEndpoint)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/notification-endpoints/{id}/test", wrapper.TestNotificationEndpoint)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/permissions/catalog", wrapper.GetPermissionCatalog)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/platform-resources", wrapper.ListPlatformResources)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/platform-resources/reconcile", wrapper.ReconcilePlatformResources)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/platform-resources/{id}", wrapper.GetPlatformResource)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/policies", wrapper.ListPolicies)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/policies", wrapper.CreatePolicy)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/policies/evaluate", wrapper.EvaluatePolicies)
@@ -30402,6 +49604,19 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/policy-packs/{id}/assignments/{assignmentId}", wrapper.UnassignPolicyPack)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/rbac", wrapper.GetRBACMatrix)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/api/v1/tenants/{org}/rbac/mappings", wrapper.PutRBACMappings)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/resource-target-providers", wrapper.ListResourceTargetProviders)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/resource-targets", wrapper.ListResourceTargets)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/resource-targets", wrapper.RegisterResourceTarget)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/resource-targets/{id}", wrapper.DeleteResourceTarget)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/resource-targets/{id}", wrapper.GetResourceTarget)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/api/v1/tenants/{org}/resource-targets/{id}", wrapper.UpdateResourceTarget)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/resource-targets/{id}/grants/{teamId}", wrapper.RevokeResourceTargetGrant)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/api/v1/tenants/{org}/resource-targets/{id}/grants/{teamId}", wrapper.SetResourceTargetGrant)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/roles", wrapper.ListRoles)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/roles", wrapper.CreateRole)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/roles/{role}", wrapper.DeleteRole)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/roles/{role}", wrapper.GetRole)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/api/v1/tenants/{org}/roles/{role}", wrapper.UpdateRole)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/rollouts", wrapper.ListRollouts)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/rollouts", wrapper.CreateRollout)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/rollouts/{id}", wrapper.GetRollout)
@@ -30410,18 +49625,33 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/rollouts/{id}/start", wrapper.StartRollout)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/rollouts/{id}/stop", wrapper.StopRollout)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/rollouts/{id}/targets", wrapper.ListRolloutTargets)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/scaffold-runs/{runId}", wrapper.GetScaffoldRun)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/scaffold-runs/{runId}/cancel", wrapper.CancelScaffoldRun)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/scaffold-runs/{runId}/retry", wrapper.RetryScaffoldRun)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/scaffolds", wrapper.CreateScaffold)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/scaffolds/{runId}", wrapper.GetScaffold)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/secret-stores", wrapper.ListSecretStores)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/secret-stores", wrapper.CreateSecretStore)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/secret-stores/{name}", wrapper.DeleteSecretStore)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/secret-stores/{name}", wrapper.GetSecretStore)
+	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/api/v1/tenants/{org}/secret-stores/{name}", wrapper.UpdateSecretStore)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/secret-stores/{name}/status", wrapper.GetSecretStoreStatus)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/teams", wrapper.ListTeams)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/teams", wrapper.CreateTeam)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/teams/{team}", wrapper.DeleteTeam)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/api/v1/tenants/{org}/teams/{team}", wrapper.UpdateTeam)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/teams/{team}/members", wrapper.ListMembers)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/teams/{team}/members", wrapper.AddMember)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/teams/{team}/members/{subject}", wrapper.RemoveMember)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/templates", wrapper.ListTemplates)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/templates/{name}", wrapper.GetTemplate)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/templates/{name}/runs", wrapper.CreateScaffoldRun)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/zones", wrapper.ListTenantZones)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/zones", wrapper.RequestTenantZone)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/zones/{id}", wrapper.GetTenantZone)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/zones/{id}/decommission", wrapper.DecommissionTenantZone)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/zones/{id}/resume", wrapper.ResumeTenantZone)
-	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/clusters/{id}/access-info", wrapper.GetClusterAccessInfo)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/webhooks/git/{provider}", wrapper.GitWebhookIngress)
 
 	return m
 }
@@ -30431,230 +49661,378 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 // const string: with thousands of chunks the chained `+` fold is several
 // times slower for the Go compiler than parsing a slice literal.
 var swaggerSpec = []string{
-	"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",
+	"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",
 }
 
 // decodeSpec returns the embedded OpenAPI spec as raw JSON bytes,
