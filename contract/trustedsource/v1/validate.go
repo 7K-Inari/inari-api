@@ -163,14 +163,18 @@ func (f *File) Validate() error {
 	default:
 		return field("environment", "must be production, staging, or development")
 	}
+	environment := f.Environment
+	if environment == "" {
+		environment = EnvironmentProduction
+	}
 	ids := map[string]string{}
-	if err := validateGroup(f.Catalog, "catalog", ids); err != nil {
+	if err := validateGroup(f.Catalog, "catalog", ids, environment); err != nil {
 		return err
 	}
-	return validateGroup(f.Template, "template", ids)
+	return validateGroup(f.Template, "template", ids, environment)
 }
 
-func validateGroup(g *SourceGroup, path string, ids map[string]string) error {
+func validateGroup(g *SourceGroup, path string, ids map[string]string, environment Environment) error {
 	if g == nil {
 		return nil
 	}
@@ -186,6 +190,9 @@ func validateGroup(g *SourceGroup, path string, ids map[string]string) error {
 		sp := fmt.Sprintf("%s.sources[%d]", path, i)
 		if err := s.validate(sp); err != nil {
 			return err
+		}
+		if environment != EnvironmentDevelopment && s.AllowUnsigned != "" {
+			return field(sp+".allowUnsigned", "requires environment development")
 		}
 		if previous, found := ids[s.ID]; found {
 			return field(sp+".id", "duplicate source ID %q (already used by %s)", s.ID, previous)
