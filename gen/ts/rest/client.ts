@@ -369,6 +369,14 @@ export interface AzureKVProvider {
   vaultUrl: string;
 }
 
+export interface Binding {
+  baseBranch?: string;
+  baselineRepoId?: string;
+  clusterId?: string;
+  commitPolicy?: string;
+  renderer?: string;
+}
+
 export interface IdPClaimMapping {
   email?: string;
   groups?: string;
@@ -652,7 +660,27 @@ export interface CreateIdentityClientOutputBody {
   secret?: string;
 }
 
+export interface TargetResourceRef {
+  id: string;
+  kind: string;
+}
+
 export interface CreateInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @minLength 1 */
+  capability: string;
+  config?: unknown;
+  isDefault?: boolean;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  name: string;
+  resourceRef: TargetResourceRef;
+}
+
+export interface CreateInputBody1 {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   enabled?: boolean;
@@ -692,7 +720,7 @@ export interface SecretStoreTargets {
   clusterSetRef?: string;
 }
 
-export interface CreateInputBody1 {
+export interface CreateInputBody2 {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   name: string;
@@ -935,6 +963,12 @@ export interface DecommissionOutputBody1 {
   approvalId?: string;
 }
 
+export interface DeleteOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  deleted: boolean;
+}
+
 export interface DeleteTenantInputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
@@ -997,6 +1031,7 @@ export interface DeployResult {
   PRURL: string;
   Status: string;
   Version: string;
+  artifactDigest?: string;
 }
 
 export interface DeployOutputBody {
@@ -1291,8 +1326,10 @@ export interface TemplateDetail {
   id: string;
   kind?: string;
   name: string;
+  packageVersion?: string;
   schema?: unknown;
   sourceId?: string;
+  sourceState?: string;
   /** @nullable */
   tags?: string[] | null;
   trustTier?: string;
@@ -1413,6 +1450,36 @@ export interface GitConfigOutputBody {
   gitProviderStatus?: GitProviderStatus;
 }
 
+export interface Grant {
+  createdAt: string;
+  createdBy?: string;
+  relation: string;
+  targetId: string;
+  teamId: string;
+  updatedAt: string;
+}
+
+export type GrantInputBodyRelation = typeof GrantInputBodyRelation[keyof typeof GrantInputBodyRelation];
+
+
+export const GrantInputBodyRelation = {
+  view: 'view',
+  use: 'use',
+  provision: 'provision',
+} as const;
+
+export interface GrantInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  relation: GrantInputBodyRelation;
+}
+
+export interface GrantOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  grant: Grant;
+}
+
 export interface IdentityClientOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
@@ -1446,6 +1513,7 @@ export interface ItemView {
   pinnedVersion?: string;
   source: string;
   sourceId?: string;
+  sourceState?: string;
   trustTier?: string;
   unsigned?: boolean;
   /** @nullable */
@@ -1688,7 +1756,42 @@ export interface ListOutputBody3 {
   repos: TenantGitRepo[] | null;
 }
 
+export interface Readiness {
+  observedAt?: string;
+  /** @nullable */
+  reasons?: string[] | null;
+  state: string;
+}
+
+export interface Target {
+  binding: Binding;
+  /** @nullable */
+  capabilities: string[] | null;
+  config: unknown;
+  createdAt: string;
+  /** @nullable */
+  effectiveActions?: string[] | null;
+  enabled: boolean;
+  /** @nullable */
+  grants?: Grant[] | null;
+  id: string;
+  isDefault: boolean;
+  name: string;
+  orgId: string;
+  readiness: Readiness;
+  resourceRef: TargetResourceRef;
+  revision: number;
+  updatedAt: string;
+}
+
 export interface ListOutputBody4 {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  targets: Target[] | null;
+}
+
+export interface ListOutputBody5 {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   /** @nullable */
@@ -1706,14 +1809,14 @@ export interface SecretStore {
   updatedAt: string;
 }
 
-export interface ListOutputBody5 {
+export interface ListOutputBody6 {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   /** @nullable */
   stores: SecretStore[] | null;
 }
 
-export interface ListOutputBody6 {
+export interface ListOutputBody7 {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   /** @nullable */
@@ -1856,7 +1959,9 @@ export interface TemplateSummary {
   id: string;
   kind?: string;
   name: string;
+  packageVersion?: string;
   sourceId?: string;
+  sourceState?: string;
   /** @nullable */
   tags?: string[] | null;
   trustTier?: string;
@@ -2012,6 +2117,25 @@ export interface ProviderCompatOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   provider: BrokeredIdP;
+}
+
+export interface ProviderDescriptor {
+  /** @nullable */
+  actions: string[] | null;
+  capability: string;
+  configSchema: unknown;
+  /** @nullable */
+  resourceKinds: string[] | null;
+  selectionSchema: unknown;
+  supportsDefault: boolean;
+  uiSchema: unknown;
+}
+
+export interface ProvidersOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  providers: ProviderDescriptor[] | null;
 }
 
 export interface PutClientScopesInputBody {
@@ -2464,6 +2588,7 @@ export interface SourceCreateRunInputBody {
 
 export interface TrustedSourceStatus {
   generation: number;
+  indexRef?: string;
   itemCount: number;
   kind: string;
   lastAttemptAt?: string;
@@ -2475,6 +2600,8 @@ export interface TrustedSourceStatus {
   snapshotAgeSeconds: number;
   sourceId: string;
   state: string;
+  trustTier?: string;
+  unsigned?: boolean;
 }
 
 export interface SourceListOutputBody {
@@ -2523,6 +2650,12 @@ export interface SyncOutputBody {
   /** @nullable */
   sources: TrustedSourceStatus[] | null;
   synced: number;
+}
+
+export interface TargetOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  target: Target;
 }
 
 export interface TargetsOutputBody {
@@ -2634,6 +2767,17 @@ export interface UpdateInputBody {
 export interface UpdateInputBody1 {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
+  config?: unknown;
+  enabled?: boolean;
+  isDefault?: boolean;
+  name?: string;
+  /** @minimum 1 */
+  revision: number;
+}
+
+export interface UpdateInputBody2 {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
   enabled?: boolean;
   /** @nullable */
   events?: string[] | null;
@@ -2642,7 +2786,7 @@ export interface UpdateInputBody1 {
   url?: string;
 }
 
-export interface UpdateInputBody2 {
+export interface UpdateInputBody3 {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   provider?: SecretStoreProvider;
@@ -2951,6 +3095,23 @@ export type DeletePolicyPackParams = {
  */
 force?: boolean;
 };
+
+export type ListResourceTargetsParams = {
+capability?: string;
+action?: ListResourceTargetsAction;
+resourceKind?: string;
+resourceId?: string;
+includeUnavailable?: boolean;
+};
+
+export type ListResourceTargetsAction = typeof ListResourceTargetsAction[keyof typeof ListResourceTargetsAction];
+
+
+export const ListResourceTargetsAction = {
+  view: 'view',
+  use: 'use',
+  provision: 'provision',
+} as const;
 
 export type ListRolloutTargetsParams = {
 stage?: number;
@@ -8151,7 +8312,7 @@ const res = await fetch(getDecideExemptionUrl(org,id),
 
 
 export type listExtensionsResponse200 = {
-  data: ListOutputBody6
+  data: ListOutputBody7
   status: 200
 }
 
@@ -11143,7 +11304,7 @@ const res = await fetch(getSetMemberRoleUrl(org,subject),
 
 
 export type listNotificationEndpointsResponse200 = {
-  data: ListOutputBody4
+  data: ListOutputBody5
   status: 200
 }
 
@@ -11223,7 +11384,7 @@ export const getCreateNotificationEndpointUrl = (org: string,) => {
  * @summary Create a notification endpoint (slack|webhook)
  */
 export const createNotificationEndpoint = async (org: string,
-    createInputBody: NonReadonly<CreateInputBody>, options?: RequestInit): Promise<createNotificationEndpointResponse> => {
+    createInputBody1: NonReadonly<CreateInputBody1>, options?: RequestInit): Promise<createNotificationEndpointResponse> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -11244,7 +11405,7 @@ const res = await fetch(getCreateNotificationEndpointUrl(org),
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(createInputBody)
+    body: JSON.stringify(createInputBody1)
   }
 )
 
@@ -11394,7 +11555,7 @@ export const getUpdateNotificationEndpointUrl = (org: string,
  */
 export const updateNotificationEndpoint = async (org: string,
     id: string,
-    updateInputBody1: NonReadonly<UpdateInputBody1>, options?: RequestInit): Promise<updateNotificationEndpointResponse> => {
+    updateInputBody2: NonReadonly<UpdateInputBody2>, options?: RequestInit): Promise<updateNotificationEndpointResponse> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -11415,7 +11576,7 @@ const res = await fetch(getUpdateNotificationEndpointUrl(org,id),
     ...options,
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(updateInputBody1)
+    body: JSON.stringify(updateInputBody2)
   }
 )
 
@@ -12549,6 +12710,474 @@ const res = await fetch(getPutRBACMappingsUrl(org),
 
 
 
+export type listResourceTargetProvidersResponse200 = {
+  data: ProvidersOutputBody
+  status: 200
+}
+
+export type listResourceTargetProvidersResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type listResourceTargetProvidersResponseSuccess = (listResourceTargetProvidersResponse200) & {
+  headers: Headers;
+};
+export type listResourceTargetProvidersResponseError = (listResourceTargetProvidersResponseDefault) & {
+  headers: Headers;
+};
+
+export type listResourceTargetProvidersResponse = (listResourceTargetProvidersResponseSuccess | listResourceTargetProvidersResponseError)
+
+export const getListResourceTargetProvidersUrl = (org: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/resource-target-providers`
+}
+
+/**
+ * @summary List resource target provider config and UI schemas
+ */
+export const listResourceTargetProviders = async (org: string, options?: RequestInit): Promise<listResourceTargetProvidersResponse> => {
+
+  const res = await fetch(getListResourceTargetProvidersUrl(org),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: listResourceTargetProvidersResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listResourceTargetProvidersResponse
+}
+
+
+
+export type listResourceTargetsResponse200 = {
+  data: ListOutputBody4
+  status: 200
+}
+
+export type listResourceTargetsResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type listResourceTargetsResponseSuccess = (listResourceTargetsResponse200) & {
+  headers: Headers;
+};
+export type listResourceTargetsResponseError = (listResourceTargetsResponseDefault) & {
+  headers: Headers;
+};
+
+export type listResourceTargetsResponse = (listResourceTargetsResponseSuccess | listResourceTargetsResponseError)
+
+export const getListResourceTargetsUrl = (org: string,
+    params?: ListResourceTargetsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/tenants/${org}/resource-targets?${stringifiedParams}` : `/api/v1/tenants/${org}/resource-targets`
+}
+
+/**
+ * @summary List caller-entitled shared resource targets
+ */
+export const listResourceTargets = async (org: string,
+    params?: ListResourceTargetsParams, options?: RequestInit): Promise<listResourceTargetsResponse> => {
+
+  const res = await fetch(getListResourceTargetsUrl(org,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: listResourceTargetsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listResourceTargetsResponse
+}
+
+
+
+export type registerResourceTargetResponse200 = {
+  data: TargetOutputBody
+  status: 200
+}
+
+export type registerResourceTargetResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type registerResourceTargetResponseSuccess = (registerResourceTargetResponse200) & {
+  headers: Headers;
+};
+export type registerResourceTargetResponseError = (registerResourceTargetResponseDefault) & {
+  headers: Headers;
+};
+
+export type registerResourceTargetResponse = (registerResourceTargetResponseSuccess | registerResourceTargetResponseError)
+
+export const getRegisterResourceTargetUrl = (org: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/resource-targets`
+}
+
+/**
+ * @summary Adopt an existing inventory resource as a shared target
+ */
+export const registerResourceTarget = async (org: string,
+    createInputBody: NonReadonly<CreateInputBody>, options?: RequestInit): Promise<registerResourceTargetResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getRegisterResourceTargetUrl(org),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(createInputBody)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: registerResourceTargetResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as registerResourceTargetResponse
+}
+
+
+
+export type deleteResourceTargetResponse200 = {
+  data: DeleteOutputBody
+  status: 200
+}
+
+export type deleteResourceTargetResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type deleteResourceTargetResponseSuccess = (deleteResourceTargetResponse200) & {
+  headers: Headers;
+};
+export type deleteResourceTargetResponseError = (deleteResourceTargetResponseDefault) & {
+  headers: Headers;
+};
+
+export type deleteResourceTargetResponse = (deleteResourceTargetResponseSuccess | deleteResourceTargetResponseError)
+
+export const getDeleteResourceTargetUrl = (org: string,
+    id: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/resource-targets/${id}`
+}
+
+/**
+ * @summary Delete a target overlay without deleting its resource
+ */
+export const deleteResourceTarget = async (org: string,
+    id: string, options?: RequestInit): Promise<deleteResourceTargetResponse> => {
+
+  const res = await fetch(getDeleteResourceTargetUrl(org,id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: deleteResourceTargetResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteResourceTargetResponse
+}
+
+
+
+export type getResourceTargetResponse200 = {
+  data: TargetOutputBody
+  status: 200
+}
+
+export type getResourceTargetResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type getResourceTargetResponseSuccess = (getResourceTargetResponse200) & {
+  headers: Headers;
+};
+export type getResourceTargetResponseError = (getResourceTargetResponseDefault) & {
+  headers: Headers;
+};
+
+export type getResourceTargetResponse = (getResourceTargetResponseSuccess | getResourceTargetResponseError)
+
+export const getGetResourceTargetUrl = (org: string,
+    id: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/resource-targets/${id}`
+}
+
+/**
+ * @summary Get a caller-visible resource target
+ */
+export const getResourceTarget = async (org: string,
+    id: string, options?: RequestInit): Promise<getResourceTargetResponse> => {
+
+  const res = await fetch(getGetResourceTargetUrl(org,id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getResourceTargetResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getResourceTargetResponse
+}
+
+
+
+export type updateResourceTargetResponse200 = {
+  data: TargetOutputBody
+  status: 200
+}
+
+export type updateResourceTargetResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type updateResourceTargetResponseSuccess = (updateResourceTargetResponse200) & {
+  headers: Headers;
+};
+export type updateResourceTargetResponseError = (updateResourceTargetResponseDefault) & {
+  headers: Headers;
+};
+
+export type updateResourceTargetResponse = (updateResourceTargetResponseSuccess | updateResourceTargetResponseError)
+
+export const getUpdateResourceTargetUrl = (org: string,
+    id: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/resource-targets/${id}`
+}
+
+/**
+ * @summary Update target policy with optimistic concurrency
+ */
+export const updateResourceTarget = async (org: string,
+    id: string,
+    updateInputBody1: NonReadonly<UpdateInputBody1>, options?: RequestInit): Promise<updateResourceTargetResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getUpdateResourceTargetUrl(org,id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateInputBody1)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: updateResourceTargetResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as updateResourceTargetResponse
+}
+
+
+
+export type revokeResourceTargetGrantResponse200 = {
+  data: DeleteOutputBody
+  status: 200
+}
+
+export type revokeResourceTargetGrantResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type revokeResourceTargetGrantResponseSuccess = (revokeResourceTargetGrantResponse200) & {
+  headers: Headers;
+};
+export type revokeResourceTargetGrantResponseError = (revokeResourceTargetGrantResponseDefault) & {
+  headers: Headers;
+};
+
+export type revokeResourceTargetGrantResponse = (revokeResourceTargetGrantResponseSuccess | revokeResourceTargetGrantResponseError)
+
+export const getRevokeResourceTargetGrantUrl = (org: string,
+    id: string,
+    teamId: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/resource-targets/${id}/grants/${teamId}`
+}
+
+/**
+ * @summary Revoke a team's target grant
+ */
+export const revokeResourceTargetGrant = async (org: string,
+    id: string,
+    teamId: string, options?: RequestInit): Promise<revokeResourceTargetGrantResponse> => {
+
+  const res = await fetch(getRevokeResourceTargetGrantUrl(org,id,teamId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: revokeResourceTargetGrantResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as revokeResourceTargetGrantResponse
+}
+
+
+
+export type setResourceTargetGrantResponse200 = {
+  data: GrantOutputBody
+  status: 200
+}
+
+export type setResourceTargetGrantResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type setResourceTargetGrantResponseSuccess = (setResourceTargetGrantResponse200) & {
+  headers: Headers;
+};
+export type setResourceTargetGrantResponseError = (setResourceTargetGrantResponseDefault) & {
+  headers: Headers;
+};
+
+export type setResourceTargetGrantResponse = (setResourceTargetGrantResponseSuccess | setResourceTargetGrantResponseError)
+
+export const getSetResourceTargetGrantUrl = (org: string,
+    id: string,
+    teamId: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/resource-targets/${id}/grants/${teamId}`
+}
+
+/**
+ * @summary Set a team's view, use, or provision grant
+ */
+export const setResourceTargetGrant = async (org: string,
+    id: string,
+    teamId: string,
+    grantInputBody: NonReadonly<GrantInputBody>, options?: RequestInit): Promise<setResourceTargetGrantResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getSetResourceTargetGrantUrl(org,id,teamId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(grantInputBody)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: setResourceTargetGrantResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as setResourceTargetGrantResponse
+}
+
+
+
 export type listRolesResponse200 = {
   data: ListRolesOutputBody
   status: 200
@@ -13560,7 +14189,7 @@ export const getScaffold = async (org: string,
 
 
 export type listSecretStoresResponse200 = {
-  data: ListOutputBody5
+  data: ListOutputBody6
   status: 200
 }
 
@@ -13640,7 +14269,7 @@ export const getCreateSecretStoreUrl = (org: string,) => {
  * @summary Register a secret store
  */
 export const createSecretStore = async (org: string,
-    createInputBody1: NonReadonly<CreateInputBody1>, options?: RequestInit): Promise<createSecretStoreResponse> => {
+    createInputBody2: NonReadonly<CreateInputBody2>, options?: RequestInit): Promise<createSecretStoreResponse> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -13661,7 +14290,7 @@ const res = await fetch(getCreateSecretStoreUrl(org),
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(createInputBody1)
+    body: JSON.stringify(createInputBody2)
   }
 )
 
@@ -13811,7 +14440,7 @@ export const getUpdateSecretStoreUrl = (org: string,
  */
 export const updateSecretStore = async (org: string,
     name: string,
-    updateInputBody2: NonReadonly<UpdateInputBody2>, options?: RequestInit): Promise<updateSecretStoreResponse> => {
+    updateInputBody3: NonReadonly<UpdateInputBody3>, options?: RequestInit): Promise<updateSecretStoreResponse> => {
 
     const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
     if (!h) return {};
@@ -13832,7 +14461,7 @@ const res = await fetch(getUpdateSecretStoreUrl(org,name),
     ...options,
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(updateInputBody2)
+    body: JSON.stringify(updateInputBody3)
   }
 )
 

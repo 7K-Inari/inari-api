@@ -42,6 +42,7 @@ type fullSurfaceOps interface {
 	GetSourceCatalogItem(http.ResponseWriter, *http.Request, string, string, string, GetSourceCatalogItemParams)
 	ListCatalogSources(http.ResponseWriter, *http.Request)
 	GetSourceTemplate(http.ResponseWriter, *http.Request, string, string, string)
+	ListResourceTargets(http.ResponseWriter, *http.Request, string, ListResourceTargetsParams)
 }
 
 var _ fullSurfaceOps = (ServerInterface)(nil)
@@ -57,6 +58,23 @@ func qaClient(t *testing.T, h http.HandlerFunc) *ClientWithResponses {
 		t.Fatalf("NewClientWithResponses: %v", err)
 	}
 	return c
+}
+
+func TestClientListResourceTargetsRoundTrip(t *testing.T) {
+	c := qaClient(t, func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/api/v1/tenants/acme/resource-targets" {
+			t.Fatalf("unexpected path: %s", r.URL.Path)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"targets":[]}`))
+	})
+	resp, err := c.ListResourceTargetsWithResponse(context.Background(), "acme", &ListResourceTargetsParams{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if resp.StatusCode() != http.StatusOK || resp.JSON200 == nil || resp.JSON200.Targets == nil || len(*resp.JSON200.Targets) != 0 {
+		t.Fatalf("bad target response: %d %+v", resp.StatusCode(), resp.JSON200)
+	}
 }
 
 func TestClientListClustersRoundTrip(t *testing.T) {
