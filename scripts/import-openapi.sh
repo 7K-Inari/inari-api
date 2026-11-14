@@ -51,7 +51,11 @@ yq eval-all '
 
 yq eval -i '
   .paths."/api/v1/tenants/{org}/git-config".get.parameters
-    |= map(select(.name != "id"))
+    |= map(select(.name != "id")) |
+  # These operations are intentionally unauthenticated: the OAuth callback is
+  # protected by state/PKCE and webhook ingress by its per-repo HMAC signature.
+  .paths."/api/v1/tenants/{org}/git-connections/{provider}/callback".get.security = [] |
+  .paths."/api/v1/webhooks/git/{provider}".post.security = []
 ' "$OUT.tmp"
 
 # Downgrade OpenAPI 3.1 -> 3.0.3 for the codegen toolchain (oapi-codegen and
@@ -64,6 +68,9 @@ yq eval -i '
   ) |
   with((..) | select(.contentEncoding? == "base64");
     .format = "byte" | del(.contentEncoding)
+  ) |
+  with(.. | select(.contentMediaType? != null);
+    del(.contentMediaType)
   ) |
   with(.. | select((.type? | tag == "!!seq") and (.type | contains(["null"])));
     .type = (.type | map(select(. != "null")) | .[0]) |

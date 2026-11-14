@@ -1,0 +1,36 @@
+apiVersion: inari.dev/v1
+kind: TemplateIndex
+mediaType: application/vnd.inari.template.index.v1+yaml
+sourceSha: abcdef0123456789abcdef0123456789abcdef01
+sourceRef: refs/heads/main
+producer:
+  workflowPath: .github/workflows/release.yml
+  workflowSha: 0123456789abcdef0123456789abcdef01234567
+  runId: "123"
+  runAttempt: 1
+  runUri: https://github.com/7k-hiroba/argocd/actions/runs/123
+templates:
+  - name: web-service
+    version: 1.2.0
+    packageVersion: 1.2.0
+    channel: stable
+    type: template
+    description: Web service scaffold
+    ociRef: ghcr.io/7k-hiroba/argocd/templates/web-service:1.2.0
+    digest: sha256:52ccaee6d4dd272e54bfccda77738b42e1edf0e4a20c27e23f0b6c15d01aef79
+    sourceSha: abcdef0123456789abcdef0123456789abcdef01
+    releaseTag: web-service-v1.2.0
+    mediaType: application/vnd.inari.template.v1
+    producer:
+      workflowPath: .github/workflows/release-oci.yml
+      workflowSha: 0123456789abcdef0123456789abcdef01234567
+      runId: "123"
+      runAttempt: 1
+      runUri: https://github.com/7k-hiroba/argocd/actions/runs/123
+    lanes:
+      - name: validate-template
+        required: true
+        status: passed
+        runId: "123"
+        jobId: "456"
+        sourceSha: abcdef0123456789abcdef0123456789abcdef01

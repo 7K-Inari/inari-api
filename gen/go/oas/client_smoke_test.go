@@ -39,7 +39,9 @@ type fullSurfaceOps interface {
 	ListInstances(http.ResponseWriter, *http.Request, string, ListInstancesParams)
 	DeployCatalogItem(http.ResponseWriter, *http.Request, string)
 	ListCapabilities(http.ResponseWriter, *http.Request, string, string)
-	RenderInstallManifest(http.ResponseWriter, *http.Request, string, string)
+	GetSourceCatalogItem(http.ResponseWriter, *http.Request, string, string, string, GetSourceCatalogItemParams)
+	ListCatalogSources(http.ResponseWriter, *http.Request)
+	GetSourceTemplate(http.ResponseWriter, *http.Request, string, string, string)
 }
 
 var _ fullSurfaceOps = (ServerInterface)(nil)
@@ -74,6 +76,23 @@ func TestClientListClustersRoundTrip(t *testing.T) {
 	}
 	if got := (*resp.JSON200.Clusters)[0].Name; got != "prod" {
 		t.Fatalf("cluster name = %q", got)
+	}
+}
+
+func TestClientGetSourceCatalogItem(t *testing.T) {
+	c := qaClient(t, func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/api/v1/tenants/acme/catalog/core/postgres-aws" {
+			t.Fatalf("unexpected path: %s", r.URL.Path)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"item":{"id":"core/postgres-aws","name":"postgres-aws","displayName":"PostgreSQL","description":"managed","source":"curated","sourceId":"core","trustTier":"reviewed","approvalPolicy":"auto","createdAt":"2026-01-01T00:00:00Z","versions":[]}}`))
+	})
+	resp, err := c.GetSourceCatalogItemWithResponse(context.Background(), "acme", "core", "postgres-aws", nil)
+	if err != nil {
+		t.Fatalf("GetSourceCatalogItem: %v", err)
+	}
+	if resp.JSON200 == nil || resp.JSON200.Item.Id != "core/postgres-aws" {
+		t.Fatalf("bad source-qualified response: %+v", resp.JSON200)
 	}
 }
 
@@ -168,18 +187,17 @@ func TestGetClusterKubeconfigRequestNoParams(t *testing.T) {
 	}
 }
 
-// TestClusterAccessInfoNewFieldsRoundTrip verifies that the new optional
-// ClusterAccessInfo fields marshal/unmarshal through the generated model.
+// TestClusterAccessInfoNewFieldsRoundTrip verifies that ClusterAccessInfo
+// access and tunnel fields marshal/unmarshal through the generated model.
 func TestClusterAccessInfoNewFieldsRoundTrip(t *testing.T) {
-	trueValue := true
 	info := ClusterAccessInfo{
 		IssuerUrl:               "https://keycloak.example/realms/inari",
 		KubectlClientId:         "cluster-cluster-1",
 		Audience:                "inari-server",
 		Organization:            "acme",
-		KubectlAccessEnabled:    &trueValue,
+		KubectlAccessEnabled:    true,
 		ProxyUrl:                strPtr("https://kubeproxy.example"),
-		TunnelAvailable:         &trueValue,
+		TunnelAvailable:         true,
 		TunnelUnavailableReason: strPtr("agent not upgraded"),
 	}
 	data, err := json.Marshal(info)
@@ -190,13 +208,13 @@ func TestClusterAccessInfoNewFieldsRoundTrip(t *testing.T) {
 	if err := json.Unmarshal(data, &got); err != nil {
 		t.Fatalf("unmarshal: %v", err)
 	}
-	if got.KubectlAccessEnabled == nil || *got.KubectlAccessEnabled != true {
+	if !got.KubectlAccessEnabled {
 		t.Fatalf("kubectlAccessEnabled mismatch: got %v", got.KubectlAccessEnabled)
 	}
 	if got.ProxyUrl == nil || *got.ProxyUrl != "https://kubeproxy.example" {
 		t.Fatalf("proxyUrl mismatch: got %v", got.ProxyUrl)
 	}
-	if got.TunnelAvailable == nil || *got.TunnelAvailable != true {
+	if !got.TunnelAvailable {
 		t.Fatalf("tunnelAvailable mismatch: got %v", got.TunnelAvailable)
 	}
 	if got.TunnelUnavailableReason == nil || *got.TunnelUnavailableReason != "agent not upgraded" {
