@@ -4,8 +4,8 @@ go 1.26.3
 
 require (
 	connectrpc.com/connect/v2 v2.0.2
-	github.com/getkin/kin-openapi v0.152.0
-	github.com/oapi-codegen/runtime v1.8.0
+	github.com/getkin/kin-openapi v0.153.0
+	github.com/oapi-codegen/runtime v1.9.0
 	go.yaml.in/yaml/v3 v3.0.6
 	go.yaml.in/yaml/v4 v4.0.0
 	google.golang.org/grpc v1.85.0
