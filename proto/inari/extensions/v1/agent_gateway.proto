@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package inari.extensions.v1;
+
+option go_package = "github.com/7K-Inari/inari-api/gen/go/inari/extensions/v1;extensionsv1";
+
+import "inari/agent/v1/commands.proto";
+
+// AgentGateway accepts an imperative operation from an authenticated backend
+// extension and returns the tenant agent's acknowledgement. The existing
+// procedure is preserved for wire compatibility:
+// /inari.extensions.v1.AgentGateway/InvokeAction.
+//
+// Routing and credentials travel in request metadata rather than in the
+// persisted command payload:
+//   - Authorization: Bearer <per-extension client_credentials JWT>
+//   - x-inari-tenant: authenticated organization ID
+//   - x-inari-cluster: target cluster ID
+//   - x-inari-user-credential: optional in-memory downstream user credential
+//   - x-inari-user-credential-ref: optional opaque control-plane vault ref
+//
+// The raw credential and credential reference are mutually exclusive. Raw user
+// credentials are never persisted or sent to the agent; only a vault reference
+// reaches InvokeAction.user_credential_ref. The control plane owns command_id,
+// journaling, tenant/cluster authorization, and idempotency. Implementations
+// fail closed with UNAVAILABLE when no live agent can accept the command.
+// The established service and message names are retained for wire compatibility;
+// introducing conventional suffixes or wrapper messages would break consumers.
+// buf:lint:ignore SERVICE_SUFFIX
+service AgentGateway {
+  // buf:lint:ignore RPC_REQUEST_RESPONSE_UNIQUE
+  // buf:lint:ignore RPC_REQUEST_STANDARD_NAME
+  // buf:lint:ignore RPC_RESPONSE_STANDARD_NAME
+  rpc InvokeAction(inari.agent.v1.InvokeAction) returns (inari.agent.v1.CommandAck);
+}
