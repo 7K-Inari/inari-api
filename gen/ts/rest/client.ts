@@ -555,6 +555,27 @@ export interface Connection {
   scopes: string;
 }
 
+export interface ContractMetadata {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  pluginContracts: string[] | null;
+  serverVersion: string;
+  /** @nullable */
+  uiHostApis: string[] | null;
+}
+
+export interface UIContract {
+  hostApi: string;
+  sdk: string;
+}
+
+export interface Contracts {
+  /** @nullable */
+  backend?: string[] | null;
+  ui?: UIContract;
+}
+
 export interface CreateBrokeredIdPInputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
@@ -1186,7 +1207,10 @@ export interface UiExtensionDescriptor {
 export interface Extension {
   checksum: string;
   clientId?: string;
+  contracts?: Contracts;
   createdAt: string;
+  degradedDetail?: string;
+  degradedReason?: string;
   endpoint: string;
   id: string;
   kind: string;
@@ -2009,6 +2033,7 @@ export interface ListTokensOutputBody {
 }
 
 export interface UiExtensionRemote {
+  contracts?: Contracts;
   description?: string;
   enabled: boolean;
   name: string;
@@ -2315,6 +2340,7 @@ export interface RegisterUiInputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   checksum?: string;
+  contracts?: Contracts;
   description?: string;
   enabled?: boolean;
   name: string;
@@ -3669,6 +3695,56 @@ export const getMyPermissions = async ( options?: RequestInit): Promise<getMyPer
 
   const data: getMyPermissionsResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getMyPermissionsResponse
+}
+
+
+
+export type getMetaContractsResponse200 = {
+  data: ContractMetadata
+  status: 200
+}
+
+export type getMetaContractsResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type getMetaContractsResponseSuccess = (getMetaContractsResponse200) & {
+  headers: Headers;
+};
+export type getMetaContractsResponseError = (getMetaContractsResponseDefault) & {
+  headers: Headers;
+};
+
+export type getMetaContractsResponse = (getMetaContractsResponseSuccess | getMetaContractsResponseError)
+
+export const getGetMetaContractsUrl = () => {
+
+
+
+
+  return `/api/v1/meta/contracts`
+}
+
+/**
+ * @summary Get supported extension contracts
+ */
+export const getMetaContracts = async ( options?: RequestInit): Promise<getMetaContractsResponse> => {
+
+  const res = await fetch(getGetMetaContractsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getMetaContractsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getMetaContractsResponse
 }
 
 

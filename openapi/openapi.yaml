@@ -1007,6 +1007,43 @@ components:
         - scopes
         - createdAt
       type: object
+    ContractMetadata:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/ContractMetadata.json
+        pluginContracts:
+          items:
+            type: string
+          type: array
+          nullable: true
+        serverVersion:
+          type: string
+        uiHostApis:
+          items:
+            type: string
+          type: array
+          nullable: true
+      required:
+        - pluginContracts
+        - uiHostApis
+        - serverVersion
+      type: object
+    Contracts:
+      additionalProperties: false
+      properties:
+        backend:
+          items:
+            type: string
+          type: array
+          nullable: true
+        ui:
+          $ref: "#/components/schemas/UIContract"
+      type: object
     CreateBrokeredIdPInputBody:
       additionalProperties: false
       properties:
@@ -1927,8 +1964,14 @@ components:
           type: string
         clientId:
           type: string
+        contracts:
+          $ref: "#/components/schemas/Contracts"
         createdAt:
           format: date-time
+          type: string
+        degradedDetail:
+          type: string
+        degradedReason:
           type: string
         endpoint:
           type: string
@@ -4084,6 +4127,8 @@ components:
           example: https://example.com/schemas/RegisterUiInputBody.json
         checksum:
           type: string
+        contracts:
+          $ref: "#/components/schemas/Contracts"
         description:
           type: string
         enabled:
@@ -5700,6 +5745,17 @@ components:
         - itemCount
         - snapshotAgeSeconds
       type: object
+    UIContract:
+      additionalProperties: false
+      properties:
+        hostApi:
+          type: string
+        sdk:
+          type: string
+      required:
+        - sdk
+        - hostApi
+      type: object
     UiAuditEvent:
       additionalProperties: false
       properties:
@@ -5772,6 +5828,8 @@ components:
     UiExtensionRemote:
       additionalProperties: false
       properties:
+        contracts:
+          $ref: "#/components/schemas/Contracts"
         description:
           type: string
         enabled:
@@ -6359,6 +6417,28 @@ paths:
       security:
         - bearer: []
       summary: Platform-level permissions of the authenticated caller
+  /api/v1/meta/contracts:
+    get:
+      operationId: getMetaContracts
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContractMetadata"
+          description: OK
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security: []
+      summary: Get supported extension contracts
   /api/v1/platform/admins:
     get:
       operationId: listPlatformAdmins
@@ -9014,6 +9094,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/ExtensionOutputBody"
           description: OK
+          headers:
+            Deprecation:
+              schema:
+                type: string
+            Warning:
+              schema:
+                type: string
         default:
           content:
             application/problem+json:
@@ -9069,6 +9156,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/UiExtensionOutputBody"
           description: OK
+          headers:
+            Deprecation:
+              schema:
+                type: string
+            Warning:
+              schema:
+                type: string
         default:
           content:
             application/problem+json:
@@ -9150,6 +9244,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/ExtensionOutputBody"
           description: OK
+          headers:
+            Deprecation:
+              schema:
+                type: string
+            Warning:
+              schema:
+                type: string
         default:
           content:
             application/problem+json:
@@ -9271,6 +9372,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/ExtensionOutputBody"
           description: OK
+          headers:
+            Deprecation:
+              schema:
+                type: string
+            Warning:
+              schema:
+                type: string
         default:
           content:
             application/problem+json:
