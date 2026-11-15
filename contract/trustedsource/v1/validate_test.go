@@ -122,6 +122,38 @@ func TestSourceFileValidateNegatives(t *testing.T) {
 	}
 }
 
+func TestPluginCompatibilityAgeNeverExceedsSevenDays(t *testing.T) {
+	for _, tc := range []struct {
+		value   string
+		want    time.Duration
+		wantErr bool
+	}{
+		{"", 7 * 24 * time.Hour, false},
+		{"24h", 24 * time.Hour, false},
+		{"168h", 7 * 24 * time.Hour, false},
+		{"168h1s", 0, true},
+		{"720h", 0, true},
+		{"0s", 0, true},
+		{"-1h", 0, true},
+		{"often", 0, true},
+	} {
+		t.Run("value="+tc.value, func(t *testing.T) {
+			source := validSource()
+			source.PluginCompatibilityMaxAge = tc.value
+			got, err := source.PluginCompatibilityAge()
+			if tc.wantErr {
+				if err == nil {
+					t.Fatalf("PluginCompatibilityAge(%q) accepted", tc.value)
+				}
+				return
+			}
+			if err != nil || got != tc.want {
+				t.Fatalf("PluginCompatibilityAge(%q) = %s, %v; want %s", tc.value, got, err, tc.want)
+			}
+		})
+	}
+}
+
 func TestSourceFileRejectsDuplicateIDsAcrossKinds(t *testing.T) {
 	f := validFile()
 	second := validSource()

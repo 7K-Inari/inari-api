@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://inari.dev/schemas/extension-contracts-v1.schema.json",
+  "title": "Inari extension contract declarations",
+  "type": "object",
+  "additionalProperties": true,
+  "anyOf": [
+    {"required": ["backend"]},
+    {"required": ["ui"]}
+  ],
+  "properties": {
+    "backend": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^inari\\.plugin\\.v[1-9][0-9]*$"}
+    },
+    "ui": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["sdk", "hostApi"],
+      "properties": {
+        "sdk": {"type": "string", "minLength": 1},
+        "hostApi": {"type": "string", "pattern": "^inari\\.ui\\.v[1-9][0-9]*$"}
+      }
+    }
+  }
+}

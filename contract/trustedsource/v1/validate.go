@@ -300,12 +300,16 @@ func validateOCIRef(ref string, allowLatest bool) error {
 }
 
 func (s Source) PluginCompatibilityAge() (time.Duration, error) {
+	const maxAge = 7 * 24 * time.Hour
 	if s.PluginCompatibilityMaxAge == "" {
-		return 7 * 24 * time.Hour, nil
+		return maxAge, nil
 	}
 	d, err := time.ParseDuration(s.PluginCompatibilityMaxAge)
 	if err != nil || d <= 0 {
 		return 0, fmt.Errorf("must be a positive duration")
+	}
+	if d > maxAge {
+		return 0, fmt.Errorf("must not exceed 168h (7 days)")
 	}
 	return d, nil
 }
