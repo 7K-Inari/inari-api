@@ -9,7 +9,31 @@
     "catalog": {"$ref": "#/$defs/group"},
     "template": {"$ref": "#/$defs/group"}
   },
+  "allOf": [
+    {
+      "if": {
+        "required": ["environment"],
+        "properties": {"environment": {"const": "development"}}
+      },
+      "else": {
+        "properties": {
+          "catalog": {"$ref": "#/$defs/noUnsignedGroup"},
+          "template": {"$ref": "#/$defs/noUnsignedGroup"}
+        }
+      }
+    }
+  ],
   "$defs": {
+    "noUnsignedGroup": {
+      "type": "object",
+      "properties": {
+        "sources": {"type": "array", "items": {"$ref": "#/$defs/noUnsignedSource"}}
+      }
+    },
+    "noUnsignedSource": {
+      "type": "object",
+      "properties": {"allowUnsigned": false}
+    },
     "group": {
       "type": "object",
       "additionalProperties": false,

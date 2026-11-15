@@ -229,6 +229,20 @@ func TestEvidenceNegatives(t *testing.T) {
 	}
 }
 
+func TestSourceFileRejectsUnsignedOutsideDevelopment(t *testing.T) {
+	for _, environment := range []trustedsource.Environment{"", trustedsource.EnvironmentProduction, trustedsource.EnvironmentStaging} {
+		t.Run("environment="+string(environment), func(t *testing.T) {
+			f := validFile()
+			f.Environment = environment
+			f.Catalog.Sources[0].TrustTier = trustedsource.TrustExperimental
+			f.Catalog.Sources[0].AllowUnsigned = trustedsource.AllowUnsignedDevelopmentOnly
+			if err := f.Validate(); err == nil || !strings.Contains(err.Error(), "development") {
+				t.Fatalf("error = %v, want development-only environment rejection", err)
+			}
+		})
+	}
+}
+
 func TestSourceFingerprintStable(t *testing.T) {
 	a, err := validFile().Fingerprint(validSource())
 	if err != nil || len(a) != len("sha256:")+64 {
