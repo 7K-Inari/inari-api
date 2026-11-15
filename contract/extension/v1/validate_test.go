@@ -34,9 +34,13 @@ func TestIntersects(t *testing.T) {
 }
 
 func TestContractsValidate(t *testing.T) {
-	valid := &extensionv1.Contracts{Backend: []string{extensionv1.BackendContractV1}, UI: &extensionv1.UIContract{SDK: ">=0.1.8 <2.0.0", HostAPI: extensionv1.UIHostAPIV1}}
-	if err := valid.Validate(); err != nil {
-		t.Fatalf("valid declaration rejected: %v", err)
+	for _, sdkRange := range []string{">=0.1.8 <2.0.0", "^0.1.8", "~0.1.8", "^0.1.8 || ^1.0.0"} {
+		t.Run("range="+sdkRange, func(t *testing.T) {
+			valid := &extensionv1.Contracts{Backend: []string{extensionv1.BackendContractV1}, UI: &extensionv1.UIContract{SDK: sdkRange, HostAPI: extensionv1.UIHostAPIV1}}
+			if err := valid.Validate(); err != nil {
+				t.Fatalf("valid declaration rejected: %v", err)
+			}
+		})
 	}
 	tests := []struct {
 		name      string

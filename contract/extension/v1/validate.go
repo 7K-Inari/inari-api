@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/blang/semver"
+	"github.com/Masterminds/semver/v3"
 )
 
 var (
@@ -81,7 +81,7 @@ func (c *Contracts) Validate() error {
 		if strings.TrimSpace(c.UI.SDK) == "" {
 			return NewContractError(CodeContractMalformed, "spec.contracts.ui.sdk", "a SemVer range is required")
 		}
-		if _, err := semver.ParseRange(c.UI.SDK); err != nil {
+		if _, err := semver.NewConstraint(c.UI.SDK); err != nil {
 			return NewContractError(CodeContractMalformed, "spec.contracts.ui.sdk", "invalid SemVer range %q: %v", c.UI.SDK, err)
 		}
 	}
