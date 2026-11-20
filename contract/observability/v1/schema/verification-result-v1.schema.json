@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://inari.dev/schemas/verification-result-v1.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "companion", "target", "app", "pack", "capabilityDigest", "suite", "run", "result", "checks", "expiresAt"],
+  "properties": {
+    "apiVersion": {"const": "inari.dev/v1alpha1"},
+    "kind": {"const": "ObservabilityVerificationResult"},
+    "companion": {
+      "type": "object", "additionalProperties": false, "required": ["id", "generation"],
+      "properties": {"id": {"type": "string", "minLength": 1}, "generation": {"type": "integer", "minimum": 1}}
+    },
+    "target": {
+      "type": "object", "additionalProperties": false, "required": ["id", "revision", "clusterId"],
+      "properties": {"id": {"type": "string"}, "revision": {"type": "integer", "minimum": 1}, "clusterId": {"type": "string"}}
+    },
+    "app": {
+      "type": "object", "additionalProperties": false, "required": ["planId", "sourceDigest", "revision"],
+      "properties": {
+        "planId": {"type": "string"}, "instanceId": {"type": "string"}, "scaffoldRunId": {"type": "string"},
+        "sourceDigest": {"$ref": "#/$defs/digest"}, "revision": {"type": "string"}
+      }
+    },
+    "pack": {
+      "type": "object", "additionalProperties": false, "required": ["itemId", "version", "digest"],
+      "properties": {"itemId": {"type": "string"}, "version": {"type": "string"}, "digest": {"$ref": "#/$defs/digest"}}
+    },
+    "capabilityDigest": {"$ref": "#/$defs/digest"},
+    "suite": {
+      "type": "object", "additionalProperties": false, "required": ["digest", "profile"],
+      "properties": {"digest": {"$ref": "#/$defs/digest"}, "profile": {"const": "observability-readonly-v1"}}
+    },
+    "run": {
+      "type": "object", "additionalProperties": false, "required": ["id", "attempt", "finishedAt"],
+      "properties": {"id": {"type": "string"}, "attempt": {"type": "integer", "minimum": 1}, "finishedAt": {"type": "string", "format": "date-time"}}
+    },
+    "result": {"enum": ["passed", "failed"]},
+    "checks": {
+      "type": "object", "additionalProperties": false,
+      "required": ["folder", "dashboards", "datasources", "access", "rules"],
+      "properties": {
+        "folder": {"$ref": "#/$defs/check"},
+        "dashboards": {"type": "array", "items": {"$ref": "#/$defs/check"}},
+        "datasources": {"type": "array", "items": {"$ref": "#/$defs/check"}},
+        "access": {"$ref": "#/$defs/check"},
+        "rules": {"type": "array", "items": {"$ref": "#/$defs/check"}}
+      }
+    },
+    "expiresAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "check": {"type": "object", "required": ["state"], "properties": {"state": {"enum": ["passed", "failed"]}}, "additionalProperties": true}
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://inari.dev/schemas/observability-v1.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["apiVersion", "kind", "app", "folder", "datasources", "dashboards", "rules", "targets", "severityRouting", "minimumAppVersion", "observabilityPack"],
+  "properties": {
+    "apiVersion": {"const": "inari.dev/v1alpha1"},
+    "kind": {"const": "Observability"},
+    "app": {"type": "string", "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"},
+    "folder": {"type": "string", "minLength": 1},
+    "datasources": {
+      "type": "object", "minProperties": 1, "maxProperties": 1,
+      "additionalProperties": {"type": "string", "pattern": "^\\$\\{DS_[A-Z0-9_]+\\}$"}
+    },
+    "linkVariables": {
+      "type": "array", "uniqueItems": true,
+      "items": {"type": "string", "enum": ["namespace", "instance", "app", "org", "cluster", "datasource"]}
+    },
+    "dashboards": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["title", "uid", "file"],
+        "properties": {
+          "title": {"type": "string", "minLength": 1},
+          "uid": {"type": "string", "minLength": 1},
+          "file": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "rules": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["file", "evaluation"],
+        "properties": {
+          "file": {"type": "string", "minLength": 1},
+          "evaluation": {"enum": ["central", "local"]}
+        }
+      }
+    },
+    "targets": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["central", "local"]}},
+    "severityRouting": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string"}},
+    "minimumAppVersion": {"type": "string", "minLength": 1, "not": {"const": "latest"}},
+    "observabilityPack": {
+      "type": "object", "additionalProperties": false, "required": ["package", "versionRange"],
+      "properties": {
+        "package": {"type": "string", "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"},
+        "versionRange": {"type": "string", "minLength": 1, "not": {"const": "latest"}}
+      }
+    }
+  }
+}
