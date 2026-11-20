@@ -35,7 +35,7 @@ type PackReference struct {
 	VersionRange string `json:"versionRange" yaml:"versionRange"`
 }
 
-type Capability struct {
+type ObservabilityCapability struct {
 	APIVersion        string            `json:"apiVersion" yaml:"apiVersion"`
 	Kind              string            `json:"kind" yaml:"kind"`
 	App               string            `json:"app" yaml:"app"`
@@ -49,6 +49,10 @@ type Capability struct {
 	MinimumAppVersion string            `json:"minimumAppVersion" yaml:"minimumAppVersion"`
 	ObservabilityPack PackReference     `json:"observabilityPack" yaml:"observabilityPack"`
 }
+
+// Capability is retained as a Go source alias; the canonical schema name is
+// ObservabilityCapability to avoid colliding with inventory capabilities.
+type Capability = ObservabilityCapability
 
 type CompanionIdentity struct {
 	ID         string `json:"id"`
