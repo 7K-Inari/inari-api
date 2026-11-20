@@ -1537,8 +1537,10 @@ export interface Plan {
   app: ArtifactPin;
   appClusterId?: string;
   appInstanceId?: string;
+  approvalId?: string;
   capability?: ObservabilityCapability;
   capabilityDigest?: string;
+  commitSha?: string;
   companion?: Companion;
   createdAt: string;
   deployment: DeploymentInput;
@@ -1551,6 +1553,7 @@ export interface Plan {
   orgId: string;
   orgSlug: string;
   planFingerprint: string;
+  prUrl?: string;
   renderIntent?: RenderIntent;
   scaffoldRunId?: string;
   source: Source;

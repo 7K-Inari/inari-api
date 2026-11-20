@@ -3956,9 +3956,13 @@ components:
           type: string
         appInstanceId:
           type: string
+        approvalId:
+          type: string
         capability:
           $ref: "#/components/schemas/ObservabilityCapability"
         capabilityDigest:
+          type: string
+        commitSha:
           type: string
         companion:
           $ref: "#/components/schemas/Companion"
@@ -3984,6 +3988,8 @@ components:
         orgSlug:
           type: string
         planFingerprint:
+          type: string
+        prUrl:
           type: string
         renderIntent:
           $ref: "#/components/schemas/RenderIntent"
