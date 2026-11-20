@@ -2450,6 +2450,8 @@ export interface Preflight {
   plan: Plan;
   /** @nullable */
   providers: ProviderDescriptor[] | null;
+  schema?: unknown;
+  uiHints?: unknown;
 }
 
 export interface PreflightOutputBody {
