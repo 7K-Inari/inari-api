@@ -57,6 +57,11 @@ export interface AWSSMProvider {
   region: string;
 }
 
+export interface AccessCheck {
+  state: string;
+  team: string;
+}
+
 export interface ClusterAccessInfo {
   audience: string;
   issuerUrl: string;
@@ -256,6 +261,14 @@ export interface AgentCompatStatus {
   upgradeAvailable: boolean;
 }
 
+export interface AppIdentity {
+  instanceId?: string;
+  planId: string;
+  revision: string;
+  scaffoldRunId?: string;
+  sourceDigest: string;
+}
+
 export interface ApproverGroup {
   name: string;
   /** @nullable */
@@ -313,6 +326,17 @@ export interface ApprovalOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   approval: ApprovalRequest;
+}
+
+export interface ArtifactPin {
+  chartDigest?: string;
+  chartRef?: string;
+  digest: string;
+  itemId?: string;
+  packageVersion?: string;
+  ref?: string;
+  sourceId?: string;
+  version: string;
 }
 
 export interface AssignPackInputBody {
@@ -533,6 +557,128 @@ export interface ClusterSetOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   clusterSet: ClusterSet;
+}
+
+export interface Link {
+  title: string;
+  uid: string;
+  url: string;
+}
+
+export interface PackPin {
+  chartDigest?: string;
+  chartRef?: string;
+  digest: string;
+  itemId?: string;
+  packageVersion?: string;
+  ref?: string;
+  renderContract: string;
+  sourceId?: string;
+  version: string;
+}
+
+export interface DashboardCheck {
+  slug: string;
+  state: string;
+  title: string;
+  uid: string;
+}
+
+export interface DatasourceCheck {
+  logical: string;
+  name: string;
+  state: string;
+  type: string;
+}
+
+export interface FolderCheck {
+  name: string;
+  state: string;
+  uid: string;
+}
+
+export interface RuleCheck {
+  evaluation: string;
+  file: string;
+  state: string;
+}
+
+export interface VerificationChecks {
+  access: AccessCheck;
+  /** @nullable */
+  dashboards: DashboardCheck[] | null;
+  /** @nullable */
+  datasources: DatasourceCheck[] | null;
+  folder: FolderCheck;
+  /** @nullable */
+  rules: RuleCheck[] | null;
+}
+
+export interface CompanionIdentity {
+  generation: number;
+  id: string;
+}
+
+export interface PackIdentity {
+  digest: string;
+  itemId: string;
+  version: string;
+}
+
+export interface RunIdentity {
+  attempt: number;
+  finishedAt: string;
+  id: string;
+}
+
+export interface SuiteIdentity {
+  digest: string;
+  profile: string;
+}
+
+export interface TargetIdentity {
+  clusterId: string;
+  id: string;
+  revision: number;
+}
+
+export interface VerificationResult {
+  apiVersion: string;
+  app: AppIdentity;
+  capabilityDigest: string;
+  checks: VerificationChecks;
+  companion: CompanionIdentity;
+  expiresAt: string;
+  kind: string;
+  pack: PackIdentity;
+  result: string;
+  run: RunIdentity;
+  suite: SuiteIdentity;
+  target: TargetIdentity;
+}
+
+export interface Companion {
+  appInstanceId?: string;
+  appRevision: string;
+  appSourceDigest: string;
+  capabilityDigest: string;
+  companionInstanceId?: string;
+  createdAt: string;
+  generation: number;
+  id: string;
+  /** @nullable */
+  links: Link[] | null;
+  pack: PackPin;
+  planId: string;
+  reason?: string;
+  scaffoldRunId?: string;
+  state: string;
+  targetClusterId: string;
+  targetId: string;
+  targetRevision: number;
+  targetSelection: unknown;
+  updatedAt: string;
+  verification?: VerificationResult;
 }
 
 export interface ConfigOutputBody {
@@ -944,6 +1090,12 @@ export interface CreateTenantInputBody {
   slug: string;
 }
 
+export interface Dashboard {
+  file: string;
+  title: string;
+  uid: string;
+}
+
 export interface DecideExemptionInputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
@@ -1059,6 +1211,17 @@ export interface DeployOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   deploy: DeployResult;
+}
+
+export interface DeploymentInput {
+  displayName?: string;
+  name?: string;
+  namespace?: string;
+  ownerTeam?: string;
+  repoId?: string;
+  spec?: unknown;
+  targetId: string;
+  targetRevision: number;
 }
 
 export interface DiffPreview {
@@ -1245,6 +1408,12 @@ export interface FlagView {
   value: boolean;
 }
 
+export interface GateStatus {
+  companionRendering: boolean;
+  deployedVerification: boolean;
+  reason?: string;
+}
+
 export interface ResourceRef {
   group?: string;
   kind: string;
@@ -1297,6 +1466,102 @@ export interface GetOutputBody1 {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   resource: ResourceView;
+}
+
+export interface PackReference {
+  package: string;
+  versionRange: string;
+}
+
+export interface Rule {
+  evaluation: string;
+  file: string;
+}
+
+export type ObservabilityCapabilityDatasources = {[key: string]: string};
+
+export type ObservabilityCapabilitySeverityRouting = {[key: string]: string};
+
+export interface ObservabilityCapability {
+  apiVersion: string;
+  app: string;
+  /** @nullable */
+  dashboards: Dashboard[] | null;
+  datasources: ObservabilityCapabilityDatasources;
+  folder: string;
+  kind: string;
+  /** @nullable */
+  linkVariables?: string[] | null;
+  minimumAppVersion: string;
+  observabilityPack: PackReference;
+  /** @nullable */
+  rules: Rule[] | null;
+  severityRouting: ObservabilityCapabilitySeverityRouting;
+  /** @nullable */
+  targets: string[] | null;
+}
+
+export interface TargetIntent {
+  id: string;
+  revision: number;
+  selection: unknown;
+}
+
+export interface ObservabilityInput {
+  mode: string;
+  pack?: PackPin;
+  target?: TargetIntent;
+}
+
+export type RenderIntentPackSpec = {[key: string]: unknown};
+
+export interface RenderIntent {
+  appSpec?: unknown;
+  evaluation?: string;
+  packSpec?: RenderIntentPackSpec;
+}
+
+export interface Source {
+  admissionItemId?: string;
+  admissionVersion?: string;
+  digest?: string;
+  displayName?: string;
+  itemId?: string;
+  kind: string;
+  ref?: string;
+  sourceId?: string;
+  version?: string;
+}
+
+export interface Plan {
+  app: ArtifactPin;
+  appClusterId?: string;
+  appInstanceId?: string;
+  capability?: ObservabilityCapability;
+  capabilityDigest?: string;
+  companion?: Companion;
+  createdAt: string;
+  deployment: DeploymentInput;
+  errorCode?: string;
+  errorMessage?: string;
+  gate: GateStatus;
+  id: string;
+  observability: ObservabilityInput;
+  operation: string;
+  orgId: string;
+  orgSlug: string;
+  planFingerprint: string;
+  renderIntent?: RenderIntent;
+  scaffoldRunId?: string;
+  source: Source;
+  state: string;
+  updatedAt: string;
+}
+
+export interface GetPlanOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  plan: Plan;
 }
 
 export interface RbacGroup {
@@ -1515,6 +1780,19 @@ export interface InboxOutputBody {
   readonly $schema?: string;
   /** @nullable */
   items: ApprovalRequest[] | null;
+}
+
+export interface InstanceObservability {
+  available: boolean;
+  companion?: Companion;
+  mode: string;
+  reason?: string;
+}
+
+export interface InstanceOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  observability: InstanceObservability;
 }
 
 export interface Item {
@@ -2132,16 +2410,22 @@ export interface PinInputBody {
   version: string;
 }
 
+export interface PlanRequest {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  deployment: DeploymentInput;
+  idempotencyKey: string;
+  instanceId?: string;
+  observability: ObservabilityInput;
+  operation: string;
+  planFingerprint?: string;
+  source?: Source;
+}
+
 export interface PolicyOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   policy: Policy;
-}
-
-export interface ProviderCompatOutputBody {
-  /** A URL to the JSON Schema for this object. */
-  readonly $schema?: string;
-  provider: BrokeredIdP;
 }
 
 export interface ProviderDescriptor {
@@ -2154,6 +2438,30 @@ export interface ProviderDescriptor {
   selectionSchema: unknown;
   supportsDefault: boolean;
   uiSchema: unknown;
+}
+
+export interface Preflight {
+  /** @nullable */
+  compatiblePacks: PackPin[] | null;
+  /** @nullable */
+  deploymentTargets: Target[] | null;
+  /** @nullable */
+  monitoringTargets: Target[] | null;
+  plan: Plan;
+  /** @nullable */
+  providers: ProviderDescriptor[] | null;
+}
+
+export interface PreflightOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  preflight: Preflight;
+}
+
+export interface ProviderCompatOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  provider: BrokeredIdP;
 }
 
 export interface ProvidersOutputBody {
@@ -2668,6 +2976,12 @@ export interface StoreOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   store: SecretStore;
+}
+
+export interface SubmitOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  plan: Plan;
 }
 
 export interface SyncOutputBody {
@@ -8081,6 +8395,188 @@ export const retryTenantDeletion = async (org: string, options?: RequestInit): P
 
 
 
+export type submitDeploymentPlanResponse200 = {
+  data: SubmitOutputBody
+  status: 200
+}
+
+export type submitDeploymentPlanResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type submitDeploymentPlanResponseSuccess = (submitDeploymentPlanResponse200) & {
+  headers: Headers;
+};
+export type submitDeploymentPlanResponseError = (submitDeploymentPlanResponseDefault) & {
+  headers: Headers;
+};
+
+export type submitDeploymentPlanResponse = (submitDeploymentPlanResponseSuccess | submitDeploymentPlanResponseError)
+
+export const getSubmitDeploymentPlanUrl = (org: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/deployment-plans`
+}
+
+/**
+ * @summary Revalidate and submit a normalized deployment plan
+ */
+export const submitDeploymentPlan = async (org: string,
+    planRequest: NonReadonly<PlanRequest>, options?: RequestInit): Promise<submitDeploymentPlanResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getSubmitDeploymentPlanUrl(org),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(planRequest)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: submitDeploymentPlanResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as submitDeploymentPlanResponse
+}
+
+
+
+export type preflightDeploymentPlanResponse200 = {
+  data: PreflightOutputBody
+  status: 200
+}
+
+export type preflightDeploymentPlanResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type preflightDeploymentPlanResponseSuccess = (preflightDeploymentPlanResponse200) & {
+  headers: Headers;
+};
+export type preflightDeploymentPlanResponseError = (preflightDeploymentPlanResponseDefault) & {
+  headers: Headers;
+};
+
+export type preflightDeploymentPlanResponse = (preflightDeploymentPlanResponseSuccess | preflightDeploymentPlanResponseError)
+
+export const getPreflightDeploymentPlanUrl = (org: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/deployment-plans/preflight`
+}
+
+/**
+ * @summary Normalize a deployment plan and list entitled targets
+ */
+export const preflightDeploymentPlan = async (org: string,
+    planRequest: NonReadonly<PlanRequest>, options?: RequestInit): Promise<preflightDeploymentPlanResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getPreflightDeploymentPlanUrl(org),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(planRequest)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: preflightDeploymentPlanResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as preflightDeploymentPlanResponse
+}
+
+
+
+export type getDeploymentPlanResponse200 = {
+  data: GetPlanOutputBody
+  status: 200
+}
+
+export type getDeploymentPlanResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type getDeploymentPlanResponseSuccess = (getDeploymentPlanResponse200) & {
+  headers: Headers;
+};
+export type getDeploymentPlanResponseError = (getDeploymentPlanResponseDefault) & {
+  headers: Headers;
+};
+
+export type getDeploymentPlanResponse = (getDeploymentPlanResponseSuccess | getDeploymentPlanResponseError)
+
+export const getGetDeploymentPlanUrl = (org: string,
+    id: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/deployment-plans/${id}`
+}
+
+/**
+ * @summary Get deployment plan and companion state
+ */
+export const getDeploymentPlan = async (org: string,
+    id: string, options?: RequestInit): Promise<getDeploymentPlanResponse> => {
+
+  const res = await fetch(getGetDeploymentPlanUrl(org,id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getDeploymentPlanResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getDeploymentPlanResponse
+}
+
+
+
 export type deployCatalogItemResponse200 = {
   data: DeployOutputBody
   status: 200
@@ -11063,6 +11559,58 @@ export const instanceDiff = async (org: string,
 
   const data: instanceDiffResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as instanceDiffResponse
+}
+
+
+
+export type getInstanceObservabilityResponse200 = {
+  data: InstanceOutputBody
+  status: 200
+}
+
+export type getInstanceObservabilityResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type getInstanceObservabilityResponseSuccess = (getInstanceObservabilityResponse200) & {
+  headers: Headers;
+};
+export type getInstanceObservabilityResponseError = (getInstanceObservabilityResponseDefault) & {
+  headers: Headers;
+};
+
+export type getInstanceObservabilityResponse = (getInstanceObservabilityResponseSuccess | getInstanceObservabilityResponseError)
+
+export const getGetInstanceObservabilityUrl = (org: string,
+    id: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/instances/${id}/observability`
+}
+
+/**
+ * @summary Get existing-instance companion readiness and verified links
+ */
+export const getInstanceObservability = async (org: string,
+    id: string, options?: RequestInit): Promise<getInstanceObservabilityResponse> => {
+
+  const res = await fetch(getGetInstanceObservabilityUrl(org,id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getInstanceObservabilityResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getInstanceObservabilityResponse
 }
 
 
