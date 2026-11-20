@@ -60,6 +60,40 @@ func qaClient(t *testing.T, h http.HandlerFunc) *ClientWithResponses {
 	return c
 }
 
+func TestClientGetMetaContractsRoundTrip(t *testing.T) {
+	c := qaClient(t, func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/api/v1/meta/contracts" {
+			t.Fatalf("unexpected path: %s", r.URL.Path)
+		}
+		if got := r.Header.Get("Authorization"); got != "" {
+			t.Fatalf("meta endpoint unexpectedly required authorization: %q", got)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Cache-Control", "no-store")
+		plugins := []string{"inari.plugin.v1"}
+		uis := []string{"inari.ui.v1"}
+		_ = json.NewEncoder(w).Encode(ContractMetadata{
+			PluginContracts: &plugins,
+			UiHostApis:      &uis,
+			ServerVersion:   "4.1.0-test",
+		})
+	})
+	resp, err := c.GetMetaContractsWithResponse(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if resp.StatusCode() != http.StatusOK || resp.JSON200 == nil || resp.JSON200.ServerVersion != "4.1.0-test" {
+		t.Fatalf("bad meta response: %d %+v", resp.StatusCode(), resp.JSON200)
+	}
+	if resp.JSON200.PluginContracts == nil || len(*resp.JSON200.PluginContracts) != 1 || (*resp.JSON200.PluginContracts)[0] != "inari.plugin.v1" ||
+		resp.JSON200.UiHostApis == nil || len(*resp.JSON200.UiHostApis) != 1 || (*resp.JSON200.UiHostApis)[0] != "inari.ui.v1" {
+		t.Fatalf("bad contract sets: %+v", resp.JSON200)
+	}
+	if resp.Headers200 == nil || resp.Headers200.CacheControl == nil || *resp.Headers200.CacheControl != "no-store" {
+		t.Fatalf("missing no-store header: %+v", resp.Headers200)
+	}
+}
+
 func TestClientListResourceTargetsRoundTrip(t *testing.T) {
 	c := qaClient(t, func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/api/v1/tenants/acme/resource-targets" {
