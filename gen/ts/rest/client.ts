@@ -315,6 +315,57 @@ export interface ApprovalOutputBody {
   approval: ApprovalRequest;
 }
 
+export type CompatibilityMatrix = {[key: string]: string};
+
+export interface Compatibility {
+  browser: string;
+  completedAt: string;
+  matrix: CompatibilityMatrix;
+  result: string;
+  /** @nullable */
+  slots: string[] | null;
+}
+
+export interface Lane {
+  jobId: string;
+  name: string;
+  required: boolean;
+  runId: string;
+  sourceSha: string;
+  status: string;
+}
+
+export interface Producer {
+  runAttempt: number;
+  runId: string;
+  runUri: string;
+  workflowPath: string;
+  workflowSha: string;
+}
+
+export interface RuntimeEvidence {
+  profile: string;
+  result: string;
+  suiteDigest: string;
+  target: string;
+}
+
+export interface ArtifactDescriptor {
+  app?: string;
+  compatibility?: Compatibility;
+  component: string;
+  digest: string;
+  /** @nullable */
+  lanes: Lane[] | null;
+  mediaType: string;
+  packageVersion: string;
+  producer: Producer;
+  ref: string;
+  releaseTag: string;
+  runtime?: RuntimeEvidence;
+  sourceSha: string;
+}
+
 export interface AssignPackInputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
@@ -533,6 +584,12 @@ export interface ClusterSetOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   clusterSet: ClusterSet;
+}
+
+export interface ConcurrencyConfig {
+  maxActive: number;
+  maxPending: number;
+  queuedRevisionPolicy: string;
 }
 
 export interface ConfigOutputBody {
@@ -944,6 +1001,15 @@ export interface CreateTenantInputBody {
   slug: string;
 }
 
+export interface CronConfig {
+  enabled: boolean;
+  scheduleSetId?: string;
+  /** @nullable */
+  schedules?: string[] | null;
+  startingDeadlineSeconds?: number;
+  timezone?: string;
+}
+
 export interface DecideExemptionInputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
@@ -1109,6 +1175,35 @@ export interface EndpointOutputBody {
   endpoint: NotificationEndpoint;
 }
 
+export interface EnvironmentPolicy {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  allowedFailureActions: string[] | null;
+  /** @nullable */
+  allowedProfiles: string[] | null;
+  /** @nullable */
+  allowedTriggers: string[] | null;
+  createdAt?: string;
+  environment: string;
+  id?: string;
+  maxActive: number;
+  maxEvidenceAgeAtApproval: string;
+  maxGrantLifetimeDays: number;
+  maxPending: number;
+  maxResultDays: number;
+  maxTimeout: string;
+  maxWorkflowTTLSeconds: number;
+  minWorkflowTTLSeconds: number;
+  orgId?: string;
+  policyRevision: number;
+  /** @nullable */
+  requiredNotificationEndpointIds?: string[] | null;
+  targetId: string;
+  targetRevision: number;
+  updatedAt?: string;
+}
+
 export interface ErrorDetail {
   /** Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id' */
   location?: string;
@@ -1245,6 +1340,12 @@ export interface FlagView {
   value: boolean;
 }
 
+export interface GateStatus {
+  deployedVerification: boolean;
+  reason?: string;
+  renderAvailable: boolean;
+}
+
 export interface ResourceRef {
   group?: string;
   kind: string;
@@ -1264,6 +1365,8 @@ export interface InstanceView {
   latestVersion?: string;
   managementMode: string;
   newVersionAvailable: boolean;
+  observedRevision?: string;
+  operationFinishedAt?: string;
   orgId: string;
   ownerTeam: string;
   prUrl?: string;
@@ -1272,7 +1375,10 @@ export interface InstanceView {
   spec: unknown;
   state: string;
   statusMessage?: string;
+  syncOperationId?: string;
+  syncOperationPhase?: string;
   syncState?: string;
+  uid: string;
   updatedAt: string;
   version: string;
 }
@@ -2086,6 +2192,13 @@ export interface MyPermissionsOutputBody {
   tenants?: MyPermissionsOutputBodyTenants;
 }
 
+export interface NotificationConfig {
+  /** @nullable */
+  endpointIds?: string[] | null;
+  /** @nullable */
+  events?: string[] | null;
+}
+
 export interface NotificationDelivery {
   attempts: number;
   createdAt: string;
@@ -2132,10 +2245,191 @@ export interface PinInputBody {
   version: string;
 }
 
+export interface PolicyBinding {
+  appArtifactDigest: string;
+  appItemId: string;
+  appVersion: string;
+  desiredCommit?: string;
+  parameterContract: string;
+  profile: string;
+  specDigest: string;
+  suiteDigest: string;
+  suiteGrantId: string;
+}
+
 export interface PolicyOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   policy: Policy;
+}
+
+export interface RBACRule {
+  /** @nullable */
+  apiGroups: string[] | null;
+  /** @nullable */
+  resources: string[] | null;
+  /** @nullable */
+  verbs: string[] | null;
+}
+
+export interface SuiteGrant {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  allowedRbac: RBACRule[] | null;
+  appItemId?: string;
+  appVersionRange?: string;
+  /** @nullable */
+  approverTeamIds?: string[] | null;
+  argoUiBaseUrl?: string;
+  changeWindow?: string;
+  cleanupRequired: boolean;
+  egressPolicyRef: string;
+  environmentPolicyId?: string;
+  expiresAt?: string;
+  fixtureNamespace?: string;
+  grantRevision: number;
+  id?: string;
+  legacyNonProductionException?: boolean;
+  maxActive: number;
+  maxPending: number;
+  maxResultBytes: number;
+  maxTimeout: string;
+  orgId?: string;
+  parameterContract: string;
+  profile: string;
+  rbacPolicyDigest: string;
+  requirePerRunApproval: boolean;
+  revokedAt?: string;
+  serviceAccountName: string;
+  serviceAccountNamespace: string;
+  sideEffects: string;
+  suiteDigest: string;
+  suiteReleaseId: string;
+}
+
+export interface RetentionConfig {
+  failedHistory: number;
+  resultDays: number;
+  successfulHistory: number;
+  workflowTTLSeconds: number;
+}
+
+export interface TriggerToggle {
+  enabled: boolean;
+}
+
+export interface SyncTrigger {
+  enabled: boolean;
+  mode?: string;
+}
+
+export interface Triggers {
+  cron: CronConfig;
+  manual: TriggerToggle;
+  onRevisionChange: TriggerToggle;
+  onSync: SyncTrigger;
+}
+
+export interface VerificationPolicy {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  addonAbsent: string;
+  binding: PolicyBinding;
+  concurrency: ConcurrencyConfig;
+  createdAt?: string;
+  current?: boolean;
+  enabled: boolean;
+  failureAction: string;
+  id?: string;
+  instanceId?: string;
+  instanceUid?: string;
+  notifications?: NotificationConfig;
+  orgId?: string;
+  policyRevision: number;
+  retention: RetentionConfig;
+  timeout: string;
+  triggers: Triggers;
+  updatedAt?: string;
+}
+
+export interface SuiteProfile {
+  approval?: string;
+  changeWindow?: string;
+  cleanup: string;
+  sideEffects: string;
+}
+
+export type SuiteAdapterReadinessItem = {[key: string]: string};
+
+export interface SuiteAdapter {
+  artifactPath?: string;
+  fixtureOnly?: boolean;
+  kind: string;
+  path?: string;
+  /** @nullable */
+  readiness?: SuiteAdapterReadinessItem[] | null;
+}
+
+export interface SuiteTarget {
+  adapter: SuiteAdapter;
+  component?: string;
+  id: string;
+  version: string;
+}
+
+export type SuiteProfiles = {[key: string]: SuiteProfile};
+
+export interface Suite {
+  cleanup?: string;
+  compatibleAppVersions: string;
+  /** @nullable */
+  dependencies: string[] | null;
+  entrypoint: string;
+  /** @nullable */
+  executableProfiles?: string[] | null;
+  idempotency?: string;
+  parameterContract: string;
+  profiles: SuiteProfiles;
+  /** @nullable */
+  rbacRequirements: RBACRule[] | null;
+  suiteSchema: string;
+  target: SuiteTarget;
+  timeout: string;
+  workflowTemplate: string;
+}
+
+export interface SuiteRelease {
+  admittedAt: string;
+  contentDigest: string;
+  descriptor: ArtifactDescriptor;
+  eligibility: string;
+  evidenceDigest?: string;
+  evidenceFinishedAt?: string;
+  id: string;
+  legacyException?: boolean;
+  orgId: string;
+  sourceFingerprint: string;
+  sourceId: string;
+  suite: Suite;
+  suiteDigest: string;
+  trustTier: string;
+  unsigned: boolean;
+}
+
+export interface PolicyPreview {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  environment: EnvironmentPolicy;
+  gate: GateStatus;
+  grant: SuiteGrant;
+  policy: VerificationPolicy;
+  sideEffectsPerformed: number;
+  suite: SuiteRelease;
+  /** @nullable */
+  warnings?: string[] | null;
+  /** @nullable */
+  wouldCreate?: string[] | null;
 }
 
 export interface ProviderCompatOutputBody {
@@ -2507,6 +2801,64 @@ export interface RotateSecretOutputBody {
   secret: string;
 }
 
+export interface Trigger {
+  kind: string;
+  operationId?: string;
+  profile: string;
+  requestKey?: string;
+  scheduleSetId?: string;
+  scheduledAt?: string;
+}
+
+export interface Run {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  appArtifactDigest: string;
+  appRevision: string;
+  createdAt: string;
+  disposition?: string;
+  expiresAt?: string;
+  grantRevision: number;
+  instanceId: string;
+  instanceUid: string;
+  latestAttempt: number;
+  message?: string;
+  orgId: string;
+  outcome?: unknown;
+  outcomeDigest?: string;
+  policyRevision: number;
+  profile: string;
+  reasonCode?: string;
+  runId: string;
+  runKey: string;
+  status: string;
+  suiteDigest: string;
+  trigger: Trigger;
+  triggerFingerprint: string;
+  updatedAt: string;
+}
+
+export interface RunInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  dryRun?: boolean;
+  idempotencyKey: string;
+}
+
+export interface RunListOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  runs: Run[] | null;
+}
+
+export interface RunOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  preview?: PolicyPreview;
+  run?: Run;
+}
+
 export interface SecretStoreCondition {
   clusterId: string;
   message?: string;
@@ -2661,6 +3013,12 @@ export interface SourceVisibilityInputBody {
 export interface StatusOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
+  status: string;
+}
+
+export interface StatusOutputBody1 {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
   status: SecretStoreStatus;
 }
 
@@ -2668,6 +3026,33 @@ export interface StoreOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
   store: SecretStore;
+}
+
+export interface SuiteAdmissionInput {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  descriptor: ArtifactDescriptor;
+  environment: string;
+  legacyNonProductionException?: boolean;
+  profile: string;
+  sourceId: string;
+}
+
+export interface SuiteListOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  suites: SuiteRelease[] | null;
+}
+
+export interface SuitePreview {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  gate: GateStatus;
+  release: SuiteRelease;
+  sideEffectsPerformed: number;
+  /** @nullable */
+  warnings?: string[] | null;
 }
 
 export interface SyncOutputBody {
@@ -2863,6 +3248,15 @@ export interface UpgradeInputBody {
   repoId?: string;
   /** @minLength 1 */
   toVersion: string;
+}
+
+export interface VerificationView {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  gate: GateStatus;
+  policy?: VerificationPolicy;
+  /** @nullable */
+  runs?: Run[] | null;
 }
 
 export interface VisibilityInputBody {
@@ -3105,6 +3499,14 @@ export type InstanceDiffParams = {
  * Target version
  */
 to: string;
+};
+
+export type ListInstanceVerificationRunsParams = {
+/**
+ * @minimum 1
+ * @maximum 200
+ */
+limit?: number;
 };
 
 export type ListOrgMembersParams = {
@@ -11201,6 +11603,480 @@ const res = await fetch(getUpgradeInstanceUrl(org,id),
 
 
 
+export type disableInstanceVerificationResponse200 = {
+  data: VerificationPolicy
+  status: 200
+}
+
+export type disableInstanceVerificationResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type disableInstanceVerificationResponseSuccess = (disableInstanceVerificationResponse200) & {
+  headers: Headers;
+};
+export type disableInstanceVerificationResponseError = (disableInstanceVerificationResponseDefault) & {
+  headers: Headers;
+};
+
+export type disableInstanceVerificationResponse = (disableInstanceVerificationResponseSuccess | disableInstanceVerificationResponseError)
+
+export const getDisableInstanceVerificationUrl = (org: string,
+    id: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/instances/${id}/verification`
+}
+
+/**
+ * @summary Disable future verification triggers
+ */
+export const disableInstanceVerification = async (org: string,
+    id: string, options?: RequestInit): Promise<disableInstanceVerificationResponse> => {
+
+  const res = await fetch(getDisableInstanceVerificationUrl(org,id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: disableInstanceVerificationResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as disableInstanceVerificationResponse
+}
+
+
+
+export type getInstanceVerificationResponse200 = {
+  data: VerificationView
+  status: 200
+}
+
+export type getInstanceVerificationResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type getInstanceVerificationResponseSuccess = (getInstanceVerificationResponse200) & {
+  headers: Headers;
+};
+export type getInstanceVerificationResponseError = (getInstanceVerificationResponseDefault) & {
+  headers: Headers;
+};
+
+export type getInstanceVerificationResponse = (getInstanceVerificationResponseSuccess | getInstanceVerificationResponseError)
+
+export const getGetInstanceVerificationUrl = (org: string,
+    id: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/instances/${id}/verification`
+}
+
+/**
+ * @summary Get instance verification policy and status
+ */
+export const getInstanceVerification = async (org: string,
+    id: string, options?: RequestInit): Promise<getInstanceVerificationResponse> => {
+
+  const res = await fetch(getGetInstanceVerificationUrl(org,id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getInstanceVerificationResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getInstanceVerificationResponse
+}
+
+
+
+export type putInstanceVerificationResponse200 = {
+  data: VerificationPolicy
+  status: 200
+}
+
+export type putInstanceVerificationResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type putInstanceVerificationResponseSuccess = (putInstanceVerificationResponse200) & {
+  headers: Headers;
+};
+export type putInstanceVerificationResponseError = (putInstanceVerificationResponseDefault) & {
+  headers: Headers;
+};
+
+export type putInstanceVerificationResponse = (putInstanceVerificationResponseSuccess | putInstanceVerificationResponseError)
+
+export const getPutInstanceVerificationUrl = (org: string,
+    id: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/instances/${id}/verification`
+}
+
+/**
+ * @summary Save a verified team policy revision
+ */
+export const putInstanceVerification = async (org: string,
+    id: string,
+    verificationPolicy: NonReadonly<VerificationPolicy>, options?: RequestInit): Promise<putInstanceVerificationResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getPutInstanceVerificationUrl(org,id),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(verificationPolicy)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: putInstanceVerificationResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as putInstanceVerificationResponse
+}
+
+
+
+export type previewInstanceVerificationResponse200 = {
+  data: PolicyPreview
+  status: 200
+}
+
+export type previewInstanceVerificationResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type previewInstanceVerificationResponseSuccess = (previewInstanceVerificationResponse200) & {
+  headers: Headers;
+};
+export type previewInstanceVerificationResponseError = (previewInstanceVerificationResponseDefault) & {
+  headers: Headers;
+};
+
+export type previewInstanceVerificationResponse = (previewInstanceVerificationResponseSuccess | previewInstanceVerificationResponseError)
+
+export const getPreviewInstanceVerificationUrl = (org: string,
+    id: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/instances/${id}/verification/preview`
+}
+
+/**
+ * @summary Preview effective verification policy without side effects
+ */
+export const previewInstanceVerification = async (org: string,
+    id: string,
+    verificationPolicy: NonReadonly<VerificationPolicy>, options?: RequestInit): Promise<previewInstanceVerificationResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getPreviewInstanceVerificationUrl(org,id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(verificationPolicy)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: previewInstanceVerificationResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as previewInstanceVerificationResponse
+}
+
+
+
+export type listInstanceVerificationRunsResponse200 = {
+  data: RunListOutputBody
+  status: 200
+}
+
+export type listInstanceVerificationRunsResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type listInstanceVerificationRunsResponseSuccess = (listInstanceVerificationRunsResponse200) & {
+  headers: Headers;
+};
+export type listInstanceVerificationRunsResponseError = (listInstanceVerificationRunsResponseDefault) & {
+  headers: Headers;
+};
+
+export type listInstanceVerificationRunsResponse = (listInstanceVerificationRunsResponseSuccess | listInstanceVerificationRunsResponseError)
+
+export const getListInstanceVerificationRunsUrl = (org: string,
+    id: string,
+    params?: ListInstanceVerificationRunsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/v1/tenants/${org}/instances/${id}/verification/runs?${stringifiedParams}` : `/api/v1/tenants/${org}/instances/${id}/verification/runs`
+}
+
+/**
+ * @summary List verification run history
+ */
+export const listInstanceVerificationRuns = async (org: string,
+    id: string,
+    params?: ListInstanceVerificationRunsParams, options?: RequestInit): Promise<listInstanceVerificationRunsResponse> => {
+
+  const res = await fetch(getListInstanceVerificationRunsUrl(org,id,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: listInstanceVerificationRunsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listInstanceVerificationRunsResponse
+}
+
+
+
+export type createInstanceVerificationRunResponse200 = {
+  data: RunOutputBody
+  status: 200
+}
+
+export type createInstanceVerificationRunResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type createInstanceVerificationRunResponseSuccess = (createInstanceVerificationRunResponse200) & {
+  headers: Headers;
+};
+export type createInstanceVerificationRunResponseError = (createInstanceVerificationRunResponseDefault) & {
+  headers: Headers;
+};
+
+export type createInstanceVerificationRunResponse = (createInstanceVerificationRunResponseSuccess | createInstanceVerificationRunResponseError)
+
+export const getCreateInstanceVerificationRunUrl = (org: string,
+    id: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/instances/${id}/verification/runs`
+}
+
+/**
+ * @summary Dry-run or request an exact manual verification run
+ */
+export const createInstanceVerificationRun = async (org: string,
+    id: string,
+    runInputBody: NonReadonly<RunInputBody>, options?: RequestInit): Promise<createInstanceVerificationRunResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getCreateInstanceVerificationRunUrl(org,id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(runInputBody)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: createInstanceVerificationRunResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as createInstanceVerificationRunResponse
+}
+
+
+
+export type getInstanceVerificationRunResponse200 = {
+  data: Run
+  status: 200
+}
+
+export type getInstanceVerificationRunResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type getInstanceVerificationRunResponseSuccess = (getInstanceVerificationRunResponse200) & {
+  headers: Headers;
+};
+export type getInstanceVerificationRunResponseError = (getInstanceVerificationRunResponseDefault) & {
+  headers: Headers;
+};
+
+export type getInstanceVerificationRunResponse = (getInstanceVerificationRunResponseSuccess | getInstanceVerificationRunResponseError)
+
+export const getGetInstanceVerificationRunUrl = (org: string,
+    id: string,
+    runId: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/instances/${id}/verification/runs/${runId}`
+}
+
+/**
+ * @summary Get verification run details
+ */
+export const getInstanceVerificationRun = async (org: string,
+    id: string,
+    runId: string, options?: RequestInit): Promise<getInstanceVerificationRunResponse> => {
+
+  const res = await fetch(getGetInstanceVerificationRunUrl(org,id,runId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getInstanceVerificationRunResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getInstanceVerificationRunResponse
+}
+
+
+
+export type retryInstanceVerificationRunResponse200 = {
+  data: Run
+  status: 200
+}
+
+export type retryInstanceVerificationRunResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type retryInstanceVerificationRunResponseSuccess = (retryInstanceVerificationRunResponse200) & {
+  headers: Headers;
+};
+export type retryInstanceVerificationRunResponseError = (retryInstanceVerificationRunResponseDefault) & {
+  headers: Headers;
+};
+
+export type retryInstanceVerificationRunResponse = (retryInstanceVerificationRunResponseSuccess | retryInstanceVerificationRunResponseError)
+
+export const getRetryInstanceVerificationRunUrl = (org: string,
+    id: string,
+    runId: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/instances/${id}/verification/runs/${runId}/retry`
+}
+
+/**
+ * @summary Retry a failed verification attempt after revalidation
+ */
+export const retryInstanceVerificationRun = async (org: string,
+    id: string,
+    runId: string, options?: RequestInit): Promise<retryInstanceVerificationRunResponse> => {
+
+  const res = await fetch(getRetryInstanceVerificationRunUrl(org,id,runId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: retryInstanceVerificationRunResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as retryInstanceVerificationRunResponse
+}
+
+
+
 export type listOrgMembersResponse200 = {
   data: ListOrgMembersOutputBody
   status: 200
@@ -14551,7 +15427,7 @@ const res = await fetch(getUpdateSecretStoreUrl(org,name),
 
 
 export type getSecretStoreStatusResponse200 = {
-  data: StatusOutputBody
+  data: StatusOutputBody1
   status: 200
 }
 
@@ -15306,6 +16182,491 @@ const res = await fetch(getCreateSourceScaffoldRunUrl(org,source,name),
 
   const data: createSourceScaffoldRunResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as createSourceScaffoldRunResponse
+}
+
+
+
+export type createVerificationGrantResponse200 = {
+  data: SuiteGrant
+  status: 200
+}
+
+export type createVerificationGrantResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type createVerificationGrantResponseSuccess = (createVerificationGrantResponse200) & {
+  headers: Headers;
+};
+export type createVerificationGrantResponseError = (createVerificationGrantResponseDefault) & {
+  headers: Headers;
+};
+
+export type createVerificationGrantResponse = (createVerificationGrantResponseSuccess | createVerificationGrantResponseError)
+
+export const getCreateVerificationGrantUrl = (org: string,
+    id: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/verification-environments/${id}/grants`
+}
+
+/**
+ * @summary Create or revise exact suite grant
+ */
+export const createVerificationGrant = async (org: string,
+    id: string,
+    suiteGrant: NonReadonly<SuiteGrant>, options?: RequestInit): Promise<createVerificationGrantResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getCreateVerificationGrantUrl(org,id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(suiteGrant)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: createVerificationGrantResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as createVerificationGrantResponse
+}
+
+
+
+export type previewVerificationGrantResponse200 = {
+  data: SuitePreview
+  status: 200
+}
+
+export type previewVerificationGrantResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type previewVerificationGrantResponseSuccess = (previewVerificationGrantResponse200) & {
+  headers: Headers;
+};
+export type previewVerificationGrantResponseError = (previewVerificationGrantResponseDefault) & {
+  headers: Headers;
+};
+
+export type previewVerificationGrantResponse = (previewVerificationGrantResponseSuccess | previewVerificationGrantResponseError)
+
+export const getPreviewVerificationGrantUrl = (org: string,
+    id: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/verification-environments/${id}/grants/preview`
+}
+
+/**
+ * @summary Preview exact suite digest and profile grant
+ */
+export const previewVerificationGrant = async (org: string,
+    id: string,
+    suiteGrant: NonReadonly<SuiteGrant>, options?: RequestInit): Promise<previewVerificationGrantResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getPreviewVerificationGrantUrl(org,id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(suiteGrant)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: previewVerificationGrantResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as previewVerificationGrantResponse
+}
+
+
+
+export type getVerificationEnvironmentResponse200 = {
+  data: EnvironmentPolicy
+  status: 200
+}
+
+export type getVerificationEnvironmentResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type getVerificationEnvironmentResponseSuccess = (getVerificationEnvironmentResponse200) & {
+  headers: Headers;
+};
+export type getVerificationEnvironmentResponseError = (getVerificationEnvironmentResponseDefault) & {
+  headers: Headers;
+};
+
+export type getVerificationEnvironmentResponse = (getVerificationEnvironmentResponseSuccess | getVerificationEnvironmentResponseError)
+
+export const getGetVerificationEnvironmentUrl = (org: string,
+    targetId: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/verification-environments/${targetId}`
+}
+
+/**
+ * @summary Get target verification environment policy
+ */
+export const getVerificationEnvironment = async (org: string,
+    targetId: string, options?: RequestInit): Promise<getVerificationEnvironmentResponse> => {
+
+  const res = await fetch(getGetVerificationEnvironmentUrl(org,targetId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getVerificationEnvironmentResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getVerificationEnvironmentResponse
+}
+
+
+
+export type putVerificationEnvironmentResponse200 = {
+  data: EnvironmentPolicy
+  status: 200
+}
+
+export type putVerificationEnvironmentResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type putVerificationEnvironmentResponseSuccess = (putVerificationEnvironmentResponse200) & {
+  headers: Headers;
+};
+export type putVerificationEnvironmentResponseError = (putVerificationEnvironmentResponseDefault) & {
+  headers: Headers;
+};
+
+export type putVerificationEnvironmentResponse = (putVerificationEnvironmentResponseSuccess | putVerificationEnvironmentResponseError)
+
+export const getPutVerificationEnvironmentUrl = (org: string,
+    targetId: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/verification-environments/${targetId}`
+}
+
+/**
+ * @summary Set target verification environment policy
+ */
+export const putVerificationEnvironment = async (org: string,
+    targetId: string,
+    environmentPolicy: NonReadonly<EnvironmentPolicy>, options?: RequestInit): Promise<putVerificationEnvironmentResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getPutVerificationEnvironmentUrl(org,targetId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(environmentPolicy)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: putVerificationEnvironmentResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as putVerificationEnvironmentResponse
+}
+
+
+
+export type revokeVerificationGrantResponse200 = {
+  data: StatusOutputBody
+  status: 200
+}
+
+export type revokeVerificationGrantResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type revokeVerificationGrantResponseSuccess = (revokeVerificationGrantResponse200) & {
+  headers: Headers;
+};
+export type revokeVerificationGrantResponseError = (revokeVerificationGrantResponseDefault) & {
+  headers: Headers;
+};
+
+export type revokeVerificationGrantResponse = (revokeVerificationGrantResponseSuccess | revokeVerificationGrantResponseError)
+
+export const getRevokeVerificationGrantUrl = (org: string,
+    id: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/verification-grants/${id}`
+}
+
+/**
+ * @summary Revoke new runs and evidence for a suite grant
+ */
+export const revokeVerificationGrant = async (org: string,
+    id: string, options?: RequestInit): Promise<revokeVerificationGrantResponse> => {
+
+  const res = await fetch(getRevokeVerificationGrantUrl(org,id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: revokeVerificationGrantResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as revokeVerificationGrantResponse
+}
+
+
+
+export type listVerificationSuitesResponse200 = {
+  data: SuiteListOutputBody
+  status: 200
+}
+
+export type listVerificationSuitesResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type listVerificationSuitesResponseSuccess = (listVerificationSuitesResponse200) & {
+  headers: Headers;
+};
+export type listVerificationSuitesResponseError = (listVerificationSuitesResponseDefault) & {
+  headers: Headers;
+};
+
+export type listVerificationSuitesResponse = (listVerificationSuitesResponseSuccess | listVerificationSuitesResponseError)
+
+export const getListVerificationSuitesUrl = (org: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/verification-suites`
+}
+
+/**
+ * @summary List admitted suite releases
+ */
+export const listVerificationSuites = async (org: string, options?: RequestInit): Promise<listVerificationSuitesResponse> => {
+
+  const res = await fetch(getListVerificationSuitesUrl(org),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: listVerificationSuitesResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as listVerificationSuitesResponse
+}
+
+
+
+export type createVerificationSuiteResponse200 = {
+  data: SuitePreview
+  status: 200
+}
+
+export type createVerificationSuiteResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type createVerificationSuiteResponseSuccess = (createVerificationSuiteResponse200) & {
+  headers: Headers;
+};
+export type createVerificationSuiteResponseError = (createVerificationSuiteResponseDefault) & {
+  headers: Headers;
+};
+
+export type createVerificationSuiteResponse = (createVerificationSuiteResponseSuccess | createVerificationSuiteResponseError)
+
+export const getCreateVerificationSuiteUrl = (org: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/verification-suites`
+}
+
+/**
+ * @summary Import an exact verified suite release
+ */
+export const createVerificationSuite = async (org: string,
+    suiteAdmissionInput: NonReadonly<SuiteAdmissionInput>, options?: RequestInit): Promise<createVerificationSuiteResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getCreateVerificationSuiteUrl(org),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(suiteAdmissionInput)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: createVerificationSuiteResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as createVerificationSuiteResponse
+}
+
+
+
+export type previewVerificationSuiteResponse200 = {
+  data: SuitePreview
+  status: 200
+}
+
+export type previewVerificationSuiteResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type previewVerificationSuiteResponseSuccess = (previewVerificationSuiteResponse200) & {
+  headers: Headers;
+};
+export type previewVerificationSuiteResponseError = (previewVerificationSuiteResponseDefault) & {
+  headers: Headers;
+};
+
+export type previewVerificationSuiteResponse = (previewVerificationSuiteResponseSuccess | previewVerificationSuiteResponseError)
+
+export const getPreviewVerificationSuiteUrl = (org: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/verification-suites/preview`
+}
+
+/**
+ * @summary Cryptographically preview a platform suite release
+ */
+export const previewVerificationSuite = async (org: string,
+    suiteAdmissionInput: NonReadonly<SuiteAdmissionInput>, options?: RequestInit): Promise<previewVerificationSuiteResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getPreviewVerificationSuiteUrl(org),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(suiteAdmissionInput)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: previewVerificationSuiteResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as previewVerificationSuiteResponse
 }
 
 
