@@ -57,11 +57,6 @@ export interface AWSSMProvider {
   region: string;
 }
 
-export interface AccessCheck {
-  state: string;
-  team: string;
-}
-
 export interface ClusterAccessInfo {
   audience: string;
   issuerUrl: string;
@@ -655,7 +650,6 @@ export interface RuleCheck {
 }
 
 export interface VerificationChecks {
-  access: AccessCheck;
   /** @nullable */
   dashboards: DashboardCheck[] | null;
   /** @nullable */
