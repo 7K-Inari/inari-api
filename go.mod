@@ -5,8 +5,8 @@ go 1.26.3
 require (
 	connectrpc.com/connect/v2 v2.0.2
 	github.com/Masterminds/semver/v3 v3.5.0
-	github.com/getkin/kin-openapi v0.152.0
-	github.com/oapi-codegen/runtime v1.8.0
+	github.com/getkin/kin-openapi v0.153.0
+	github.com/oapi-codegen/runtime v1.9.1
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.3
 	go.yaml.in/yaml/v3 v3.0.6
 	google.golang.org/grpc v1.85.0
@@ -21,6 +21,7 @@ require (
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/oasdiff/yaml v0.1.1 // indirect
 	github.com/oasdiff/yaml3 v0.0.14 // indirect
+	go.yaml.in/yaml/v4 v4.0.0 // indirect
 	golang.org/x/net v0.62.0 // indirect
 	golang.org/x/sys v0.49.0 // indirect
 	golang.org/x/text v0.43.0 // indirect
