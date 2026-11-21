@@ -256,6 +256,18 @@ type TestEvidence struct {
 	Lanes            []Lane           `json:"lanes" yaml:"lanes"`
 	Compatibility    *Compatibility   `json:"compatibility,omitempty" yaml:"compatibility,omitempty"`
 	Runtime          *RuntimeEvidence `json:"runtime,omitempty" yaml:"runtime,omitempty"`
-	FinishedAt       string           `json:"finishedAt" yaml:"finishedAt"`
-	EvidenceDigest   string           `json:"evidenceDigest" yaml:"evidenceDigest"`
+	// Runtime eligibility is additive. Pointer booleans distinguish an old
+	// predicate with no eligibility declaration from an explicit false.
+	TargetAdapter       string   `json:"targetAdapter,omitempty" yaml:"targetAdapter,omitempty"`
+	FixtureOnly         *bool    `json:"fixtureOnly,omitempty" yaml:"fixtureOnly,omitempty"`
+	ExecutableProfiles  []string `json:"executableProfiles,omitempty" yaml:"executableProfiles,omitempty"`
+	EvidenceScope       string   `json:"evidenceScope,omitempty" yaml:"evidenceScope,omitempty"`
+	AppEvidenceEligible *bool    `json:"appEvidenceEligible,omitempty" yaml:"appEvidenceEligible,omitempty"`
+	FinishedAt          string   `json:"finishedAt" yaml:"finishedAt"`
+	EvidenceDigest      string   `json:"evidenceDigest" yaml:"evidenceDigest"`
 }
+
+const (
+	EvidenceScopeApplication = "application"
+	EvidenceScopeFixture     = "fixture"
+)
