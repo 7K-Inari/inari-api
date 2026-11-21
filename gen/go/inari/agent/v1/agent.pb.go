@@ -61,6 +61,8 @@ const (
 	EventType_EVENT_TYPE_SECRET_STORE_DELETE EventType = 14
 	// server→agent: update the cluster's bound baseline repo.
 	EventType_EVENT_TYPE_GITOPS_CONFIG_UPDATE EventType = 15
+	// agent→server: exact signed-suite Workflow verification status.
+	EventType_EVENT_TYPE_VERIFICATION_REPORT EventType = 16
 )
 
 // Enum value maps for EventType.
@@ -82,6 +84,7 @@ var (
 		13: "EVENT_TYPE_SECRET_STORE_APPLY",
 		14: "EVENT_TYPE_SECRET_STORE_DELETE",
 		15: "EVENT_TYPE_GITOPS_CONFIG_UPDATE",
+		16: "EVENT_TYPE_VERIFICATION_REPORT",
 	}
 	EventType_value = map[string]int32{
 		"EVENT_TYPE_UNSPECIFIED":          0,
@@ -100,6 +103,7 @@ var (
 		"EVENT_TYPE_SECRET_STORE_APPLY":   13,
 		"EVENT_TYPE_SECRET_STORE_DELETE":  14,
 		"EVENT_TYPE_GITOPS_CONFIG_UPDATE": 15,
+		"EVENT_TYPE_VERIFICATION_REPORT":  16,
 	}
 )
 
@@ -487,7 +491,7 @@ const file_inari_agent_v1_agent_proto_rawDesc = "" +
 	"\x0eConnectRequest\x12+\n" +
 	"\x05event\x18\x01 \x01(\v2\x15.inari.agent.v1.EventR\x05eventJ\x05\bd\x10\xc8\x01\"E\n" +
 	"\x0fConnectResponse\x12+\n" +
-	"\x05event\x18\x01 \x01(\v2\x15.inari.agent.v1.EventR\x05eventJ\x05\bd\x10\xc8\x01*\xf8\x03\n" +
+	"\x05event\x18\x01 \x01(\v2\x15.inari.agent.v1.EventR\x05eventJ\x05\bd\x10\xc8\x01*\x9c\x04\n" +
 	"\tEventType\x12\x1a\n" +
 	"\x16EVENT_TYPE_UNSPECIFIED\x10\x00\x12 \n" +
 	"\x1cEVENT_TYPE_CAPABILITY_UPDATE\x10\x01\x12\x1c\n" +
@@ -505,7 +509,8 @@ const file_inari_agent_v1_agent_proto_rawDesc = "" +
 	"\x17EVENT_TYPE_COMMAND_NACK\x10\f\x12!\n" +
 	"\x1dEVENT_TYPE_SECRET_STORE_APPLY\x10\r\x12\"\n" +
 	"\x1eEVENT_TYPE_SECRET_STORE_DELETE\x10\x0e\x12#\n" +
-	"\x1fEVENT_TYPE_GITOPS_CONFIG_UPDATE\x10\x0f2d\n" +
+	"\x1fEVENT_TYPE_GITOPS_CONFIG_UPDATE\x10\x0f\x12\"\n" +
+	"\x1eEVENT_TYPE_VERIFICATION_REPORT\x10\x102d\n" +
 	"\x12EventStreamService\x12N\n" +
 	"\aConnect\x12\x1e.inari.agent.v1.ConnectRequest\x1a\x1f.inari.agent.v1.ConnectResponse(\x010\x01B=Z;github.com/7K-Inari/inari-api/gen/go/inari/agent/v1;agentv1b\x06proto3"
 

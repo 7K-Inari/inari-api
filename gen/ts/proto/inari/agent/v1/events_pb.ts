@@ -12,7 +12,7 @@ import type { JsonObject, Message } from "@bufbuild/protobuf";
  * Describes the file inari/agent/v1/events.proto.
  */
 export const file_inari_agent_v1_events: GenFile = /*@__PURE__*/
-  fileDesc("ChtpbmFyaS9hZ2VudC92MS9ldmVudHMucHJvdG8SDmluYXJpLmFnZW50LnYxIlAKC1Jlc291cmNlUmVmEgwKBGtpbmQYASABKAkSDAoEbmFtZRgCIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSCwoDdWlkGAQgASgJSgUIZBDIASKuAgoKQ2FwYWJpbGl0eRIsCgRraW5kGAEgASgOMh4uaW5hcmkuYWdlbnQudjEuQ2FwYWJpbGl0eUtpbmQSDAoEbmFtZRgCIAEoCRINCgVncm91cBgDIAEoCRIPCgd2ZXJzaW9uGAQgASgJEicKBnNjaGVtYRgFIAEoCzIXLmdvb2dsZS5wcm90b2J1Zi5TdHJ1Y3QSKQoIdWlfaGludHMYBiABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0EjcKD21hbmFnZW1lbnRfbW9kZRgHIAEoDjIeLmluYXJpLmFnZW50LnYxLk1hbmFnZW1lbnRNb2RlEjAKBmFjdGlvbhgIIAEoDjIgLmluYXJpLmFnZW50LnYxLkNhcGFiaWxpdHlBY3Rpb25KBQhkEMgBInYKEENhcGFiaWxpdHlVcGRhdGUSEQoJZnVsbF9zeW5jGAEgASgIEjAKDGNhcGFiaWxpdGllcxgCIAMoCzIaLmluYXJpLmFnZW50LnYxLkNhcGFiaWxpdHkSFgoOc3RhdGVfY2hlY2tzdW0YAyABKAlKBQhkEMgBIvUBCgxTdGF0dXNVcGRhdGUSLQoIcmVzb3VyY2UYASABKAsyGy5pbmFyaS5hZ2VudC52MS5SZXNvdXJjZVJlZhIsCgZoZWFsdGgYAiABKA4yHC5pbmFyaS5hZ2VudC52MS5IZWFsdGhTdGF0dXMSJwoEc3luYxgDIAEoDjIZLmluYXJpLmFnZW50LnYxLlN5bmNTdGF0ZRIPCgdtZXNzYWdlGAQgASgJEi8KC29ic2VydmVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIWCg5zdGF0ZV9jaGVja3N1bRgGIAEoCUoFCGQQyAEiSQoEUGluZxIoCgR0aW1lGAEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIQCghzZXF1ZW5jZRgCIAEoA0oFCGQQyAEiSQoEUG9uZxIoCgR0aW1lGAEgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIQCghzZXF1ZW5jZRgCIAEoA0oFCGQQyAEiJgoNUmVzeW5jUmVxdWVzdBIOCgZyZWFzb24YASABKAlKBQhkEMgBIlEKDlJlc3luY1Jlc3BvbnNlEhYKDnN0YXRlX2NoZWNrc3VtGAEgASgJEiAKGGFwcGxpZWRfdGhyb3VnaF9zZXF1ZW5jZRgCIAEoA0oFCGQQyAEqvAIKDkNhcGFiaWxpdHlLaW5kEh8KG0NBUEFCSUxJVFlfS0lORF9VTlNQRUNJRklFRBAAEhcKE0NBUEFCSUxJVFlfS0lORF9DUkQQARIbChdDQVBBQklMSVRZX0tJTkRfT0xNX0NTVhACEiIKHkNBUEFCSUxJVFlfS0lORF9DUk9TU1BMQU5FX1hSRBADEicKI0NBUEFCSUxJVFlfS0lORF9DUk9TU1BMQU5FX1BST1ZJREVSEAQSGwoXQ0FQQUJJTElUWV9LSU5EX0tST19SR0QQBRIgChxDQVBBQklMSVRZX0tJTkRfSEVMTV9SRUxFQVNFEAYSIQodQ0FQQUJJTElUWV9LSU5EX0NMVVNURVJfQURET04QBxIkCiBDQVBBQklMSVRZX0tJTkRfQ0xVU1RFUl9NRVRBREFUQRAIKooBCg5NYW5hZ2VtZW50TW9kZRIfChtNQU5BR0VNRU5UX01PREVfVU5TUEVDSUZJRUQQABIZChVNQU5BR0VNRU5UX01PREVfQURPUFQQARIgChxNQU5BR0VNRU5UX01PREVfT0JTRVJWRV9PTkxZEAISGgoWTUFOQUdFTUVOVF9NT0RFX0lHTk9SRRADKnEKEENhcGFiaWxpdHlBY3Rpb24SIQodQ0FQQUJJTElUWV9BQ1RJT05fVU5TUEVDSUZJRUQQABIcChhDQVBBQklMSVRZX0FDVElPTl9VUFNFUlQQARIcChhDQVBBQklMSVRZX0FDVElPTl9ERUxFVEUQAirWAQoMSGVhbHRoU3RhdHVzEh0KGUhFQUxUSF9TVEFUVVNfVU5TUEVDSUZJRUQQABIZChVIRUFMVEhfU1RBVFVTX1VOS05PV04QARIZChVIRUFMVEhfU1RBVFVTX0hFQUxUSFkQAhIdChlIRUFMVEhfU1RBVFVTX1BST0dSRVNTSU5HEAMSGgoWSEVBTFRIX1NUQVRVU19ERUdSQURFRBAEEhsKF0hFQUxUSF9TVEFUVVNfU1VTUEVOREVEEAUSGQoVSEVBTFRIX1NUQVRVU19NSVNTSU5HEAYqcAoJU3luY1N0YXRlEhoKFlNZTkNfU1RBVEVfVU5TUEVDSUZJRUQQABIVChFTWU5DX1NUQVRFX1NZTkNFRBABEhoKFlNZTkNfU1RBVEVfT1VUX09GX1NZTkMQAhIUChBTWU5DX1NUQVRFX0VSUk9SEANCPVo7Z2l0aHViLmNvbS83Sy1JbmFyaS9pbmFyaS1hcGkvZ2VuL2dvL2luYXJpL2FnZW50L3YxO2FnZW50djFiBnByb3RvMw", [file_google_protobuf_struct, file_google_protobuf_timestamp]);
+  fileDesc("ChtpbmFyaS9hZ2VudC92MS9ldmVudHMucHJvdG8SDmluYXJpLmFnZW50LnYxIlAKC1Jlc291cmNlUmVmEgwKBGtpbmQYASABKAkSDAoEbmFtZRgCIAEoCRIRCgluYW1lc3BhY2UYAyABKAkSCwoDdWlkGAQgASgJSgUIZBDIASKuAgoKQ2FwYWJpbGl0eRIsCgRraW5kGAEgASgOMh4uaW5hcmkuYWdlbnQudjEuQ2FwYWJpbGl0eUtpbmQSDAoEbmFtZRgCIAEoCRINCgVncm91cBgDIAEoCRIPCgd2ZXJzaW9uGAQgASgJEicKBnNjaGVtYRgFIAEoCzIXLmdvb2dsZS5wcm90b2J1Zi5TdHJ1Y3QSKQoIdWlfaGludHMYBiABKAsyFy5nb29nbGUucHJvdG9idWYuU3RydWN0EjcKD21hbmFnZW1lbnRfbW9kZRgHIAEoDjIeLmluYXJpLmFnZW50LnYxLk1hbmFnZW1lbnRNb2RlEjAKBmFjdGlvbhgIIAEoDjIgLmluYXJpLmFnZW50LnYxLkNhcGFiaWxpdHlBY3Rpb25KBQhkEMgBInYKEENhcGFiaWxpdHlVcGRhdGUSEQoJZnVsbF9zeW5jGAEgASgIEjAKDGNhcGFiaWxpdGllcxgCIAMoCzIaLmluYXJpLmFnZW50LnYxLkNhcGFiaWxpdHkSFgoOc3RhdGVfY2hlY2tzdW0YAyABKAlKBQhkEMgBIoQDCgxTdGF0dXNVcGRhdGUSLQoIcmVzb3VyY2UYASABKAsyGy5pbmFyaS5hZ2VudC52MS5SZXNvdXJjZVJlZhIsCgZoZWFsdGgYAiABKA4yHC5pbmFyaS5hZ2VudC52MS5IZWFsdGhTdGF0dXMSJwoEc3luYxgDIAEoDjIZLmluYXJpLmFnZW50LnYxLlN5bmNTdGF0ZRIPCgdtZXNzYWdlGAQgASgJEi8KC29ic2VydmVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIWCg5zdGF0ZV9jaGVja3N1bRgGIAEoCRIZChFvYnNlcnZlZF9yZXZpc2lvbhgHIAEoCRIZChFzeW5jX29wZXJhdGlvbl9pZBgIIAEoCRIcChRzeW5jX29wZXJhdGlvbl9waGFzZRgJIAEoCRI5ChVvcGVyYXRpb25fZmluaXNoZWRfYXQYCiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wSgUIZBDIASJJCgRQaW5nEigKBHRpbWUYASABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhAKCHNlcXVlbmNlGAIgASgDSgUIZBDIASJJCgRQb25nEigKBHRpbWUYASABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEhAKCHNlcXVlbmNlGAIgASgDSgUIZBDIASImCg1SZXN5bmNSZXF1ZXN0Eg4KBnJlYXNvbhgBIAEoCUoFCGQQyAEiUQoOUmVzeW5jUmVzcG9uc2USFgoOc3RhdGVfY2hlY2tzdW0YASABKAkSIAoYYXBwbGllZF90aHJvdWdoX3NlcXVlbmNlGAIgASgDSgUIZBDIASKiBwoSVmVyaWZpY2F0aW9uUmVwb3J0Eg4KBnJ1bl9pZBgBIAEoCRIPCgdhdHRlbXB0GAIgASgNEhsKE3RyaWdnZXJfZmluZ2VycHJpbnQYAyABKAkSFAoMc3VpdGVfZGlnZXN0GAQgASgJEg8KB3Byb2ZpbGUYBSABKAkSGgoScmVuZGVyX2ZpbmdlcnByaW50GAYgASgJEi0KCHdvcmtmbG93GAcgASgLMhsuaW5hcmkuYWdlbnQudjEuUmVzb3VyY2VSZWYSGAoQcmVzb3VyY2VfdmVyc2lvbhgIIAEoCRIPCgdkZWxldGVkGAkgASgIEi8KC29ic2VydmVkX2F0GAogASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgpzdGFydGVkX2F0GAsgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIvCgtmaW5pc2hlZF9hdBgMIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKZXhwaXJlc19hdBgNIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASMgoGcmVzdWx0GA4gASgOMiIuaW5hcmkuYWdlbnQudjEuVmVyaWZpY2F0aW9uUmVzdWx0Eg8KB21lc3NhZ2UYDyABKAkSFAoMc3ViamVjdF9raW5kGBAgASgJEhQKDGluc3RhbmNlX3VpZBgRIAEoCRIXCg9hcHBfaW5zdGFuY2VfaWQYEiABKAkSGgoSZGVwbG95bWVudF9wbGFuX2lkGBMgASgJEhQKDGFwcF9yZXZpc2lvbhgUIAEoCRISCgphcHBfZGlnZXN0GBUgASgJEhEKCXRhcmdldF9pZBgWIAEoCRIXCg90YXJnZXRfcmV2aXNpb24YFyABKAMSFAoMY29tcGFuaW9uX2lkGBggASgJEhwKFGNvbXBhbmlvbl9nZW5lcmF0aW9uGBkgASgDEhMKC3BhY2tfZGlnZXN0GBogASgJEhkKEWNhcGFiaWxpdHlfZGlnZXN0GBsgASgJEhQKDG91dGNvbWVfanNvbhgcIAEoCRIWCg5vdXRjb21lX2RpZ2VzdBgdIAEoCRIRCglmdWxsX3N5bmMYHiABKAgSFgoOc3RhdGVfY2hlY2tzdW0YHyABKAkSFwoPcG9saWN5X3JldmlzaW9uGCAgASgDEhYKDmdyYW50X3JldmlzaW9uGCEgASgDSgUIZBDIASq8AgoOQ2FwYWJpbGl0eUtpbmQSHwobQ0FQQUJJTElUWV9LSU5EX1VOU1BFQ0lGSUVEEAASFwoTQ0FQQUJJTElUWV9LSU5EX0NSRBABEhsKF0NBUEFCSUxJVFlfS0lORF9PTE1fQ1NWEAISIgoeQ0FQQUJJTElUWV9LSU5EX0NST1NTUExBTkVfWFJEEAMSJwojQ0FQQUJJTElUWV9LSU5EX0NST1NTUExBTkVfUFJPVklERVIQBBIbChdDQVBBQklMSVRZX0tJTkRfS1JPX1JHRBAFEiAKHENBUEFCSUxJVFlfS0lORF9IRUxNX1JFTEVBU0UQBhIhCh1DQVBBQklMSVRZX0tJTkRfQ0xVU1RFUl9BRERPThAHEiQKIENBUEFCSUxJVFlfS0lORF9DTFVTVEVSX01FVEFEQVRBEAgqigEKDk1hbmFnZW1lbnRNb2RlEh8KG01BTkFHRU1FTlRfTU9ERV9VTlNQRUNJRklFRBAAEhkKFU1BTkFHRU1FTlRfTU9ERV9BRE9QVBABEiAKHE1BTkFHRU1FTlRfTU9ERV9PQlNFUlZFX09OTFkQAhIaChZNQU5BR0VNRU5UX01PREVfSUdOT1JFEAMqcQoQQ2FwYWJpbGl0eUFjdGlvbhIhCh1DQVBBQklMSVRZX0FDVElPTl9VTlNQRUNJRklFRBAAEhwKGENBUEFCSUxJVFlfQUNUSU9OX1VQU0VSVBABEhwKGENBUEFCSUxJVFlfQUNUSU9OX0RFTEVURRACKtYBCgxIZWFsdGhTdGF0dXMSHQoZSEVBTFRIX1NUQVRVU19VTlNQRUNJRklFRBAAEhkKFUhFQUxUSF9TVEFUVVNfVU5LTk9XThABEhkKFUhFQUxUSF9TVEFUVVNfSEVBTFRIWRACEh0KGUhFQUxUSF9TVEFUVVNfUFJPR1JFU1NJTkcQAxIaChZIRUFMVEhfU1RBVFVTX0RFR1JBREVEEAQSGwoXSEVBTFRIX1NUQVRVU19TVVNQRU5ERUQQBRIZChVIRUFMVEhfU1RBVFVTX01JU1NJTkcQBipwCglTeW5jU3RhdGUSGgoWU1lOQ19TVEFURV9VTlNQRUNJRklFRBAAEhUKEVNZTkNfU1RBVEVfU1lOQ0VEEAESGgoWU1lOQ19TVEFURV9PVVRfT0ZfU1lOQxACEhQKEFNZTkNfU1RBVEVfRVJST1IQAyq9AQoSVmVyaWZpY2F0aW9uUmVzdWx0EiMKH1ZFUklGSUNBVElPTl9SRVNVTFRfVU5TUEVDSUZJRUQQABIfChtWRVJJRklDQVRJT05fUkVTVUxUX1BFTkRJTkcQARIeChpWRVJJRklDQVRJT05fUkVTVUxUX1BBU1NFRBACEh4KGlZFUklGSUNBVElPTl9SRVNVTFRfRkFJTEVEEAMSIQodVkVSSUZJQ0FUSU9OX1JFU1VMVF9DQU5DRUxMRUQQBEI9WjtnaXRodWIuY29tLzdLLUluYXJpL2luYXJpLWFwaS9nZW4vZ28vaW5hcmkvYWdlbnQvdjE7YWdlbnR2MWIGcHJvdG8z", [file_google_protobuf_struct, file_google_protobuf_timestamp]);
 
 /**
  * ResourceRef identifies a Kubernetes object the agent reports on or is
@@ -182,6 +182,30 @@ export type StatusUpdate = Message<"inari.agent.v1.StatusUpdate"> & {
    * @generated from field: string state_checksum = 6;
    */
   stateChecksum: string;
+
+  /**
+   * Deployed Git revision and ArgoCD sync operation identity. Older agents
+   * leave these empty; verification triggers must fail closed rather than
+   * guessing which deployed revision was observed.
+   *
+   * @generated from field: string observed_revision = 7;
+   */
+  observedRevision: string;
+
+  /**
+   * @generated from field: string sync_operation_id = 8;
+   */
+  syncOperationId: string;
+
+  /**
+   * @generated from field: string sync_operation_phase = 9;
+   */
+  syncOperationPhase: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp operation_finished_at = 10;
+   */
+  operationFinishedAt?: Timestamp | undefined;
 };
 
 /**
@@ -285,6 +309,193 @@ export type ResyncResponse = Message<"inari.agent.v1.ResyncResponse"> & {
  */
 export const ResyncResponseSchema: GenMessage<ResyncResponse> = /*@__PURE__*/
   messageDesc(file_inari_agent_v1_events, 7);
+
+/**
+ * VerificationReport reports one labeled Argo Workflow over the existing
+ * authenticated outbound stream. Org and cluster identity come from the
+ * stream session, never from this payload.
+ *
+ * @generated from message inari.agent.v1.VerificationReport
+ */
+export type VerificationReport = Message<"inari.agent.v1.VerificationReport"> & {
+  /**
+   * @generated from field: string run_id = 1;
+   */
+  runId: string;
+
+  /**
+   * @generated from field: uint32 attempt = 2;
+   */
+  attempt: number;
+
+  /**
+   * @generated from field: string trigger_fingerprint = 3;
+   */
+  triggerFingerprint: string;
+
+  /**
+   * @generated from field: string suite_digest = 4;
+   */
+  suiteDigest: string;
+
+  /**
+   * @generated from field: string profile = 5;
+   */
+  profile: string;
+
+  /**
+   * @generated from field: string render_fingerprint = 6;
+   */
+  renderFingerprint: string;
+
+  /**
+   * @generated from field: inari.agent.v1.ResourceRef workflow = 7;
+   */
+  workflow?: ResourceRef | undefined;
+
+  /**
+   * @generated from field: string resource_version = 8;
+   */
+  resourceVersion: string;
+
+  /**
+   * @generated from field: bool deleted = 9;
+   */
+  deleted: boolean;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp observed_at = 10;
+   */
+  observedAt?: Timestamp | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp started_at = 11;
+   */
+  startedAt?: Timestamp | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp finished_at = 12;
+   */
+  finishedAt?: Timestamp | undefined;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp expires_at = 13;
+   */
+  expiresAt?: Timestamp | undefined;
+
+  /**
+   * @generated from field: inari.agent.v1.VerificationResult result = 14;
+   */
+  result: VerificationResult;
+
+  /**
+   * @generated from field: string message = 15;
+   */
+  message: string;
+
+  /**
+   * application or observability.companion.
+   *
+   * @generated from field: string subject_kind = 16;
+   */
+  subjectKind: string;
+
+  /**
+   * @generated from field: string instance_uid = 17;
+   */
+  instanceUid: string;
+
+  /**
+   * @generated from field: string app_instance_id = 18;
+   */
+  appInstanceId: string;
+
+  /**
+   * @generated from field: string deployment_plan_id = 19;
+   */
+  deploymentPlanId: string;
+
+  /**
+   * @generated from field: string app_revision = 20;
+   */
+  appRevision: string;
+
+  /**
+   * @generated from field: string app_digest = 21;
+   */
+  appDigest: string;
+
+  /**
+   * @generated from field: string target_id = 22;
+   */
+  targetId: string;
+
+  /**
+   * @generated from field: int64 target_revision = 23;
+   */
+  targetRevision: bigint;
+
+  /**
+   * @generated from field: string companion_id = 24;
+   */
+  companionId: string;
+
+  /**
+   * @generated from field: int64 companion_generation = 25;
+   */
+  companionGeneration: bigint;
+
+  /**
+   * @generated from field: string pack_digest = 26;
+   */
+  packDigest: string;
+
+  /**
+   * @generated from field: string capability_digest = 27;
+   */
+  capabilityDigest: string;
+
+  /**
+   * Optional bounded canonical inari.verification.outcome/v1 payload. Raw
+   * observability payloads are forwarded to the existing sibling sink and are
+   * not persisted as a second generic result store.
+   *
+   * @generated from field: string outcome_json = 28;
+   */
+  outcomeJson: string;
+
+  /**
+   * @generated from field: string outcome_digest = 29;
+   */
+  outcomeDigest: string;
+
+  /**
+   * @generated from field: bool full_sync = 30;
+   */
+  fullSync: boolean;
+
+  /**
+   * @generated from field: string state_checksum = 31;
+   */
+  stateChecksum: string;
+
+  /**
+   * @generated from field: int64 policy_revision = 32;
+   */
+  policyRevision: bigint;
+
+  /**
+   * @generated from field: int64 grant_revision = 33;
+   */
+  grantRevision: bigint;
+};
+
+/**
+ * Describes the message inari.agent.v1.VerificationReport.
+ * Use `create(VerificationReportSchema)` to create a new message.
+ */
+export const VerificationReportSchema: GenMessage<VerificationReport> = /*@__PURE__*/
+  messageDesc(file_inari_agent_v1_events, 8);
 
 /**
  * CapabilityKind classifies a discovered cluster capability (plan §5.3
@@ -494,4 +705,42 @@ export enum SyncState {
  */
 export const SyncStateSchema: GenEnum<SyncState> = /*@__PURE__*/
   enumDesc(file_inari_agent_v1_events, 4);
+
+/**
+ * VerificationResult is deliberately separate from ArgoCD health and sync.
+ *
+ * @generated from enum inari.agent.v1.VerificationResult
+ */
+export enum VerificationResult {
+  /**
+   * @generated from enum value: VERIFICATION_RESULT_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: VERIFICATION_RESULT_PENDING = 1;
+   */
+  PENDING = 1,
+
+  /**
+   * @generated from enum value: VERIFICATION_RESULT_PASSED = 2;
+   */
+  PASSED = 2,
+
+  /**
+   * @generated from enum value: VERIFICATION_RESULT_FAILED = 3;
+   */
+  FAILED = 3,
+
+  /**
+   * @generated from enum value: VERIFICATION_RESULT_CANCELLED = 4;
+   */
+  CANCELLED = 4,
+}
+
+/**
+ * Describes the enum inari.agent.v1.VerificationResult.
+ */
+export const VerificationResultSchema: GenEnum<VerificationResult> = /*@__PURE__*/
+  enumDesc(file_inari_agent_v1_events, 5);
 

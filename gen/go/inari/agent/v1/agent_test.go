@@ -237,21 +237,22 @@ func TestCommandPayloadsRoundTrip(t *testing.T) {
 
 func TestEventTypeStringParity(t *testing.T) {
 	want := map[agentv1.EventType]string{
-		agentv1.EventType_EVENT_TYPE_CAPABILITY_UPDATE:   "inari.agent.capability-update.v1",
-		agentv1.EventType_EVENT_TYPE_STATUS_UPDATE:       "inari.agent.status-update.v1",
-		agentv1.EventType_EVENT_TYPE_PING:                "inari.agent.ping.v1",
-		agentv1.EventType_EVENT_TYPE_PONG:                "inari.agent.pong.v1",
-		agentv1.EventType_EVENT_TYPE_RESYNC_REQUEST:      "inari.agent.resync-request.v1",
-		agentv1.EventType_EVENT_TYPE_RESYNC_RESPONSE:     "inari.agent.resync-response.v1",
-		agentv1.EventType_EVENT_TYPE_APPLY_BUNDLE:        "inari.agent.apply-bundle.v1",
-		agentv1.EventType_EVENT_TYPE_REGISTER_ARGOCD_APP: "inari.agent.register-argocd-app.v1",
-		agentv1.EventType_EVENT_TYPE_INVOKE_ACTION:       "inari.agent.invoke-action.v1",
-		agentv1.EventType_EVENT_TYPE_RENDER_RGD_INSTANCE: "inari.agent.render-rgd-instance.v1",
-		agentv1.EventType_EVENT_TYPE_COMMAND_ACK:         "inari.agent.command-ack.v1",
-		agentv1.EventType_EVENT_TYPE_COMMAND_NACK:        "inari.agent.command-nack.v1",
-		agentv1.EventType_EVENT_TYPE_SECRET_STORE_APPLY:  "inari.agent.secret-store-apply.v1",
-		agentv1.EventType_EVENT_TYPE_SECRET_STORE_DELETE: "inari.agent.secret-store-delete.v1",
+		agentv1.EventType_EVENT_TYPE_CAPABILITY_UPDATE:    "inari.agent.capability-update.v1",
+		agentv1.EventType_EVENT_TYPE_STATUS_UPDATE:        "inari.agent.status-update.v1",
+		agentv1.EventType_EVENT_TYPE_PING:                 "inari.agent.ping.v1",
+		agentv1.EventType_EVENT_TYPE_PONG:                 "inari.agent.pong.v1",
+		agentv1.EventType_EVENT_TYPE_RESYNC_REQUEST:       "inari.agent.resync-request.v1",
+		agentv1.EventType_EVENT_TYPE_RESYNC_RESPONSE:      "inari.agent.resync-response.v1",
+		agentv1.EventType_EVENT_TYPE_APPLY_BUNDLE:         "inari.agent.apply-bundle.v1",
+		agentv1.EventType_EVENT_TYPE_REGISTER_ARGOCD_APP:  "inari.agent.register-argocd-app.v1",
+		agentv1.EventType_EVENT_TYPE_INVOKE_ACTION:        "inari.agent.invoke-action.v1",
+		agentv1.EventType_EVENT_TYPE_RENDER_RGD_INSTANCE:  "inari.agent.render-rgd-instance.v1",
+		agentv1.EventType_EVENT_TYPE_COMMAND_ACK:          "inari.agent.command-ack.v1",
+		agentv1.EventType_EVENT_TYPE_COMMAND_NACK:         "inari.agent.command-nack.v1",
+		agentv1.EventType_EVENT_TYPE_SECRET_STORE_APPLY:   "inari.agent.secret-store-apply.v1",
+		agentv1.EventType_EVENT_TYPE_SECRET_STORE_DELETE:  "inari.agent.secret-store-delete.v1",
 		agentv1.EventType_EVENT_TYPE_GITOPS_CONFIG_UPDATE: "inari.agent.gitops-config-update.v1",
+		agentv1.EventType_EVENT_TYPE_VERIFICATION_REPORT:  "inari.agent.verification-report.v1",
 	}
 	for enumVal, typeString := range want {
 		if got := agentv1.EventTypeString(enumVal); got != typeString {

@@ -315,6 +315,62 @@ func (SyncState) EnumDescriptor() ([]byte, []int) {
 	return file_inari_agent_v1_events_proto_rawDescGZIP(), []int{4}
 }
 
+// VerificationResult is deliberately separate from ArgoCD health and sync.
+type VerificationResult int32
+
+const (
+	VerificationResult_VERIFICATION_RESULT_UNSPECIFIED VerificationResult = 0
+	VerificationResult_VERIFICATION_RESULT_PENDING     VerificationResult = 1
+	VerificationResult_VERIFICATION_RESULT_PASSED      VerificationResult = 2
+	VerificationResult_VERIFICATION_RESULT_FAILED      VerificationResult = 3
+	VerificationResult_VERIFICATION_RESULT_CANCELLED   VerificationResult = 4
+)
+
+// Enum value maps for VerificationResult.
+var (
+	VerificationResult_name = map[int32]string{
+		0: "VERIFICATION_RESULT_UNSPECIFIED",
+		1: "VERIFICATION_RESULT_PENDING",
+		2: "VERIFICATION_RESULT_PASSED",
+		3: "VERIFICATION_RESULT_FAILED",
+		4: "VERIFICATION_RESULT_CANCELLED",
+	}
+	VerificationResult_value = map[string]int32{
+		"VERIFICATION_RESULT_UNSPECIFIED": 0,
+		"VERIFICATION_RESULT_PENDING":     1,
+		"VERIFICATION_RESULT_PASSED":      2,
+		"VERIFICATION_RESULT_FAILED":      3,
+		"VERIFICATION_RESULT_CANCELLED":   4,
+	}
+)
+
+func (x VerificationResult) Enum() *VerificationResult {
+	p := new(VerificationResult)
+	*p = x
+	return p
+}
+
+func (x VerificationResult) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (VerificationResult) Descriptor() protoreflect.EnumDescriptor {
+	return file_inari_agent_v1_events_proto_enumTypes[5].Descriptor()
+}
+
+func (VerificationResult) Type() protoreflect.EnumType {
+	return &file_inari_agent_v1_events_proto_enumTypes[5]
+}
+
+func (x VerificationResult) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use VerificationResult.Descriptor instead.
+func (VerificationResult) EnumDescriptor() ([]byte, []int) {
+	return file_inari_agent_v1_events_proto_rawDescGZIP(), []int{5}
+}
+
 // ResourceRef identifies a Kubernetes object the agent reports on or is
 // asked to act upon.
 type ResourceRef struct {
@@ -567,8 +623,15 @@ type StatusUpdate struct {
 	ObservedAt *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=observed_at,json=observedAt,proto3" json:"observed_at,omitempty"`
 	// Checksum over the agent's reported-state view (resync input).
 	StateChecksum string `protobuf:"bytes,6,opt,name=state_checksum,json=stateChecksum,proto3" json:"state_checksum,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	// Deployed Git revision and ArgoCD sync operation identity. Older agents
+	// leave these empty; verification triggers must fail closed rather than
+	// guessing which deployed revision was observed.
+	ObservedRevision    string                 `protobuf:"bytes,7,opt,name=observed_revision,json=observedRevision,proto3" json:"observed_revision,omitempty"`
+	SyncOperationId     string                 `protobuf:"bytes,8,opt,name=sync_operation_id,json=syncOperationId,proto3" json:"sync_operation_id,omitempty"`
+	SyncOperationPhase  string                 `protobuf:"bytes,9,opt,name=sync_operation_phase,json=syncOperationPhase,proto3" json:"sync_operation_phase,omitempty"`
+	OperationFinishedAt *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=operation_finished_at,json=operationFinishedAt,proto3" json:"operation_finished_at,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *StatusUpdate) Reset() {
@@ -641,6 +704,34 @@ func (x *StatusUpdate) GetStateChecksum() string {
 		return x.StateChecksum
 	}
 	return ""
+}
+
+func (x *StatusUpdate) GetObservedRevision() string {
+	if x != nil {
+		return x.ObservedRevision
+	}
+	return ""
+}
+
+func (x *StatusUpdate) GetSyncOperationId() string {
+	if x != nil {
+		return x.SyncOperationId
+	}
+	return ""
+}
+
+func (x *StatusUpdate) GetSyncOperationPhase() string {
+	if x != nil {
+		return x.SyncOperationPhase
+	}
+	return ""
+}
+
+func (x *StatusUpdate) GetOperationFinishedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.OperationFinishedAt
+	}
+	return nil
 }
 
 // Ping is the server→agent stream keepalive (plan §5.3).
@@ -850,6 +941,313 @@ func (x *ResyncResponse) GetAppliedThroughSequence() int64 {
 	return 0
 }
 
+// VerificationReport reports one labeled Argo Workflow over the existing
+// authenticated outbound stream. Org and cluster identity come from the
+// stream session, never from this payload.
+type VerificationReport struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	RunId              string                 `protobuf:"bytes,1,opt,name=run_id,json=runId,proto3" json:"run_id,omitempty"`
+	Attempt            uint32                 `protobuf:"varint,2,opt,name=attempt,proto3" json:"attempt,omitempty"`
+	TriggerFingerprint string                 `protobuf:"bytes,3,opt,name=trigger_fingerprint,json=triggerFingerprint,proto3" json:"trigger_fingerprint,omitempty"`
+	SuiteDigest        string                 `protobuf:"bytes,4,opt,name=suite_digest,json=suiteDigest,proto3" json:"suite_digest,omitempty"`
+	Profile            string                 `protobuf:"bytes,5,opt,name=profile,proto3" json:"profile,omitempty"`
+	RenderFingerprint  string                 `protobuf:"bytes,6,opt,name=render_fingerprint,json=renderFingerprint,proto3" json:"render_fingerprint,omitempty"`
+	Workflow           *ResourceRef           `protobuf:"bytes,7,opt,name=workflow,proto3" json:"workflow,omitempty"`
+	ResourceVersion    string                 `protobuf:"bytes,8,opt,name=resource_version,json=resourceVersion,proto3" json:"resource_version,omitempty"`
+	Deleted            bool                   `protobuf:"varint,9,opt,name=deleted,proto3" json:"deleted,omitempty"`
+	ObservedAt         *timestamppb.Timestamp `protobuf:"bytes,10,opt,name=observed_at,json=observedAt,proto3" json:"observed_at,omitempty"`
+	StartedAt          *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=started_at,json=startedAt,proto3" json:"started_at,omitempty"`
+	FinishedAt         *timestamppb.Timestamp `protobuf:"bytes,12,opt,name=finished_at,json=finishedAt,proto3" json:"finished_at,omitempty"`
+	ExpiresAt          *timestamppb.Timestamp `protobuf:"bytes,13,opt,name=expires_at,json=expiresAt,proto3" json:"expires_at,omitempty"`
+	Result             VerificationResult     `protobuf:"varint,14,opt,name=result,proto3,enum=inari.agent.v1.VerificationResult" json:"result,omitempty"`
+	Message            string                 `protobuf:"bytes,15,opt,name=message,proto3" json:"message,omitempty"`
+	// application or observability.companion.
+	SubjectKind         string `protobuf:"bytes,16,opt,name=subject_kind,json=subjectKind,proto3" json:"subject_kind,omitempty"`
+	InstanceUid         string `protobuf:"bytes,17,opt,name=instance_uid,json=instanceUid,proto3" json:"instance_uid,omitempty"`
+	AppInstanceId       string `protobuf:"bytes,18,opt,name=app_instance_id,json=appInstanceId,proto3" json:"app_instance_id,omitempty"`
+	DeploymentPlanId    string `protobuf:"bytes,19,opt,name=deployment_plan_id,json=deploymentPlanId,proto3" json:"deployment_plan_id,omitempty"`
+	AppRevision         string `protobuf:"bytes,20,opt,name=app_revision,json=appRevision,proto3" json:"app_revision,omitempty"`
+	AppDigest           string `protobuf:"bytes,21,opt,name=app_digest,json=appDigest,proto3" json:"app_digest,omitempty"`
+	TargetId            string `protobuf:"bytes,22,opt,name=target_id,json=targetId,proto3" json:"target_id,omitempty"`
+	TargetRevision      int64  `protobuf:"varint,23,opt,name=target_revision,json=targetRevision,proto3" json:"target_revision,omitempty"`
+	CompanionId         string `protobuf:"bytes,24,opt,name=companion_id,json=companionId,proto3" json:"companion_id,omitempty"`
+	CompanionGeneration int64  `protobuf:"varint,25,opt,name=companion_generation,json=companionGeneration,proto3" json:"companion_generation,omitempty"`
+	PackDigest          string `protobuf:"bytes,26,opt,name=pack_digest,json=packDigest,proto3" json:"pack_digest,omitempty"`
+	CapabilityDigest    string `protobuf:"bytes,27,opt,name=capability_digest,json=capabilityDigest,proto3" json:"capability_digest,omitempty"`
+	// Optional bounded canonical inari.verification.outcome/v1 payload. Raw
+	// observability payloads are forwarded to the existing sibling sink and are
+	// not persisted as a second generic result store.
+	OutcomeJson    string `protobuf:"bytes,28,opt,name=outcome_json,json=outcomeJson,proto3" json:"outcome_json,omitempty"`
+	OutcomeDigest  string `protobuf:"bytes,29,opt,name=outcome_digest,json=outcomeDigest,proto3" json:"outcome_digest,omitempty"`
+	FullSync       bool   `protobuf:"varint,30,opt,name=full_sync,json=fullSync,proto3" json:"full_sync,omitempty"`
+	StateChecksum  string `protobuf:"bytes,31,opt,name=state_checksum,json=stateChecksum,proto3" json:"state_checksum,omitempty"`
+	PolicyRevision int64  `protobuf:"varint,32,opt,name=policy_revision,json=policyRevision,proto3" json:"policy_revision,omitempty"`
+	GrantRevision  int64  `protobuf:"varint,33,opt,name=grant_revision,json=grantRevision,proto3" json:"grant_revision,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *VerificationReport) Reset() {
+	*x = VerificationReport{}
+	mi := &file_inari_agent_v1_events_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VerificationReport) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VerificationReport) ProtoMessage() {}
+
+func (x *VerificationReport) ProtoReflect() protoreflect.Message {
+	mi := &file_inari_agent_v1_events_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VerificationReport.ProtoReflect.Descriptor instead.
+func (*VerificationReport) Descriptor() ([]byte, []int) {
+	return file_inari_agent_v1_events_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *VerificationReport) GetRunId() string {
+	if x != nil {
+		return x.RunId
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetAttempt() uint32 {
+	if x != nil {
+		return x.Attempt
+	}
+	return 0
+}
+
+func (x *VerificationReport) GetTriggerFingerprint() string {
+	if x != nil {
+		return x.TriggerFingerprint
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetSuiteDigest() string {
+	if x != nil {
+		return x.SuiteDigest
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetProfile() string {
+	if x != nil {
+		return x.Profile
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetRenderFingerprint() string {
+	if x != nil {
+		return x.RenderFingerprint
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetWorkflow() *ResourceRef {
+	if x != nil {
+		return x.Workflow
+	}
+	return nil
+}
+
+func (x *VerificationReport) GetResourceVersion() string {
+	if x != nil {
+		return x.ResourceVersion
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetDeleted() bool {
+	if x != nil {
+		return x.Deleted
+	}
+	return false
+}
+
+func (x *VerificationReport) GetObservedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.ObservedAt
+	}
+	return nil
+}
+
+func (x *VerificationReport) GetStartedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.StartedAt
+	}
+	return nil
+}
+
+func (x *VerificationReport) GetFinishedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.FinishedAt
+	}
+	return nil
+}
+
+func (x *VerificationReport) GetExpiresAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.ExpiresAt
+	}
+	return nil
+}
+
+func (x *VerificationReport) GetResult() VerificationResult {
+	if x != nil {
+		return x.Result
+	}
+	return VerificationResult_VERIFICATION_RESULT_UNSPECIFIED
+}
+
+func (x *VerificationReport) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetSubjectKind() string {
+	if x != nil {
+		return x.SubjectKind
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetInstanceUid() string {
+	if x != nil {
+		return x.InstanceUid
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetAppInstanceId() string {
+	if x != nil {
+		return x.AppInstanceId
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetDeploymentPlanId() string {
+	if x != nil {
+		return x.DeploymentPlanId
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetAppRevision() string {
+	if x != nil {
+		return x.AppRevision
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetAppDigest() string {
+	if x != nil {
+		return x.AppDigest
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetTargetId() string {
+	if x != nil {
+		return x.TargetId
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetTargetRevision() int64 {
+	if x != nil {
+		return x.TargetRevision
+	}
+	return 0
+}
+
+func (x *VerificationReport) GetCompanionId() string {
+	if x != nil {
+		return x.CompanionId
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetCompanionGeneration() int64 {
+	if x != nil {
+		return x.CompanionGeneration
+	}
+	return 0
+}
+
+func (x *VerificationReport) GetPackDigest() string {
+	if x != nil {
+		return x.PackDigest
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetCapabilityDigest() string {
+	if x != nil {
+		return x.CapabilityDigest
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetOutcomeJson() string {
+	if x != nil {
+		return x.OutcomeJson
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetOutcomeDigest() string {
+	if x != nil {
+		return x.OutcomeDigest
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetFullSync() bool {
+	if x != nil {
+		return x.FullSync
+	}
+	return false
+}
+
+func (x *VerificationReport) GetStateChecksum() string {
+	if x != nil {
+		return x.StateChecksum
+	}
+	return ""
+}
+
+func (x *VerificationReport) GetPolicyRevision() int64 {
+	if x != nil {
+		return x.PolicyRevision
+	}
+	return 0
+}
+
+func (x *VerificationReport) GetGrantRevision() int64 {
+	if x != nil {
+		return x.GrantRevision
+	}
+	return 0
+}
+
 var File_inari_agent_v1_events_proto protoreflect.FileDescriptor
 
 const file_inari_agent_v1_events_proto_rawDesc = "" +
@@ -873,7 +1271,7 @@ const file_inari_agent_v1_events_proto_rawDesc = "" +
 	"\x10CapabilityUpdate\x12\x1b\n" +
 	"\tfull_sync\x18\x01 \x01(\bR\bfullSync\x12>\n" +
 	"\fcapabilities\x18\x02 \x03(\v2\x1a.inari.agent.v1.CapabilityR\fcapabilities\x12%\n" +
-	"\x0estate_checksum\x18\x03 \x01(\tR\rstateChecksumJ\x05\bd\x10\xc8\x01\"\xb1\x02\n" +
+	"\x0estate_checksum\x18\x03 \x01(\tR\rstateChecksumJ\x05\bd\x10\xc8\x01\"\x8c\x04\n" +
 	"\fStatusUpdate\x127\n" +
 	"\bresource\x18\x01 \x01(\v2\x1b.inari.agent.v1.ResourceRefR\bresource\x124\n" +
 	"\x06health\x18\x02 \x01(\x0e2\x1c.inari.agent.v1.HealthStatusR\x06health\x12-\n" +
@@ -881,7 +1279,12 @@ const file_inari_agent_v1_events_proto_rawDesc = "" +
 	"\amessage\x18\x04 \x01(\tR\amessage\x12;\n" +
 	"\vobserved_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\n" +
 	"observedAt\x12%\n" +
-	"\x0estate_checksum\x18\x06 \x01(\tR\rstateChecksumJ\x05\bd\x10\xc8\x01\"Y\n" +
+	"\x0estate_checksum\x18\x06 \x01(\tR\rstateChecksum\x12+\n" +
+	"\x11observed_revision\x18\a \x01(\tR\x10observedRevision\x12*\n" +
+	"\x11sync_operation_id\x18\b \x01(\tR\x0fsyncOperationId\x120\n" +
+	"\x14sync_operation_phase\x18\t \x01(\tR\x12syncOperationPhase\x12N\n" +
+	"\x15operation_finished_at\x18\n" +
+	" \x01(\v2\x1a.google.protobuf.TimestampR\x13operationFinishedAtJ\x05\bd\x10\xc8\x01\"Y\n" +
 	"\x04Ping\x12.\n" +
 	"\x04time\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\x04time\x12\x1a\n" +
 	"\bsequence\x18\x02 \x01(\x03R\bsequenceJ\x05\bd\x10\xc8\x01\"Y\n" +
@@ -892,7 +1295,49 @@ const file_inari_agent_v1_events_proto_rawDesc = "" +
 	"\x06reason\x18\x01 \x01(\tR\x06reasonJ\x05\bd\x10\xc8\x01\"x\n" +
 	"\x0eResyncResponse\x12%\n" +
 	"\x0estate_checksum\x18\x01 \x01(\tR\rstateChecksum\x128\n" +
-	"\x18applied_through_sequence\x18\x02 \x01(\x03R\x16appliedThroughSequenceJ\x05\bd\x10\xc8\x01*\xbc\x02\n" +
+	"\x18applied_through_sequence\x18\x02 \x01(\x03R\x16appliedThroughSequenceJ\x05\bd\x10\xc8\x01\"\xd3\n" +
+	"\n" +
+	"\x12VerificationReport\x12\x15\n" +
+	"\x06run_id\x18\x01 \x01(\tR\x05runId\x12\x18\n" +
+	"\aattempt\x18\x02 \x01(\rR\aattempt\x12/\n" +
+	"\x13trigger_fingerprint\x18\x03 \x01(\tR\x12triggerFingerprint\x12!\n" +
+	"\fsuite_digest\x18\x04 \x01(\tR\vsuiteDigest\x12\x18\n" +
+	"\aprofile\x18\x05 \x01(\tR\aprofile\x12-\n" +
+	"\x12render_fingerprint\x18\x06 \x01(\tR\x11renderFingerprint\x127\n" +
+	"\bworkflow\x18\a \x01(\v2\x1b.inari.agent.v1.ResourceRefR\bworkflow\x12)\n" +
+	"\x10resource_version\x18\b \x01(\tR\x0fresourceVersion\x12\x18\n" +
+	"\adeleted\x18\t \x01(\bR\adeleted\x12;\n" +
+	"\vobserved_at\x18\n" +
+	" \x01(\v2\x1a.google.protobuf.TimestampR\n" +
+	"observedAt\x129\n" +
+	"\n" +
+	"started_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\tstartedAt\x12;\n" +
+	"\vfinished_at\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\n" +
+	"finishedAt\x129\n" +
+	"\n" +
+	"expires_at\x18\r \x01(\v2\x1a.google.protobuf.TimestampR\texpiresAt\x12:\n" +
+	"\x06result\x18\x0e \x01(\x0e2\".inari.agent.v1.VerificationResultR\x06result\x12\x18\n" +
+	"\amessage\x18\x0f \x01(\tR\amessage\x12!\n" +
+	"\fsubject_kind\x18\x10 \x01(\tR\vsubjectKind\x12!\n" +
+	"\finstance_uid\x18\x11 \x01(\tR\vinstanceUid\x12&\n" +
+	"\x0fapp_instance_id\x18\x12 \x01(\tR\rappInstanceId\x12,\n" +
+	"\x12deployment_plan_id\x18\x13 \x01(\tR\x10deploymentPlanId\x12!\n" +
+	"\fapp_revision\x18\x14 \x01(\tR\vappRevision\x12\x1d\n" +
+	"\n" +
+	"app_digest\x18\x15 \x01(\tR\tappDigest\x12\x1b\n" +
+	"\ttarget_id\x18\x16 \x01(\tR\btargetId\x12'\n" +
+	"\x0ftarget_revision\x18\x17 \x01(\x03R\x0etargetRevision\x12!\n" +
+	"\fcompanion_id\x18\x18 \x01(\tR\vcompanionId\x121\n" +
+	"\x14companion_generation\x18\x19 \x01(\x03R\x13companionGeneration\x12\x1f\n" +
+	"\vpack_digest\x18\x1a \x01(\tR\n" +
+	"packDigest\x12+\n" +
+	"\x11capability_digest\x18\x1b \x01(\tR\x10capabilityDigest\x12!\n" +
+	"\foutcome_json\x18\x1c \x01(\tR\voutcomeJson\x12%\n" +
+	"\x0eoutcome_digest\x18\x1d \x01(\tR\routcomeDigest\x12\x1b\n" +
+	"\tfull_sync\x18\x1e \x01(\bR\bfullSync\x12%\n" +
+	"\x0estate_checksum\x18\x1f \x01(\tR\rstateChecksum\x12'\n" +
+	"\x0fpolicy_revision\x18  \x01(\x03R\x0epolicyRevision\x12%\n" +
+	"\x0egrant_revision\x18! \x01(\x03R\rgrantRevisionJ\x05\bd\x10\xc8\x01*\xbc\x02\n" +
 	"\x0eCapabilityKind\x12\x1f\n" +
 	"\x1bCAPABILITY_KIND_UNSPECIFIED\x10\x00\x12\x17\n" +
 	"\x13CAPABILITY_KIND_CRD\x10\x01\x12\x1b\n" +
@@ -924,7 +1369,13 @@ const file_inari_agent_v1_events_proto_rawDesc = "" +
 	"\x16SYNC_STATE_UNSPECIFIED\x10\x00\x12\x15\n" +
 	"\x11SYNC_STATE_SYNCED\x10\x01\x12\x1a\n" +
 	"\x16SYNC_STATE_OUT_OF_SYNC\x10\x02\x12\x14\n" +
-	"\x10SYNC_STATE_ERROR\x10\x03B=Z;github.com/7K-Inari/inari-api/gen/go/inari/agent/v1;agentv1b\x06proto3"
+	"\x10SYNC_STATE_ERROR\x10\x03*\xbd\x01\n" +
+	"\x12VerificationResult\x12#\n" +
+	"\x1fVERIFICATION_RESULT_UNSPECIFIED\x10\x00\x12\x1f\n" +
+	"\x1bVERIFICATION_RESULT_PENDING\x10\x01\x12\x1e\n" +
+	"\x1aVERIFICATION_RESULT_PASSED\x10\x02\x12\x1e\n" +
+	"\x1aVERIFICATION_RESULT_FAILED\x10\x03\x12!\n" +
+	"\x1dVERIFICATION_RESULT_CANCELLED\x10\x04B=Z;github.com/7K-Inari/inari-api/gen/go/inari/agent/v1;agentv1b\x06proto3"
 
 var (
 	file_inari_agent_v1_events_proto_rawDescOnce sync.Once
@@ -938,43 +1389,52 @@ func file_inari_agent_v1_events_proto_rawDescGZIP() []byte {
 	return file_inari_agent_v1_events_proto_rawDescData
 }
 
-var file_inari_agent_v1_events_proto_enumTypes = make([]protoimpl.EnumInfo, 5)
-var file_inari_agent_v1_events_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_inari_agent_v1_events_proto_enumTypes = make([]protoimpl.EnumInfo, 6)
+var file_inari_agent_v1_events_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_inari_agent_v1_events_proto_goTypes = []any{
 	(CapabilityKind)(0),           // 0: inari.agent.v1.CapabilityKind
 	(ManagementMode)(0),           // 1: inari.agent.v1.ManagementMode
 	(CapabilityAction)(0),         // 2: inari.agent.v1.CapabilityAction
 	(HealthStatus)(0),             // 3: inari.agent.v1.HealthStatus
 	(SyncState)(0),                // 4: inari.agent.v1.SyncState
-	(*ResourceRef)(nil),           // 5: inari.agent.v1.ResourceRef
-	(*Capability)(nil),            // 6: inari.agent.v1.Capability
-	(*CapabilityUpdate)(nil),      // 7: inari.agent.v1.CapabilityUpdate
-	(*StatusUpdate)(nil),          // 8: inari.agent.v1.StatusUpdate
-	(*Ping)(nil),                  // 9: inari.agent.v1.Ping
-	(*Pong)(nil),                  // 10: inari.agent.v1.Pong
-	(*ResyncRequest)(nil),         // 11: inari.agent.v1.ResyncRequest
-	(*ResyncResponse)(nil),        // 12: inari.agent.v1.ResyncResponse
-	(*structpb.Struct)(nil),       // 13: google.protobuf.Struct
-	(*timestamppb.Timestamp)(nil), // 14: google.protobuf.Timestamp
+	(VerificationResult)(0),       // 5: inari.agent.v1.VerificationResult
+	(*ResourceRef)(nil),           // 6: inari.agent.v1.ResourceRef
+	(*Capability)(nil),            // 7: inari.agent.v1.Capability
+	(*CapabilityUpdate)(nil),      // 8: inari.agent.v1.CapabilityUpdate
+	(*StatusUpdate)(nil),          // 9: inari.agent.v1.StatusUpdate
+	(*Ping)(nil),                  // 10: inari.agent.v1.Ping
+	(*Pong)(nil),                  // 11: inari.agent.v1.Pong
+	(*ResyncRequest)(nil),         // 12: inari.agent.v1.ResyncRequest
+	(*ResyncResponse)(nil),        // 13: inari.agent.v1.ResyncResponse
+	(*VerificationReport)(nil),    // 14: inari.agent.v1.VerificationReport
+	(*structpb.Struct)(nil),       // 15: google.protobuf.Struct
+	(*timestamppb.Timestamp)(nil), // 16: google.protobuf.Timestamp
 }
 var file_inari_agent_v1_events_proto_depIdxs = []int32{
 	0,  // 0: inari.agent.v1.Capability.kind:type_name -> inari.agent.v1.CapabilityKind
-	13, // 1: inari.agent.v1.Capability.schema:type_name -> google.protobuf.Struct
-	13, // 2: inari.agent.v1.Capability.ui_hints:type_name -> google.protobuf.Struct
+	15, // 1: inari.agent.v1.Capability.schema:type_name -> google.protobuf.Struct
+	15, // 2: inari.agent.v1.Capability.ui_hints:type_name -> google.protobuf.Struct
 	1,  // 3: inari.agent.v1.Capability.management_mode:type_name -> inari.agent.v1.ManagementMode
 	2,  // 4: inari.agent.v1.Capability.action:type_name -> inari.agent.v1.CapabilityAction
-	6,  // 5: inari.agent.v1.CapabilityUpdate.capabilities:type_name -> inari.agent.v1.Capability
-	5,  // 6: inari.agent.v1.StatusUpdate.resource:type_name -> inari.agent.v1.ResourceRef
+	7,  // 5: inari.agent.v1.CapabilityUpdate.capabilities:type_name -> inari.agent.v1.Capability
+	6,  // 6: inari.agent.v1.StatusUpdate.resource:type_name -> inari.agent.v1.ResourceRef
 	3,  // 7: inari.agent.v1.StatusUpdate.health:type_name -> inari.agent.v1.HealthStatus
 	4,  // 8: inari.agent.v1.StatusUpdate.sync:type_name -> inari.agent.v1.SyncState
-	14, // 9: inari.agent.v1.StatusUpdate.observed_at:type_name -> google.protobuf.Timestamp
-	14, // 10: inari.agent.v1.Ping.time:type_name -> google.protobuf.Timestamp
-	14, // 11: inari.agent.v1.Pong.time:type_name -> google.protobuf.Timestamp
-	12, // [12:12] is the sub-list for method output_type
-	12, // [12:12] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	16, // 9: inari.agent.v1.StatusUpdate.observed_at:type_name -> google.protobuf.Timestamp
+	16, // 10: inari.agent.v1.StatusUpdate.operation_finished_at:type_name -> google.protobuf.Timestamp
+	16, // 11: inari.agent.v1.Ping.time:type_name -> google.protobuf.Timestamp
+	16, // 12: inari.agent.v1.Pong.time:type_name -> google.protobuf.Timestamp
+	6,  // 13: inari.agent.v1.VerificationReport.workflow:type_name -> inari.agent.v1.ResourceRef
+	16, // 14: inari.agent.v1.VerificationReport.observed_at:type_name -> google.protobuf.Timestamp
+	16, // 15: inari.agent.v1.VerificationReport.started_at:type_name -> google.protobuf.Timestamp
+	16, // 16: inari.agent.v1.VerificationReport.finished_at:type_name -> google.protobuf.Timestamp
+	16, // 17: inari.agent.v1.VerificationReport.expires_at:type_name -> google.protobuf.Timestamp
+	5,  // 18: inari.agent.v1.VerificationReport.result:type_name -> inari.agent.v1.VerificationResult
+	19, // [19:19] is the sub-list for method output_type
+	19, // [19:19] is the sub-list for method input_type
+	19, // [19:19] is the sub-list for extension type_name
+	19, // [19:19] is the sub-list for extension extendee
+	0,  // [0:19] is the sub-list for field type_name
 }
 
 func init() { file_inari_agent_v1_events_proto_init() }
@@ -987,8 +1447,8 @@ func file_inari_agent_v1_events_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_inari_agent_v1_events_proto_rawDesc), len(file_inari_agent_v1_events_proto_rawDesc)),
-			NumEnums:      5,
-			NumMessages:   8,
+			NumEnums:      6,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
