@@ -116,6 +116,13 @@ message StatusUpdate {
   google.protobuf.Timestamp observed_at = 5;
   // Checksum over the agent's reported-state view (resync input).
   string state_checksum = 6;
+  // Deployed Git revision and ArgoCD sync operation identity. Older agents
+  // leave these empty; verification triggers must fail closed rather than
+  // guessing which deployed revision was observed.
+  string observed_revision = 7;
+  string sync_operation_id = 8;
+  string sync_operation_phase = 9;
+  google.protobuf.Timestamp operation_finished_at = 10;
 
   reserved 100 to 199;
 }
@@ -150,6 +157,60 @@ message ResyncResponse {
   string state_checksum = 1;
   // Last gateway-acknowledged sequence the agent has applied state through.
   int64 applied_through_sequence = 2;
+
+  reserved 100 to 199;
+}
+
+// VerificationResult is deliberately separate from ArgoCD health and sync.
+enum VerificationResult {
+  VERIFICATION_RESULT_UNSPECIFIED = 0;
+  VERIFICATION_RESULT_PENDING = 1;
+  VERIFICATION_RESULT_PASSED = 2;
+  VERIFICATION_RESULT_FAILED = 3;
+  VERIFICATION_RESULT_CANCELLED = 4;
+}
+
+// VerificationReport reports one labeled Argo Workflow over the existing
+// authenticated outbound stream. Org and cluster identity come from the
+// stream session, never from this payload.
+message VerificationReport {
+  string run_id = 1;
+  uint32 attempt = 2;
+  string trigger_fingerprint = 3;
+  string suite_digest = 4;
+  string profile = 5;
+  string render_fingerprint = 6;
+  ResourceRef workflow = 7;
+  string resource_version = 8;
+  bool deleted = 9;
+  google.protobuf.Timestamp observed_at = 10;
+  google.protobuf.Timestamp started_at = 11;
+  google.protobuf.Timestamp finished_at = 12;
+  google.protobuf.Timestamp expires_at = 13;
+  VerificationResult result = 14;
+  string message = 15;
+  // application or observability.companion.
+  string subject_kind = 16;
+  string instance_uid = 17;
+  string app_instance_id = 18;
+  string deployment_plan_id = 19;
+  string app_revision = 20;
+  string app_digest = 21;
+  string target_id = 22;
+  int64 target_revision = 23;
+  string companion_id = 24;
+  int64 companion_generation = 25;
+  string pack_digest = 26;
+  string capability_digest = 27;
+  // Optional bounded canonical inari.verification.outcome/v1 payload. Raw
+  // observability payloads are forwarded to the existing sibling sink and are
+  // not persisted as a second generic result store.
+  string outcome_json = 28;
+  string outcome_digest = 29;
+  bool full_sync = 30;
+  string state_checksum = 31;
+  int64 policy_revision = 32;
+  int64 grant_revision = 33;
 
   reserved 100 to 199;
 }

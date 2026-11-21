@@ -537,6 +537,22 @@ type ApproverGroup struct {
 	Subjects *[]string `json:"subjects"`
 }
 
+// ArtifactDescriptor defines model for ArtifactDescriptor.
+type ArtifactDescriptor struct {
+	App            *string          `json:"app,omitempty"`
+	Compatibility  *Compatibility   `json:"compatibility,omitempty"`
+	Component      string           `json:"component"`
+	Digest         string           `json:"digest"`
+	Lanes          *[]Lane          `json:"lanes"`
+	MediaType      string           `json:"mediaType"`
+	PackageVersion string           `json:"packageVersion"`
+	Producer       Producer         `json:"producer"`
+	Ref            string           `json:"ref"`
+	ReleaseTag     string           `json:"releaseTag"`
+	Runtime        *RuntimeEvidence `json:"runtime,omitempty"`
+	SourceSha      string           `json:"sourceSha"`
+}
+
 // AssignPackInputBody defines model for AssignPackInputBody.
 type AssignPackInputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -846,6 +862,22 @@ type ClusterSetOutputBody struct {
 	ClusterSet ClusterSet `json:"clusterSet"`
 }
 
+// Compatibility defines model for Compatibility.
+type Compatibility struct {
+	Browser     string            `json:"browser"`
+	CompletedAt string            `json:"completedAt"`
+	Matrix      map[string]string `json:"matrix"`
+	Result      string            `json:"result"`
+	Slots       *[]string         `json:"slots"`
+}
+
+// ConcurrencyConfig defines model for ConcurrencyConfig.
+type ConcurrencyConfig struct {
+	MaxActive            int64  `json:"maxActive"`
+	MaxPending           int64  `json:"maxPending"`
+	QueuedRevisionPolicy string `json:"queuedRevisionPolicy"`
+}
+
 // ConfigOutputBody defines model for ConfigOutputBody.
 type ConfigOutputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -1142,6 +1174,15 @@ type CreateTenantInputBody struct {
 	Slug string `json:"slug"`
 }
 
+// CronConfig defines model for CronConfig.
+type CronConfig struct {
+	Enabled                 bool      `json:"enabled"`
+	ScheduleSetId           *string   `json:"scheduleSetId,omitempty"`
+	Schedules               *[]string `json:"schedules,omitempty"`
+	StartingDeadlineSeconds *int64    `json:"startingDeadlineSeconds,omitempty"`
+	Timezone                *string   `json:"timezone,omitempty"`
+}
+
 // DecideExemptionInputBody defines model for DecideExemptionInputBody.
 type DecideExemptionInputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -1331,6 +1372,34 @@ type EndpointOutputBody struct {
 	Endpoint NotificationEndpoint `json:"endpoint"`
 }
 
+// EnvironmentPolicy defines model for EnvironmentPolicy.
+type EnvironmentPolicy struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/EnvironmentPolicy.json
+	Schema                          *string    `json:"$schema,omitempty"`
+	AllowedFailureActions           *[]string  `json:"allowedFailureActions"`
+	AllowedProfiles                 *[]string  `json:"allowedProfiles"`
+	AllowedTriggers                 *[]string  `json:"allowedTriggers"`
+	CreatedAt                       *time.Time `json:"createdAt,omitempty"`
+	Environment                     string     `json:"environment"`
+	Id                              *string    `json:"id,omitempty"`
+	MaxActive                       int64      `json:"maxActive"`
+	MaxEvidenceAgeAtApproval        string     `json:"maxEvidenceAgeAtApproval"`
+	MaxGrantLifetimeDays            int64      `json:"maxGrantLifetimeDays"`
+	MaxPending                      int64      `json:"maxPending"`
+	MaxResultDays                   int64      `json:"maxResultDays"`
+	MaxTimeout                      string     `json:"maxTimeout"`
+	MaxWorkflowTTLSeconds           int64      `json:"maxWorkflowTTLSeconds"`
+	MinWorkflowTTLSeconds           int64      `json:"minWorkflowTTLSeconds"`
+	OrgId                           *string    `json:"orgId,omitempty"`
+	PolicyRevision                  int64      `json:"policyRevision"`
+	RequiredNotificationEndpointIds *[]string  `json:"requiredNotificationEndpointIds,omitempty"`
+	TargetId                        string     `json:"targetId"`
+	TargetRevision                  int64      `json:"targetRevision"`
+	UpdatedAt                       *time.Time `json:"updatedAt,omitempty"`
+}
+
 // ErrorDetail defines model for ErrorDetail.
 type ErrorDetail struct {
 	// Location Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id'
@@ -1474,6 +1543,13 @@ type FlagView struct {
 type GCPSMProvider struct {
 	AuthSecretRef SecretRef `json:"authSecretRef"`
 	ProjectId     string    `json:"projectId"`
+}
+
+// GateStatus defines model for GateStatus.
+type GateStatus struct {
+	DeployedVerification bool    `json:"deployedVerification"`
+	Reason               *string `json:"reason,omitempty"`
+	RenderAvailable      bool    `json:"renderAvailable"`
 }
 
 // GetOutputBody defines model for GetOutputBody.
@@ -1692,6 +1768,8 @@ type InstanceView struct {
 	LatestVersion       *string     `json:"latestVersion,omitempty"`
 	ManagementMode      string      `json:"managementMode"`
 	NewVersionAvailable bool        `json:"newVersionAvailable"`
+	ObservedRevision    *string     `json:"observedRevision,omitempty"`
+	OperationFinishedAt *time.Time  `json:"operationFinishedAt,omitempty"`
 	OrgId               string      `json:"orgId"`
 	OwnerTeam           string      `json:"ownerTeam"`
 	PrUrl               *string     `json:"prUrl,omitempty"`
@@ -1700,7 +1778,10 @@ type InstanceView struct {
 	Spec                interface{} `json:"spec"`
 	State               string      `json:"state"`
 	StatusMessage       *string     `json:"statusMessage,omitempty"`
+	SyncOperationId     *string     `json:"syncOperationId,omitempty"`
+	SyncOperationPhase  *string     `json:"syncOperationPhase,omitempty"`
 	SyncState           *string     `json:"syncState,omitempty"`
+	Uid                 string      `json:"uid"`
 	UpdatedAt           time.Time   `json:"updatedAt"`
 	Version             string      `json:"version"`
 }
@@ -1751,6 +1832,16 @@ type KROSource struct {
 type KustomizeSource struct {
 	Overlays *[]string `json:"overlays,omitempty"`
 	Path     string    `json:"path"`
+}
+
+// Lane defines model for Lane.
+type Lane struct {
+	JobId     string `json:"jobId"`
+	Name      string `json:"name"`
+	Required  bool   `json:"required"`
+	RunId     string `json:"runId"`
+	SourceSha string `json:"sourceSha"`
+	Status    string `json:"status"`
 }
 
 // ListAccountsOutputBody defines model for ListAccountsOutputBody.
@@ -2142,6 +2233,12 @@ type MyPermissionsOutputBody struct {
 	Tenants                *map[string]TenantCapabilities `json:"tenants,omitempty"`
 }
 
+// NotificationConfig defines model for NotificationConfig.
+type NotificationConfig struct {
+	EndpointIds *[]string `json:"endpointIds,omitempty"`
+	Events      *[]string `json:"events,omitempty"`
+}
+
 // NotificationDelivery defines model for NotificationDelivery.
 type NotificationDelivery struct {
 	Attempts    int64       `json:"attempts"`
@@ -2273,6 +2370,19 @@ type PolicyAssignment struct {
 	TargetType string    `json:"targetType"`
 }
 
+// PolicyBinding defines model for PolicyBinding.
+type PolicyBinding struct {
+	AppArtifactDigest string  `json:"appArtifactDigest"`
+	AppItemId         string  `json:"appItemId"`
+	AppVersion        string  `json:"appVersion"`
+	DesiredCommit     *string `json:"desiredCommit,omitempty"`
+	ParameterContract string  `json:"parameterContract"`
+	Profile           string  `json:"profile"`
+	SpecDigest        string  `json:"specDigest"`
+	SuiteDigest       string  `json:"suiteDigest"`
+	SuiteGrantId      string  `json:"suiteGrantId"`
+}
+
 // PolicyDecision defines model for PolicyDecision.
 type PolicyDecision struct {
 	Allow      bool               `json:"allow"`
@@ -2302,12 +2412,108 @@ type PolicyPack struct {
 	Version    string      `json:"version"`
 }
 
+// PolicyPreview defines model for PolicyPreview.
+type PolicyPreview struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/PolicyPreview.json
+	Schema               *string            `json:"$schema,omitempty"`
+	Environment          EnvironmentPolicy  `json:"environment"`
+	Gate                 GateStatus         `json:"gate"`
+	Grant                SuiteGrant         `json:"grant"`
+	Policy               VerificationPolicy `json:"policy"`
+	SideEffectsPerformed int64              `json:"sideEffectsPerformed"`
+	Suite                SuiteRelease       `json:"suite"`
+	Warnings             *[]string          `json:"warnings,omitempty"`
+	WouldCreate          *[]string          `json:"wouldCreate,omitempty"`
+}
+
 // PolicyViolation defines model for PolicyViolation.
 type PolicyViolation struct {
 	Exempted    *bool  `json:"exempted,omitempty"`
 	Reason      string `json:"reason"`
 	Remediation string `json:"remediation"`
 	Rule        string `json:"rule"`
+}
+
+// Producer defines model for Producer.
+type Producer struct {
+	RunAttempt   int64  `json:"runAttempt"`
+	RunId        string `json:"runId"`
+	RunUri       string `json:"runUri"`
+	WorkflowPath string `json:"workflowPath"`
+	WorkflowSha  string `json:"workflowSha"`
+}
+
+// PromotionDecision defines model for PromotionDecision.
+type PromotionDecision struct {
+	Allowed          bool      `json:"allowed"`
+	ApprovalRequired bool      `json:"approvalRequired"`
+	ApproverTeamIds  *[]string `json:"approverTeamIds,omitempty"`
+	ReasonCode       *string   `json:"reasonCode,omitempty"`
+	SourceRunId      *string   `json:"sourceRunId,omitempty"`
+}
+
+// PromotionInputBody defines model for PromotionInputBody.
+type PromotionInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/PromotionInputBody.json
+	Schema    *string `json:"$schema,omitempty"`
+	RepoId    *string `json:"repoId,omitempty"`
+	ToDigest  string  `json:"toDigest"`
+	ToVersion string  `json:"toVersion"`
+}
+
+// PromotionOutputBody defines model for PromotionOutputBody.
+type PromotionOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/PromotionOutputBody.json
+	Schema *string      `json:"$schema,omitempty"`
+	Deploy DeployResult `json:"deploy"`
+}
+
+// PromotionPolicy defines model for PromotionPolicy.
+type PromotionPolicy struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/PromotionPolicy.json
+	Schema              *string    `json:"$schema,omitempty"`
+	ApproverTeamIds     *[]string  `json:"approverTeamIds,omitempty"`
+	CreatedAt           *time.Time `json:"createdAt,omitempty"`
+	Current             *bool      `json:"current,omitempty"`
+	Id                  *string    `json:"id,omitempty"`
+	MaxEvidenceAge      string     `json:"maxEvidenceAge"`
+	OrgId               *string    `json:"orgId,omitempty"`
+	PolicyRevision      int64      `json:"policyRevision"`
+	Required            bool       `json:"required"`
+	RequiredProfile     string     `json:"requiredProfile"`
+	RequiredSuiteDigest string     `json:"requiredSuiteDigest"`
+	SourceInstanceId    string     `json:"sourceInstanceId"`
+	TargetInstanceId    string     `json:"targetInstanceId"`
+	UpdatedAt           *time.Time `json:"updatedAt,omitempty"`
+}
+
+// PromotionPolicyOutputBody defines model for PromotionPolicyOutputBody.
+type PromotionPolicyOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/PromotionPolicyOutputBody.json
+	Schema *string          `json:"$schema,omitempty"`
+	Policy *PromotionPolicy `json:"policy,omitempty"`
+}
+
+// PromotionPreview defines model for PromotionPreview.
+type PromotionPreview struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/PromotionPreview.json
+	Schema        *string           `json:"$schema,omitempty"`
+	Decision      PromotionDecision `json:"decision"`
+	Policy        *PromotionPolicy  `json:"policy,omitempty"`
+	TargetDigest  string            `json:"targetDigest"`
+	TargetVersion string            `json:"targetVersion"`
 }
 
 // ProviderCompatOutputBody defines model for ProviderCompatOutputBody.
@@ -2409,6 +2615,13 @@ type PutRBACMappingsOutputBody struct {
 	// Example: https://example.com/schemas/PutRBACMappingsOutputBody.json
 	Schema  *string           `json:"$schema,omitempty"`
 	Changes *[]TeamRoleChange `json:"changes"`
+}
+
+// RBACRule defines model for RBACRule.
+type RBACRule struct {
+	ApiGroups *[]string `json:"apiGroups"`
+	Resources *[]string `json:"resources"`
+	Verbs     *[]string `json:"verbs"`
 }
 
 // RbacClusterRole defines model for RbacClusterRole.
@@ -2649,6 +2862,14 @@ type ResourceView struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
+// RetentionConfig defines model for RetentionConfig.
+type RetentionConfig struct {
+	FailedHistory      int64 `json:"failedHistory"`
+	ResultDays         int64 `json:"resultDays"`
+	SuccessfulHistory  int64 `json:"successfulHistory"`
+	WorkflowTTLSeconds int64 `json:"workflowTTLSeconds"`
+}
+
 // RetryDeletionOutputBody defines model for RetryDeletionOutputBody.
 type RetryDeletionOutputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -2810,6 +3031,74 @@ type RotateSecretOutputBody struct {
 	Secret string `json:"secret"`
 }
 
+// Run defines model for Run.
+type Run struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/Run.json
+	Schema             *string     `json:"$schema,omitempty"`
+	AppArtifactDigest  string      `json:"appArtifactDigest"`
+	AppRevision        string      `json:"appRevision"`
+	CreatedAt          time.Time   `json:"createdAt"`
+	Disposition        *string     `json:"disposition,omitempty"`
+	ExpiresAt          *time.Time  `json:"expiresAt,omitempty"`
+	GrantRevision      int64       `json:"grantRevision"`
+	InstanceId         string      `json:"instanceId"`
+	InstanceUid        string      `json:"instanceUid"`
+	LatestAttempt      int64       `json:"latestAttempt"`
+	Links              *RunLinks   `json:"links,omitempty"`
+	Message            *string     `json:"message,omitempty"`
+	OrgId              string      `json:"orgId"`
+	Outcome            interface{} `json:"outcome,omitempty"`
+	OutcomeDigest      *string     `json:"outcomeDigest,omitempty"`
+	PolicyRevision     int64       `json:"policyRevision"`
+	Profile            string      `json:"profile"`
+	ReasonCode         *string     `json:"reasonCode,omitempty"`
+	RunId              string      `json:"runId"`
+	RunKey             string      `json:"runKey"`
+	Status             string      `json:"status"`
+	SuiteDigest        string      `json:"suiteDigest"`
+	Trigger            Trigger     `json:"trigger"`
+	TriggerFingerprint string      `json:"triggerFingerprint"`
+	UpdatedAt          time.Time   `json:"updatedAt"`
+}
+
+// RunInputBody defines model for RunInputBody.
+type RunInputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/RunInputBody.json
+	Schema         *string `json:"$schema,omitempty"`
+	DryRun         *bool   `json:"dryRun,omitempty"`
+	IdempotencyKey string  `json:"idempotencyKey"`
+}
+
+// RunLinks defines model for RunLinks.
+type RunLinks struct {
+	Artifacts string `json:"artifacts"`
+	Logs      string `json:"logs"`
+	Workflow  string `json:"workflow"`
+}
+
+// RunListOutputBody defines model for RunListOutputBody.
+type RunListOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/RunListOutputBody.json
+	Schema *string `json:"$schema,omitempty"`
+	Runs   *[]Run  `json:"runs"`
+}
+
+// RunOutputBody defines model for RunOutputBody.
+type RunOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/RunOutputBody.json
+	Schema  *string        `json:"$schema,omitempty"`
+	Preview *PolicyPreview `json:"preview,omitempty"`
+	Run     *Run           `json:"run,omitempty"`
+}
+
 // RunView defines model for RunView.
 type RunView struct {
 	ArtifactDigest *string     `json:"artifactDigest,omitempty"`
@@ -2828,6 +3117,14 @@ type RunView struct {
 	Unsigned       *bool       `json:"unsigned,omitempty"`
 	UpdatedAt      time.Time   `json:"updatedAt"`
 	Version        string      `json:"version"`
+}
+
+// RuntimeEvidence defines model for RuntimeEvidence.
+type RuntimeEvidence struct {
+	Profile     string `json:"profile"`
+	Result      string `json:"result"`
+	SuiteDigest string `json:"suiteDigest"`
+	Target      string `json:"target"`
 }
 
 // ScaffoldOutputs defines model for ScaffoldOutputs.
@@ -3086,6 +3383,138 @@ type StoreOutputBody struct {
 	Store  SecretStore `json:"store"`
 }
 
+// Suite defines model for Suite.
+type Suite struct {
+	Cleanup               *string                 `json:"cleanup,omitempty"`
+	CompatibleAppVersions string                  `json:"compatibleAppVersions"`
+	Dependencies          *[]string               `json:"dependencies"`
+	Entrypoint            string                  `json:"entrypoint"`
+	ExecutableProfiles    *[]string               `json:"executableProfiles,omitempty"`
+	Idempotency           *string                 `json:"idempotency,omitempty"`
+	ParameterContract     string                  `json:"parameterContract"`
+	Profiles              map[string]SuiteProfile `json:"profiles"`
+	RbacRequirements      *[]RBACRule             `json:"rbacRequirements"`
+	SuiteSchema           string                  `json:"suiteSchema"`
+	Target                SuiteTarget             `json:"target"`
+	Timeout               string                  `json:"timeout"`
+	WorkflowTemplate      string                  `json:"workflowTemplate"`
+}
+
+// SuiteAdapter defines model for SuiteAdapter.
+type SuiteAdapter struct {
+	ArtifactPath *string              `json:"artifactPath,omitempty"`
+	FixtureOnly  *bool                `json:"fixtureOnly,omitempty"`
+	Kind         string               `json:"kind"`
+	Path         *string              `json:"path,omitempty"`
+	Readiness    *[]map[string]string `json:"readiness,omitempty"`
+}
+
+// SuiteAdmissionInput defines model for SuiteAdmissionInput.
+type SuiteAdmissionInput struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/SuiteAdmissionInput.json
+	Schema                       *string            `json:"$schema,omitempty"`
+	Descriptor                   ArtifactDescriptor `json:"descriptor"`
+	Environment                  string             `json:"environment"`
+	LegacyNonProductionException *bool              `json:"legacyNonProductionException,omitempty"`
+	Profile                      string             `json:"profile"`
+	SourceId                     string             `json:"sourceId"`
+}
+
+// SuiteGrant defines model for SuiteGrant.
+type SuiteGrant struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/SuiteGrant.json
+	Schema                       *string     `json:"$schema,omitempty"`
+	AllowedRbac                  *[]RBACRule `json:"allowedRbac"`
+	AppItemId                    *string     `json:"appItemId,omitempty"`
+	AppVersionRange              *string     `json:"appVersionRange,omitempty"`
+	ApproverTeamIds              *[]string   `json:"approverTeamIds,omitempty"`
+	ArgoUiBaseUrl                *string     `json:"argoUiBaseUrl,omitempty"`
+	ChangeWindow                 *string     `json:"changeWindow,omitempty"`
+	CleanupRequired              bool        `json:"cleanupRequired"`
+	EgressPolicyRef              string      `json:"egressPolicyRef"`
+	EnvironmentPolicyId          *string     `json:"environmentPolicyId,omitempty"`
+	ExpiresAt                    *time.Time  `json:"expiresAt,omitempty"`
+	FixtureNamespace             *string     `json:"fixtureNamespace,omitempty"`
+	GrantRevision                int64       `json:"grantRevision"`
+	Id                           *string     `json:"id,omitempty"`
+	LegacyNonProductionException *bool       `json:"legacyNonProductionException,omitempty"`
+	MaxActive                    int64       `json:"maxActive"`
+	MaxPending                   int64       `json:"maxPending"`
+	MaxResultBytes               int64       `json:"maxResultBytes"`
+	MaxTimeout                   string      `json:"maxTimeout"`
+	OrgId                        *string     `json:"orgId,omitempty"`
+	ParameterContract            string      `json:"parameterContract"`
+	Profile                      string      `json:"profile"`
+	RbacPolicyDigest             string      `json:"rbacPolicyDigest"`
+	RequirePerRunApproval        bool        `json:"requirePerRunApproval"`
+	RevokedAt                    *time.Time  `json:"revokedAt,omitempty"`
+	ServiceAccountName           string      `json:"serviceAccountName"`
+	ServiceAccountNamespace      string      `json:"serviceAccountNamespace"`
+	SideEffects                  string      `json:"sideEffects"`
+	SuiteDigest                  string      `json:"suiteDigest"`
+	SuiteReleaseId               string      `json:"suiteReleaseId"`
+}
+
+// SuiteListOutputBody defines model for SuiteListOutputBody.
+type SuiteListOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/SuiteListOutputBody.json
+	Schema *string         `json:"$schema,omitempty"`
+	Suites *[]SuiteRelease `json:"suites"`
+}
+
+// SuitePreview defines model for SuitePreview.
+type SuitePreview struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/SuitePreview.json
+	Schema               *string      `json:"$schema,omitempty"`
+	Gate                 GateStatus   `json:"gate"`
+	Release              SuiteRelease `json:"release"`
+	SideEffectsPerformed int64        `json:"sideEffectsPerformed"`
+	Warnings             *[]string    `json:"warnings,omitempty"`
+}
+
+// SuiteProfile defines model for SuiteProfile.
+type SuiteProfile struct {
+	Approval     *string `json:"approval,omitempty"`
+	ChangeWindow *string `json:"changeWindow,omitempty"`
+	Cleanup      string  `json:"cleanup"`
+	SideEffects  string  `json:"sideEffects"`
+}
+
+// SuiteRelease defines model for SuiteRelease.
+type SuiteRelease struct {
+	AdmittedAt         time.Time          `json:"admittedAt"`
+	ContentDigest      string             `json:"contentDigest"`
+	Descriptor         ArtifactDescriptor `json:"descriptor"`
+	Eligibility        string             `json:"eligibility"`
+	EvidenceDigest     *string            `json:"evidenceDigest,omitempty"`
+	EvidenceFinishedAt *time.Time         `json:"evidenceFinishedAt,omitempty"`
+	Id                 string             `json:"id"`
+	LegacyException    *bool              `json:"legacyException,omitempty"`
+	OrgId              string             `json:"orgId"`
+	SourceFingerprint  string             `json:"sourceFingerprint"`
+	SourceId           string             `json:"sourceId"`
+	Suite              Suite              `json:"suite"`
+	SuiteDigest        string             `json:"suiteDigest"`
+	TrustTier          string             `json:"trustTier"`
+	Unsigned           bool               `json:"unsigned"`
+}
+
+// SuiteTarget defines model for SuiteTarget.
+type SuiteTarget struct {
+	Adapter   SuiteAdapter `json:"adapter"`
+	Component *string      `json:"component,omitempty"`
+	Id        string       `json:"id"`
+	Version   string       `json:"version"`
+}
+
 // SyncOutputBody defines model for SyncOutputBody.
 type SyncOutputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -3094,6 +3523,12 @@ type SyncOutputBody struct {
 	Schema  *string                `json:"$schema,omitempty"`
 	Sources *[]TrustedSourceStatus `json:"sources"`
 	Synced  int64                  `json:"synced"`
+}
+
+// SyncTrigger defines model for SyncTrigger.
+type SyncTrigger struct {
+	Enabled bool    `json:"enabled"`
+	Mode    *string `json:"mode,omitempty"`
 }
 
 // Target defines model for Target.
@@ -3329,6 +3764,29 @@ type TokenOutputBody struct {
 
 	// Token Plaintext bootstrap token, returned once
 	Token string `json:"token"`
+}
+
+// Trigger defines model for Trigger.
+type Trigger struct {
+	Kind          string  `json:"kind"`
+	OperationId   *string `json:"operationId,omitempty"`
+	Profile       string  `json:"profile"`
+	RequestKey    *string `json:"requestKey,omitempty"`
+	ScheduleSetId *string `json:"scheduleSetId,omitempty"`
+	ScheduledAt   *string `json:"scheduledAt,omitempty"`
+}
+
+// TriggerToggle defines model for TriggerToggle.
+type TriggerToggle struct {
+	Enabled bool `json:"enabled"`
+}
+
+// Triggers defines model for Triggers.
+type Triggers struct {
+	Cron             CronConfig    `json:"cron"`
+	Manual           TriggerToggle `json:"manual"`
+	OnRevisionChange TriggerToggle `json:"onRevisionChange"`
+	OnSync           SyncTrigger   `json:"onSync"`
 }
 
 // TrustedSourceStatus defines model for TrustedSourceStatus.
@@ -3581,6 +4039,51 @@ type VaultProvider struct {
 	Server        string    `json:"server"`
 }
 
+// VerificationGrantStatusOutputBody defines model for VerificationGrantStatusOutputBody.
+type VerificationGrantStatusOutputBody struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/VerificationGrantStatusOutputBody.json
+	Schema *string `json:"$schema,omitempty"`
+	Status string  `json:"status"`
+}
+
+// VerificationPolicy defines model for VerificationPolicy.
+type VerificationPolicy struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/VerificationPolicy.json
+	Schema         *string             `json:"$schema,omitempty"`
+	AddonAbsent    string              `json:"addonAbsent"`
+	Binding        PolicyBinding       `json:"binding"`
+	Concurrency    ConcurrencyConfig   `json:"concurrency"`
+	CreatedAt      *time.Time          `json:"createdAt,omitempty"`
+	Current        *bool               `json:"current,omitempty"`
+	Enabled        bool                `json:"enabled"`
+	FailureAction  string              `json:"failureAction"`
+	Id             *string             `json:"id,omitempty"`
+	InstanceId     *string             `json:"instanceId,omitempty"`
+	InstanceUid    *string             `json:"instanceUid,omitempty"`
+	Notifications  *NotificationConfig `json:"notifications,omitempty"`
+	OrgId          *string             `json:"orgId,omitempty"`
+	PolicyRevision int64               `json:"policyRevision"`
+	Retention      RetentionConfig     `json:"retention"`
+	Timeout        string              `json:"timeout"`
+	Triggers       Triggers            `json:"triggers"`
+	UpdatedAt      *time.Time          `json:"updatedAt,omitempty"`
+}
+
+// VerificationView defines model for VerificationView.
+type VerificationView struct {
+	// Schema A URL to the JSON Schema for this object.
+	//
+	// Example: https://example.com/schemas/VerificationView.json
+	Schema *string             `json:"$schema,omitempty"`
+	Gate   GateStatus          `json:"gate"`
+	Policy *VerificationPolicy `json:"policy,omitempty"`
+	Runs   *[]Run              `json:"runs,omitempty"`
+}
+
 // VisibilityInputBody defines model for VisibilityInputBody.
 type VisibilityInputBody struct {
 	// Schema A URL to the JSON Schema for this object.
@@ -3797,6 +4300,11 @@ type InstanceDiffParams struct {
 	To string `form:"to" json:"to"`
 }
 
+// ListInstanceVerificationRunsParams defines parameters for ListInstanceVerificationRuns.
+type ListInstanceVerificationRunsParams struct {
+	Limit *int64 `form:"limit,omitempty" json:"limit,omitempty"`
+}
+
 // ListOrgMembersParams defines parameters for ListOrgMembers.
 type ListOrgMembersParams struct {
 	// Q Case-insensitive email substring filter
@@ -3978,11 +4486,29 @@ type UpdateIdentityProviderJSONRequestBody = UpdateBrokeredIdPInputBody
 // UpdateInstanceJSONRequestBody defines body for UpdateInstance for application/json ContentType.
 type UpdateInstanceJSONRequestBody = UpdateInstanceInputBody
 
+// PromoteInstanceJSONRequestBody defines body for PromoteInstance for application/json ContentType.
+type PromoteInstanceJSONRequestBody = PromotionInputBody
+
+// PutInstancePromotionPolicyJSONRequestBody defines body for PutInstancePromotionPolicy for application/json ContentType.
+type PutInstancePromotionPolicyJSONRequestBody = PromotionPolicy
+
+// PreviewInstancePromotionJSONRequestBody defines body for PreviewInstancePromotion for application/json ContentType.
+type PreviewInstancePromotionJSONRequestBody = PromotionInputBody
+
 // RollbackInstanceJSONRequestBody defines body for RollbackInstance for application/json ContentType.
 type RollbackInstanceJSONRequestBody = RollbackInputBody
 
 // UpgradeInstanceJSONRequestBody defines body for UpgradeInstance for application/json ContentType.
 type UpgradeInstanceJSONRequestBody = UpgradeInputBody
+
+// PutInstanceVerificationJSONRequestBody defines body for PutInstanceVerification for application/json ContentType.
+type PutInstanceVerificationJSONRequestBody = VerificationPolicy
+
+// PreviewInstanceVerificationJSONRequestBody defines body for PreviewInstanceVerification for application/json ContentType.
+type PreviewInstanceVerificationJSONRequestBody = VerificationPolicy
+
+// CreateInstanceVerificationRunJSONRequestBody defines body for CreateInstanceVerificationRun for application/json ContentType.
+type CreateInstanceVerificationRunJSONRequestBody = RunInputBody
 
 // SetMemberRoleJSONRequestBody defines body for SetMemberRole for application/json ContentType.
 type SetMemberRoleJSONRequestBody = PutMemberInputBody
@@ -4055,6 +4581,21 @@ type CreateScaffoldRunJSONRequestBody = CreateRunInputBody
 
 // CreateSourceScaffoldRunJSONRequestBody defines body for CreateSourceScaffoldRun for application/json ContentType.
 type CreateSourceScaffoldRunJSONRequestBody = SourceCreateRunInputBody
+
+// CreateVerificationGrantJSONRequestBody defines body for CreateVerificationGrant for application/json ContentType.
+type CreateVerificationGrantJSONRequestBody = SuiteGrant
+
+// PreviewVerificationGrantJSONRequestBody defines body for PreviewVerificationGrant for application/json ContentType.
+type PreviewVerificationGrantJSONRequestBody = SuiteGrant
+
+// PutVerificationEnvironmentJSONRequestBody defines body for PutVerificationEnvironment for application/json ContentType.
+type PutVerificationEnvironmentJSONRequestBody = EnvironmentPolicy
+
+// CreateVerificationSuiteJSONRequestBody defines body for CreateVerificationSuite for application/json ContentType.
+type CreateVerificationSuiteJSONRequestBody = SuiteAdmissionInput
+
+// PreviewVerificationSuiteJSONRequestBody defines body for PreviewVerificationSuite for application/json ContentType.
+type PreviewVerificationSuiteJSONRequestBody = SuiteAdmissionInput
 
 // RequestTenantZoneJSONRequestBody defines body for RequestTenantZone for application/json ContentType.
 type RequestTenantZoneJSONRequestBody = RequestZoneInputBody
@@ -5221,6 +5762,53 @@ type ClientInterface interface {
 	// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/diff (the `InstanceDiff` operationId).
 	InstanceDiff(ctx context.Context, org string, id string, params *InstanceDiffParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// PromoteInstanceWithBody Explicitly promote an exact verified application version
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/promote (the `PromoteInstance` operationId).
+	PromoteInstanceWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PromoteInstance Explicitly promote an exact verified application version
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/promote (the `PromoteInstance` operationId).
+	PromoteInstance(ctx context.Context, org string, id string, body PromoteInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInstancePromotionPolicy Get linked promotion verification policy
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/promotion-policy (the `GetInstancePromotionPolicy` operationId).
+	GetInstancePromotionPolicy(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PutInstancePromotionPolicyWithBody Set linked promotion verification policy
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/instances/{id}/promotion-policy (the `PutInstancePromotionPolicy` operationId).
+	PutInstancePromotionPolicyWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PutInstancePromotionPolicy Set linked promotion verification policy
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/instances/{id}/promotion-policy (the `PutInstancePromotionPolicy` operationId).
+	PutInstancePromotionPolicy(ctx context.Context, org string, id string, body PutInstancePromotionPolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PreviewInstancePromotionWithBody Preview exact promotion evidence gates
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/promotion/preview (the `PreviewInstancePromotion` operationId).
+	PreviewInstancePromotionWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PreviewInstancePromotion Preview exact promotion evidence gates
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/promotion/preview (the `PreviewInstancePromotion` operationId).
+	PreviewInstancePromotion(ctx context.Context, org string, id string, body PreviewInstancePromotionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// RollbackInstanceWithBody Rollback an instance to an explicit earlier catalog version
 	//
 	// Takes any type of body and a specified content type.
@@ -5248,6 +5836,73 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/upgrade (the `UpgradeInstance` operationId).
 	UpgradeInstance(ctx context.Context, org string, id string, body UpgradeInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DisableInstanceVerification Disable future verification triggers
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/instances/{id}/verification (the `DisableInstanceVerification` operationId).
+	DisableInstanceVerification(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInstanceVerification Get instance verification policy and status
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/verification (the `GetInstanceVerification` operationId).
+	GetInstanceVerification(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PutInstanceVerificationWithBody Save a verified team policy revision
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/instances/{id}/verification (the `PutInstanceVerification` operationId).
+	PutInstanceVerificationWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PutInstanceVerification Save a verified team policy revision
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/instances/{id}/verification (the `PutInstanceVerification` operationId).
+	PutInstanceVerification(ctx context.Context, org string, id string, body PutInstanceVerificationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PreviewInstanceVerificationWithBody Preview effective verification policy without side effects
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/preview (the `PreviewInstanceVerification` operationId).
+	PreviewInstanceVerificationWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PreviewInstanceVerification Preview effective verification policy without side effects
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/preview (the `PreviewInstanceVerification` operationId).
+	PreviewInstanceVerification(ctx context.Context, org string, id string, body PreviewInstanceVerificationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListInstanceVerificationRuns List verification run history
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/verification/runs (the `ListInstanceVerificationRuns` operationId).
+	ListInstanceVerificationRuns(ctx context.Context, org string, id string, params *ListInstanceVerificationRunsParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateInstanceVerificationRunWithBody Dry-run or request an exact manual verification run
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/runs (the `CreateInstanceVerificationRun` operationId).
+	CreateInstanceVerificationRunWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateInstanceVerificationRun Dry-run or request an exact manual verification run
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/runs (the `CreateInstanceVerificationRun` operationId).
+	CreateInstanceVerificationRun(ctx context.Context, org string, id string, body CreateInstanceVerificationRunJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetInstanceVerificationRun Get verification run details
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/verification/runs/{runId} (the `GetInstanceVerificationRun` operationId).
+	GetInstanceVerificationRun(ctx context.Context, org string, id string, runId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RetryInstanceVerificationRun Retry a failed verification attempt after revalidation
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/runs/{runId}/retry (the `RetryInstanceVerificationRun` operationId).
+	RetryInstanceVerificationRun(ctx context.Context, org string, id string, runId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListOrgMembers Org-wide member view (highest role + teams)
 	//
@@ -5824,6 +6479,91 @@ type ClientInterface interface {
 	//
 	// Corresponds with POST /api/v1/tenants/{org}/templates/{source}/{name}/runs (the `CreateSourceScaffoldRun` operationId).
 	CreateSourceScaffoldRun(ctx context.Context, org string, source string, name string, body CreateSourceScaffoldRunJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateVerificationGrantWithBody Create or revise exact suite grant
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/verification-environments/{id}/grants (the `CreateVerificationGrant` operationId).
+	CreateVerificationGrantWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateVerificationGrant Create or revise exact suite grant
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/verification-environments/{id}/grants (the `CreateVerificationGrant` operationId).
+	CreateVerificationGrant(ctx context.Context, org string, id string, body CreateVerificationGrantJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PreviewVerificationGrantWithBody Preview exact suite digest and profile grant
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/verification-environments/{id}/grants/preview (the `PreviewVerificationGrant` operationId).
+	PreviewVerificationGrantWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PreviewVerificationGrant Preview exact suite digest and profile grant
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/verification-environments/{id}/grants/preview (the `PreviewVerificationGrant` operationId).
+	PreviewVerificationGrant(ctx context.Context, org string, id string, body PreviewVerificationGrantJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetVerificationEnvironment Get target verification environment policy
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/verification-environments/{targetId} (the `GetVerificationEnvironment` operationId).
+	GetVerificationEnvironment(ctx context.Context, org string, targetId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PutVerificationEnvironmentWithBody Set target verification environment policy
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/verification-environments/{targetId} (the `PutVerificationEnvironment` operationId).
+	PutVerificationEnvironmentWithBody(ctx context.Context, org string, targetId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PutVerificationEnvironment Set target verification environment policy
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/verification-environments/{targetId} (the `PutVerificationEnvironment` operationId).
+	PutVerificationEnvironment(ctx context.Context, org string, targetId string, body PutVerificationEnvironmentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// RevokeVerificationGrant Revoke new runs and evidence for a suite grant
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/verification-grants/{id} (the `RevokeVerificationGrant` operationId).
+	RevokeVerificationGrant(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListVerificationSuites List admitted suite releases
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/verification-suites (the `ListVerificationSuites` operationId).
+	ListVerificationSuites(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateVerificationSuiteWithBody Import an exact verified suite release
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/verification-suites (the `CreateVerificationSuite` operationId).
+	CreateVerificationSuiteWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateVerificationSuite Import an exact verified suite release
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/verification-suites (the `CreateVerificationSuite` operationId).
+	CreateVerificationSuite(ctx context.Context, org string, body CreateVerificationSuiteJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PreviewVerificationSuiteWithBody Cryptographically preview a platform suite release
+	//
+	// Takes any type of body and a specified content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/verification-suites/preview (the `PreviewVerificationSuite` operationId).
+	PreviewVerificationSuiteWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// PreviewVerificationSuite Cryptographically preview a platform suite release
+	//
+	// Takes a body of the `application/json` content type.
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/verification-suites/preview (the `PreviewVerificationSuite` operationId).
+	PreviewVerificationSuite(ctx context.Context, org string, body PreviewVerificationSuiteJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ListTenantZones List tenant zones owned by this org
 	//
@@ -8779,6 +9519,123 @@ func (c *Client) InstanceDiff(ctx context.Context, org string, id string, params
 	return c.Client.Do(req)
 }
 
+// PromoteInstanceWithBody Explicitly promote an exact verified application version
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/promote (the `PromoteInstance` operationId).
+func (c *Client) PromoteInstanceWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPromoteInstanceRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PromoteInstance Explicitly promote an exact verified application version
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/promote (the `PromoteInstance` operationId).
+func (c *Client) PromoteInstance(ctx context.Context, org string, id string, body PromoteInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPromoteInstanceRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetInstancePromotionPolicy Get linked promotion verification policy
+//
+// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/promotion-policy (the `GetInstancePromotionPolicy` operationId).
+func (c *Client) GetInstancePromotionPolicy(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInstancePromotionPolicyRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PutInstancePromotionPolicyWithBody Set linked promotion verification policy
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /api/v1/tenants/{org}/instances/{id}/promotion-policy (the `PutInstancePromotionPolicy` operationId).
+func (c *Client) PutInstancePromotionPolicyWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutInstancePromotionPolicyRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PutInstancePromotionPolicy Set linked promotion verification policy
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /api/v1/tenants/{org}/instances/{id}/promotion-policy (the `PutInstancePromotionPolicy` operationId).
+func (c *Client) PutInstancePromotionPolicy(ctx context.Context, org string, id string, body PutInstancePromotionPolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutInstancePromotionPolicyRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PreviewInstancePromotionWithBody Preview exact promotion evidence gates
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/promotion/preview (the `PreviewInstancePromotion` operationId).
+func (c *Client) PreviewInstancePromotionWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPreviewInstancePromotionRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PreviewInstancePromotion Preview exact promotion evidence gates
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/promotion/preview (the `PreviewInstancePromotion` operationId).
+func (c *Client) PreviewInstancePromotion(ctx context.Context, org string, id string, body PreviewInstancePromotionJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPreviewInstancePromotionRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 // RollbackInstanceWithBody Rollback an instance to an explicit earlier catalog version
 //
 // Takes any type of body and a specified content type.
@@ -8837,6 +9694,183 @@ func (c *Client) UpgradeInstanceWithBody(ctx context.Context, org string, id str
 // Corresponds with POST /api/v1/tenants/{org}/instances/{id}/upgrade (the `UpgradeInstance` operationId).
 func (c *Client) UpgradeInstance(ctx context.Context, org string, id string, body UpgradeInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpgradeInstanceRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// DisableInstanceVerification Disable future verification triggers
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/instances/{id}/verification (the `DisableInstanceVerification` operationId).
+func (c *Client) DisableInstanceVerification(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDisableInstanceVerificationRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetInstanceVerification Get instance verification policy and status
+//
+// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/verification (the `GetInstanceVerification` operationId).
+func (c *Client) GetInstanceVerification(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInstanceVerificationRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PutInstanceVerificationWithBody Save a verified team policy revision
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /api/v1/tenants/{org}/instances/{id}/verification (the `PutInstanceVerification` operationId).
+func (c *Client) PutInstanceVerificationWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutInstanceVerificationRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PutInstanceVerification Save a verified team policy revision
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /api/v1/tenants/{org}/instances/{id}/verification (the `PutInstanceVerification` operationId).
+func (c *Client) PutInstanceVerification(ctx context.Context, org string, id string, body PutInstanceVerificationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutInstanceVerificationRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PreviewInstanceVerificationWithBody Preview effective verification policy without side effects
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/preview (the `PreviewInstanceVerification` operationId).
+func (c *Client) PreviewInstanceVerificationWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPreviewInstanceVerificationRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PreviewInstanceVerification Preview effective verification policy without side effects
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/preview (the `PreviewInstanceVerification` operationId).
+func (c *Client) PreviewInstanceVerification(ctx context.Context, org string, id string, body PreviewInstanceVerificationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPreviewInstanceVerificationRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListInstanceVerificationRuns List verification run history
+//
+// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/verification/runs (the `ListInstanceVerificationRuns` operationId).
+func (c *Client) ListInstanceVerificationRuns(ctx context.Context, org string, id string, params *ListInstanceVerificationRunsParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListInstanceVerificationRunsRequest(c.Server, org, id, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateInstanceVerificationRunWithBody Dry-run or request an exact manual verification run
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/runs (the `CreateInstanceVerificationRun` operationId).
+func (c *Client) CreateInstanceVerificationRunWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateInstanceVerificationRunRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateInstanceVerificationRun Dry-run or request an exact manual verification run
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/runs (the `CreateInstanceVerificationRun` operationId).
+func (c *Client) CreateInstanceVerificationRun(ctx context.Context, org string, id string, body CreateInstanceVerificationRunJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateInstanceVerificationRunRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetInstanceVerificationRun Get verification run details
+//
+// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/verification/runs/{runId} (the `GetInstanceVerificationRun` operationId).
+func (c *Client) GetInstanceVerificationRun(ctx context.Context, org string, id string, runId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetInstanceVerificationRunRequest(c.Server, org, id, runId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RetryInstanceVerificationRun Retry a failed verification attempt after revalidation
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/runs/{runId}/retry (the `RetryInstanceVerificationRun` operationId).
+func (c *Client) RetryInstanceVerificationRun(ctx context.Context, org string, id string, runId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRetryInstanceVerificationRunRequest(c.Server, org, id, runId)
 	if err != nil {
 		return nil, err
 	}
@@ -10373,6 +11407,221 @@ func (c *Client) CreateSourceScaffoldRunWithBody(ctx context.Context, org string
 // Corresponds with POST /api/v1/tenants/{org}/templates/{source}/{name}/runs (the `CreateSourceScaffoldRun` operationId).
 func (c *Client) CreateSourceScaffoldRun(ctx context.Context, org string, source string, name string, body CreateSourceScaffoldRunJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateSourceScaffoldRunRequest(c.Server, org, source, name, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateVerificationGrantWithBody Create or revise exact suite grant
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/verification-environments/{id}/grants (the `CreateVerificationGrant` operationId).
+func (c *Client) CreateVerificationGrantWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateVerificationGrantRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateVerificationGrant Create or revise exact suite grant
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/verification-environments/{id}/grants (the `CreateVerificationGrant` operationId).
+func (c *Client) CreateVerificationGrant(ctx context.Context, org string, id string, body CreateVerificationGrantJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateVerificationGrantRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PreviewVerificationGrantWithBody Preview exact suite digest and profile grant
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/verification-environments/{id}/grants/preview (the `PreviewVerificationGrant` operationId).
+func (c *Client) PreviewVerificationGrantWithBody(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPreviewVerificationGrantRequestWithBody(c.Server, org, id, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PreviewVerificationGrant Preview exact suite digest and profile grant
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/verification-environments/{id}/grants/preview (the `PreviewVerificationGrant` operationId).
+func (c *Client) PreviewVerificationGrant(ctx context.Context, org string, id string, body PreviewVerificationGrantJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPreviewVerificationGrantRequest(c.Server, org, id, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// GetVerificationEnvironment Get target verification environment policy
+//
+// Corresponds with GET /api/v1/tenants/{org}/verification-environments/{targetId} (the `GetVerificationEnvironment` operationId).
+func (c *Client) GetVerificationEnvironment(ctx context.Context, org string, targetId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetVerificationEnvironmentRequest(c.Server, org, targetId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PutVerificationEnvironmentWithBody Set target verification environment policy
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with PUT /api/v1/tenants/{org}/verification-environments/{targetId} (the `PutVerificationEnvironment` operationId).
+func (c *Client) PutVerificationEnvironmentWithBody(ctx context.Context, org string, targetId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutVerificationEnvironmentRequestWithBody(c.Server, org, targetId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PutVerificationEnvironment Set target verification environment policy
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with PUT /api/v1/tenants/{org}/verification-environments/{targetId} (the `PutVerificationEnvironment` operationId).
+func (c *Client) PutVerificationEnvironment(ctx context.Context, org string, targetId string, body PutVerificationEnvironmentJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPutVerificationEnvironmentRequest(c.Server, org, targetId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// RevokeVerificationGrant Revoke new runs and evidence for a suite grant
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/verification-grants/{id} (the `RevokeVerificationGrant` operationId).
+func (c *Client) RevokeVerificationGrant(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewRevokeVerificationGrantRequest(c.Server, org, id)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// ListVerificationSuites List admitted suite releases
+//
+// Corresponds with GET /api/v1/tenants/{org}/verification-suites (the `ListVerificationSuites` operationId).
+func (c *Client) ListVerificationSuites(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListVerificationSuitesRequest(c.Server, org)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateVerificationSuiteWithBody Import an exact verified suite release
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/verification-suites (the `CreateVerificationSuite` operationId).
+func (c *Client) CreateVerificationSuiteWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateVerificationSuiteRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// CreateVerificationSuite Import an exact verified suite release
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/verification-suites (the `CreateVerificationSuite` operationId).
+func (c *Client) CreateVerificationSuite(ctx context.Context, org string, body CreateVerificationSuiteJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateVerificationSuiteRequest(c.Server, org, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PreviewVerificationSuiteWithBody Cryptographically preview a platform suite release
+//
+// Takes any type of body and a specified content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/verification-suites/preview (the `PreviewVerificationSuite` operationId).
+func (c *Client) PreviewVerificationSuiteWithBody(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPreviewVerificationSuiteRequestWithBody(c.Server, org, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+// PreviewVerificationSuite Cryptographically preview a platform suite release
+//
+// Takes a body of the `application/json` content type.
+//
+// Corresponds with POST /api/v1/tenants/{org}/verification-suites/preview (the `PreviewVerificationSuite` operationId).
+func (c *Client) PreviewVerificationSuite(ctx context.Context, org string, body PreviewVerificationSuiteJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewPreviewVerificationSuiteRequest(c.Server, org, body)
 	if err != nil {
 		return nil, err
 	}
@@ -17157,6 +18406,209 @@ func NewInstanceDiffRequest(server string, org string, id string, params *Instan
 	return req, nil
 }
 
+// NewPromoteInstanceRequest calls the generic PromoteInstance builder with application/json body
+func NewPromoteInstanceRequest(server string, org string, id string, body PromoteInstanceJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPromoteInstanceRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewPromoteInstanceRequestWithBody constructs an http.Request for the PromoteInstance method, with any body, and a specified content type
+func NewPromoteInstanceRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s/promote", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetInstancePromotionPolicyRequest constructs an http.Request for the GetInstancePromotionPolicy method
+func NewGetInstancePromotionPolicyRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s/promotion-policy", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPutInstancePromotionPolicyRequest calls the generic PutInstancePromotionPolicy builder with application/json body
+func NewPutInstancePromotionPolicyRequest(server string, org string, id string, body PutInstancePromotionPolicyJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPutInstancePromotionPolicyRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewPutInstancePromotionPolicyRequestWithBody constructs an http.Request for the PutInstancePromotionPolicy method, with any body, and a specified content type
+func NewPutInstancePromotionPolicyRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s/promotion-policy", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewPreviewInstancePromotionRequest calls the generic PreviewInstancePromotion builder with application/json body
+func NewPreviewInstancePromotionRequest(server string, org string, id string, body PreviewInstancePromotionJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPreviewInstancePromotionRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewPreviewInstancePromotionRequestWithBody constructs an http.Request for the PreviewInstancePromotion method, with any body, and a specified content type
+func NewPreviewInstancePromotionRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s/promotion/preview", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewRollbackInstanceRequest calls the generic RollbackInstance builder with application/json body
 func NewRollbackInstanceRequest(server string, org string, id string, body RollbackInstanceJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
@@ -17261,6 +18713,414 @@ func NewUpgradeInstanceRequestWithBody(server string, org string, id string, con
 	}
 
 	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDisableInstanceVerificationRequest constructs an http.Request for the DisableInstanceVerification method
+func NewDisableInstanceVerificationRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s/verification", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetInstanceVerificationRequest constructs an http.Request for the GetInstanceVerification method
+func NewGetInstanceVerificationRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s/verification", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPutInstanceVerificationRequest calls the generic PutInstanceVerification builder with application/json body
+func NewPutInstanceVerificationRequest(server string, org string, id string, body PutInstanceVerificationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPutInstanceVerificationRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewPutInstanceVerificationRequestWithBody constructs an http.Request for the PutInstanceVerification method, with any body, and a specified content type
+func NewPutInstanceVerificationRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s/verification", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewPreviewInstanceVerificationRequest calls the generic PreviewInstanceVerification builder with application/json body
+func NewPreviewInstanceVerificationRequest(server string, org string, id string, body PreviewInstanceVerificationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPreviewInstanceVerificationRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewPreviewInstanceVerificationRequestWithBody constructs an http.Request for the PreviewInstanceVerification method, with any body, and a specified content type
+func NewPreviewInstanceVerificationRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s/verification/preview", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewListInstanceVerificationRunsRequest constructs an http.Request for the ListInstanceVerificationRuns method
+func NewListInstanceVerificationRunsRequest(server string, org string, id string, params *ListInstanceVerificationRunsParams) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s/verification/runs", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		// queryValues collects non-styled parameters (passthrough, JSON)
+		// that are safe to round-trip through url.Values.Encode().
+		queryValues := queryURL.Query()
+		// rawQueryFragments collects pre-encoded query fragments from
+		// styled parameters, preserving literal commas as delimiters
+		// per the OpenAPI spec (e.g. "color=blue,black,brown").
+		var rawQueryFragments []string
+
+		if params.Limit != nil {
+
+			if queryFrag, err := runtime.StyleParamWithOptions("form", false, "limit", *params.Limit, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationQuery, Type: "integer", Format: "int64"}); err != nil {
+				return nil, err
+			} else {
+				for _, qp := range strings.Split(queryFrag, "&") {
+					rawQueryFragments = append(rawQueryFragments, qp)
+				}
+			}
+
+		}
+
+		if encoded := queryValues.Encode(); encoded != "" {
+			rawQueryFragments = append(rawQueryFragments, encoded)
+		}
+		queryURL.RawQuery = strings.Join(rawQueryFragments, "&")
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateInstanceVerificationRunRequest calls the generic CreateInstanceVerificationRun builder with application/json body
+func NewCreateInstanceVerificationRunRequest(server string, org string, id string, body CreateInstanceVerificationRunJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateInstanceVerificationRunRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewCreateInstanceVerificationRunRequestWithBody constructs an http.Request for the CreateInstanceVerificationRun method, with any body, and a specified content type
+func NewCreateInstanceVerificationRunRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s/verification/runs", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetInstanceVerificationRunRequest constructs an http.Request for the GetInstanceVerificationRun method
+func NewGetInstanceVerificationRunRequest(server string, org string, id string, runId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithOptions("simple", false, "runId", runId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s/verification/runs/%s", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewRetryInstanceVerificationRunRequest constructs an http.Request for the RetryInstanceVerificationRun method
+func NewRetryInstanceVerificationRunRequest(server string, org string, id string, runId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam2 string
+
+	pathParam2, err = runtime.StyleParamWithOptions("simple", false, "runId", runId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/instances/%s/verification/runs/%s/retry", pathParam0, pathParam1, pathParam2)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
 
 	return req, nil
 }
@@ -20572,6 +22432,378 @@ func NewCreateSourceScaffoldRunRequestWithBody(server string, org string, source
 	return req, nil
 }
 
+// NewCreateVerificationGrantRequest calls the generic CreateVerificationGrant builder with application/json body
+func NewCreateVerificationGrantRequest(server string, org string, id string, body CreateVerificationGrantJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateVerificationGrantRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewCreateVerificationGrantRequestWithBody constructs an http.Request for the CreateVerificationGrant method, with any body, and a specified content type
+func NewCreateVerificationGrantRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/verification-environments/%s/grants", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewPreviewVerificationGrantRequest calls the generic PreviewVerificationGrant builder with application/json body
+func NewPreviewVerificationGrantRequest(server string, org string, id string, body PreviewVerificationGrantJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPreviewVerificationGrantRequestWithBody(server, org, id, "application/json", bodyReader)
+}
+
+// NewPreviewVerificationGrantRequestWithBody constructs an http.Request for the PreviewVerificationGrant method, with any body, and a specified content type
+func NewPreviewVerificationGrantRequestWithBody(server string, org string, id string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/verification-environments/%s/grants/preview", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetVerificationEnvironmentRequest constructs an http.Request for the GetVerificationEnvironment method
+func NewGetVerificationEnvironmentRequest(server string, org string, targetId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "targetId", targetId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/verification-environments/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewPutVerificationEnvironmentRequest calls the generic PutVerificationEnvironment builder with application/json body
+func NewPutVerificationEnvironmentRequest(server string, org string, targetId string, body PutVerificationEnvironmentJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPutVerificationEnvironmentRequestWithBody(server, org, targetId, "application/json", bodyReader)
+}
+
+// NewPutVerificationEnvironmentRequestWithBody constructs an http.Request for the PutVerificationEnvironment method, with any body, and a specified content type
+func NewPutVerificationEnvironmentRequestWithBody(server string, org string, targetId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "targetId", targetId, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/verification-environments/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPut, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewRevokeVerificationGrantRequest constructs an http.Request for the RevokeVerificationGrant method
+func NewRevokeVerificationGrantRequest(server string, org string, id string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithOptions("simple", false, "id", id, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/verification-grants/%s", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodDelete, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListVerificationSuitesRequest constructs an http.Request for the ListVerificationSuites method
+func NewListVerificationSuitesRequest(server string, org string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/verification-suites", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodGet, queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateVerificationSuiteRequest calls the generic CreateVerificationSuite builder with application/json body
+func NewCreateVerificationSuiteRequest(server string, org string, body CreateVerificationSuiteJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateVerificationSuiteRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewCreateVerificationSuiteRequestWithBody constructs an http.Request for the CreateVerificationSuite method, with any body, and a specified content type
+func NewCreateVerificationSuiteRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/verification-suites", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewPreviewVerificationSuiteRequest calls the generic PreviewVerificationSuite builder with application/json body
+func NewPreviewVerificationSuiteRequest(server string, org string, body PreviewVerificationSuiteJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewPreviewVerificationSuiteRequestWithBody(server, org, "application/json", bodyReader)
+}
+
+// NewPreviewVerificationSuiteRequestWithBody constructs an http.Request for the PreviewVerificationSuite method, with any body, and a specified content type
+func NewPreviewVerificationSuiteRequestWithBody(server string, org string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithOptions("simple", false, "org", org, runtime.StyleParamOptions{ParamLocation: runtime.ParamLocationPath, Type: "string", Format: ""})
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/api/v1/tenants/%s/verification-suites/preview", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListTenantZonesRequest constructs an http.Request for the ListTenantZones method
 func NewListTenantZonesRequest(server string, org string) (*http.Request, error) {
 	var err error
@@ -22236,6 +24468,55 @@ type ClientWithResponsesInterface interface {
 	// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/diff (the `InstanceDiff` operationId).
 	InstanceDiffWithResponse(ctx context.Context, org string, id string, params *InstanceDiffParams, reqEditors ...RequestEditorFn) (*InstanceDiffResponse, error)
 
+	// PromoteInstanceWithBodyWithResponse Explicitly promote an exact verified application version
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/promote (the `PromoteInstance` operationId).
+	PromoteInstanceWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PromoteInstanceResponse, error)
+
+	// PromoteInstanceWithResponse Explicitly promote an exact verified application version
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/promote (the `PromoteInstance` operationId).
+	PromoteInstanceWithResponse(ctx context.Context, org string, id string, body PromoteInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*PromoteInstanceResponse, error)
+
+	// GetInstancePromotionPolicyWithResponse Get linked promotion verification policy
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/promotion-policy (the `GetInstancePromotionPolicy` operationId).
+	GetInstancePromotionPolicyWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetInstancePromotionPolicyResponse, error)
+
+	// PutInstancePromotionPolicyWithBodyWithResponse Set linked promotion verification policy
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/instances/{id}/promotion-policy (the `PutInstancePromotionPolicy` operationId).
+	PutInstancePromotionPolicyWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutInstancePromotionPolicyResponse, error)
+
+	// PutInstancePromotionPolicyWithResponse Set linked promotion verification policy
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/instances/{id}/promotion-policy (the `PutInstancePromotionPolicy` operationId).
+	PutInstancePromotionPolicyWithResponse(ctx context.Context, org string, id string, body PutInstancePromotionPolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*PutInstancePromotionPolicyResponse, error)
+
+	// PreviewInstancePromotionWithBodyWithResponse Preview exact promotion evidence gates
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/promotion/preview (the `PreviewInstancePromotion` operationId).
+	PreviewInstancePromotionWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PreviewInstancePromotionResponse, error)
+
+	// PreviewInstancePromotionWithResponse Preview exact promotion evidence gates
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/promotion/preview (the `PreviewInstancePromotion` operationId).
+	PreviewInstancePromotionWithResponse(ctx context.Context, org string, id string, body PreviewInstancePromotionJSONRequestBody, reqEditors ...RequestEditorFn) (*PreviewInstancePromotionResponse, error)
+
 	// RollbackInstanceWithBodyWithResponse Rollback an instance to an explicit earlier catalog version
 	//
 	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -22263,6 +24544,83 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/upgrade (the `UpgradeInstance` operationId).
 	UpgradeInstanceWithResponse(ctx context.Context, org string, id string, body UpgradeInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpgradeInstanceResponse, error)
+
+	// DisableInstanceVerificationWithResponse Disable future verification triggers
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/instances/{id}/verification (the `DisableInstanceVerification` operationId).
+	DisableInstanceVerificationWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DisableInstanceVerificationResponse, error)
+
+	// GetInstanceVerificationWithResponse Get instance verification policy and status
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/verification (the `GetInstanceVerification` operationId).
+	GetInstanceVerificationWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetInstanceVerificationResponse, error)
+
+	// PutInstanceVerificationWithBodyWithResponse Save a verified team policy revision
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/instances/{id}/verification (the `PutInstanceVerification` operationId).
+	PutInstanceVerificationWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutInstanceVerificationResponse, error)
+
+	// PutInstanceVerificationWithResponse Save a verified team policy revision
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/instances/{id}/verification (the `PutInstanceVerification` operationId).
+	PutInstanceVerificationWithResponse(ctx context.Context, org string, id string, body PutInstanceVerificationJSONRequestBody, reqEditors ...RequestEditorFn) (*PutInstanceVerificationResponse, error)
+
+	// PreviewInstanceVerificationWithBodyWithResponse Preview effective verification policy without side effects
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/preview (the `PreviewInstanceVerification` operationId).
+	PreviewInstanceVerificationWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PreviewInstanceVerificationResponse, error)
+
+	// PreviewInstanceVerificationWithResponse Preview effective verification policy without side effects
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/preview (the `PreviewInstanceVerification` operationId).
+	PreviewInstanceVerificationWithResponse(ctx context.Context, org string, id string, body PreviewInstanceVerificationJSONRequestBody, reqEditors ...RequestEditorFn) (*PreviewInstanceVerificationResponse, error)
+
+	// ListInstanceVerificationRunsWithResponse List verification run history
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/verification/runs (the `ListInstanceVerificationRuns` operationId).
+	ListInstanceVerificationRunsWithResponse(ctx context.Context, org string, id string, params *ListInstanceVerificationRunsParams, reqEditors ...RequestEditorFn) (*ListInstanceVerificationRunsResponse, error)
+
+	// CreateInstanceVerificationRunWithBodyWithResponse Dry-run or request an exact manual verification run
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/runs (the `CreateInstanceVerificationRun` operationId).
+	CreateInstanceVerificationRunWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateInstanceVerificationRunResponse, error)
+
+	// CreateInstanceVerificationRunWithResponse Dry-run or request an exact manual verification run
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/runs (the `CreateInstanceVerificationRun` operationId).
+	CreateInstanceVerificationRunWithResponse(ctx context.Context, org string, id string, body CreateInstanceVerificationRunJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateInstanceVerificationRunResponse, error)
+
+	// GetInstanceVerificationRunWithResponse Get verification run details
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/verification/runs/{runId} (the `GetInstanceVerificationRun` operationId).
+	GetInstanceVerificationRunWithResponse(ctx context.Context, org string, id string, runId string, reqEditors ...RequestEditorFn) (*GetInstanceVerificationRunResponse, error)
+
+	// RetryInstanceVerificationRunWithResponse Retry a failed verification attempt after revalidation
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/runs/{runId}/retry (the `RetryInstanceVerificationRun` operationId).
+	RetryInstanceVerificationRunWithResponse(ctx context.Context, org string, id string, runId string, reqEditors ...RequestEditorFn) (*RetryInstanceVerificationRunResponse, error)
 
 	// ListOrgMembersWithResponse Org-wide member view (highest role + teams)
 	//
@@ -22935,6 +25293,97 @@ type ClientWithResponsesInterface interface {
 	//
 	// Corresponds with POST /api/v1/tenants/{org}/templates/{source}/{name}/runs (the `CreateSourceScaffoldRun` operationId).
 	CreateSourceScaffoldRunWithResponse(ctx context.Context, org string, source string, name string, body CreateSourceScaffoldRunJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateSourceScaffoldRunResponse, error)
+
+	// CreateVerificationGrantWithBodyWithResponse Create or revise exact suite grant
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/verification-environments/{id}/grants (the `CreateVerificationGrant` operationId).
+	CreateVerificationGrantWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateVerificationGrantResponse, error)
+
+	// CreateVerificationGrantWithResponse Create or revise exact suite grant
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/verification-environments/{id}/grants (the `CreateVerificationGrant` operationId).
+	CreateVerificationGrantWithResponse(ctx context.Context, org string, id string, body CreateVerificationGrantJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateVerificationGrantResponse, error)
+
+	// PreviewVerificationGrantWithBodyWithResponse Preview exact suite digest and profile grant
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/verification-environments/{id}/grants/preview (the `PreviewVerificationGrant` operationId).
+	PreviewVerificationGrantWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PreviewVerificationGrantResponse, error)
+
+	// PreviewVerificationGrantWithResponse Preview exact suite digest and profile grant
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/verification-environments/{id}/grants/preview (the `PreviewVerificationGrant` operationId).
+	PreviewVerificationGrantWithResponse(ctx context.Context, org string, id string, body PreviewVerificationGrantJSONRequestBody, reqEditors ...RequestEditorFn) (*PreviewVerificationGrantResponse, error)
+
+	// GetVerificationEnvironmentWithResponse Get target verification environment policy
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/verification-environments/{targetId} (the `GetVerificationEnvironment` operationId).
+	GetVerificationEnvironmentWithResponse(ctx context.Context, org string, targetId string, reqEditors ...RequestEditorFn) (*GetVerificationEnvironmentResponse, error)
+
+	// PutVerificationEnvironmentWithBodyWithResponse Set target verification environment policy
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/verification-environments/{targetId} (the `PutVerificationEnvironment` operationId).
+	PutVerificationEnvironmentWithBodyWithResponse(ctx context.Context, org string, targetId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutVerificationEnvironmentResponse, error)
+
+	// PutVerificationEnvironmentWithResponse Set target verification environment policy
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with PUT /api/v1/tenants/{org}/verification-environments/{targetId} (the `PutVerificationEnvironment` operationId).
+	PutVerificationEnvironmentWithResponse(ctx context.Context, org string, targetId string, body PutVerificationEnvironmentJSONRequestBody, reqEditors ...RequestEditorFn) (*PutVerificationEnvironmentResponse, error)
+
+	// RevokeVerificationGrantWithResponse Revoke new runs and evidence for a suite grant
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with DELETE /api/v1/tenants/{org}/verification-grants/{id} (the `RevokeVerificationGrant` operationId).
+	RevokeVerificationGrantWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*RevokeVerificationGrantResponse, error)
+
+	// ListVerificationSuitesWithResponse List admitted suite releases
+	//
+	// Returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with GET /api/v1/tenants/{org}/verification-suites (the `ListVerificationSuites` operationId).
+	ListVerificationSuitesWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListVerificationSuitesResponse, error)
+
+	// CreateVerificationSuiteWithBodyWithResponse Import an exact verified suite release
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/verification-suites (the `CreateVerificationSuite` operationId).
+	CreateVerificationSuiteWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateVerificationSuiteResponse, error)
+
+	// CreateVerificationSuiteWithResponse Import an exact verified suite release
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/verification-suites (the `CreateVerificationSuite` operationId).
+	CreateVerificationSuiteWithResponse(ctx context.Context, org string, body CreateVerificationSuiteJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateVerificationSuiteResponse, error)
+
+	// PreviewVerificationSuiteWithBodyWithResponse Cryptographically preview a platform suite release
+	//
+	// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/verification-suites/preview (the `PreviewVerificationSuite` operationId).
+	PreviewVerificationSuiteWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PreviewVerificationSuiteResponse, error)
+
+	// PreviewVerificationSuiteWithResponse Cryptographically preview a platform suite release
+	//
+	// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+	//
+	// Corresponds with POST /api/v1/tenants/{org}/verification-suites/preview (the `PreviewVerificationSuite` operationId).
+	PreviewVerificationSuiteWithResponse(ctx context.Context, org string, body PreviewVerificationSuiteJSONRequestBody, reqEditors ...RequestEditorFn) (*PreviewVerificationSuiteResponse, error)
 
 	// ListTenantZonesWithResponse List tenant zones owned by this org
 	//
@@ -29413,6 +31862,198 @@ func (r InstanceDiffResponse) ContentType() string {
 	return ""
 }
 
+type PromoteInstanceResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PromotionOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PromoteInstanceResponse) GetJSON200() *PromotionOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r PromoteInstanceResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r PromoteInstanceResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PromoteInstanceResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PromoteInstanceResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PromoteInstanceResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetInstancePromotionPolicyResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PromotionPolicyOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetInstancePromotionPolicyResponse) GetJSON200() *PromotionPolicyOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GetInstancePromotionPolicyResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GetInstancePromotionPolicyResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInstancePromotionPolicyResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInstancePromotionPolicyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInstancePromotionPolicyResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PutInstancePromotionPolicyResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PromotionPolicyOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PutInstancePromotionPolicyResponse) GetJSON200() *PromotionPolicyOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r PutInstancePromotionPolicyResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r PutInstancePromotionPolicyResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PutInstancePromotionPolicyResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PutInstancePromotionPolicyResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PutInstancePromotionPolicyResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PreviewInstancePromotionResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PromotionPreview
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PreviewInstancePromotionResponse) GetJSON200() *PromotionPreview {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r PreviewInstancePromotionResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r PreviewInstancePromotionResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PreviewInstancePromotionResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PreviewInstancePromotionResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PreviewInstancePromotionResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type RollbackInstanceResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -29503,6 +32144,390 @@ func (r UpgradeInstanceResponse) StatusCode() int {
 
 // ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
 func (r UpgradeInstanceResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type DisableInstanceVerificationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *VerificationPolicy
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r DisableInstanceVerificationResponse) GetJSON200() *VerificationPolicy {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r DisableInstanceVerificationResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r DisableInstanceVerificationResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r DisableInstanceVerificationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DisableInstanceVerificationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r DisableInstanceVerificationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetInstanceVerificationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *VerificationView
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetInstanceVerificationResponse) GetJSON200() *VerificationView {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GetInstanceVerificationResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GetInstanceVerificationResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInstanceVerificationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInstanceVerificationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInstanceVerificationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PutInstanceVerificationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *VerificationPolicy
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PutInstanceVerificationResponse) GetJSON200() *VerificationPolicy {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r PutInstanceVerificationResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r PutInstanceVerificationResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PutInstanceVerificationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PutInstanceVerificationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PutInstanceVerificationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PreviewInstanceVerificationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *PolicyPreview
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PreviewInstanceVerificationResponse) GetJSON200() *PolicyPreview {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r PreviewInstanceVerificationResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r PreviewInstanceVerificationResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PreviewInstanceVerificationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PreviewInstanceVerificationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PreviewInstanceVerificationResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListInstanceVerificationRunsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *RunListOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListInstanceVerificationRunsResponse) GetJSON200() *RunListOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ListInstanceVerificationRunsResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ListInstanceVerificationRunsResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListInstanceVerificationRunsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListInstanceVerificationRunsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListInstanceVerificationRunsResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateInstanceVerificationRunResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *RunOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r CreateInstanceVerificationRunResponse) GetJSON200() *RunOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r CreateInstanceVerificationRunResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r CreateInstanceVerificationRunResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateInstanceVerificationRunResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateInstanceVerificationRunResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateInstanceVerificationRunResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetInstanceVerificationRunResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Run
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetInstanceVerificationRunResponse) GetJSON200() *Run {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GetInstanceVerificationRunResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GetInstanceVerificationRunResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetInstanceVerificationRunResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetInstanceVerificationRunResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetInstanceVerificationRunResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RetryInstanceVerificationRunResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *Run
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r RetryInstanceVerificationRunResponse) GetJSON200() *Run {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r RetryInstanceVerificationRunResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r RetryInstanceVerificationRunResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RetryInstanceVerificationRunResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RetryInstanceVerificationRunResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RetryInstanceVerificationRunResponse) ContentType() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Header.Get("Content-Type")
 	}
@@ -32881,6 +35906,390 @@ func (r CreateSourceScaffoldRunResponse) ContentType() string {
 	return ""
 }
 
+type CreateVerificationGrantResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SuiteGrant
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r CreateVerificationGrantResponse) GetJSON200() *SuiteGrant {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r CreateVerificationGrantResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r CreateVerificationGrantResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateVerificationGrantResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateVerificationGrantResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateVerificationGrantResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PreviewVerificationGrantResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SuitePreview
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PreviewVerificationGrantResponse) GetJSON200() *SuitePreview {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r PreviewVerificationGrantResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r PreviewVerificationGrantResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PreviewVerificationGrantResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PreviewVerificationGrantResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PreviewVerificationGrantResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type GetVerificationEnvironmentResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *EnvironmentPolicy
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r GetVerificationEnvironmentResponse) GetJSON200() *EnvironmentPolicy {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r GetVerificationEnvironmentResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r GetVerificationEnvironmentResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r GetVerificationEnvironmentResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetVerificationEnvironmentResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r GetVerificationEnvironmentResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PutVerificationEnvironmentResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *EnvironmentPolicy
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PutVerificationEnvironmentResponse) GetJSON200() *EnvironmentPolicy {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r PutVerificationEnvironmentResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r PutVerificationEnvironmentResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PutVerificationEnvironmentResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PutVerificationEnvironmentResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PutVerificationEnvironmentResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type RevokeVerificationGrantResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *VerificationGrantStatusOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r RevokeVerificationGrantResponse) GetJSON200() *VerificationGrantStatusOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r RevokeVerificationGrantResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r RevokeVerificationGrantResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r RevokeVerificationGrantResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r RevokeVerificationGrantResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r RevokeVerificationGrantResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type ListVerificationSuitesResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SuiteListOutputBody
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r ListVerificationSuitesResponse) GetJSON200() *SuiteListOutputBody {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r ListVerificationSuitesResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r ListVerificationSuitesResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r ListVerificationSuitesResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListVerificationSuitesResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r ListVerificationSuitesResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type CreateVerificationSuiteResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SuitePreview
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r CreateVerificationSuiteResponse) GetJSON200() *SuitePreview {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r CreateVerificationSuiteResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r CreateVerificationSuiteResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateVerificationSuiteResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateVerificationSuiteResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r CreateVerificationSuiteResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
+type PreviewVerificationSuiteResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	// JSON200 the response for an HTTP 200 `application/json` response
+	JSON200 *SuitePreview
+	// ApplicationproblemJSONDefault the response for an HTTP default `application/problem+json` response
+	ApplicationproblemJSONDefault *ErrorModel
+}
+
+// GetJSON200 returns the response for an HTTP 200 `application/json` response
+func (r PreviewVerificationSuiteResponse) GetJSON200() *SuitePreview {
+	return r.JSON200
+}
+
+// GetApplicationproblemJSONDefault returns the response for an HTTP default `application/problem+json` response
+func (r PreviewVerificationSuiteResponse) GetApplicationproblemJSONDefault() *ErrorModel {
+	return r.ApplicationproblemJSONDefault
+}
+
+// GetBody returns the raw response body bytes
+func (r PreviewVerificationSuiteResponse) GetBody() []byte {
+	return r.Body
+}
+
+// Status returns HTTPResponse.Status
+func (r PreviewVerificationSuiteResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r PreviewVerificationSuiteResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+// ContentType is a convenience method to retrieve the Content-Type value from the HTTP response headers
+func (r PreviewVerificationSuiteResponse) ContentType() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Header.Get("Content-Type")
+	}
+	return ""
+}
+
 type ListTenantZonesResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
@@ -35604,6 +39013,97 @@ func (c *ClientWithResponses) InstanceDiffWithResponse(ctx context.Context, org 
 	return ParseInstanceDiffResponse(rsp)
 }
 
+// PromoteInstanceWithBodyWithResponse Explicitly promote an exact verified application version
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/promote (the `PromoteInstance` operationId).
+func (c *ClientWithResponses) PromoteInstanceWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PromoteInstanceResponse, error) {
+	rsp, err := c.PromoteInstanceWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePromoteInstanceResponse(rsp)
+}
+
+// PromoteInstanceWithResponse Explicitly promote an exact verified application version
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/promote (the `PromoteInstance` operationId).
+func (c *ClientWithResponses) PromoteInstanceWithResponse(ctx context.Context, org string, id string, body PromoteInstanceJSONRequestBody, reqEditors ...RequestEditorFn) (*PromoteInstanceResponse, error) {
+	rsp, err := c.PromoteInstance(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePromoteInstanceResponse(rsp)
+}
+
+// GetInstancePromotionPolicyWithResponse Get linked promotion verification policy
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/promotion-policy (the `GetInstancePromotionPolicy` operationId).
+func (c *ClientWithResponses) GetInstancePromotionPolicyWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetInstancePromotionPolicyResponse, error) {
+	rsp, err := c.GetInstancePromotionPolicy(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInstancePromotionPolicyResponse(rsp)
+}
+
+// PutInstancePromotionPolicyWithBodyWithResponse Set linked promotion verification policy
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/tenants/{org}/instances/{id}/promotion-policy (the `PutInstancePromotionPolicy` operationId).
+func (c *ClientWithResponses) PutInstancePromotionPolicyWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutInstancePromotionPolicyResponse, error) {
+	rsp, err := c.PutInstancePromotionPolicyWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutInstancePromotionPolicyResponse(rsp)
+}
+
+// PutInstancePromotionPolicyWithResponse Set linked promotion verification policy
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/tenants/{org}/instances/{id}/promotion-policy (the `PutInstancePromotionPolicy` operationId).
+func (c *ClientWithResponses) PutInstancePromotionPolicyWithResponse(ctx context.Context, org string, id string, body PutInstancePromotionPolicyJSONRequestBody, reqEditors ...RequestEditorFn) (*PutInstancePromotionPolicyResponse, error) {
+	rsp, err := c.PutInstancePromotionPolicy(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutInstancePromotionPolicyResponse(rsp)
+}
+
+// PreviewInstancePromotionWithBodyWithResponse Preview exact promotion evidence gates
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/promotion/preview (the `PreviewInstancePromotion` operationId).
+func (c *ClientWithResponses) PreviewInstancePromotionWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PreviewInstancePromotionResponse, error) {
+	rsp, err := c.PreviewInstancePromotionWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePreviewInstancePromotionResponse(rsp)
+}
+
+// PreviewInstancePromotionWithResponse Preview exact promotion evidence gates
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/promotion/preview (the `PreviewInstancePromotion` operationId).
+func (c *ClientWithResponses) PreviewInstancePromotionWithResponse(ctx context.Context, org string, id string, body PreviewInstancePromotionJSONRequestBody, reqEditors ...RequestEditorFn) (*PreviewInstancePromotionResponse, error) {
+	rsp, err := c.PreviewInstancePromotion(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePreviewInstancePromotionResponse(rsp)
+}
+
 // RollbackInstanceWithBodyWithResponse Rollback an instance to an explicit earlier catalog version
 //
 // Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
@@ -35654,6 +39154,149 @@ func (c *ClientWithResponses) UpgradeInstanceWithResponse(ctx context.Context, o
 		return nil, err
 	}
 	return ParseUpgradeInstanceResponse(rsp)
+}
+
+// DisableInstanceVerificationWithResponse Disable future verification triggers
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/instances/{id}/verification (the `DisableInstanceVerification` operationId).
+func (c *ClientWithResponses) DisableInstanceVerificationWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*DisableInstanceVerificationResponse, error) {
+	rsp, err := c.DisableInstanceVerification(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDisableInstanceVerificationResponse(rsp)
+}
+
+// GetInstanceVerificationWithResponse Get instance verification policy and status
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/verification (the `GetInstanceVerification` operationId).
+func (c *ClientWithResponses) GetInstanceVerificationWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*GetInstanceVerificationResponse, error) {
+	rsp, err := c.GetInstanceVerification(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInstanceVerificationResponse(rsp)
+}
+
+// PutInstanceVerificationWithBodyWithResponse Save a verified team policy revision
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/tenants/{org}/instances/{id}/verification (the `PutInstanceVerification` operationId).
+func (c *ClientWithResponses) PutInstanceVerificationWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutInstanceVerificationResponse, error) {
+	rsp, err := c.PutInstanceVerificationWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutInstanceVerificationResponse(rsp)
+}
+
+// PutInstanceVerificationWithResponse Save a verified team policy revision
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/tenants/{org}/instances/{id}/verification (the `PutInstanceVerification` operationId).
+func (c *ClientWithResponses) PutInstanceVerificationWithResponse(ctx context.Context, org string, id string, body PutInstanceVerificationJSONRequestBody, reqEditors ...RequestEditorFn) (*PutInstanceVerificationResponse, error) {
+	rsp, err := c.PutInstanceVerification(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutInstanceVerificationResponse(rsp)
+}
+
+// PreviewInstanceVerificationWithBodyWithResponse Preview effective verification policy without side effects
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/preview (the `PreviewInstanceVerification` operationId).
+func (c *ClientWithResponses) PreviewInstanceVerificationWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PreviewInstanceVerificationResponse, error) {
+	rsp, err := c.PreviewInstanceVerificationWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePreviewInstanceVerificationResponse(rsp)
+}
+
+// PreviewInstanceVerificationWithResponse Preview effective verification policy without side effects
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/preview (the `PreviewInstanceVerification` operationId).
+func (c *ClientWithResponses) PreviewInstanceVerificationWithResponse(ctx context.Context, org string, id string, body PreviewInstanceVerificationJSONRequestBody, reqEditors ...RequestEditorFn) (*PreviewInstanceVerificationResponse, error) {
+	rsp, err := c.PreviewInstanceVerification(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePreviewInstanceVerificationResponse(rsp)
+}
+
+// ListInstanceVerificationRunsWithResponse List verification run history
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/verification/runs (the `ListInstanceVerificationRuns` operationId).
+func (c *ClientWithResponses) ListInstanceVerificationRunsWithResponse(ctx context.Context, org string, id string, params *ListInstanceVerificationRunsParams, reqEditors ...RequestEditorFn) (*ListInstanceVerificationRunsResponse, error) {
+	rsp, err := c.ListInstanceVerificationRuns(ctx, org, id, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListInstanceVerificationRunsResponse(rsp)
+}
+
+// CreateInstanceVerificationRunWithBodyWithResponse Dry-run or request an exact manual verification run
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/runs (the `CreateInstanceVerificationRun` operationId).
+func (c *ClientWithResponses) CreateInstanceVerificationRunWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateInstanceVerificationRunResponse, error) {
+	rsp, err := c.CreateInstanceVerificationRunWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateInstanceVerificationRunResponse(rsp)
+}
+
+// CreateInstanceVerificationRunWithResponse Dry-run or request an exact manual verification run
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/runs (the `CreateInstanceVerificationRun` operationId).
+func (c *ClientWithResponses) CreateInstanceVerificationRunWithResponse(ctx context.Context, org string, id string, body CreateInstanceVerificationRunJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateInstanceVerificationRunResponse, error) {
+	rsp, err := c.CreateInstanceVerificationRun(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateInstanceVerificationRunResponse(rsp)
+}
+
+// GetInstanceVerificationRunWithResponse Get verification run details
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/instances/{id}/verification/runs/{runId} (the `GetInstanceVerificationRun` operationId).
+func (c *ClientWithResponses) GetInstanceVerificationRunWithResponse(ctx context.Context, org string, id string, runId string, reqEditors ...RequestEditorFn) (*GetInstanceVerificationRunResponse, error) {
+	rsp, err := c.GetInstanceVerificationRun(ctx, org, id, runId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetInstanceVerificationRunResponse(rsp)
+}
+
+// RetryInstanceVerificationRunWithResponse Retry a failed verification attempt after revalidation
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/instances/{id}/verification/runs/{runId}/retry (the `RetryInstanceVerificationRun` operationId).
+func (c *ClientWithResponses) RetryInstanceVerificationRunWithResponse(ctx context.Context, org string, id string, runId string, reqEditors ...RequestEditorFn) (*RetryInstanceVerificationRunResponse, error) {
+	rsp, err := c.RetryInstanceVerificationRun(ctx, org, id, runId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRetryInstanceVerificationRunResponse(rsp)
 }
 
 // ListOrgMembersWithResponse Org-wide member view (highest role + teams)
@@ -36902,6 +40545,175 @@ func (c *ClientWithResponses) CreateSourceScaffoldRunWithResponse(ctx context.Co
 		return nil, err
 	}
 	return ParseCreateSourceScaffoldRunResponse(rsp)
+}
+
+// CreateVerificationGrantWithBodyWithResponse Create or revise exact suite grant
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/verification-environments/{id}/grants (the `CreateVerificationGrant` operationId).
+func (c *ClientWithResponses) CreateVerificationGrantWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateVerificationGrantResponse, error) {
+	rsp, err := c.CreateVerificationGrantWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateVerificationGrantResponse(rsp)
+}
+
+// CreateVerificationGrantWithResponse Create or revise exact suite grant
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/verification-environments/{id}/grants (the `CreateVerificationGrant` operationId).
+func (c *ClientWithResponses) CreateVerificationGrantWithResponse(ctx context.Context, org string, id string, body CreateVerificationGrantJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateVerificationGrantResponse, error) {
+	rsp, err := c.CreateVerificationGrant(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateVerificationGrantResponse(rsp)
+}
+
+// PreviewVerificationGrantWithBodyWithResponse Preview exact suite digest and profile grant
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/verification-environments/{id}/grants/preview (the `PreviewVerificationGrant` operationId).
+func (c *ClientWithResponses) PreviewVerificationGrantWithBodyWithResponse(ctx context.Context, org string, id string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PreviewVerificationGrantResponse, error) {
+	rsp, err := c.PreviewVerificationGrantWithBody(ctx, org, id, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePreviewVerificationGrantResponse(rsp)
+}
+
+// PreviewVerificationGrantWithResponse Preview exact suite digest and profile grant
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/verification-environments/{id}/grants/preview (the `PreviewVerificationGrant` operationId).
+func (c *ClientWithResponses) PreviewVerificationGrantWithResponse(ctx context.Context, org string, id string, body PreviewVerificationGrantJSONRequestBody, reqEditors ...RequestEditorFn) (*PreviewVerificationGrantResponse, error) {
+	rsp, err := c.PreviewVerificationGrant(ctx, org, id, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePreviewVerificationGrantResponse(rsp)
+}
+
+// GetVerificationEnvironmentWithResponse Get target verification environment policy
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/verification-environments/{targetId} (the `GetVerificationEnvironment` operationId).
+func (c *ClientWithResponses) GetVerificationEnvironmentWithResponse(ctx context.Context, org string, targetId string, reqEditors ...RequestEditorFn) (*GetVerificationEnvironmentResponse, error) {
+	rsp, err := c.GetVerificationEnvironment(ctx, org, targetId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetVerificationEnvironmentResponse(rsp)
+}
+
+// PutVerificationEnvironmentWithBodyWithResponse Set target verification environment policy
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/tenants/{org}/verification-environments/{targetId} (the `PutVerificationEnvironment` operationId).
+func (c *ClientWithResponses) PutVerificationEnvironmentWithBodyWithResponse(ctx context.Context, org string, targetId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PutVerificationEnvironmentResponse, error) {
+	rsp, err := c.PutVerificationEnvironmentWithBody(ctx, org, targetId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutVerificationEnvironmentResponse(rsp)
+}
+
+// PutVerificationEnvironmentWithResponse Set target verification environment policy
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with PUT /api/v1/tenants/{org}/verification-environments/{targetId} (the `PutVerificationEnvironment` operationId).
+func (c *ClientWithResponses) PutVerificationEnvironmentWithResponse(ctx context.Context, org string, targetId string, body PutVerificationEnvironmentJSONRequestBody, reqEditors ...RequestEditorFn) (*PutVerificationEnvironmentResponse, error) {
+	rsp, err := c.PutVerificationEnvironment(ctx, org, targetId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePutVerificationEnvironmentResponse(rsp)
+}
+
+// RevokeVerificationGrantWithResponse Revoke new runs and evidence for a suite grant
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with DELETE /api/v1/tenants/{org}/verification-grants/{id} (the `RevokeVerificationGrant` operationId).
+func (c *ClientWithResponses) RevokeVerificationGrantWithResponse(ctx context.Context, org string, id string, reqEditors ...RequestEditorFn) (*RevokeVerificationGrantResponse, error) {
+	rsp, err := c.RevokeVerificationGrant(ctx, org, id, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseRevokeVerificationGrantResponse(rsp)
+}
+
+// ListVerificationSuitesWithResponse List admitted suite releases
+//
+// Returns a wrapper object for the known response body format(s).
+//
+// Corresponds with GET /api/v1/tenants/{org}/verification-suites (the `ListVerificationSuites` operationId).
+func (c *ClientWithResponses) ListVerificationSuitesWithResponse(ctx context.Context, org string, reqEditors ...RequestEditorFn) (*ListVerificationSuitesResponse, error) {
+	rsp, err := c.ListVerificationSuites(ctx, org, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListVerificationSuitesResponse(rsp)
+}
+
+// CreateVerificationSuiteWithBodyWithResponse Import an exact verified suite release
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/verification-suites (the `CreateVerificationSuite` operationId).
+func (c *ClientWithResponses) CreateVerificationSuiteWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateVerificationSuiteResponse, error) {
+	rsp, err := c.CreateVerificationSuiteWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateVerificationSuiteResponse(rsp)
+}
+
+// CreateVerificationSuiteWithResponse Import an exact verified suite release
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/verification-suites (the `CreateVerificationSuite` operationId).
+func (c *ClientWithResponses) CreateVerificationSuiteWithResponse(ctx context.Context, org string, body CreateVerificationSuiteJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateVerificationSuiteResponse, error) {
+	rsp, err := c.CreateVerificationSuite(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateVerificationSuiteResponse(rsp)
+}
+
+// PreviewVerificationSuiteWithBodyWithResponse Cryptographically preview a platform suite release
+//
+// Takes any type of body and a specified content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/verification-suites/preview (the `PreviewVerificationSuite` operationId).
+func (c *ClientWithResponses) PreviewVerificationSuiteWithBodyWithResponse(ctx context.Context, org string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PreviewVerificationSuiteResponse, error) {
+	rsp, err := c.PreviewVerificationSuiteWithBody(ctx, org, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePreviewVerificationSuiteResponse(rsp)
+}
+
+// PreviewVerificationSuiteWithResponse Cryptographically preview a platform suite release
+//
+// Takes a body of the `application/json` content type, and returns a wrapper object for the known response body format(s).
+//
+// Corresponds with POST /api/v1/tenants/{org}/verification-suites/preview (the `PreviewVerificationSuite` operationId).
+func (c *ClientWithResponses) PreviewVerificationSuiteWithResponse(ctx context.Context, org string, body PreviewVerificationSuiteJSONRequestBody, reqEditors ...RequestEditorFn) (*PreviewVerificationSuiteResponse, error) {
+	rsp, err := c.PreviewVerificationSuite(ctx, org, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParsePreviewVerificationSuiteResponse(rsp)
 }
 
 // ListTenantZonesWithResponse List tenant zones owned by this org
@@ -41577,6 +45389,138 @@ func ParseInstanceDiffResponse(rsp *http.Response) (*InstanceDiffResponse, error
 	return response, nil
 }
 
+// ParsePromoteInstanceResponse parses an HTTP response from a PromoteInstanceWithResponse call
+func ParsePromoteInstanceResponse(rsp *http.Response) (*PromoteInstanceResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PromoteInstanceResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PromotionOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInstancePromotionPolicyResponse parses an HTTP response from a GetInstancePromotionPolicyWithResponse call
+func ParseGetInstancePromotionPolicyResponse(rsp *http.Response) (*GetInstancePromotionPolicyResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInstancePromotionPolicyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PromotionPolicyOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePutInstancePromotionPolicyResponse parses an HTTP response from a PutInstancePromotionPolicyWithResponse call
+func ParsePutInstancePromotionPolicyResponse(rsp *http.Response) (*PutInstancePromotionPolicyResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PutInstancePromotionPolicyResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PromotionPolicyOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePreviewInstancePromotionResponse parses an HTTP response from a PreviewInstancePromotionWithResponse call
+func ParsePreviewInstancePromotionResponse(rsp *http.Response) (*PreviewInstancePromotionResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PreviewInstancePromotionResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PromotionPreview
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseRollbackInstanceResponse parses an HTTP response from a RollbackInstanceWithResponse call
 func ParseRollbackInstanceResponse(rsp *http.Response) (*RollbackInstanceResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -41626,6 +45570,270 @@ func ParseUpgradeInstanceResponse(rsp *http.Response) (*UpgradeInstanceResponse,
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest DeployOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDisableInstanceVerificationResponse parses an HTTP response from a DisableInstanceVerificationWithResponse call
+func ParseDisableInstanceVerificationResponse(rsp *http.Response) (*DisableInstanceVerificationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DisableInstanceVerificationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest VerificationPolicy
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInstanceVerificationResponse parses an HTTP response from a GetInstanceVerificationWithResponse call
+func ParseGetInstanceVerificationResponse(rsp *http.Response) (*GetInstanceVerificationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInstanceVerificationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest VerificationView
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePutInstanceVerificationResponse parses an HTTP response from a PutInstanceVerificationWithResponse call
+func ParsePutInstanceVerificationResponse(rsp *http.Response) (*PutInstanceVerificationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PutInstanceVerificationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest VerificationPolicy
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePreviewInstanceVerificationResponse parses an HTTP response from a PreviewInstanceVerificationWithResponse call
+func ParsePreviewInstanceVerificationResponse(rsp *http.Response) (*PreviewInstanceVerificationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PreviewInstanceVerificationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PolicyPreview
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListInstanceVerificationRunsResponse parses an HTTP response from a ListInstanceVerificationRunsWithResponse call
+func ParseListInstanceVerificationRunsResponse(rsp *http.Response) (*ListInstanceVerificationRunsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListInstanceVerificationRunsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RunListOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateInstanceVerificationRunResponse parses an HTTP response from a CreateInstanceVerificationRunWithResponse call
+func ParseCreateInstanceVerificationRunResponse(rsp *http.Response) (*CreateInstanceVerificationRunResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateInstanceVerificationRunResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest RunOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetInstanceVerificationRunResponse parses an HTTP response from a GetInstanceVerificationRunWithResponse call
+func ParseGetInstanceVerificationRunResponse(rsp *http.Response) (*GetInstanceVerificationRunResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetInstanceVerificationRunResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Run
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRetryInstanceVerificationRunResponse parses an HTTP response from a RetryInstanceVerificationRunWithResponse call
+func ParseRetryInstanceVerificationRunResponse(rsp *http.Response) (*RetryInstanceVerificationRunResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RetryInstanceVerificationRunResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Run
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
@@ -43971,6 +48179,270 @@ func ParseCreateSourceScaffoldRunResponse(rsp *http.Response) (*CreateSourceScaf
 	return response, nil
 }
 
+// ParseCreateVerificationGrantResponse parses an HTTP response from a CreateVerificationGrantWithResponse call
+func ParseCreateVerificationGrantResponse(rsp *http.Response) (*CreateVerificationGrantResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateVerificationGrantResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SuiteGrant
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePreviewVerificationGrantResponse parses an HTTP response from a PreviewVerificationGrantWithResponse call
+func ParsePreviewVerificationGrantResponse(rsp *http.Response) (*PreviewVerificationGrantResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PreviewVerificationGrantResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SuitePreview
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetVerificationEnvironmentResponse parses an HTTP response from a GetVerificationEnvironmentWithResponse call
+func ParseGetVerificationEnvironmentResponse(rsp *http.Response) (*GetVerificationEnvironmentResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetVerificationEnvironmentResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest EnvironmentPolicy
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePutVerificationEnvironmentResponse parses an HTTP response from a PutVerificationEnvironmentWithResponse call
+func ParsePutVerificationEnvironmentResponse(rsp *http.Response) (*PutVerificationEnvironmentResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PutVerificationEnvironmentResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest EnvironmentPolicy
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseRevokeVerificationGrantResponse parses an HTTP response from a RevokeVerificationGrantWithResponse call
+func ParseRevokeVerificationGrantResponse(rsp *http.Response) (*RevokeVerificationGrantResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &RevokeVerificationGrantResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest VerificationGrantStatusOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListVerificationSuitesResponse parses an HTTP response from a ListVerificationSuitesWithResponse call
+func ParseListVerificationSuitesResponse(rsp *http.Response) (*ListVerificationSuitesResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListVerificationSuitesResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SuiteListOutputBody
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateVerificationSuiteResponse parses an HTTP response from a CreateVerificationSuiteWithResponse call
+func ParseCreateVerificationSuiteResponse(rsp *http.Response) (*CreateVerificationSuiteResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateVerificationSuiteResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SuitePreview
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParsePreviewVerificationSuiteResponse parses an HTTP response from a PreviewVerificationSuiteWithResponse call
+func ParsePreviewVerificationSuiteResponse(rsp *http.Response) (*PreviewVerificationSuiteResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &PreviewVerificationSuiteResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SuitePreview
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorModel
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.ApplicationproblemJSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
 // ParseListTenantZonesResponse parses an HTTP response from a ListTenantZonesWithResponse call
 func ParseListTenantZonesResponse(rsp *http.Response) (*ListTenantZonesResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
@@ -44634,12 +49106,48 @@ type ServerInterface interface {
 	// InstanceDiff Diff preview data for an upgrade
 	// (GET /api/v1/tenants/{org}/instances/{id}/diff)
 	InstanceDiff(w http.ResponseWriter, r *http.Request, org string, id string, params InstanceDiffParams)
+	// PromoteInstance Explicitly promote an exact verified application version
+	// (POST /api/v1/tenants/{org}/instances/{id}/promote)
+	PromoteInstance(w http.ResponseWriter, r *http.Request, org string, id string)
+	// GetInstancePromotionPolicy Get linked promotion verification policy
+	// (GET /api/v1/tenants/{org}/instances/{id}/promotion-policy)
+	GetInstancePromotionPolicy(w http.ResponseWriter, r *http.Request, org string, id string)
+	// PutInstancePromotionPolicy Set linked promotion verification policy
+	// (PUT /api/v1/tenants/{org}/instances/{id}/promotion-policy)
+	PutInstancePromotionPolicy(w http.ResponseWriter, r *http.Request, org string, id string)
+	// PreviewInstancePromotion Preview exact promotion evidence gates
+	// (POST /api/v1/tenants/{org}/instances/{id}/promotion/preview)
+	PreviewInstancePromotion(w http.ResponseWriter, r *http.Request, org string, id string)
 	// RollbackInstance Rollback an instance to an explicit earlier catalog version
 	// (POST /api/v1/tenants/{org}/instances/{id}/rollback)
 	RollbackInstance(w http.ResponseWriter, r *http.Request, org string, id string)
 	// UpgradeInstance One-click upgrade of an instance to a newer catalog version
 	// (POST /api/v1/tenants/{org}/instances/{id}/upgrade)
 	UpgradeInstance(w http.ResponseWriter, r *http.Request, org string, id string)
+	// DisableInstanceVerification Disable future verification triggers
+	// (DELETE /api/v1/tenants/{org}/instances/{id}/verification)
+	DisableInstanceVerification(w http.ResponseWriter, r *http.Request, org string, id string)
+	// GetInstanceVerification Get instance verification policy and status
+	// (GET /api/v1/tenants/{org}/instances/{id}/verification)
+	GetInstanceVerification(w http.ResponseWriter, r *http.Request, org string, id string)
+	// PutInstanceVerification Save a verified team policy revision
+	// (PUT /api/v1/tenants/{org}/instances/{id}/verification)
+	PutInstanceVerification(w http.ResponseWriter, r *http.Request, org string, id string)
+	// PreviewInstanceVerification Preview effective verification policy without side effects
+	// (POST /api/v1/tenants/{org}/instances/{id}/verification/preview)
+	PreviewInstanceVerification(w http.ResponseWriter, r *http.Request, org string, id string)
+	// ListInstanceVerificationRuns List verification run history
+	// (GET /api/v1/tenants/{org}/instances/{id}/verification/runs)
+	ListInstanceVerificationRuns(w http.ResponseWriter, r *http.Request, org string, id string, params ListInstanceVerificationRunsParams)
+	// CreateInstanceVerificationRun Dry-run or request an exact manual verification run
+	// (POST /api/v1/tenants/{org}/instances/{id}/verification/runs)
+	CreateInstanceVerificationRun(w http.ResponseWriter, r *http.Request, org string, id string)
+	// GetInstanceVerificationRun Get verification run details
+	// (GET /api/v1/tenants/{org}/instances/{id}/verification/runs/{runId})
+	GetInstanceVerificationRun(w http.ResponseWriter, r *http.Request, org string, id string, runId string)
+	// RetryInstanceVerificationRun Retry a failed verification attempt after revalidation
+	// (POST /api/v1/tenants/{org}/instances/{id}/verification/runs/{runId}/retry)
+	RetryInstanceVerificationRun(w http.ResponseWriter, r *http.Request, org string, id string, runId string)
 	// ListOrgMembers Org-wide member view (highest role + teams)
 	// (GET /api/v1/tenants/{org}/members)
 	ListOrgMembers(w http.ResponseWriter, r *http.Request, org string, params ListOrgMembersParams)
@@ -44856,6 +49364,30 @@ type ServerInterface interface {
 	// CreateSourceScaffoldRun Create a run for a source-qualified template
 	// (POST /api/v1/tenants/{org}/templates/{source}/{name}/runs)
 	CreateSourceScaffoldRun(w http.ResponseWriter, r *http.Request, org string, source string, name string)
+	// CreateVerificationGrant Create or revise exact suite grant
+	// (POST /api/v1/tenants/{org}/verification-environments/{id}/grants)
+	CreateVerificationGrant(w http.ResponseWriter, r *http.Request, org string, id string)
+	// PreviewVerificationGrant Preview exact suite digest and profile grant
+	// (POST /api/v1/tenants/{org}/verification-environments/{id}/grants/preview)
+	PreviewVerificationGrant(w http.ResponseWriter, r *http.Request, org string, id string)
+	// GetVerificationEnvironment Get target verification environment policy
+	// (GET /api/v1/tenants/{org}/verification-environments/{targetId})
+	GetVerificationEnvironment(w http.ResponseWriter, r *http.Request, org string, targetId string)
+	// PutVerificationEnvironment Set target verification environment policy
+	// (PUT /api/v1/tenants/{org}/verification-environments/{targetId})
+	PutVerificationEnvironment(w http.ResponseWriter, r *http.Request, org string, targetId string)
+	// RevokeVerificationGrant Revoke new runs and evidence for a suite grant
+	// (DELETE /api/v1/tenants/{org}/verification-grants/{id})
+	RevokeVerificationGrant(w http.ResponseWriter, r *http.Request, org string, id string)
+	// ListVerificationSuites List admitted suite releases
+	// (GET /api/v1/tenants/{org}/verification-suites)
+	ListVerificationSuites(w http.ResponseWriter, r *http.Request, org string)
+	// CreateVerificationSuite Import an exact verified suite release
+	// (POST /api/v1/tenants/{org}/verification-suites)
+	CreateVerificationSuite(w http.ResponseWriter, r *http.Request, org string)
+	// PreviewVerificationSuite Cryptographically preview a platform suite release
+	// (POST /api/v1/tenants/{org}/verification-suites/preview)
+	PreviewVerificationSuite(w http.ResponseWriter, r *http.Request, org string)
 	// ListTenantZones List tenant zones owned by this org
 	// (GET /api/v1/tenants/{org}/zones)
 	ListTenantZones(w http.ResponseWriter, r *http.Request, org string)
@@ -49781,6 +54313,146 @@ func (siw *ServerInterfaceWrapper) InstanceDiff(w http.ResponseWriter, r *http.R
 	handler.ServeHTTP(w, r)
 }
 
+// PromoteInstance operation middleware
+func (siw *ServerInterfaceWrapper) PromoteInstance(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PromoteInstance(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetInstancePromotionPolicy operation middleware
+func (siw *ServerInterfaceWrapper) GetInstancePromotionPolicy(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetInstancePromotionPolicy(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PutInstancePromotionPolicy operation middleware
+func (siw *ServerInterfaceWrapper) PutInstancePromotionPolicy(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutInstancePromotionPolicy(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PreviewInstancePromotion operation middleware
+func (siw *ServerInterfaceWrapper) PreviewInstancePromotion(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PreviewInstancePromotion(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // RollbackInstance operation middleware
 func (siw *ServerInterfaceWrapper) RollbackInstance(w http.ResponseWriter, r *http.Request) {
 
@@ -49842,6 +54514,320 @@ func (siw *ServerInterfaceWrapper) UpgradeInstance(w http.ResponseWriter, r *htt
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.UpgradeInstance(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// DisableInstanceVerification operation middleware
+func (siw *ServerInterfaceWrapper) DisableInstanceVerification(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DisableInstanceVerification(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetInstanceVerification operation middleware
+func (siw *ServerInterfaceWrapper) GetInstanceVerification(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetInstanceVerification(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PutInstanceVerification operation middleware
+func (siw *ServerInterfaceWrapper) PutInstanceVerification(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutInstanceVerification(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PreviewInstanceVerification operation middleware
+func (siw *ServerInterfaceWrapper) PreviewInstanceVerification(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PreviewInstanceVerification(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListInstanceVerificationRuns operation middleware
+func (siw *ServerInterfaceWrapper) ListInstanceVerificationRuns(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params ListInstanceVerificationRunsParams
+
+	// ------------- Optional query parameter "limit" -------------
+
+	err = runtime.BindQueryParameterWithOptions("form", false, false, "limit", r.URL.Query(), &params.Limit, runtime.BindQueryParameterOptions{Type: "integer", Format: "int64"})
+	if err != nil {
+		var requiredError *runtime.RequiredParameterError
+		if errors.As(err, &requiredError) {
+			siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "limit"})
+		} else {
+			siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		}
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListInstanceVerificationRuns(w, r, org, id, params)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateInstanceVerificationRun operation middleware
+func (siw *ServerInterfaceWrapper) CreateInstanceVerificationRun(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateInstanceVerificationRun(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetInstanceVerificationRun operation middleware
+func (siw *ServerInterfaceWrapper) GetInstanceVerificationRun(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "runId" -------------
+	var runId string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "runId", r.PathValue("runId"), &runId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "runId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetInstanceVerificationRun(w, r, org, id, runId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RetryInstanceVerificationRun operation middleware
+func (siw *ServerInterfaceWrapper) RetryInstanceVerificationRun(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "runId" -------------
+	var runId string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "runId", r.PathValue("runId"), &runId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "runId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RetryInstanceVerificationRun(w, r, org, id, runId)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -52323,6 +57309,259 @@ func (siw *ServerInterfaceWrapper) CreateSourceScaffoldRun(w http.ResponseWriter
 	handler.ServeHTTP(w, r)
 }
 
+// CreateVerificationGrant operation middleware
+func (siw *ServerInterfaceWrapper) CreateVerificationGrant(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateVerificationGrant(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PreviewVerificationGrant operation middleware
+func (siw *ServerInterfaceWrapper) PreviewVerificationGrant(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PreviewVerificationGrant(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetVerificationEnvironment operation middleware
+func (siw *ServerInterfaceWrapper) GetVerificationEnvironment(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "targetId" -------------
+	var targetId string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "targetId", r.PathValue("targetId"), &targetId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "targetId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetVerificationEnvironment(w, r, org, targetId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PutVerificationEnvironment operation middleware
+func (siw *ServerInterfaceWrapper) PutVerificationEnvironment(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "targetId" -------------
+	var targetId string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "targetId", r.PathValue("targetId"), &targetId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "targetId", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutVerificationEnvironment(w, r, org, targetId)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// RevokeVerificationGrant operation middleware
+func (siw *ServerInterfaceWrapper) RevokeVerificationGrant(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "id" -------------
+	var id string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "id", r.PathValue("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.RevokeVerificationGrant(w, r, org, id)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ListVerificationSuites operation middleware
+func (siw *ServerInterfaceWrapper) ListVerificationSuites(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ListVerificationSuites(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateVerificationSuite operation middleware
+func (siw *ServerInterfaceWrapper) CreateVerificationSuite(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateVerificationSuite(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// PreviewVerificationSuite operation middleware
+func (siw *ServerInterfaceWrapper) PreviewVerificationSuite(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+	_ = err
+
+	// ------------- Path parameter "org" -------------
+	var org string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "org", r.PathValue("org"), &org, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true, Type: "string", Format: "", ValueIsUnescaped: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "org", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PreviewVerificationSuite(w, r, org)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
 // ListTenantZones operation middleware
 func (siw *ServerInterfaceWrapper) ListTenantZones(w http.ResponseWriter, r *http.Request) {
 
@@ -52873,8 +58112,20 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}", wrapper.GetInstance)
 	m.HandleFunc(http.MethodPatch+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}", wrapper.UpdateInstance)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/diff", wrapper.InstanceDiff)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/promote", wrapper.PromoteInstance)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/promotion-policy", wrapper.GetInstancePromotionPolicy)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/promotion-policy", wrapper.PutInstancePromotionPolicy)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/promotion/preview", wrapper.PreviewInstancePromotion)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/rollback", wrapper.RollbackInstance)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/upgrade", wrapper.UpgradeInstance)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/verification", wrapper.DisableInstanceVerification)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/verification", wrapper.GetInstanceVerification)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/verification", wrapper.PutInstanceVerification)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/verification/preview", wrapper.PreviewInstanceVerification)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/verification/runs", wrapper.ListInstanceVerificationRuns)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/verification/runs", wrapper.CreateInstanceVerificationRun)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/verification/runs/{runId}", wrapper.GetInstanceVerificationRun)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/instances/{id}/verification/runs/{runId}/retry", wrapper.RetryInstanceVerificationRun)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/members", wrapper.ListOrgMembers)
 	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/members/{subject}", wrapper.RemoveOrgMember)
 	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/api/v1/tenants/{org}/members/{subject}", wrapper.SetMemberRole)
@@ -52947,6 +58198,14 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/templates/{name}/runs", wrapper.CreateScaffoldRun)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/templates/{source}/{name}", wrapper.GetSourceTemplate)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/templates/{source}/{name}/runs", wrapper.CreateSourceScaffoldRun)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/verification-environments/{id}/grants", wrapper.CreateVerificationGrant)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/verification-environments/{id}/grants/preview", wrapper.PreviewVerificationGrant)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/verification-environments/{targetId}", wrapper.GetVerificationEnvironment)
+	m.HandleFunc(http.MethodPut+" "+options.BaseURL+"/api/v1/tenants/{org}/verification-environments/{targetId}", wrapper.PutVerificationEnvironment)
+	m.HandleFunc(http.MethodDelete+" "+options.BaseURL+"/api/v1/tenants/{org}/verification-grants/{id}", wrapper.RevokeVerificationGrant)
+	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/verification-suites", wrapper.ListVerificationSuites)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/verification-suites", wrapper.CreateVerificationSuite)
+	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/verification-suites/preview", wrapper.PreviewVerificationSuite)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/zones", wrapper.ListTenantZones)
 	m.HandleFunc(http.MethodPost+" "+options.BaseURL+"/api/v1/tenants/{org}/zones", wrapper.RequestTenantZone)
 	m.HandleFunc(http.MethodGet+" "+options.BaseURL+"/api/v1/tenants/{org}/zones/{id}", wrapper.GetTenantZone)
@@ -52962,400 +58221,462 @@ func HandlerWithOptions(si ServerInterface, options StdHTTPServerOptions) http.H
 // const string: with thousands of chunks the chained `+` fold is several
 // times slower for the Go compiler than parsing a slice literal.
 var swaggerSpec = []string{
-	"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",
+	"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",
 }
 
 // decodeSpec returns the embedded OpenAPI spec as raw JSON bytes,

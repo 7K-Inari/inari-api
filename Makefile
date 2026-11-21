@@ -12,6 +12,7 @@ generate:
 	buf generate
 	buf generate --template buf.gen.plugin-grpc.yaml --path proto/inari/plugin/v1
 	$(OAPI_CODEGEN) -config openapi/oapi-codegen.yaml openapi/openapi.yaml
+	python3 scripts/stabilize-openapi-embed.py gen/go/oas/openapi.gen.go
 	npm run generate:rest
 
 lint:
