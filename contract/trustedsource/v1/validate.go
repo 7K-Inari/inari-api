@@ -598,6 +598,9 @@ func (e *TestEvidence) ValidateAt(now time.Time, maxCompatibilityAge time.Durati
 	if e == nil {
 		return field("evidence", "is required")
 	}
+	if _, err := e.validateEligibilityMetadata(); err != nil {
+		return field("evidence", "%v", err)
+	}
 	if e.Schema != TestEvidenceSchema {
 		return field("schema", "must be %s", TestEvidenceSchema)
 	}
