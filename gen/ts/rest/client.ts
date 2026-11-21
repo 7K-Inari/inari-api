@@ -2432,6 +2432,63 @@ export interface PolicyPreview {
   wouldCreate?: string[] | null;
 }
 
+export interface PromotionDecision {
+  allowed: boolean;
+  approvalRequired: boolean;
+  /** @nullable */
+  approverTeamIds?: string[] | null;
+  reasonCode?: string;
+  sourceRunId?: string;
+}
+
+export interface PromotionInputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  repoId?: string;
+  toDigest: string;
+  toVersion: string;
+}
+
+export interface PromotionOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  deploy: DeployResult;
+}
+
+export interface PromotionPolicy {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  /** @nullable */
+  approverTeamIds?: string[] | null;
+  createdAt?: string;
+  current?: boolean;
+  id?: string;
+  maxEvidenceAge: string;
+  orgId?: string;
+  policyRevision: number;
+  required: boolean;
+  requiredProfile: string;
+  requiredSuiteDigest: string;
+  sourceInstanceId: string;
+  targetInstanceId: string;
+  updatedAt?: string;
+}
+
+export interface PromotionPolicyOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  policy?: PromotionPolicy;
+}
+
+export interface PromotionPreview {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  decision: PromotionDecision;
+  policy?: PromotionPolicy;
+  targetDigest: string;
+  targetVersion: string;
+}
+
 export interface ProviderCompatOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
@@ -2801,6 +2858,12 @@ export interface RotateSecretOutputBody {
   secret: string;
 }
 
+export interface RunLinks {
+  artifacts: string;
+  logs: string;
+  workflow: string;
+}
+
 export interface Trigger {
   kind: string;
   operationId?: string;
@@ -2822,6 +2885,7 @@ export interface Run {
   instanceId: string;
   instanceUid: string;
   latestAttempt: number;
+  links?: RunLinks;
   message?: string;
   orgId: string;
   outcome?: unknown;
@@ -11465,6 +11529,259 @@ export const instanceDiff = async (org: string,
 
   const data: instanceDiffResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as instanceDiffResponse
+}
+
+
+
+export type promoteInstanceResponse200 = {
+  data: PromotionOutputBody
+  status: 200
+}
+
+export type promoteInstanceResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type promoteInstanceResponseSuccess = (promoteInstanceResponse200) & {
+  headers: Headers;
+};
+export type promoteInstanceResponseError = (promoteInstanceResponseDefault) & {
+  headers: Headers;
+};
+
+export type promoteInstanceResponse = (promoteInstanceResponseSuccess | promoteInstanceResponseError)
+
+export const getPromoteInstanceUrl = (org: string,
+    id: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/instances/${id}/promote`
+}
+
+/**
+ * @summary Explicitly promote an exact verified application version
+ */
+export const promoteInstance = async (org: string,
+    id: string,
+    promotionInputBody: NonReadonly<PromotionInputBody>, options?: RequestInit): Promise<promoteInstanceResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getPromoteInstanceUrl(org,id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(promotionInputBody)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: promoteInstanceResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as promoteInstanceResponse
+}
+
+
+
+export type getInstancePromotionPolicyResponse200 = {
+  data: PromotionPolicyOutputBody
+  status: 200
+}
+
+export type getInstancePromotionPolicyResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type getInstancePromotionPolicyResponseSuccess = (getInstancePromotionPolicyResponse200) & {
+  headers: Headers;
+};
+export type getInstancePromotionPolicyResponseError = (getInstancePromotionPolicyResponseDefault) & {
+  headers: Headers;
+};
+
+export type getInstancePromotionPolicyResponse = (getInstancePromotionPolicyResponseSuccess | getInstancePromotionPolicyResponseError)
+
+export const getGetInstancePromotionPolicyUrl = (org: string,
+    id: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/instances/${id}/promotion-policy`
+}
+
+/**
+ * @summary Get linked promotion verification policy
+ */
+export const getInstancePromotionPolicy = async (org: string,
+    id: string, options?: RequestInit): Promise<getInstancePromotionPolicyResponse> => {
+
+  const res = await fetch(getGetInstancePromotionPolicyUrl(org,id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: getInstancePromotionPolicyResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getInstancePromotionPolicyResponse
+}
+
+
+
+export type putInstancePromotionPolicyResponse200 = {
+  data: PromotionPolicyOutputBody
+  status: 200
+}
+
+export type putInstancePromotionPolicyResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type putInstancePromotionPolicyResponseSuccess = (putInstancePromotionPolicyResponse200) & {
+  headers: Headers;
+};
+export type putInstancePromotionPolicyResponseError = (putInstancePromotionPolicyResponseDefault) & {
+  headers: Headers;
+};
+
+export type putInstancePromotionPolicyResponse = (putInstancePromotionPolicyResponseSuccess | putInstancePromotionPolicyResponseError)
+
+export const getPutInstancePromotionPolicyUrl = (org: string,
+    id: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/instances/${id}/promotion-policy`
+}
+
+/**
+ * @summary Set linked promotion verification policy
+ */
+export const putInstancePromotionPolicy = async (org: string,
+    id: string,
+    promotionPolicy: NonReadonly<PromotionPolicy>, options?: RequestInit): Promise<putInstancePromotionPolicyResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getPutInstancePromotionPolicyUrl(org,id),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(promotionPolicy)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: putInstancePromotionPolicyResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as putInstancePromotionPolicyResponse
+}
+
+
+
+export type previewInstancePromotionResponse200 = {
+  data: PromotionPreview
+  status: 200
+}
+
+export type previewInstancePromotionResponseDefault = {
+  data: ErrorModel
+  status: Exclude<HTTPStatusCodes, 200>
+}
+
+export type previewInstancePromotionResponseSuccess = (previewInstancePromotionResponse200) & {
+  headers: Headers;
+};
+export type previewInstancePromotionResponseError = (previewInstancePromotionResponseDefault) & {
+  headers: Headers;
+};
+
+export type previewInstancePromotionResponse = (previewInstancePromotionResponseSuccess | previewInstancePromotionResponseError)
+
+export const getPreviewInstancePromotionUrl = (org: string,
+    id: string,) => {
+
+
+
+
+  return `/api/v1/tenants/${org}/instances/${id}/promotion/preview`
+}
+
+/**
+ * @summary Preview exact promotion evidence gates
+ */
+export const previewInstancePromotion = async (org: string,
+    id: string,
+    promotionInputBody: NonReadonly<PromotionInputBody>, options?: RequestInit): Promise<previewInstancePromotionResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+const res = await fetch(getPreviewInstancePromotionUrl(org,id),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(promotionInputBody)
+  }
+)
+
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: previewInstancePromotionResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as previewInstancePromotionResponse
 }
 
 

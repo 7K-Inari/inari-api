@@ -4038,6 +4038,143 @@ components:
         - runAttempt
         - runUri
       type: object
+    PromotionDecision:
+      additionalProperties: false
+      properties:
+        allowed:
+          type: boolean
+        approvalRequired:
+          type: boolean
+        approverTeamIds:
+          items:
+            type: string
+          type: array
+          nullable: true
+        reasonCode:
+          type: string
+        sourceRunId:
+          type: string
+      required:
+        - allowed
+        - approvalRequired
+      type: object
+    PromotionInputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/PromotionInputBody.json
+        repoId:
+          type: string
+        toDigest:
+          type: string
+        toVersion:
+          type: string
+      required:
+        - toVersion
+        - toDigest
+      type: object
+    PromotionOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/PromotionOutputBody.json
+        deploy:
+          $ref: "#/components/schemas/DeployResult"
+      required:
+        - deploy
+      type: object
+    PromotionPolicy:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/PromotionPolicy.json
+        approverTeamIds:
+          items:
+            type: string
+          type: array
+          nullable: true
+        createdAt:
+          format: date-time
+          type: string
+        current:
+          type: boolean
+        id:
+          type: string
+        maxEvidenceAge:
+          type: string
+        orgId:
+          type: string
+        policyRevision:
+          format: int64
+          type: integer
+        required:
+          type: boolean
+        requiredProfile:
+          type: string
+        requiredSuiteDigest:
+          type: string
+        sourceInstanceId:
+          type: string
+        targetInstanceId:
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - targetInstanceId
+        - sourceInstanceId
+        - required
+        - requiredSuiteDigest
+        - requiredProfile
+        - maxEvidenceAge
+        - policyRevision
+      type: object
+    PromotionPolicyOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/PromotionPolicyOutputBody.json
+        policy:
+          $ref: "#/components/schemas/PromotionPolicy"
+      type: object
+    PromotionPreview:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/PromotionPreview.json
+        decision:
+          $ref: "#/components/schemas/PromotionDecision"
+        policy:
+          $ref: "#/components/schemas/PromotionPolicy"
+        targetDigest:
+          type: string
+        targetVersion:
+          type: string
+      required:
+        - decision
+        - targetVersion
+        - targetDigest
+      type: object
     ProviderCompatOutputBody:
       additionalProperties: false
       properties:
@@ -5059,6 +5196,8 @@ components:
         latestAttempt:
           format: int64
           type: integer
+        links:
+          $ref: "#/components/schemas/RunLinks"
         message:
           type: string
         orgId:
@@ -5122,6 +5261,20 @@ components:
           type: string
       required:
         - idempotencyKey
+      type: object
+    RunLinks:
+      additionalProperties: false
+      properties:
+        artifacts:
+          type: string
+        logs:
+          type: string
+        workflow:
+          type: string
+      required:
+        - workflow
+        - logs
+        - artifacts
       type: object
     RunListOutputBody:
       additionalProperties: false
@@ -11507,6 +11660,143 @@ paths:
       security:
         - bearer: []
       summary: Diff preview data for an upgrade
+  /api/v1/tenants/{org}/instances/{id}/promote:
+    post:
+      operationId: promoteInstance
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PromotionInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PromotionOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Explicitly promote an exact verified application version
+  /api/v1/tenants/{org}/instances/{id}/promotion-policy:
+    get:
+      operationId: getInstancePromotionPolicy
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PromotionPolicyOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Get linked promotion verification policy
+    put:
+      operationId: putInstancePromotionPolicy
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PromotionPolicy"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PromotionPolicyOutputBody"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Set linked promotion verification policy
+  /api/v1/tenants/{org}/instances/{id}/promotion/preview:
+    post:
+      operationId: previewInstancePromotion
+      parameters:
+        - in: path
+          name: org
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PromotionInputBody"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PromotionPreview"
+          description: OK
+        default:
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ErrorModel"
+          description: Error
+      security:
+        - bearer: []
+      summary: Preview exact promotion evidence gates
   /api/v1/tenants/{org}/instances/{id}/rollback:
     post:
       operationId: rollbackInstance
