@@ -3077,12 +3077,6 @@ export interface SourceVisibilityInputBody {
 export interface StatusOutputBody {
   /** A URL to the JSON Schema for this object. */
   readonly $schema?: string;
-  status: string;
-}
-
-export interface StatusOutputBody1 {
-  /** A URL to the JSON Schema for this object. */
-  readonly $schema?: string;
   status: SecretStoreStatus;
 }
 
@@ -3312,6 +3306,12 @@ export interface UpgradeInputBody {
   repoId?: string;
   /** @minLength 1 */
   toVersion: string;
+}
+
+export interface VerificationGrantStatusOutputBody {
+  /** A URL to the JSON Schema for this object. */
+  readonly $schema?: string;
+  status: string;
 }
 
 export interface VerificationView {
@@ -15744,7 +15744,7 @@ const res = await fetch(getUpdateSecretStoreUrl(org,name),
 
 
 export type getSecretStoreStatusResponse200 = {
-  data: StatusOutputBody1
+  data: StatusOutputBody
   status: 200
 }
 
@@ -16757,7 +16757,7 @@ const res = await fetch(getPutVerificationEnvironmentUrl(org,targetId),
 
 
 export type revokeVerificationGrantResponse200 = {
-  data: StatusOutputBody
+  data: VerificationGrantStatusOutputBody
   status: 200
 }
 

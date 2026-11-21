@@ -5799,20 +5799,6 @@ components:
           type: string
           example: https://example.com/schemas/StatusOutputBody.json
         status:
-          type: string
-      required:
-        - status
-      type: object
-    StatusOutputBody1:
-      additionalProperties: false
-      properties:
-        $schema:
-          description: A URL to the JSON Schema for this object.
-          format: uri
-          readOnly: true
-          type: string
-          example: https://example.com/schemas/StatusOutputBody1.json
-        status:
           $ref: "#/components/schemas/SecretStoreStatus"
       required:
         - status
@@ -7213,6 +7199,20 @@ components:
       required:
         - server
         - authSecretRef
+      type: object
+    VerificationGrantStatusOutputBody:
+      additionalProperties: false
+      properties:
+        $schema:
+          description: A URL to the JSON Schema for this object.
+          format: uri
+          readOnly: true
+          type: string
+          example: https://example.com/schemas/VerificationGrantStatusOutputBody.json
+        status:
+          type: string
+      required:
+        - status
       type: object
     VerificationPolicy:
       additionalProperties: false
@@ -13950,7 +13950,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/StatusOutputBody1"
+                $ref: "#/components/schemas/StatusOutputBody"
           description: OK
         default:
           content:
@@ -14516,7 +14516,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/StatusOutputBody"
+                $ref: "#/components/schemas/VerificationGrantStatusOutputBody"
           description: OK
         default:
           content:
