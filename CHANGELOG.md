@@ -1,5 +1,39 @@
 # Changelog
 
+## [0.8.0](https://github.com/7K-Inari/inari-api/compare/v0.7.0...v0.8.0) (2026-11-21)
+
+
+### Features
+
+* add deployment observability contracts ([f224904](https://github.com/7K-Inari/inari-api/commit/f2249048ba73bcf43508f65d79bc52ca0f922c31))
+* add deployment observability contracts ([a35cb86](https://github.com/7K-Inari/inari-api/commit/a35cb86e3c5ef8393bb812046c814ecdcfccbf4a))
+* add org resource target REST contracts ([6779924](https://github.com/7K-Inari/inari-api/commit/6779924724c607c108a4a9487d22d3d15077c6d8))
+* add org resource target REST contracts ([7af04a0](https://github.com/7K-Inari/inari-api/commit/7af04a00890b879733b86342aee570798cffe392))
+* add preflight application schemas ([cdab03f](https://github.com/7K-Inari/inari-api/commit/cdab03fec6436e6b7c19e3ebf3d144f835cbaf4d))
+* add verification trust and agent contracts ([9141c0a](https://github.com/7K-Inari/inari-api/commit/9141c0a793b211cf8eb94cd5fe56779df1760ec4))
+* **agent:** add verification report stream contract ([14c302a](https://github.com/7K-Inari/inari-api/commit/14c302a03a71d11a752bfb60eb0ca9cc21de3a55))
+* expose application execution results on plans ([dc6ef4d](https://github.com/7K-Inari/inari-api/commit/dc6ef4d8c2984a3bf107309153bac0f18c7cefe6))
+* expose deploy artifact digest in REST clients ([6769cdc](https://github.com/7K-Inari/inari-api/commit/6769cdc888d9dc1d384bec310be60c437dad359d))
+* **extension:** add versioned contract declarations ([dcd3915](https://github.com/7K-Inari/inari-api/commit/dcd3915e1c7b7328775345e9ae5d653452662b69))
+* **extensions:** add versioned plugin contracts ([b5e7e0b](https://github.com/7K-Inari/inari-api/commit/b5e7e0bc36e96b9164e4832b8087f44add06797d))
+* **extensions:** generate contract metadata clients ([970e458](https://github.com/7K-Inari/inari-api/commit/970e45820471e19094e27c763412c3f8e6b8aa1f))
+* **openapi:** add promotion and run link contracts ([03da85e](https://github.com/7K-Inari/inari-api/commit/03da85e5b3e004577b040dbac4bd86a6dd863c74))
+* **openapi:** publish verification policy contracts ([3464a83](https://github.com/7K-Inari/inari-api/commit/3464a8388f5a96827623c19c6dcc6f1bf9b4e57b))
+* publish deployment plan REST contracts ([6c94552](https://github.com/7K-Inari/inari-api/commit/6c94552d4b42fba62f5c2fe4b2e01b6a2e99d168))
+* **trustedsource:** enforce signed runtime evidence eligibility ([963d871](https://github.com/7K-Inari/inari-api/commit/963d871e5090694e4a1664864b15c43aebc3b395))
+* **verification:** add deterministic run identity contract ([d23453b](https://github.com/7K-Inari/inari-api/commit/d23453ba6266ed07b49ab0484853f67b2153da16))
+
+
+### Bug Fixes
+
+* disambiguate observability capability schema ([92fac9d](https://github.com/7K-Inari/inari-api/commit/92fac9d4765700aafb5382194f756d9a8b139264))
+* **extension:** accept npm sdk ranges ([5fe7476](https://github.com/7K-Inari/inari-api/commit/5fe74760b5fc3150355693bb1fa39e61cb978d36))
+* **openapi:** disambiguate verification grant status schema ([a99c67f](https://github.com/7K-Inari/inari-api/commit/a99c67f18be8f523b484a038b0eaa09b3d122eaf))
+* **openapi:** stabilize embedded contract generation ([34169b9](https://github.com/7K-Inari/inari-api/commit/34169b962354c7b760fb42b160f9e0bf0cfe767e))
+* restrict unsigned sources to development ([fbb8a5f](https://github.com/7K-Inari/inari-api/commit/fbb8a5fd4de18e702f338fa586a564b71cf5b6d9))
+* restrict unsigned trusted sources to development ([5ee597d](https://github.com/7K-Inari/inari-api/commit/5ee597d2eb0107a29e2076a414e840a823554df0))
+* tighten verification result schema ([467dc36](https://github.com/7K-Inari/inari-api/commit/467dc36a77f961dc04d2598c522cb5f09519082f))
+
 ## [0.7.0](https://github.com/7K-Inari/inari-api/compare/v0.6.0...v0.7.0) (2026-11-14)
 
 
