@@ -12,6 +12,6 @@ The companion pack must support `inari.observability-pack/v2`, which makes `rule
 
 ## Target-side verification
 
-`ObservabilityVerificationResult` binds the companion generation, target revision/cluster, application source revision/digest, exact pack, capability digest, approved read-only suite/profile, and run. Passing readiness requires folder, dashboard, datasource, team-access, and selected-rule checks. Evidence carries UIDs and other identifiers, never arbitrary URLs or credentials.
+`ObservabilityVerificationResult` binds the companion generation, target revision/cluster, application source revision/digest, exact pack, capability digest, approved read-only suite/profile, and run. The suite profile is the actual generic verifier grant profile: `ci`, `stage`, or `prod`, admitted for the exact target environment; no synthetic observability-specific profile is accepted. Passing readiness requires folder, dashboard, datasource, and selected-rule checks. It makes no Grafana identity, team-sync, or folder-access claim. Evidence carries UIDs and other identifiers, never arbitrary URLs or credentials.
 
 The generic verification transport authenticates and submits this result over the existing outbound agent path. Inari does not call Grafana from the hub. Deep links are derived only from current, unexpired passing evidence and the current caller's target view grant; skipped, pending, failed, stale, or revoked states produce no links.

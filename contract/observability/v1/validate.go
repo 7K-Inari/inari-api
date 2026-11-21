@@ -200,6 +200,10 @@ func BindLinkVariables(declared []string, values map[string]string) (map[string]
 	return out, nil
 }
 
+func validVerificationProfile(profile string) bool {
+	return profile == ProfileCI || profile == ProfileStage || profile == ProfileProd
+}
+
 func validateIdentity(r *VerificationResult) error {
 	if r == nil {
 		return field("verification", "is required")
@@ -218,8 +222,8 @@ func validateIdentity(r *VerificationResult) error {
 			return field(name, "an immutable sha256 digest is required")
 		}
 	}
-	if r.Pack.ItemID == "" || r.Pack.Version == "" || r.Suite.Profile != ReadOnlyProfile || r.Run.ID == "" || r.Run.Attempt <= 0 {
-		return field("verification.identity", "pack, read-only suite, and run identity are required")
+	if r.Pack.ItemID == "" || r.Pack.Version == "" || !validVerificationProfile(r.Suite.Profile) || r.Run.ID == "" || r.Run.Attempt <= 0 {
+		return field("verification.identity", "pack, generic ci/stage/prod suite profile, and run identity are required")
 	}
 	if r.Result != "passed" && r.Result != "failed" {
 		return field("result", "must be passed or failed")
@@ -245,9 +249,6 @@ func (r *VerificationResult) ValidateAt(now time.Time) error {
 	}
 	if r.Checks.Folder.State != "passed" || r.Checks.Folder.Name == "" || r.Checks.Folder.UID == "" {
 		return field("checks.folder", "folder evidence must pass")
-	}
-	if r.Checks.Access.State != "passed" || r.Checks.Access.Team == "" {
-		return field("checks.access", "team access evidence must pass")
 	}
 	if len(r.Checks.Dashboards) == 0 || len(r.Checks.Datasources) == 0 || len(r.Checks.Rules) == 0 {
 		return field("checks", "dashboard, datasource, and rule evidence is required")
