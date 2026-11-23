@@ -21,17 +21,6 @@ components:
         - region
         - authSecretRef
       type: object
-    AccessCheck:
-      additionalProperties: false
-      properties:
-        state:
-          type: string
-        team:
-          type: string
-      required:
-        - team
-        - state
-      type: object
     AccessInfoOutputBody:
       additionalProperties: false
       properties:
@@ -7883,8 +7872,6 @@ components:
     VerificationChecks:
       additionalProperties: false
       properties:
-        access:
-          $ref: "#/components/schemas/AccessCheck"
         dashboards:
           items:
             $ref: "#/components/schemas/DashboardCheck"
@@ -7906,7 +7893,6 @@ components:
         - folder
         - dashboards
         - datasources
-        - access
         - rules
       type: object
     VerificationGrantStatusOutputBody:

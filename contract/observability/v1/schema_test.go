@@ -79,7 +79,7 @@ func TestVerificationSchemaMatchesGoContract(t *testing.T) {
 		{name: "empty folder uid", mutate: func(r *observability.VerificationResult) { r.Checks.Folder.UID = "" }},
 		{name: "unsafe dashboard slug", mutate: func(r *observability.VerificationResult) { r.Checks.Dashboards[0].Slug = "../other" }},
 		{name: "empty datasource type", mutate: func(r *observability.VerificationResult) { r.Checks.Datasources[0].Type = "" }},
-		{name: "empty access team", mutate: func(r *observability.VerificationResult) { r.Checks.Access.Team = "" }},
+		{name: "retired synthetic profile", mutate: func(r *observability.VerificationResult) { r.Suite.Profile = "observability-readonly-v1" }},
 		{name: "missing rules", mutate: func(r *observability.VerificationResult) { r.Checks.Rules = nil }},
 	}
 	for _, tc := range tests {

@@ -1,6 +1,7 @@
 package observability_test
 
 import (
+	"reflect"
 	"strings"
 	"testing"
 	"time"
@@ -107,14 +108,13 @@ func validVerification() *observability.VerificationResult {
 		App:              observability.AppIdentity{PlanID: "dp-1", InstanceID: "app-1", SourceDigest: testDigest, Revision: "generation-1"},
 		Pack:             observability.PackIdentity{ItemID: "hiroba/observability-pack", Version: "0.2.0", Digest: testDigest},
 		CapabilityDigest: testDigest,
-		Suite:            observability.SuiteIdentity{Digest: testDigest, Profile: observability.ReadOnlyProfile},
+		Suite:            observability.SuiteIdentity{Digest: testDigest, Profile: "stage"},
 		Run:              observability.RunIdentity{ID: "vr-184", Attempt: 1, FinishedAt: time.Date(2026, 11, 15, 21, 42, 0, 0, time.UTC)},
 		Result:           "passed",
 		Checks: observability.VerificationChecks{
 			Folder:      observability.FolderCheck{Check: observability.Check{State: "passed"}, Name: "acme-inc/payments-api", UID: "folder-1"},
 			Dashboards:  []observability.DashboardCheck{{Check: observability.Check{State: "passed"}, UID: "payments-api-overview", Title: "Service overview", Slug: "overview"}},
 			Datasources: []observability.DatasourceCheck{{Check: observability.Check{State: "passed"}, Logical: "prometheus", Name: "metrics-central", Type: "prometheus"}},
-			Access:      observability.AccessCheck{Check: observability.Check{State: "passed"}, Team: "payments-api-maintainers"},
 			Rules:       []observability.RuleCheck{{Check: observability.Check{State: "passed"}, File: "rules/availability.yaml", Evaluation: observability.EvaluationCentral}},
 		},
 		ExpiresAt: time.Date(2026, 11, 16, 21, 42, 0, 0, time.UTC),
@@ -130,6 +130,27 @@ func TestVerificationResultValidatesFreshReadOnlyEvidence(t *testing.T) {
 	r.Result = "failed"
 	if err := r.ValidateAt(now); err != nil {
 		t.Fatalf("well-formed failure evidence rejected: %v", err)
+	}
+}
+
+func TestVerificationUsesGenericProfilesWithoutGrafanaAccess(t *testing.T) {
+	now := time.Date(2026, 11, 16, 0, 0, 0, 0, time.UTC)
+	for _, profile := range []string{"ci", "stage", "prod"} {
+		t.Run(profile, func(t *testing.T) {
+			r := validVerification()
+			r.Suite.Profile = profile
+			if err := r.ValidateAt(now); err != nil {
+				t.Fatalf("valid %s evidence without Grafana access rejected: %v", profile, err)
+			}
+		})
+	}
+	r := validVerification()
+	r.Suite.Profile = "observability-readonly-v1"
+	if err := r.ValidateAt(now); err == nil {
+		t.Fatal("retired synthetic profile accepted")
+	}
+	if _, found := reflect.TypeOf(observability.VerificationChecks{}).FieldByName("Access"); found {
+		t.Fatal("VerificationChecks still contains the removed Grafana Access field")
 	}
 }
 

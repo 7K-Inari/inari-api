@@ -9,7 +9,9 @@ const (
 	CapabilityKind       = "Observability"
 	VerificationKind     = "ObservabilityVerificationResult"
 	PackRenderContractV2 = "inari.observability-pack/v2"
-	ReadOnlyProfile      = "observability-readonly-v1"
+	ProfileCI            = "ci"
+	ProfileStage         = "stage"
+	ProfileProd          = "prod"
 )
 
 type Evaluation string
@@ -114,11 +116,6 @@ type DatasourceCheck struct {
 	Type    string `json:"type"`
 }
 
-type AccessCheck struct {
-	Check
-	Team string `json:"team"`
-}
-
 type RuleCheck struct {
 	Check
 	File       string     `json:"file"`
@@ -129,7 +126,6 @@ type VerificationChecks struct {
 	Folder      FolderCheck       `json:"folder"`
 	Dashboards  []DashboardCheck  `json:"dashboards"`
 	Datasources []DatasourceCheck `json:"datasources"`
-	Access      AccessCheck       `json:"access"`
 	Rules       []RuleCheck       `json:"rules"`
 }
 
