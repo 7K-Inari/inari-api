@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package inari.planlimits.v1;
+
+option go_package = "github.com/7K-Inari/inari-api/gen/go/inari/planlimits/v1;planlimitsv1";
+
+// PlanLimits is a generic desired-state document for a tenant. Numeric field
+// presence distinguishes an unlimited value (absent) from zero allowed.
+message PlanLimits {
+  optional int64 max_clusters = 1;
+  optional int64 max_developer_seats = 2;
+
+  // all_features enables current and future feature gates. Otherwise a gate is
+  // enabled only when its map value is true.
+  bool all_features = 3;
+  map<string, bool> feature_gates = 4;
+}
