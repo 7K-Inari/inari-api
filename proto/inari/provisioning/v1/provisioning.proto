@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package inari.provisioning.v1;
+
+option go_package = "github.com/7K-Inari/inari-api/gen/go/inari/provisioning/v1;provisioningv1";
+
+import "google/protobuf/timestamp.proto";
+import "inari/planlimits/v1/planlimits.proto";
+
+// FirstAdminInviteStatus describes the durable first-admin setup state. No
+// actionable invite URL or credential is part of the API.
+enum FirstAdminInviteStatus {
+  FIRST_ADMIN_INVITE_STATUS_UNSPECIFIED = 0;
+  FIRST_ADMIN_INVITE_STATUS_PENDING = 1;
+  FIRST_ADMIN_INVITE_STATUS_SENT = 2;
+  FIRST_ADMIN_INVITE_STATUS_NOT_REQUIRED = 3;
+  FIRST_ADMIN_INVITE_STATUS_ACTION_REQUIRED = 4;
+}
+
+message Tenant {
+  string id = 1;
+  string slug = 2;
+  string display_name = 3;
+  string admin_email = 4;
+  string plan = 5;
+  inari.planlimits.v1.PlanLimits limits = 6;
+  FirstAdminInviteStatus first_admin_invite_status = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+
+message CreateTenantRequest {
+  string slug = 1;
+  string display_name = 2;
+  string admin_email = 3;
+  string plan = 4;
+}
+
+message CreateTenantResponse {
+  Tenant tenant = 1;
+}
+
+message GetTenantRequest {
+  string tenant_id = 1;
+}
+
+message GetTenantResponse {
+  Tenant tenant = 1;
+}
+
+message PutPlanLimitsRequest {
+  string tenant_id = 1;
+  string plan = 2;
+  inari.planlimits.v1.PlanLimits limits = 3;
+}
+
+message PutPlanLimitsResponse {
+  Tenant tenant = 1;
+}
+
+message ResendFirstAdminInviteRequest {
+  string tenant_id = 1;
+}
+
+message ResendFirstAdminInviteResponse {
+  Tenant tenant = 1;
+}
+
+// ProvisioningService is a versioned machine-to-machine contract. Callers use
+// a dedicated client-credentials identity and the "provisioning" scope.
+// CreateTenant, PutPlanLimits and ResendFirstAdminInvite require the
+// Idempotency-Key header. Reusing a key with equivalent input returns the
+// stored result; reusing it with different input returns ALREADY_EXISTS.
+service ProvisioningService {
+  rpc CreateTenant(CreateTenantRequest) returns (CreateTenantResponse);
+  rpc GetTenant(GetTenantRequest) returns (GetTenantResponse);
+  rpc PutPlanLimits(PutPlanLimitsRequest) returns (PutPlanLimitsResponse);
+  rpc ResendFirstAdminInvite(ResendFirstAdminInviteRequest) returns (ResendFirstAdminInviteResponse);
+}

@@ -12,6 +12,8 @@ Canonical architecture & development plan: [inari-docs/docs/architecture/inari-p
 - `proto/inari/agent/v1/` — agent EventStream protocol (bidirectional gRPC stream, CloudEvents-style envelope)
 - `proto/inari/plugin/v1/` — versioned plugin contract (hashicorp go-plugin model)
 - `proto/inari/extensions/v1/` — extension-to-control-plane AgentGateway contract (Connect RPC; see `docs/extension-gateway.md`)
+- `proto/inari/planlimits/v1/` — generic plan-limits document with presence-safe numeric limits and feature gates
+- `proto/inari/provisioning/v1/` — machine-to-machine provisioning contract (Connect RPC; see `docs/provisioning.md`)
 - `openapi/openapi.yaml` — REST surface for console/CLI (OpenAPI 3.0)
 - `gen/go/`, `gen/ts/` — generated Go and TypeScript clients, **committed to the repo** (see below)
 
